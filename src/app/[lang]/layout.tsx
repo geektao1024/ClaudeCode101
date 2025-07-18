@@ -1,8 +1,7 @@
 import type { Metadata } from 'next'
-
 import type { ReactNode } from 'react'
-
 import type { I18nLangAsyncProps, I18nLangKeys } from '@/i18n'
+import process from 'node:process'
 import { GoogleAnalytics } from '@next/third-parties/google'
 
 import Script from 'next/script'
@@ -18,39 +17,82 @@ import { getDictionary, getDirection } from '../_dictionaries/get-dictionary'
 import { ThemeProvider } from './_components/ThemeProvider'
 import './styles/index.css'
 
-export const metadata = {
-  title: 'Claude Code 教程中心 - 智能编程助手完整指南',
-  description: 'Claude Code 中文教程，学习如何使用 AI 驱动的编程助手进行智能体编程，包含最佳实践、工作流程和优化技巧。',
-  keywords: ['Claude Code', 'AI编程', '智能编程助手', 'Anthropic', '编程教程', '最佳实践'],
-  authors: [{ name: 'Claude Code 教程中心' }],
-  creator: 'Claude Code 教程中心',
-  publisher: 'Claude Code 教程中心',
-  metadataBase: new URL('https://claude-code-tutorial.com'),
-  icons: '/img/favicon.svg',
-  openGraph: {
-    title: 'Claude Code 教程中心',
-    description: 'Claude Code 智能编程助手完整指南',
-    type: 'website',
-    locale: 'zh_CN',
-    siteName: 'Claude Code 教程中心',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Claude Code 教程中心',
-    description: 'Claude Code 智能编程助手完整指南',
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
+export async function generateMetadata({ params }: { params: Promise<{ lang: I18nLangKeys }> }): Promise<Metadata> {
+  const { lang } = await params
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://claude-code-tutorial.com'
+  const siteName = lang === 'zh' ? 'Claude Code 教程中心' : 'Claude Code Tutorial Center'
+  const title = lang === 'zh'
+    ? 'Claude Code 教程中心 - 智能编程助手完整指南'
+    : 'Claude Code Tutorial Center - Complete AI Programming Assistant Guide'
+  const description = lang === 'zh'
+    ? 'Claude Code 中文教程，学习如何使用 AI 驱动的编程助手进行智能体编程，包含最佳实践、工作流程和优化技巧。'
+    : 'Complete Claude Code tutorial. Learn how to use AI-powered programming assistant for agentic programming, including best practices, workflows, and optimization tips.'
+  const keywords = lang === 'zh'
+    ? ['Claude Code', 'AI编程', '智能编程助手', 'Anthropic', '编程教程', '最佳实践', 'MCP', '代码生成', '编程自动化']
+    : ['Claude Code', 'AI Programming', 'AI Programming Assistant', 'Anthropic', 'Programming Tutorial', 'Best Practices', 'MCP', 'Code Generation', 'Programming Automation']
+
+  return {
+    title,
+    description,
+    keywords,
+    authors: [{ name: siteName }],
+    creator: siteName,
+    publisher: siteName,
+    metadataBase: new URL(siteUrl),
+    icons: {
+      icon: '/img/favicon.svg',
+      apple: '/img/apple-touch-icon.png',
+    },
+    manifest: '/site.webmanifest',
+    openGraph: {
+      title,
+      description,
+      type: 'website',
+      locale: lang === 'zh' ? 'zh_CN' : 'en_US',
+      siteName,
+      url: `${siteUrl}/${lang}`,
+      images: [
+        {
+          url: '/img/og-image.jpg',
+          width: 1200,
+          height: 630,
+          alt: siteName,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: ['/img/og-image.jpg'],
+      creator: '@anthropic',
+      site: '@anthropic',
+    },
+    robots: {
       index: true,
       follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
     },
-  },
-} satisfies Metadata
+    alternates: {
+      canonical: `${siteUrl}/${lang}`,
+      languages: {
+        'zh-CN': `${siteUrl}/zh`,
+        en: `${siteUrl}/en`,
+      },
+    },
+    verification: {
+      google: process.env.GOOGLE_VERIFICATION_CODE,
+      yandex: process.env.YANDEX_VERIFICATION_CODE,
+      yahoo: process.env.YAHOO_VERIFICATION_CODE,
+    },
+  } satisfies Metadata
+}
 
 const repo = 'https://github.com/anthropics/claude-code'
 
@@ -139,14 +181,68 @@ export default async function RootLayout({ children, params }: Props) {
       dir={getDirection(lang)}
       suppressHydrationWarning
     >
-      <Head
-      // ... Your additional head options
-      >
-        {/* <title>{asPath !== '/' ? `${normalizePagesResult.title} - ${title}` : title}</title> */}
-        <meta property="og:title" content={title} />
-        <meta name="description" content={description} />
-        <meta property="og:description" content={description} />
-        <link rel="canonical" href={repo} />
+      <Head>
+        {/* 结构化数据 */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'WebSite',
+              name: lang === 'zh' ? 'Claude Code 教程中心' : 'Claude Code Tutorial Center',
+              description: lang === 'zh'
+                ? 'Claude Code 中文教程，学习如何使用 AI 驱动的编程助手进行智能体编程，包含最佳实践、工作流程和优化技巧。'
+                : 'Complete Claude Code tutorial. Learn how to use AI-powered programming assistant for agentic programming, including best practices, workflows, and optimization tips.',
+              url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://claude-code-tutorial.com'}/${lang}`,
+              publisher: {
+                '@type': 'Organization',
+                name: 'Claude Code Tutorial Center',
+                url: 'https://claude-code-tutorial.com',
+                logo: {
+                  '@type': 'ImageObject',
+                  url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://claude-code-tutorial.com'}/img/logo.png`,
+                },
+              },
+              potentialAction: {
+                '@type': 'SearchAction',
+                target: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://claude-code-tutorial.com'}/${lang}?q={search_term_string}`,
+                'query-input': 'required name=search_term_string',
+              },
+              inLanguage: lang === 'zh' ? 'zh-CN' : 'en-US',
+              about: {
+                '@type': 'Thing',
+                name: 'Claude Code',
+                description: lang === 'zh' ? 'AI 编程助手' : 'AI Programming Assistant',
+              },
+            }),
+          }}
+        />
+
+        {/* 教程内容的结构化数据 */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'Course',
+              name: lang === 'zh' ? 'Claude Code 完整教程' : 'Complete Claude Code Tutorial',
+              description: lang === 'zh'
+                ? '学习如何使用 Claude Code 进行智能体编程的完整课程'
+                : 'Complete course on learning how to use Claude Code for agentic programming',
+              provider: {
+                '@type': 'Organization',
+                name: 'Claude Code Tutorial Center',
+                url: 'https://claude-code-tutorial.com',
+              },
+              educationalLevel: lang === 'zh' ? '初级到高级' : 'Beginner to Advanced',
+              coursePrerequisites: lang === 'zh' ? '基础编程知识' : 'Basic programming knowledge',
+              teaches: lang === 'zh'
+                ? ['AI 编程', '代码生成', '智能体编程', '最佳实践']
+                : ['AI Programming', 'Code Generation', 'Agentic Programming', 'Best Practices'],
+              inLanguage: lang === 'zh' ? 'zh-CN' : 'en-US',
+            }),
+          }}
+        />
       </Head>
       <body>
         <ThemeProvider
@@ -188,7 +284,7 @@ export default async function RootLayout({ children, params }: Props) {
           </Layout>
         </ThemeProvider>
       </body>
-      <GoogleAnalytics gaId="G-VCR6017LB8" />
+      <GoogleAnalytics gaId="G-4683BGZTR8" />
       <BaiduTrack />
     </html>
   )
