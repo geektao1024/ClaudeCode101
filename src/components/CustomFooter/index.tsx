@@ -57,7 +57,7 @@ export function CustomFooter() {
             { new Date().getFullYear() }
           </span>
           <UnderlineLink
-            link="https://github.com/ClaudeCode101"
+            link="https://github.com/geektao1024/ClaudeCode101.git "
             label={(
               <>
                 <span className="animate-[heartbeat_1.5s_infinite] mr-[3px]">❤️</span>

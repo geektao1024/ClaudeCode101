@@ -1,8 +1,97 @@
 import { useRouter } from 'next/router'
 import { useConfig } from 'nextra-theme-docs'
 import { useLocale } from '@/hooks'
+import process from 'node:process'
 
 export default {
+  // SEO配置
+  useNextSeoProps() {
+    const { asPath } = useRouter()
+    const { currentLocale } = useLocale()
+    const isHomePage = asPath === '/' || asPath === '/zh' || asPath === '/en'
+
+    return {
+      titleTemplate: isHomePage ? '%s' : `%s - ${currentLocale === 'zh' ? 'Claude Code 教程中心' : 'Claude Code Tutorial Center'}`,
+      defaultTitle: currentLocale === 'zh' ? 'Claude Code 教程中心' : 'Claude Code Tutorial Center',
+      description: currentLocale === 'zh'
+        ? 'Claude Code 中文教程，学习如何使用 AI 驱动的编程助手进行智能体编程，包含最佳实践、工作流程和优化技巧。'
+        : 'Complete Claude Code tutorial. Learn how to use AI-powered programming assistant for agentic programming, including best practices, workflows, and optimization tips.',
+      openGraph: {
+        type: 'website',
+        locale: currentLocale === 'zh' ? 'zh_CN' : 'en_US',
+        siteName: currentLocale === 'zh' ? 'Claude Code 教程中心' : 'Claude Code Tutorial Center',
+        images: [
+          {
+            url: '/img/og-image.jpg',
+            width: 1200,
+            height: 630,
+            alt: currentLocale === 'zh' ? 'Claude Code 教程中心' : 'Claude Code Tutorial Center',
+          },
+        ],
+      },
+      twitter: {
+        cardType: 'summary_large_image',
+        site: '@anthropic',
+        creator: '@anthropic',
+      },
+      additionalLinkTags: [
+        {
+          rel: 'icon',
+          href: '/img/favicon.svg',
+          type: 'image/svg+xml',
+        },
+        {
+          rel: 'apple-touch-icon',
+          href: '/img/apple-touch-icon.png',
+          sizes: '180x180',
+        },
+        {
+          rel: 'manifest',
+          href: '/site.webmanifest',
+        },
+        {
+          rel: 'alternate',
+          hrefLang: 'zh-CN',
+          href: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://claude-code-tutorial.com'}/zh`,
+        },
+        {
+          rel: 'alternate',
+          hrefLang: 'en',
+          href: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://claude-code-tutorial.com'}/en`,
+        },
+      ],
+    }
+  },
+
+  // 页面标题配置
+  head: () => {
+    const { currentLocale } = useLocale()
+    const { asPath } = useRouter()
+
+    return (
+      <>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="theme-color" content="#FF6B35" />
+        <meta name="msapplication-TileColor" content="#FF6B35" />
+        <meta
+          name="keywords"
+          content={
+            currentLocale === 'zh'
+              ? 'Claude Code,AI编程,智能编程助手,Anthropic,编程教程,最佳实践,MCP,代码生成,编程自动化'
+              : 'Claude Code,AI Programming,AI Programming Assistant,Anthropic,Programming Tutorial,Best Practices,MCP,Code Generation,Programming Automation'
+          }
+        />
+        <meta name="author" content={currentLocale === 'zh' ? 'Claude Code 教程中心' : 'Claude Code Tutorial Center'} />
+        <meta name="robots" content="index,follow" />
+        <meta name="googlebot" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1" />
+        <meta name="format-detection" content="telephone=no" />
+        <link
+          rel="canonical"
+          href={`${process.env.NEXT_PUBLIC_SITE_URL || 'https://claude-code-tutorial.com'}${asPath}`}
+        />
+      </>
+    )
+  },
   logo: (
     <div className="flex items-center gap-3 hover:scale-105 transition-transform duration-200">
       <div className="relative group">
