@@ -8,14 +8,14 @@
 
 中文 | [English](README-en.md)
 
-[![Deploy](https://img.shields.io/badge/passing-black?style=flat&logo=Vercel&label=Vercel&color=3bb92c&labelColor=black)](https://claudecode-one.vercel.app)
+[![Deploy](https://img.shields.io/badge/passing-black?style=flat&logo=Vercel&label=Vercel&color=3bb92c&labelColor=black)](https://claudecode101.com)
 [![GitHub Workflow Status (branch)](https://img.shields.io/badge/passing-black?style=flat&label=build&color=3bb92c)](https://github.com/geektao1024/ClaudeCode101/deployments)
 [![thanks](https://badgen.net/badge/thanks/♥/pink)](https://github.com/geektao1024)
 [![License](https://img.shields.io/github/license/geektao1024/ClaudeCode101?color=466fe8)](https://github.com/geektao1024/ClaudeCode101/blob/main/LICENSE)
 
 🤖 **Claude Code 中文教程和最佳实践指南** - 基于 React v19 + Next.js + Nextra (v4) + TypeScript + TailwindCSS (v4) + Shadcn UI 构建
 
-- [🚀 在线访问](https://claudecode-one.vercel.app/zh)
+- [🚀 在线访问](https://claudecode101.com/zh)
 - [🌐 官方 Claude Code](https://claude.ai/code)
 - [📚 Claude Code 官方文档](https://docs.anthropic.com/en/docs/claude-code)
 
@@ -203,6 +203,6 @@ export default function Home() {
 
 **让 AI 成为你最得力的编程伙伴** 🤖✨
 
-[开始学习](https://claudecode-one.vercel.app/zh) • [GitHub](https://github.com/geektao1024/ClaudeCode101) • [问题反馈](https://github.com/geektao1024/ClaudeCode101/issues)
+[开始学习](https://claudecode101.com/zh) • [GitHub](https://github.com/geektao1024/ClaudeCode101) • [问题反馈](https://github.com/geektao1024/ClaudeCode101/issues)
 
 </div>

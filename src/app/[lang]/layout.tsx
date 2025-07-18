@@ -13,13 +13,13 @@ import { useServerLocale } from '@/hooks'
 import LocaleToggle from '@/widgets/locale-toggle'
 import ThemeToggle from '@/widgets/theme-toggle'
 
-import { getDictionary, getDirection } from '../_dictionaries/get-dictionary'
+import { getDirection } from '../_dictionaries/get-dictionary'
 import { ThemeProvider } from './_components/ThemeProvider'
 import './styles/index.css'
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: I18nLangKeys }> }): Promise<Metadata> {
   const { lang } = await params
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://claude-code-tutorial.com'
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://claudecode101.com'
   const siteName = lang === 'zh' ? 'Claude Code 教程中心' : 'Claude Code Tutorial Center'
   const title = lang === 'zh'
     ? 'Claude Code 教程中心 - 智能编程助手完整指南'
@@ -163,12 +163,7 @@ interface Props {
 
 export default async function RootLayout({ children, params }: Props) {
   const { lang } = await params
-  const dictionary = await getDictionary(lang)
   const pageMap = await getPageMap(lang)
-
-  const title = 'Claude Code 教程中心'
-  const description = 'Claude Code 智能编程助手完整指南'
-
   const { t } = await useServerLocale(lang)
 
   return (

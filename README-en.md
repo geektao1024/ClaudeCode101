@@ -8,14 +8,14 @@
 
 English | [中文](README.md)
 
-[![Deploy](https://img.shields.io/badge/passing-black?style=flat&logo=Vercel&label=Vercel&color=3bb92c&labelColor=black)](https://claudecode-one.vercel.app)
+[![Deploy](https://img.shields.io/badge/passing-black?style=flat&logo=Vercel&label=Vercel&color=3bb92c&labelColor=black)](https://claudecode101.com)
 [![GitHub Workflow Status (branch)](https://img.shields.io/badge/passing-black?style=flat&label=build&color=3bb92c)](https://github.com/geektao1024/ClaudeCode101/deployments)
 [![thanks](https://badgen.net/badge/thanks/♥/pink)](https://github.com/geektao1024)
 [![License](https://img.shields.io/github/license/geektao1024/ClaudeCode101?color=466fe8)](https://github.com/geektao1024/ClaudeCode101/blob/main/LICENSE)
 
 🤖 **Claude Code Tutorial and Best Practices Guide** - Built with React v19 + Next.js + Nextra (v4) + TypeScript + TailwindCSS (v4) + Shadcn UI
 
-- [🚀 Live Demo](https://claudecode-one.vercel.app/en)
+- [🚀 Live Demo](https://claudecode101.com/en)
 - [🌐 Official Claude Code](https://claude.ai/code)
 - [📚 Claude Code Official Docs](https://docs.anthropic.com/en/docs/claude-code)
 
@@ -203,6 +203,6 @@ It is recommended to learn in conjunction with [Claude Code Official Documentati
 
 **Make AI Your Most Powerful Programming Companion** 🤖✨
 
-[Start Learning](https://claudecode-one.vercel.app/en) • [GitHub](https://github.com/geektao1024/ClaudeCode101) • [Issue Feedback](https://github.com/geektao1024/ClaudeCode101/issues)
+[Start Learning](https://claudecode101.com/en) • [GitHub](https://github.com/geektao1024/ClaudeCode101) • [Issue Feedback](https://github.com/geektao1024/ClaudeCode101/issues)
 
 </div>
