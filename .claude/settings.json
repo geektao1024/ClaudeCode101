@@ -1,0 +1,9 @@
+{
+  "env": {
+    "ANTHROPIC_BASE_URL": "https://compile.top/claudecode",
+    "ANTHROPIC_AUTH_TOKEN": "sk-AbB0V2ZTaCwypcdNpHJqEQXcb2unGKGp",
+    "DISABLE_ERROR_REPORTING": 1,
+    "DISABLE_NON_ESSENTIAL_MODEL_CALLS": 1,
+    "DISABLE_TELEMETRY": 1
+  }
+}

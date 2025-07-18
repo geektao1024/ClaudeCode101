@@ -1,0 +1,209 @@
+---
+title: "Context Management"
+description: "Managing context effectively to maintain productive conversations with Claude Code"
+---
+
+# Context Management
+
+Learn how to manage context effectively to maintain productive, focused conversations with Claude Code throughout your development session.
+
+## Understanding Context Limits
+
+Claude Code has context limitations that affect long conversations:
+- Token limits for each conversation
+- Memory constraints for complex codebases
+- Performance impacts with excessive context
+
+## Context Management Strategies
+
+### 1. Session Planning
+
+**Break Large Tasks into Sessions**
+- Plan major features across multiple focused sessions
+- Complete related subtasks in single sessions
+- Use clear session boundaries
+
+### 2. Context Reset Techniques
+
+**When to Reset**
+- After completing major milestones
+- When conversation becomes unfocused
+- Before starting unrelated tasks
+- When hitting context limits
+
+**How to Reset Effectively**
+```bash
+# Start fresh session with summary
+claude --resume "Completed user authentication. Now implementing dashboard features."
+```
+
+### 3. Information Prioritization
+
+**Keep Context Relevant**
+- Focus on current task files
+- Remove outdated discussion threads
+- Prioritize active code sections
+- Archive completed work references
+
+## Effective Context Patterns
+
+### The CLAUDE.md Approach
+
+Create a persistent context file:
+
+```markdown
+# Project Context
+
+## Current Sprint
+- [ ] User dashboard implementation
+- [ ] API integration for analytics
+- [ ] Mobile responsiveness fixes
+
+## Key Files
+- `src/components/Dashboard/` - Main dashboard components
+- `src/api/analytics.ts` - Analytics API client
+- `src/hooks/useAnalytics.ts` - Analytics data hook
+
+## Important Decisions
+- Using React Query for data fetching
+- Material-UI for component library
+- TypeScript strict mode enabled
+
+## Known Issues
+- Dashboard loading performance (tracking in issue #123)
+- Mobile menu overflow on small screens
+```
+
+### Progressive Context Building
+
+**Start Broad, Then Focus**
+1. Begin with high-level overview
+2. Narrow to specific modules
+3. Focus on immediate task
+4. Expand context as needed
+
+### Context Handoffs
+
+**Between Sessions**
+```
+Previous session completed user authentication with JWT tokens. 
+Next: Implement protected routes and user profile management.
+Key files: src/auth/, src/components/Profile/
+Current branch: feature/user-profiles
+```
+
+## Context Organization Techniques
+
+### 1. Layered Context
+
+**Layer 1: Project Level**
+- Overall architecture
+- Tech stack decisions
+- Coding standards
+
+**Layer 2: Feature Level**
+- Feature requirements
+- Related components
+- API endpoints
+
+**Layer 3: Task Level**
+- Specific implementation details
+- Current file content
+- Immediate next steps
+
+### 2. Context Anchoring
+
+**Use Reference Points**
+- Specific file paths
+- Function/class names
+- Configuration sections
+- Previous decisions
+
+**Example Anchors**
+```
+Based on the UserService pattern in src/services/user.ts, 
+implement ProjectService with similar error handling.
+```
+
+### 3. Context Compression
+
+**Summarize When Needed**
+- Compress long discussions into key points
+- Extract decision rationale
+- Archive implementation details
+- Keep only active context
+
+## Tools for Context Management
+
+### 1. CLAUDE.md File
+
+```markdown
+# Context Tracker
+
+## Session Goals
+- [ ] Fix mobile responsive issues
+- [ ] Add user preference settings
+- [ ] Update documentation
+
+## Active Files
+- src/components/MobileNav.tsx
+- src/contexts/UserPreferences.tsx
+- docs/user-guide.md
+
+## Decisions Made
+- Using localStorage for user preferences
+- Implementing responsive breakpoints at 768px, 1024px
+- Adding dark mode toggle to settings panel
+```
+
+### 2. Session Bookmarks
+
+```markdown
+## Quick References
+- Main component: `src/components/Dashboard/index.tsx:45`
+- API endpoint: `src/api/routes.ts:127`
+- Type definitions: `src/types/user.ts:12`
+- Test file: `__tests__/Dashboard.test.tsx`
+```
+
+### 3. Context Validation
+
+**Regular Check-ins**
+- Confirm understanding of current goals
+- Verify file locations and content
+- Validate assumptions about project state
+- Update context as project evolves
+
+## Best Practices
+
+### Do
+- Start each session with clear context
+- Update CLAUDE.md regularly
+- Use specific file references
+- Summarize complex discussions
+- Archive completed work
+
+### Don't
+- Let context drift without correction
+- Include irrelevant historical details
+- Assume Claude remembers previous sessions
+- Overload with unnecessary technical details
+- Skip context setup for "quick" tasks
+
+## Troubleshooting Context Issues
+
+### When Claude Seems Confused
+1. **Reset and refocus**: Clearly state current objective
+2. **Provide fresh context**: Share relevant file contents
+3. **Confirm assumptions**: Verify project state understanding
+4. **Simplify scope**: Break down complex requests
+
+### When Hitting Context Limits
+1. **Summarize progress**: Extract key decisions and next steps
+2. **Start new session**: Use --resume with summary
+3. **Prioritize content**: Focus on immediately relevant information
+4. **Archive details**: Move completed work to documentation
+
+---
+
+**Next**: [Direction Correction](/en/tutorial/optimization/direction-correction) - Learn how to course-correct when Claude goes off-track.

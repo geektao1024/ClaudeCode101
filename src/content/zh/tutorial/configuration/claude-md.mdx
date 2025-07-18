@@ -1,0 +1,253 @@
+---
+title: "CLAUDE.md 配置文件"
+description: "创建和优化 CLAUDE.md 配置文件的完整指南"
+---
+
+# CLAUDE.md 配置文件
+
+`CLAUDE.md` 是 Claude Code 的核心配置文件，Claude 在开始对话时会自动将其内容拉入上下文。这使其成为记录项目重要信息的理想场所。
+
+## 什么是 CLAUDE.md
+
+`CLAUDE.md` 是一个特殊文件，Claude 在启动时会自动读取。它就像是给 Claude 的"项目说明书"，帮助 Claude 更好地理解您的项目。
+
+## 文件位置
+
+您可以将 `CLAUDE.md` 文件放在以下位置：
+
+### 1. 项目根目录（推荐）
+
+```
+your-project/
+├── CLAUDE.md          # 项目级配置
+├── src/
+├── package.json
+└── README.md
+```
+
+**优点**：
+- 可以提交到 git，团队共享
+- 针对具体项目定制
+
+### 2. 用户主目录
+
+```bash
+~/.claude/CLAUDE.md    # 全局配置
+```
+
+**适用场景**：
+- 个人偏好设置
+- 跨项目通用配置
+
+### 3. 项目子目录
+
+```
+monorepo/
+├── CLAUDE.md          # 根级配置
+├── frontend/
+│   └── CLAUDE.md      # 前端项目配置
+└── backend/
+    └── CLAUDE.md      # 后端项目配置
+```
+
+**适用场景**：
+- Monorepo 项目
+- 多模块项目
+
+## 配置内容建议
+
+### 基础模板
+
+```markdown
+# CLAUDE.md
+
+这是 [项目名称] 的 Claude Code 配置文件。
+
+## 项目概述
+
+- **技术栈**：React + TypeScript + Vite
+- **包管理器**：pnpm
+- **代码规范**：ESLint + Prettier
+
+## 常用命令
+
+### 开发命令
+- `pnpm dev` - 启动开发服务器
+- `pnpm build` - 构建生产版本
+- `pnpm test` - 运行测试
+
+### 代码质量
+- `pnpm lint` - 代码检查
+- `pnpm lint:fix` - 自动修复
+- `pnpm type-check` - 类型检查
+
+## 代码风格
+
+### TypeScript
+- 使用严格模式
+- 优先使用接口定义类型
+- 避免使用 `any` 类型
+
+### React
+- 优先使用函数组件和 Hooks
+- 使用 JSX 语法
+- 组件名使用 PascalCase
+
+### 文件命名
+- 组件文件：`ComponentName.tsx`
+- 工具函数：`utilName.ts`
+- 样式文件：`styles.module.css`
+
+## 项目结构
+
+```
+src/
+├── components/     # 可复用组件
+├── pages/         # 页面组件
+├── hooks/         # 自定义 Hooks
+├── utils/         # 工具函数
+├── types/         # 类型定义
+└── styles/        # 样式文件
+```
+
+## 重要提醒
+
+- 修改代码后务必运行类型检查
+- 提交前确保所有测试通过
+- 新增组件需要添加对应测试
+```
+
+### 高级配置示例
+
+```markdown
+# CLAUDE.md - 高级配置
+
+## 环境配置
+
+### 开发环境
+- Node.js 18+
+- pnpm 8+
+- VS Code + 推荐扩展
+
+### 环境变量
+```bash
+VITE_API_URL=http://localhost:3001
+VITE_APP_NAME=MyApp
+```
+
+## 架构约定
+
+### 状态管理
+- 使用 Zustand 进行全局状态管理
+- 组件内状态使用 useState
+- 服务端状态使用 React Query
+
+### API 约定
+- 使用 axios 进行 HTTP 请求
+- API 路径统一使用 `/api/v1/` 前缀
+- 错误处理统一在 axios 拦截器中处理
+
+### 测试策略
+- 单元测试：Jest + React Testing Library
+- E2E 测试：Playwright
+- 组件测试覆盖率要求 > 80%
+
+## 部署流程
+
+1. 本地测试通过
+2. 代码推送到 feature 分支
+3. 创建 Pull Request
+4. 代码审查通过后合并到 main
+5. 自动部署到生产环境
+
+## 注意事项
+
+- **安全**：不要在代码中硬编码敏感信息
+- **性能**：大于 100KB 的组件需要进行代码分割
+- **可访问性**：确保支持键盘导航和屏幕阅读器
+```
+
+## 优化技巧
+
+### 1. 保持简洁
+
+❌ **过于详细**：
+```markdown
+## 每个文件的详细说明
+- src/components/Button.tsx: 按钮组件，支持多种样式...
+- src/components/Input.tsx: 输入框组件，支持验证...
+```
+
+✅ **简洁明了**：
+```markdown
+## 组件规范
+- 所有组件需要支持 className 属性
+- 使用 forwardRef 转发 ref
+- 导出 Props 类型定义
+```
+
+### 2. 突出重点
+
+使用 **重要** 或 **您必须** 等强调词：
+
+```markdown
+## 重要规则
+
+**您必须** 在修改数据库 schema 前先备份数据
+**重要**：所有 API 调用都需要错误处理
+```
+
+### 3. 定期更新
+
+随着项目发展，及时更新 `CLAUDE.md`：
+
+- 添加新的命令和工具
+- 更新架构决策
+- 记录重要的代码变更
+
+## 团队协作
+
+### 检入版本控制
+
+```bash
+# 推荐：项目级配置
+git add CLAUDE.md
+
+# 个人配置
+echo "CLAUDE.local.md" >> .gitignore
+```
+
+### 使用 `#` 命令更新
+
+在 Claude Code 会话中，按 `#` 键可以快速添加内容到 `CLAUDE.md`：
+
+```
+# 添加新的命令
+pnpm storybook - 启动 Storybook 文档
+```
+
+Claude 会自动将其添加到相应的 `CLAUDE.md` 文件中。
+
+## 常见错误
+
+### 1. 内容过多
+
+❌ 添加大量内容而不迭代有效性
+
+✅ 逐步添加并测试每个部分的效果
+
+### 2. 格式混乱
+
+❌ 没有统一的格式和结构
+
+✅ 使用标准的 Markdown 格式和清晰的层级
+
+### 3. 过时信息
+
+❌ 包含过时的命令和配置
+
+✅ 定期审查和更新内容
+
+---
+
+**下一步**: [工具权限管理](/zh/tutorial/configuration/tools-allowlist) - 学习如何管理 Claude Code 的工具权限。

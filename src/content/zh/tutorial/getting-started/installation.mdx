@@ -1,0 +1,106 @@
+---
+title: "安装与配置"
+description: "Claude Code 的安装和初始配置指南"
+---
+
+# 安装与配置
+
+本章将指导您完成 Claude Code 的安装和初始配置过程。
+
+## 安装 Claude Code
+
+### 前置要求
+
+- Node.js >= 18.x
+- 有效的 Anthropic API 密钥
+
+### 安装步骤
+
+1. **获取 Claude Code**
+   
+   访问 [Claude Code 官网](https://claude.ai/code) 获取最新版本的安装包。
+
+2. **设置 API 密钥**
+   
+   ```bash
+   export ANTHROPIC_API_KEY=your_api_key_here
+   ```
+
+3. **验证安装**
+   
+   ```bash
+   claude --version
+   ```
+
+## 初始配置
+
+### 创建 CLAUDE.md 文件
+
+在您的项目根目录创建 `CLAUDE.md` 文件：
+
+```markdown
+# CLAUDE.md
+
+这是我的项目配置文件，Claude 会自动读取此文件。
+
+## 常用命令
+- npm run build: 构建项目  
+- npm run test: 运行测试
+- npm run lint: 代码检查
+
+## 项目规范
+- 使用 TypeScript
+- 遵循 ESLint 规则
+- 优先使用函数式组件
+```
+
+### 配置工具权限
+
+首次运行时，Claude Code 会请求工具权限。建议：
+
+1. **始终允许的工具**：
+   - `Read` - 读取文件
+   - `Write` - 写入文件  
+   - `Bash(git *)` - Git 命令
+
+2. **谨慎允许的工具**：
+   - `Bash(rm *)` - 删除命令
+   - `Bash(sudo *)` - 管理员权限
+
+### 环境变量配置
+
+在 `.bashrc` 或 `.zshrc` 中添加：
+
+```bash
+# Claude Code 配置
+export CLAUDE_CONFIG_PATH="$HOME/.claude"
+export CLAUDE_DEFAULT_MODEL="claude-3-sonnet"
+```
+
+## 验证配置
+
+运行以下命令验证配置：
+
+```bash
+claude -p "读取当前目录的 README.md 文件并总结内容"
+```
+
+如果一切正常，Claude Code 将读取并总结您的 README 文件。
+
+## 常见问题
+
+### Q: API 密钥无法识别
+
+**A:** 确保环境变量设置正确，重启终端后再试。
+
+### Q: 权限被拒绝
+
+**A:** 检查文件权限，确保 Claude Code 可以访问目标目录。
+
+### Q: 无法连接到服务
+
+**A:** 检查网络连接，确认 API 服务状态正常。
+
+---
+
+**下一步**: [基础使用](/zh/tutorial/getting-started/basic-usage) - 学习 Claude Code 的基本操作。

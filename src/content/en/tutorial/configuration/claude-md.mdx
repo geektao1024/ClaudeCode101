@@ -1,0 +1,289 @@
+---
+title: "CLAUDE.md Setup"
+description: "Creating and maintaining CLAUDE.md files for persistent project context"
+---
+
+# CLAUDE.md Setup
+
+CLAUDE.md is a special file that provides persistent context about your project to Claude Code across sessions. It serves as a project knowledge base and configuration guide.
+
+## What is CLAUDE.md?
+
+CLAUDE.md is a markdown file that contains:
+- **Project Overview**: Architecture, tech stack, and key concepts
+- **Development Commands**: Common tasks and build processes
+- **File Structure**: Important directories and their purposes
+- **Coding Standards**: Style guides and conventions
+- **Known Issues**: Current limitations and workarounds
+
+## Creating CLAUDE.md
+
+### Basic Structure
+
+```markdown
+# Project Name
+
+Brief description of what this project does and its main purpose.
+
+## Architecture
+
+- **Frontend**: React 18 + TypeScript + Vite
+- **Backend**: Node.js + Express + PostgreSQL
+- **Styling**: Tailwind CSS + Shadcn UI
+- **Testing**: Jest + React Testing Library
+- **Deployment**: Docker + AWS ECS
+
+## Development Commands
+
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Run tests
+npm test
+
+# Build for production
+npm run build
+
+# Run linting
+npm run lint
+
+# Type checking
+npm run type-check
+```
+
+## Project Structure
+
+```
+src/
+├── components/     # Reusable UI components
+├── pages/          # Route components
+├── hooks/          # Custom React hooks
+├── utils/          # Helper functions
+├── types/          # TypeScript type definitions
+├── api/            # API client and types
+└── assets/         # Static assets
+```
+
+## Coding Standards
+
+- Use TypeScript for all new code
+- Follow ESLint configuration
+- Use Prettier for formatting
+- Write unit tests for all utilities
+- Use semantic commit messages
+
+## Important Notes
+
+- Database migrations in /migrations
+- Environment variables in .env.local
+- API documentation at /docs/api.md
+- Design system components in /src/components/ui
+```
+
+### Advanced CLAUDE.md
+
+```markdown
+# Advanced Project Setup
+
+## Current Sprint Goals
+
+- [ ] Implement user authentication system
+- [ ] Add payment processing integration
+- [ ] Optimize database queries for dashboard
+- [ ] Complete mobile responsive design
+
+## Key Business Logic
+
+### User Authentication Flow
+1. User submits credentials via /login
+2. Server validates against bcrypt hash
+3. JWT token issued with 24h expiration
+4. Client stores token in httpOnly cookie
+5. Protected routes verify token via middleware
+
+### Payment Processing
+- Stripe integration for card payments
+- Webhook handling for payment status updates
+- Refund processing through admin panel
+- Monthly subscription billing cycle
+
+## Database Schema Notes
+
+### Users Table
+- id: UUID primary key
+- email: unique, indexed
+- password_hash: bcrypt with 12 rounds
+- created_at, updated_at: timestamps
+- stripe_customer_id: for payment integration
+
+### Known Issues & Workarounds
+
+1. **Slow Dashboard Loading**
+   - Issue: Complex joins in analytics query
+   - Workaround: Added Redis caching layer
+   - TODO: Implement database views
+
+2. **Mobile Safari Scroll Bug**
+   - Issue: Smooth scrolling breaks on iOS
+   - Workaround: Disabled smooth scroll for mobile
+   - TODO: Find CSS-only solution
+
+## Environment Setup
+
+### Required Environment Variables
+```bash
+DATABASE_URL=postgresql://localhost:5432/myapp
+STRIPE_SECRET_KEY=sk_test_...
+REDIS_URL=redis://localhost:6379
+JWT_SECRET=your-secret-here
+```
+
+### Local Development Setup
+1. Install PostgreSQL and Redis
+2. Copy .env.example to .env.local
+3. Run `npm run db:migrate`
+4. Run `npm run db:seed` for test data
+5. Start with `npm run dev`
+
+## External Dependencies
+
+### Critical Services
+- Stripe for payments (backup: PayPal)
+- SendGrid for emails (backup: AWS SES)
+- Cloudinary for image storage
+- Redis for caching
+
+### API Integrations
+- GitHub API for repository data
+- Slack API for notifications
+- Google Analytics for metrics
+
+## Deployment Notes
+
+### Staging Environment
+- URL: https://staging.myapp.com
+- Auto-deploys from 'develop' branch
+- Uses staging Stripe keys
+- Database: staging.postgres.myapp.com
+
+### Production Environment
+- URL: https://myapp.com
+- Manual deploys from 'main' branch
+- Requires approval for schema changes
+- Monitor: DataDog dashboard
+
+## Team Conventions
+
+### Git Workflow
+- Feature branches: feature/description
+- Commit format: type(scope): description
+- Squash merge to main
+- Delete branches after merge
+
+### Code Review Checklist
+- [ ] Tests pass and coverage maintained
+- [ ] TypeScript errors resolved
+- [ ] Accessibility requirements met
+- [ ] Performance impact considered
+- [ ] Security review completed
+
+## Quick Reference
+
+### Important File Locations
+- Main config: src/config/app.ts
+- API routes: src/pages/api/
+- Database models: src/models/
+- Shared types: src/types/index.ts
+- Utils: src/utils/
+```
+
+## Placement and Organization
+
+### File Location Options
+
+**Project Root** (Recommended)
+```
+/CLAUDE.md
+```
+
+**Documentation Folder**
+```
+/docs/CLAUDE.md
+```
+
+**Multiple CLAUDE.md Files**
+```
+/CLAUDE.md                 # Main project overview
+/backend/CLAUDE.md         # Backend-specific info
+/frontend/CLAUDE.md        # Frontend-specific info
+/deployment/CLAUDE.md      # Deployment procedures
+```
+
+### Integration with Git
+
+**Include in Repository**
+```bash
+# Add to git
+git add CLAUDE.md
+git commit -m "docs: add project context for Claude Code"
+```
+
+**Keep Updated**
+```bash
+# Regular updates
+git add CLAUDE.md
+git commit -m "docs: update project status and current sprint goals"
+```
+
+## Best Practices
+
+### Content Guidelines
+
+**Be Specific**
+- Include exact commands, not general descriptions
+- Provide file paths and line numbers when relevant
+- List specific versions of dependencies
+
+**Keep Current**
+- Update after major changes
+- Remove outdated information
+- Reflect current project state
+
+**Include Context**
+- Explain why decisions were made
+- Document known limitations
+- Provide business context
+
+### Maintenance
+
+**Regular Reviews**
+- Weekly updates during active development
+- Monthly reviews for stable projects
+- Update after architectural changes
+
+**Team Collaboration**
+- Include team-specific conventions
+- Document shared knowledge
+- Update after onboarding new members
+
+## Examples by Project Type
+
+### React Application
+Focus on: Components, hooks, state management, routing, testing patterns
+
+### Node.js API
+Focus on: Routes, middleware, database schema, authentication, error handling
+
+### Full-Stack Application
+Focus on: Both frontend and backend concerns, deployment, environment management
+
+### Library/Package
+Focus on: API documentation, usage examples, contribution guidelines, testing
+
+---
+
+**Next**: [Tools Allowlist](/en/tutorial/configuration/tools-allowlist) - Learn how to configure tool permissions.

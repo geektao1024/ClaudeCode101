@@ -1,0 +1,311 @@
+---
+title: "GitHub CLI 集成"
+description: "集成 gh 命令行工具，实现 Claude Code 与 GitHub 的无缝协作"
+---
+
+# GitHub CLI 集成
+
+Claude Code 可以与 GitHub CLI (`gh`) 无缝集成，用于创建问题、打开 Pull Request、读取评论等操作。
+
+## 安装 GitHub CLI
+
+### macOS
+
+```bash
+brew install gh
+```
+
+### Ubuntu/Debian
+
+```bash
+curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+sudo apt update
+sudo apt install gh
+```
+
+### Windows
+
+```bash
+winget install --id GitHub.cli
+```
+
+## 配置认证
+
+### 登录 GitHub
+
+```bash
+gh auth login
+```
+
+选择认证方式：
+- 通过浏览器登录
+- 使用 Personal Access Token
+
+### 验证配置
+
+```bash
+gh auth status
+gh api user
+```
+
+## Claude Code 中的使用
+
+### 基本操作
+
+Claude 可以直接使用 `gh` 命令：
+
+```
+请使用 gh 命令查看当前仓库的 issues
+```
+
+Claude 会执行：
+```bash
+gh issue list
+```
+
+### 创建 Issues
+
+```
+为用户登录功能的 bug 创建一个 GitHub issue
+```
+
+Claude 会执行：
+```bash
+gh issue create \
+  --title "用户登录功能 bug 修复" \
+  --body "描述登录问题的详细信息..." \
+  --label "bug,priority-high"
+```
+
+### Pull Request 管理
+
+```
+为当前分支创建 Pull Request
+```
+
+Claude 会执行：
+```bash
+gh pr create \
+  --title "实现用户认证功能" \
+  --body "## 更改内容\n- 添加登录页面\n- 实现JWT认证\n- 添加单元测试"
+```
+
+## 常用工作流程
+
+### 1. Issue 驱动开发
+
+```
+查看标有 'enhancement' 的 issues，选择一个开始开发
+```
+
+Claude 执行流程：
+1. `gh issue list --label enhancement`
+2. 分析 issue 内容
+3. 创建功能分支
+4. 实现功能
+5. 创建 Pull Request
+
+### 2. 代码审查响应
+
+```
+查看我的 PR 的最新评论并处理反馈
+```
+
+Claude 执行流程：
+1. `gh pr list --author @me`
+2. `gh pr view <PR-ID> --comments`
+3. 分析评论反馈
+4. 修改代码
+5. 推送更新
+
+### 3. 发布管理
+
+```
+基于当前状态创建一个新的 release
+```
+
+Claude 执行流程：
+1. `gh release list`
+2. 生成 changelog
+3. `gh release create v1.2.0 --notes "..."`
+
+## 高级集成
+
+### 自动化脚本
+
+在 `CLAUDE.md` 中定义常用操作：
+
+```markdown
+# GitHub 工作流程
+
+## 常用命令
+- `gh issue list --assignee @me` - 查看分配给我的 issues
+- `gh pr status` - 查看 PR 状态
+- `gh repo view` - 查看仓库信息
+
+## 发布流程
+1. 更新版本号
+2. 运行测试
+3. 创建 tag
+4. 生成 release notes
+5. 发布 release
+```
+
+### 自定义别名
+
+```bash
+# 设置 gh 别名
+gh alias set issues-me 'issue list --assignee @me'
+gh alias set pr-mine 'pr list --author @me'
+gh alias set repo-info 'repo view --web'
+```
+
+Claude 可以使用这些别名：
+```
+使用 issues-me 查看我的任务
+```
+
+### 模板配置
+
+#### Issue 模板
+
+```bash
+# .github/ISSUE_TEMPLATE/bug_report.md
+---
+name: Bug report
+about: Create a report to help us improve
+title: ''
+labels: 'bug'
+assignees: ''
+---
+
+## 问题描述
+描述遇到的问题
+
+## 重现步骤
+1. 第一步
+2. 第二步
+3. 看到错误
+
+## 期望行为
+描述期望的正确行为
+
+## 环境信息
+- OS: [e.g. macOS]
+- Version: [e.g. 1.0.0]
+```
+
+#### PR 模板
+
+```bash
+# .github/pull_request_template.md
+## 更改内容
+描述此 PR 的主要更改
+
+## 测试
+- [ ] 单元测试通过
+- [ ] 集成测试通过
+- [ ] 手动测试完成
+
+## 检查清单
+- [ ] 代码遵循项目规范
+- [ ] 添加了适当的测试
+- [ ] 更新了文档
+- [ ] 没有破坏性更改
+```
+
+## 权限配置
+
+在 Claude Code 中允许 gh 命令：
+
+```json
+{
+  "allowedTools": [
+    "Bash(gh:*)",
+    "Bash(gh issue:*)",
+    "Bash(gh pr:*)",
+    "Bash(gh repo:*)"
+  ]
+}
+```
+
+或者允许所有 gh 操作：
+
+```json
+{
+  "allowedTools": ["Bash(gh:*)"]
+}
+```
+
+## 最佳实践
+
+### 1. 清晰的 PR 描述
+
+```
+创建 PR 时，请包含：
+- 更改摘要
+- 测试说明
+- 相关 issue 链接
+- 截图（如适用）
+```
+
+### 2. 自动关联 Issues
+
+```bash
+gh pr create --title "Fix login bug" --body "Fixes #123"
+```
+
+### 3. 定期同步
+
+```bash
+# 在 CLAUDE.md 中建议的同步流程
+git fetch origin
+git checkout main
+git pull origin main
+gh pr list --state merged --limit 10
+```
+
+### 4. 团队协作
+
+```
+查看团队成员的 PR 状态，协助代码审查
+```
+
+Claude 可以执行：
+```bash
+gh pr list --assignee teammate1,teammate2
+gh pr review <PR-ID> --comment --body "看起来不错，只有一些小建议..."
+```
+
+## 故障排除
+
+### 认证问题
+
+```bash
+# 重新认证
+gh auth logout
+gh auth login
+
+# 检查权限
+gh auth status
+```
+
+### 权限不足
+
+```bash
+# 检查 token 权限
+gh api user
+gh api repos/:owner/:repo
+```
+
+### API 限制
+
+```bash
+# 检查 API 使用情况
+gh api rate_limit
+```
+
+---
+
+**下一步**: [Bash 工具集成](/zh/tutorial/tools-integration/bash-tools) - 学习如何与命令行工具协作。

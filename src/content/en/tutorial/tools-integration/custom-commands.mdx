@@ -1,0 +1,375 @@
+---
+title: "Custom Commands"
+description: "Creating custom command shortcuts and automation for Claude Code workflows"
+---
+
+# Custom Commands
+
+Custom commands allow you to create shortcuts and automation for frequently used workflows in Claude Code.
+
+## What are Custom Commands?
+
+Custom commands are:
+- **Shortcuts**: Quick access to complex operations
+- **Automation**: Streamlined repetitive tasks
+- **Templates**: Reusable instruction patterns
+- **Workflows**: Multi-step process automation
+
+## Types of Custom Commands
+
+### 1. Slash Commands
+
+Quick shortcuts that start with `/`:
+
+```markdown
+# .claude/commands/deploy.md
+---
+name: deploy
+description: Deploy application to staging environment
+---
+
+Please perform a production-ready deployment:
+1. Run all tests and ensure they pass
+2. Build the application for production
+3. Run security checks and linting
+4. Deploy to staging environment
+5. Verify deployment health checks
+6. Provide deployment summary
+```
+
+Usage:
+```
+/deploy
+```
+
+### 2. Workflow Commands
+
+Multi-step automation sequences:
+
+```markdown
+# .claude/commands/feature.md
+---
+name: feature
+description: Start new feature development
+parameters:
+  - name: feature_name
+    type: string
+    required: true
+  - name: branch_prefix
+    type: string
+    default: "feature"
+---
+
+Create a new feature branch and setup:
+1. Create branch: {{branch_prefix}}/{{feature_name}}
+2. Update local dependencies
+3. Create basic component structure in src/components/{{feature_name}}/
+4. Add feature to main navigation
+5. Create initial test file
+6. Update documentation with feature overview
+```
+
+Usage:
+```
+/feature user-dashboard
+/feature payment-system --branch_prefix=enhancement
+```
+
+### 3. Analysis Commands
+
+Code analysis and reporting shortcuts:
+
+```markdown
+# .claude/commands/analyze.md
+---
+name: analyze
+description: Comprehensive codebase analysis
+---
+
+Perform a comprehensive analysis of the current codebase:
+1. Analyze project structure and architecture
+2. Identify potential performance bottlenecks
+3. Check for code duplication and refactoring opportunities
+4. Review security considerations
+5. Assess test coverage
+6. Generate improvement recommendations
+```
+
+## Creating Custom Commands
+
+### Command File Structure
+
+```
+.claude/
+├── commands/
+│   ├── deploy.md
+│   ├── feature.md
+│   ├── analyze.md
+│   └── refactor.md
+└── templates/
+    ├── component.md
+    └── api.md
+```
+
+### Command Metadata
+
+```markdown
+---
+name: command_name
+description: Brief description of what the command does
+parameters:
+  - name: param1
+    type: string|number|boolean
+    required: true|false
+    default: default_value
+    description: Parameter description
+tags:
+  - development
+  - testing
+  - deployment
+---
+
+Command instructions here...
+```
+
+### Parameter Usage
+
+```markdown
+# Using parameters in commands
+Please create a {{component_type}} component named {{component_name}}:
+1. Create file: src/components/{{component_name}}/{{component_name}}.tsx
+2. Include {{features}} if specified
+3. Add to index.ts with {{export_type}} export
+```
+
+## Advanced Command Features
+
+### 1. Conditional Logic
+
+```markdown
+# .claude/commands/setup.md
+---
+name: setup
+parameters:
+  - name: environment
+    type: string
+    default: "development"
+  - name: with_database
+    type: boolean
+    default: false
+---
+
+Setup {{environment}} environment:
+
+{% if environment == "production" %}
+1. Verify production credentials
+2. Run security audit
+3. Enable monitoring
+{% else %}
+1. Setup development database
+2. Install dev dependencies
+3. Configure debug mode
+{% endif %}
+
+{% if with_database %}
+4. Initialize database schema
+5. Run migrations
+6. Seed test data
+{% endif %}
+```
+
+### 2. Template Inheritance
+
+```markdown
+# .claude/templates/base-component.md
+---
+template: true
+---
+
+Create a React component with:
+1. TypeScript interface
+2. Proper prop validation
+3. Accessibility attributes
+4. Unit tests
+5. Storybook stories
+
+# .claude/commands/ui-component.md
+---
+extends: base-component
+name: ui-component
+---
+
+{% include "base-component" %}
+
+Additionally for UI components:
+6. Design system integration
+7. Responsive design
+8. Theme support
+```
+
+### 3. Command Composition
+
+```markdown
+# .claude/commands/full-feature.md
+---
+name: full-feature
+description: Complete feature development workflow
+---
+
+Execute the complete feature development workflow:
+
+1. {% command "feature" feature_name %}
+2. {% command "test" type="unit" %}
+3. {% command "analyze" focus="security" %}
+4. {% command "deploy" environment="staging" %}
+```
+
+## Configuration
+
+### Global Commands
+
+```json
+// .claude/config.json
+{
+  "commands": {
+    "globalPath": "~/.claude/global-commands",
+    "autoload": true,
+    "aliases": {
+      "d": "deploy",
+      "f": "feature",
+      "a": "analyze"
+    }
+  }
+}
+```
+
+### Project-Specific Commands
+
+```json
+// .claude/project.json
+{
+  "name": "my-project",
+  "commands": {
+    "path": ".claude/commands",
+    "enabled": [
+      "deploy",
+      "feature",
+      "analyze"
+    ],
+    "disabled": [
+      "production-deploy"
+    ]
+  }
+}
+```
+
+## Best Practices
+
+### 1. Command Design
+
+**Keep Commands Focused**
+- Single responsibility principle
+- Clear, specific outcomes
+- Minimal parameter complexity
+
+**Use Descriptive Names**
+```markdown
+# Good
+/deploy-staging
+/create-api-endpoint
+/run-security-audit
+
+# Avoid
+/do-stuff
+/fix
+/update
+```
+
+### 2. Parameter Validation
+
+```markdown
+---
+parameters:
+  - name: component_name
+    type: string
+    required: true
+    pattern: "^[A-Z][a-zA-Z0-9]*$"
+    description: "PascalCase component name"
+  - name: port
+    type: number
+    min: 1000
+    max: 9999
+    default: 3000
+---
+```
+
+### 3. Documentation
+
+```markdown
+# .claude/commands/deploy.md
+---
+name: deploy
+description: Deploy application with comprehensive checks
+examples:
+  - "/deploy"
+  - "/deploy --environment=production"
+  - "/deploy --skip-tests=true"
+---
+
+## What this command does:
+- Runs complete test suite
+- Builds optimized production bundle
+- Performs security scanning
+- Deploys to specified environment
+- Verifies deployment health
+
+## Prerequisites:
+- Clean git working directory
+- Valid deployment credentials
+- All tests passing locally
+```
+
+## Command Library Examples
+
+### Development Commands
+
+```markdown
+# .claude/commands/setup-dev.md
+Setup complete development environment with hot reloading and debugging tools
+
+# .claude/commands/clean-build.md
+Clean all build artifacts and perform fresh installation
+
+# .claude/commands/update-deps.md
+Update all dependencies and check for security vulnerabilities
+```
+
+### Testing Commands
+
+```markdown
+# .claude/commands/test-coverage.md
+Run full test suite with coverage reporting and analysis
+
+# .claude/commands/test-ci.md
+Run tests in CI mode with proper exit codes and reporting
+
+# .claude/commands/test-performance.md
+Run performance benchmarks and generate comparison reports
+```
+
+### Deployment Commands
+
+```markdown
+# .claude/commands/deploy-staging.md
+Deploy to staging environment with smoke tests
+
+# .claude/commands/rollback.md
+Rollback to previous deployment version with verification
+
+# .claude/commands/health-check.md
+Verify all services are running and responding correctly
+```
+
+---
+
+**Next**: Return to [Tutorial Home](/en/tutorial) to explore other Claude Code capabilities.

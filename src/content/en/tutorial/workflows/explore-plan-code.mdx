@@ -1,0 +1,252 @@
+---
+title: "Explore-Plan-Code Workflow"
+description: "The most versatile and effective workflow pattern for Claude Code"
+---
+
+# Explore-Plan-Code Workflow
+
+This is one of the most successful workflow patterns in the Claude Code user community, suitable for most programming tasks.
+
+## Workflow Overview
+
+The Explore-Plan-Code workflow consists of the following steps:
+
+1. **Explore Phase** - Understand the problem and existing code
+2. **Plan Phase** - Develop a detailed solution strategy  
+3. **Code Phase** - Implement the solution
+4. **Commit Phase** - Complete code commits and documentation updates
+
+## Detailed Steps
+
+### Step 1: Explore Phase
+
+**Goal**: Thoroughly understand the problem context and existing code structure
+
+**Action Guide**:
+
+```
+Please read the following files and understand the project structure, 
+but don't write any code yet:
+- src/components/UserList.tsx
+- src/services/userService.ts
+- docs/api.md
+
+I need to add user search functionality. Please first understand 
+the existing user management logic.
+```
+
+**Best Practices**:
+
+- ✅ Explicitly tell Claude **don't write code yet**
+- ✅ Provide specific file paths or general guidance
+- ✅ Explain the specific problem you want to solve
+
+**Example Conversation**:
+
+```
+User: Please read all files in the src/auth/ directory and understand 
+the current authentication system implementation. Don't modify any code. 
+I want to add two-factor authentication functionality.
+
+Claude: I'll analyze your authentication system...
+[Claude reads and analyzes files]
+
+I've analyzed your authentication system and found these key components:
+
+1. AuthService (src/auth/AuthService.ts) - Handles login/logout
+2. JWT middleware (src/auth/middleware.ts) - Token validation
+3. User model (src/auth/User.ts) - User data structure
+4. Login component (src/auth/LoginForm.tsx) - UI interface
+
+Current architecture uses JWT tokens with 24-hour expiration. 
+For 2FA integration, I recommend...
+```
+
+### Step 2: Plan Phase
+
+**Goal**: Create a comprehensive implementation plan
+
+**Action Guide**:
+
+```
+Based on your analysis of the auth system, please create a detailed plan 
+for implementing 2FA. Include:
+- Required code changes
+- New dependencies needed
+- Database schema updates
+- Testing strategy
+```
+
+**Best Practices**:
+
+- ✅ Ask for specific plan components
+- ✅ Request consideration of edge cases
+- ✅ Include testing and validation steps
+
+**Example Planning Output**:
+
+```
+## 2FA Implementation Plan
+
+### Phase 1: Backend Changes
+1. Install `speakeasy` library for TOTP generation
+2. Add 2FA fields to User model:
+   - `twoFactorSecret` (encrypted)
+   - `twoFactorEnabled` (boolean)
+3. Create new API endpoints:
+   - POST /auth/2fa/setup - Generate QR code
+   - POST /auth/2fa/verify - Verify TOTP code
+   - POST /auth/2fa/disable - Disable 2FA
+
+### Phase 2: Frontend Changes
+1. Add 2FA setup component with QR code display
+2. Modify login flow to include TOTP verification
+3. Add 2FA management to user settings
+
+### Phase 3: Testing
+1. Unit tests for TOTP generation/validation
+2. Integration tests for auth flow
+3. E2E tests for complete user journey
+```
+
+### Step 3: Code Phase
+
+**Goal**: Implement the planned solution step by step
+
+**Action Guide**:
+
+```
+Let's implement the 2FA feature following the plan. 
+Start with Phase 1 - the backend changes. 
+Implement each file one at a time.
+```
+
+**Best Practices**:
+
+- ✅ Implement incrementally
+- ✅ Test each component before moving on
+- ✅ Follow the established plan but adapt as needed
+
+**Incremental Implementation**:
+
+```
+1. First: Install dependencies and update User model
+2. Then: Create 2FA service with TOTP functions
+3. Next: Add API endpoints
+4. Then: Update authentication middleware
+5. Finally: Create frontend components
+```
+
+### Step 4: Commit Phase
+
+**Goal**: Complete the implementation with proper commits and documentation
+
+**Action Guide**:
+
+```
+Now let's finalize the 2FA implementation:
+1. Run all tests and fix any issues
+2. Update documentation
+3. Create a git commit with proper message
+```
+
+**Commit Best Practices**:
+
+- ✅ Test everything before committing
+- ✅ Use descriptive commit messages
+- ✅ Update relevant documentation
+- ✅ Consider security implications
+
+## Workflow Variations
+
+### Quick Exploration
+
+For smaller tasks, combine explore and plan:
+
+```
+Examine the shopping cart component and plan how to add a "save for later" feature
+```
+
+### Deep Dive Exploration
+
+For complex systems, spend more time exploring:
+
+```
+Please thoroughly analyze the entire e-commerce system architecture. 
+Read the main components, understand the data flow, and identify 
+the key integration points. This is for a major refactoring project.
+```
+
+### Iterative Planning
+
+For large features, plan in phases:
+
+```
+Create a high-level plan for the user notification system. 
+We'll implement it in multiple sprints, so focus on the overall architecture 
+and major milestones.
+```
+
+## Common Use Cases
+
+### 1. Bug Fixes
+
+**Explore**: Understand the bug and affected code
+**Plan**: Identify root cause and fix strategy  
+**Code**: Implement fix with tests
+**Commit**: Document the fix
+
+### 2. New Features
+
+**Explore**: Understand existing architecture
+**Plan**: Design feature integration
+**Code**: Implement incrementally
+**Commit**: Add feature with documentation
+
+### 3. Refactoring
+
+**Explore**: Analyze current implementation
+**Plan**: Design improved architecture
+**Code**: Refactor step by step
+**Commit**: Document improvements
+
+### 4. Integration
+
+**Explore**: Understand both systems
+**Plan**: Design integration approach
+**Code**: Implement with error handling
+**Commit**: Document integration
+
+## Tips for Success
+
+### Exploration Tips
+
+- Start broad, then narrow focus
+- Don't rush to coding
+- Ask Claude to explain complex parts
+- Identify patterns and conventions
+
+### Planning Tips
+
+- Break down into small steps
+- Consider dependencies and order
+- Plan for testing and validation
+- Include rollback strategies
+
+### Coding Tips
+
+- Follow the plan but adapt as needed
+- Test each piece individually
+- Maintain code quality standards
+- Ask for reviews and improvements
+
+### Commit Tips
+
+- Ensure everything works
+- Write clear commit messages
+- Update documentation
+- Consider deployment implications
+
+---
+
+**Next**: [Configuration](/en/tutorial/configuration) - Learn how to customize Claude Code for your specific workflow needs.

@@ -1,0 +1,340 @@
+---
+title: "MCP 服务器"
+description: "集成模型上下文协议服务器以扩展Claude Code功能"
+---
+
+# MCP 服务器
+
+模型上下文协议（MCP）服务器允许你通过连接外部服务和数据源来扩展Claude Code的功能。
+
+## 什么是MCP？
+
+MCP是一个开放标准，可以在Claude Code和外部系统之间建立安全连接：
+- **标准化接口**：连接工具和数据的一致方式
+- **安全通信**：对外部资源的受控访问
+- **可扩展架构**：轻松添加新功能
+
+## 常见MCP服务器类型
+
+### 1. 数据库服务器
+连接到数据库进行数据分析和查询：
+
+```json
+{
+  "mcpServers": {
+    "postgres": {
+      "command": "mcp-server-postgres",
+      "args": ["--connection-string", "postgresql://..."]
+    }
+  }
+}
+```
+
+### 2. 文件系统服务器
+增强的文件系统操作：
+
+```json
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "mcp-server-filesystem",
+      "args": ["--base-path", "/project/data"]
+    }
+  }
+}
+```
+
+### 3. API集成服务器
+连接到REST API和Web服务：
+
+```json
+{
+  "mcpServers": {
+    "github": {
+      "command": "mcp-server-github",
+      "env": {
+        "GITHUB_TOKEN": "your-token-here"
+      }
+    }
+  }
+}
+```
+
+## 安装MCP服务器
+
+### 从npm注册表安装
+
+```bash
+npm install -g @modelcontextprotocol/server-postgres
+npm install -g @modelcontextprotocol/server-filesystem
+npm install -g @modelcontextprotocol/server-github
+```
+
+### 自定义服务器安装
+
+```bash
+# 克隆并构建自定义服务器
+git clone https://github.com/example/custom-mcp-server
+cd custom-mcp-server
+npm install
+npm run build
+npm link
+```
+
+## 配置
+
+### Claude Code设置
+
+在设置文件中配置MCP服务器：
+
+```json
+{
+  "mcpServers": {
+    "database": {
+      "command": "mcp-server-postgres",
+      "args": [
+        "--connection-string", 
+        "postgresql://user:password@localhost:5432/mydb"
+      ],
+      "env": {
+        "NODE_ENV": "development"
+      }
+    },
+    "files": {
+      "command": "mcp-server-filesystem",
+      "args": ["--base-path", "/workspace/data"],
+      "allowedPaths": ["/workspace", "/tmp"]
+    }
+  }
+}
+```
+
+### 环境变量
+
+```bash
+# 数据库连接
+export DATABASE_URL="postgresql://localhost:5432/myapp"
+
+# API凭据
+export GITHUB_TOKEN="ghp_xxxxxxxxxxxx"
+export SLACK_BOT_TOKEN="xoxb-xxxxxxxxxxxx"
+
+# 服务器配置
+export MCP_LOG_LEVEL="debug"
+```
+
+## 使用示例
+
+### 数据库查询
+
+```
+查询users表，找到过去30天内创建的所有活跃账户
+```
+
+Claude使用MCP数据库服务器：
+```sql
+SELECT id, username, email, created_at 
+FROM users 
+WHERE status = 'active' 
+  AND created_at >= NOW() - INTERVAL '30 days'
+ORDER BY created_at DESC;
+```
+
+### 文件系统操作
+
+```
+分析data目录中的所有JSON文件并总结其结构
+```
+
+Claude使用MCP文件系统服务器：
+1. 列出所有.json文件
+2. 读取文件内容
+3. 分析数据结构
+4. 生成摘要报告
+
+### GitHub集成
+
+```
+为我们刚才讨论的bug创建issue并分配给当前里程碑
+```
+
+Claude使用MCP GitHub服务器：
+```bash
+gh issue create \
+  --title "修复用户认证超时" \
+  --body "详细描述..." \
+  --milestone "v2.1.0" \
+  --assignee "@me"
+```
+
+## 自定义MCP服务器开发
+
+### 基本服务器结构
+
+```typescript
+// server.ts
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+
+const server = new Server(
+  {
+    name: 'custom-server',
+    version: '1.0.0',
+  },
+  {
+    capabilities: {
+      tools: {},
+      resources: {},
+    },
+  }
+);
+
+// 定义工具
+server.setRequestHandler('tools/list', async () => {
+  return {
+    tools: [
+      {
+        name: 'custom_tool',
+        description: '执行自定义操作',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            input: { type: 'string' }
+          }
+        }
+      }
+    ]
+  };
+});
+
+// 处理工具调用
+server.setRequestHandler('tools/call', async (request) => {
+  const { name, arguments: args } = request.params;
+  
+  if (name === 'custom_tool') {
+    // 执行自定义操作
+    return {
+      content: [
+        {
+          type: 'text',
+          text: `已处理：${args.input}`
+        }
+      ]
+    };
+  }
+});
+
+// 启动服务器
+const transport = new StdioServerTransport();
+await server.connect(transport);
+```
+
+### 资源提供者
+
+```typescript
+// 提供数据资源
+server.setRequestHandler('resources/list', async () => {
+  return {
+    resources: [
+      {
+        uri: 'custom://data/users',
+        name: '用户数据',
+        description: '访问用户信息'
+      }
+    ]
+  };
+});
+
+server.setRequestHandler('resources/read', async (request) => {
+  const { uri } = request.params;
+  
+  if (uri === 'custom://data/users') {
+    const userData = await fetchUserData();
+    return {
+      contents: [
+        {
+          uri,
+          mimeType: 'application/json',
+          text: JSON.stringify(userData, null, 2)
+        }
+      ]
+    };
+  }
+});
+```
+
+## 安全最佳实践
+
+### 1. 访问控制
+
+```json
+{
+  "mcpServers": {
+    "database": {
+      "allowedOperations": ["SELECT", "INSERT", "UPDATE"],
+      "restrictedTables": ["admin_users", "system_config"]
+    }
+  }
+}
+```
+
+### 2. 环境隔离
+
+```json
+{
+  "mcpServers": {
+    "filesystem": {
+      "sandboxPath": "/workspace/safe-zone",
+      "readOnly": false,
+      "allowedExtensions": [".txt", ".json", ".md"]
+    }
+  }
+}
+```
+
+### 3. 凭据管理
+
+```bash
+# 对敏感数据使用环境变量
+export DB_PASSWORD=$(cat /secure/db-password)
+export API_KEY=$(vault kv get -field=key secret/api)
+```
+
+## 故障排除
+
+### 常见问题
+
+**服务器连接失败**
+- 检查服务器安装
+- 验证配置语法
+- 独立测试服务器
+
+**权限被拒绝**
+- 审查访问控制设置
+- 检查文件系统权限
+- 验证环境变量
+
+**工具未找到**
+- 确认服务器功能
+- 检查工具名称拼写
+- 验证服务器注册
+
+### 调试
+
+```json
+{
+  "mcpServers": {
+    "debug-server": {
+      "command": "mcp-server-example",
+      "env": {
+        "MCP_LOG_LEVEL": "debug",
+        "DEBUG": "*"
+      }
+    }
+  }
+}
+```
+
+---
+
+**下一步**：[自定义命令](/zh/tutorial/tools-integration/custom-commands) - 学习如何创建自定义命令快捷方式。

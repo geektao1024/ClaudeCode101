@@ -1,0 +1,139 @@
+---
+title: "GitHub CLI Integration"
+description: "Integrating gh command-line tool for seamless Claude Code and GitHub collaboration"
+---
+
+# GitHub CLI Integration
+
+Claude Code can seamlessly integrate with GitHub CLI (`gh`) for creating issues, opening Pull Requests, reading comments, and more.
+
+## Installing GitHub CLI
+
+### macOS
+
+```bash
+brew install gh
+```
+
+### Ubuntu/Debian
+
+```bash
+curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+sudo apt update
+sudo apt install gh
+```
+
+### Windows
+
+```bash
+winget install --id GitHub.cli
+```
+
+## Configure Authentication
+
+### Login to GitHub
+
+```bash
+gh auth login
+```
+
+Choose authentication method:
+- Login through browser
+- Use Personal Access Token
+
+### Verify Configuration
+
+```bash
+gh auth status
+gh api user
+```
+
+## Usage in Claude Code
+
+### Basic Operations
+
+Claude can directly use `gh` commands:
+
+```
+Please use gh command to view current repository issues
+```
+
+Claude will execute:
+```bash
+gh issue list
+```
+
+### Creating Issues
+
+```
+Create a GitHub issue for the user login functionality bug
+```
+
+Claude will execute:
+```bash
+gh issue create \
+  --title "User login functionality bug fix" \
+  --body "Detailed description of login issues..." \
+  --label "bug,priority-high"
+```
+
+### Pull Request Management
+
+```
+Create a Pull Request for the current branch
+```
+
+Claude will execute:
+```bash
+gh pr create \
+  --title "Implement user authentication feature" \
+  --body "## Changes\n- Add login page\n- Implement JWT authentication\n- Add unit tests"
+```
+
+## Common Workflows
+
+### 1. Issue-Driven Development
+
+```
+View issues labeled 'enhancement' and select one to start development
+```
+
+Claude execution flow:
+1. `gh issue list --label enhancement`
+2. Analyze issue content
+3. Create feature branch
+4. Implement functionality
+5. Create Pull Request
+
+### 2. Code Review Response
+
+```
+Check latest comments on my PR and handle feedback
+```
+
+Claude execution flow:
+1. `gh pr list --author @me`
+2. `gh pr view <PR-ID> --comments`
+3. Analyze comment feedback
+4. Modify code
+5. Push updates
+
+## Permission Configuration
+
+Allow gh commands in Claude Code:
+
+```json
+{
+  "allowedTools": [
+    "Bash(gh:*)",
+    "Bash(gh issue:*)",
+    "Bash(gh pr:*)",
+    "Bash(gh repo:*)"
+  ]
+}
+```
+
+---
+
+**Next**: [Bash Tools](/en/tutorial/tools-integration/bash-tools) - Learn how to work with command-line tools.

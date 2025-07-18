@@ -1,0 +1,69 @@
+---
+title: "无头模式自动化"
+description: "使用 Claude Code 无头模式实现基础设施自动化"
+---
+
+# 无头模式自动化
+
+Claude Code 包含无头模式，可用于 CI、预提交钩子、构建脚本和自动化等非交互式上下文。
+
+## 什么是无头模式
+
+无头模式允许您以编程方式使用 Claude Code，而无需交互式界面。使用 `-p` 标志与提示词来启用无头模式。
+
+## 基本用法
+
+```bash
+claude -p "分析当前项目的代码质量并生成报告"
+```
+
+## 常用参数
+
+- `--output-format stream-json` - 流式JSON输出
+- `--allowedTools` - 指定允许的工具
+- `--verbose` - 详细输出用于调试
+
+## 应用场景
+
+### 1. 问题分类
+
+无头模式可以支持由GitHub事件触发的自动化：
+
+```bash
+claude -p "分析这个GitHub Issue并添加适当的标签" \
+  --allowedTools "Read,Bash(gh:*)"
+```
+
+### 2. 代码检查
+
+超出传统工具检测范围的主观代码审查：
+
+```bash
+claude -p "检查代码中的拼写错误、过时注释和误导性函数名" \
+  --allowedTools "Read,Write"
+```
+
+### 3. 批量处理
+
+处理大型迁移或分析任务：
+
+```bash
+# 生成任务列表
+claude -p "生成需要从React迁移到Vue的文件列表"
+
+# 循环处理
+for file in $(cat migration-list.txt); do
+  claude -p "将 $file 从React迁移到Vue" \
+    --allowedTools "Edit,Bash(git commit:*)"
+done
+```
+
+## 注意事项
+
+- 无头模式不在会话间持续，每次都需要重新启动
+- 使用 `--verbose` 进行调试，生产环境建议关闭
+- 确保网络连接稳定
+
+---
+
+**相关阅读**: [多Claude协作](/zh/tutorial/advanced/multi-claude) - 学习并行协作工作流程。

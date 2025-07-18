@@ -1,0 +1,170 @@
+---
+title: "Tools Allowlist Management"
+description: "Managing Claude Code's tool allowlist and permission settings"
+---
+
+# Tools Allowlist Management
+
+Claude Code requests permission for any operations that might modify your system. Learn how to manage the tool permissions list to balance security and convenience.
+
+## Permission Management Methods
+
+### 1. Session Selection
+
+When Claude requests tool permissions, choose "Always allow":
+
+```
+Claude requests to use Edit tool
+[ ] Allow once only
+[x] Always allow  
+[ ] Deny
+```
+
+### 2. Using /permissions Command
+
+Use permission commands in Claude Code sessions:
+
+```
+/permissions add Edit
+/permissions add Bash(git commit:*)
+/permissions add mcp__puppeteer__puppeteer_navigate
+/permissions remove Bash(rm:*)
+/permissions list
+```
+
+### 3. Manual Configuration File Editing
+
+Edit `.claude/settings.json` or `~/.claude.json`:
+
+```json
+{
+  "allowedTools": [
+    "Read",
+    "Write", 
+    "Edit",
+    "Bash(git:*)",
+    "Bash(npm:*)",
+    "Bash(pnpm:*)"
+  ]
+}
+```
+
+### 4. Using CLI Flags
+
+Set permissions for specific sessions:
+
+```bash
+claude --allowedTools "Read,Write,Edit,Bash(git:*)"
+```
+
+## Recommended Permission Configurations
+
+### Safe Basic Permissions
+
+```json
+{
+  "allowedTools": [
+    "Read",
+    "Glob", 
+    "Grep",
+    "LS"
+  ]
+}
+```
+
+### Common Development Permissions
+
+```json
+{
+  "allowedTools": [
+    "Read",
+    "Write",
+    "Edit", 
+    "MultiEdit",
+    "Bash(git:*)",
+    "Bash(npm:*)",
+    "Bash(pnpm:*)",
+    "Bash(yarn:*)"
+  ]
+}
+```
+
+### Full Development Permissions
+
+```json
+{
+  "allowedTools": [
+    "Read",
+    "Write", 
+    "Edit",
+    "MultiEdit",
+    "Bash(git:*)",
+    "Bash(npm:*)",
+    "Bash(pnpm:*)",
+    "Bash(docker:*)",
+    "Bash(gh:*)",
+    "WebFetch",
+    "TodoWrite"
+  ]
+}
+```
+
+## Risk Level Classification
+
+### 🟢 Low Risk Tools
+
+**Recommended to always allow**:
+- `Read` - Read files
+- `Glob` - File pattern matching
+- `Grep` - Text search
+- `LS` - List directories
+- `WebFetch` - Fetch web content
+
+### 🟡 Medium Risk Tools
+
+**Use with caution**:
+- `Write` - Write files
+- `Edit` - Edit files
+- `MultiEdit` - Batch editing
+- `Bash(git:*)` - Git operations
+- `Bash(npm:*)` - Package management
+
+### 🔴 High Risk Tools
+
+**Requires confirmation**:
+- `Bash(rm:*)` - Delete operations
+- `Bash(sudo:*)` - Admin privileges
+- `Bash(curl:*)` - Network requests
+- `Bash(chmod:*)` - Permission modifications
+
+## Security Best Practices
+
+### 1. Principle of Least Privilege
+
+Only grant necessary permissions:
+
+```json
+{
+  "allowedTools": [
+    "Read",
+    "Edit",
+    "Bash(git status)",
+    "Bash(git diff)",
+    "Bash(npm test)"
+  ]
+}
+```
+
+### 2. Environment Isolation
+
+Use loose permissions in containers or VMs:
+
+```bash
+# In Docker container
+docker run -it --rm -v $(pwd):/workspace node:18
+claude --dangerously-skip-permissions
+```
+
+---
+
+**Next**: [GitHub CLI Integration](/en/tutorial/configuration/github-cli) - Learn how to integrate gh command-line tool.

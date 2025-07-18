@@ -1,0 +1,221 @@
+---
+title: "Multi-Claude Collaboration"
+description: "Efficient collaborative development through parallel Claude instances"
+---
+
+# Multi-Claude Collaboration
+
+Beyond standalone use, some of the most powerful applications involve running multiple Claude instances in parallel for efficient collaborative development.
+
+## Collaboration Modes
+
+### 1. Coding and Validation Separation
+
+Have one Claude write code while another reviews or tests:
+
+```bash
+# Terminal 1: Write code
+claude
+> Please implement user authentication functionality
+
+# Terminal 2: Code review  
+claude
+> Please review the user authentication code just implemented, focusing on security
+```
+
+**Workflow**:
+1. Claude A writes code
+2. Run `/clear` or start new Claude instance
+3. Claude B reviews Claude A's work
+4. Claude C edits code based on feedback
+
+### 2. Test-Driven Collaboration
+
+```bash
+# Claude 1: Write tests
+claude
+> Write comprehensive test cases for user login functionality
+
+# Claude 2: Implement features
+claude  
+> Implement login functionality based on these test cases, ensure all tests pass
+```
+
+## Multi-Checkout Strategy
+
+### Git Multi-Checkout
+
+Create independent workspaces for different tasks:
+
+```bash
+# Create multiple checkouts
+git clone <repo> project-auth
+git clone <repo> project-ui  
+git clone <repo> project-api
+
+# Start Claude in each directory
+cd project-auth && claude &
+cd project-ui && claude &
+cd project-api && claude &
+```
+
+### Git Worktrees
+
+Lightweight multi-branch management:
+
+```bash
+# Create worktrees
+git worktree add ../project-feature-a feature-a
+git worktree add ../project-feature-b feature-b
+
+# Start Claude in each worktree
+cd ../project-feature-a && claude &
+cd ../project-feature-b && claude &
+```
+
+**Worktree Advantages**:
+- Shared Git history and reflog
+- Independent working directories and files
+- Lightweight, no need for repeated cloning
+
+## Collaboration Best Practices
+
+### 1. Task Division
+
+```bash
+# Claude 1: Focus on backend API
+claude
+> Specialize in implementing RESTful API and database operations
+
+# Claude 2: Focus on frontend UI
+claude
+> Specialize in React components and user interaction logic
+
+# Claude 3: Focus on testing
+claude  
+> Specialize in writing and maintaining test cases
+```
+
+### 2. Shared Workboard
+
+Let Claude instances communicate through documentation:
+
+```bash
+# Create shared workboard
+echo "# Project Collaboration Board" > COLLABORATION.md
+
+# Claude 1 writes tasks
+claude
+> Record completed API interfaces in COLLABORATION.md
+
+# Claude 2 reads and responds
+claude
+> Check COLLABORATION.md, implement frontend calls based on API interfaces
+```
+
+### 3. Version Control Coordination
+
+```bash
+# Regular sync
+git fetch origin
+git rebase origin/main
+
+# Avoid conflicts
+git status
+git diff
+```
+
+## Advanced Collaboration Modes
+
+### Fan-out Mode
+
+Suitable for large-scale migrations or analysis:
+
+```python
+# Generate task script
+tasks = generate_migration_tasks()
+
+for task in tasks:
+    subprocess.run([
+        "claude", "-p", f"Migrate file {task.file}",
+        "--allowedTools", "Edit,Bash(git commit:*)"
+    ])
+```
+
+### Pipeline Mode
+
+Integrate Claude into data processing pipelines:
+
+```bash
+# Data processing pipeline
+cat data.json | claude -p "Analyze data quality" --json | process_results.py
+```
+
+## Environment Setup
+
+### iTerm2 Notifications
+
+Set up notification reminders on Mac:
+
+```bash
+# ~/.zshrc
+export CLAUDE_NOTIFY=true
+
+# Notify when task completes
+claude && osascript -e 'display notification "Claude task completed"'
+```
+
+### Terminal Management
+
+```bash
+# Use tmux to manage multiple sessions
+tmux new-session -d -s claude-auth
+tmux new-session -d -s claude-ui
+tmux new-session -d -s claude-test
+
+# Switch sessions
+tmux attach -t claude-auth
+```
+
+## Cleanup and Maintenance
+
+### Worktree Cleanup
+
+```bash
+# View worktrees
+git worktree list
+
+# Remove completed worktrees
+git worktree remove ../project-feature-a
+git branch -d feature-a
+```
+
+### Process Management
+
+```bash
+# View running Claude processes
+ps aux | grep claude
+
+# Batch stop
+pkill -f "claude"
+```
+
+## Team Collaboration
+
+### Shared Configuration
+
+```bash
+# Team-shared CLAUDE.md
+git add CLAUDE.md
+git commit -m "Update team Claude configuration"
+```
+
+### Collaboration Standards
+
+1. **Naming Convention**: Use consistent branch and worktree naming for different tasks
+2. **Communication Protocol**: Define when human intervention and decisions are needed
+3. **Merge Strategy**: Determine when to merge independently developed features
+
+---
+
+**Related**: [Headless Mode](/en/tutorial/advanced/headless-mode) - Learn about infrastructure automation implementation.

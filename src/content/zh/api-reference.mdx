@@ -1,0 +1,568 @@
+---
+title: "API 参考"
+description: "Claude Code API 的完整参考文档"
+---
+
+import { Callout } from 'nextra/components'
+
+# API 参考 📖
+
+Claude Code 提供了丰富的 API 接口，支持多种编程语言和使用场景。
+
+## 认证
+
+### API 密钥
+
+所有 API 调用都需要有效的 API 密钥。
+
+```bash
+# 设置环境变量
+export ANTHROPIC_API_KEY="your-api-key-here"
+
+# 或在代码中设置
+```
+
+```javascript
+const claude = new ClaudeCode({
+  apiKey: 'your-api-key-here'
+});
+```
+
+### 认证头
+
+```http
+Authorization: Bearer your-api-key-here
+Content-Type: application/json
+```
+
+## 核心 API
+
+### 代码生成
+
+生成符合要求的代码片段。
+
+```http
+POST /v1/code/generate
+```
+
+**请求体:**
+
+```json
+{
+  "prompt": "创建一个用户登录组件",
+  "language": "typescript",
+  "framework": "react",
+  "context": {
+    "project_type": "web",
+    "styling": "tailwind"
+  },
+  "options": {
+    "include_tests": true,
+    "include_docs": true
+  }
+}
+```
+
+**响应:**
+
+```json
+{
+  "code": "import React, { useState } from 'react';\n\nconst LoginForm = () => {\n  // 组件实现\n};\n\nexport default LoginForm;",
+  "explanation": "这是一个使用 React 和 TypeScript 构建的登录表单组件...",
+  "tests": "import { render, screen } from '@testing-library/react';\nimport LoginForm from './LoginForm';\n\ndescribe('LoginForm', () => {\n  // 测试代码\n});",
+  "metadata": {
+    "language": "typescript",
+    "framework": "react",
+    "estimated_lines": 45,
+    "complexity": "medium"
+  }
+}
+```
+
+### 代码审查
+
+分析代码质量并提供改进建议。
+
+```http
+POST /v1/code/review
+```
+
+**请求体:**
+
+```json
+{
+  "code": "function getUserData(id) {\n  return fetch('/api/users/' + id).then(r => r.json());\n}",
+  "language": "javascript",
+  "check_types": ["security", "performance", "best_practices"],
+  "context": {
+    "project_type": "web",
+    "environment": "node"
+  }
+}
+```
+
+**响应:**
+
+```json
+{
+  "score": 7.5,
+  "issues": [
+    {
+      "type": "security",
+      "severity": "medium",
+      "line": 2,
+      "message": "潜在的 XSS 漏洞：未验证用户输入",
+      "suggestion": "添加输入验证和参数化查询"
+    },
+    {
+      "type": "performance",
+      "severity": "low",
+      "line": 2,
+      "message": "可以使用现代 async/await 语法",
+      "suggestion": "使用 async/await 替代 Promise.then"
+    }
+  ],
+  "suggestions": [
+    "添加错误处理",
+    "实现缓存机制",
+    "添加类型定义"
+  ],
+  "fixed_code": "async function getUserData(id: string): Promise<User> {\n  if (!id || typeof id !== 'string') {\n    throw new Error('Invalid user ID');\n  }\n  \n  try {\n    const response = await fetch(`/api/users/${encodeURIComponent(id)}`);\n    if (!response.ok) {\n      throw new Error(`HTTP error! status: ${response.status}`);\n    }\n    return await response.json();\n  } catch (error) {\n    console.error('Failed to fetch user data:', error);\n    throw error;\n  }\n}"
+}
+```
+
+### 代码解释
+
+解释代码的功能和实现原理。
+
+```http
+POST /v1/code/explain
+```
+
+**请求体:**
+
+```json
+{
+  "code": "const memoizedFn = useMemo(() => {\n  return (data) => expensiveOperation(data);\n}, [dependency]);",
+  "language": "javascript",
+  "detail_level": "detailed"
+}
+```
+
+**响应:**
+
+```json
+{
+  "explanation": {
+    "summary": "这段代码使用 React 的 useMemo Hook 来缓存一个昂贵的函数操作...",
+    "breakdown": [
+      {
+        "line": 1,
+        "code": "const memoizedFn = useMemo(() => {",
+        "explanation": "声明一个常量 memoizedFn，使用 useMemo Hook 来创建一个记忆化的函数"
+      },
+      {
+        "line": 2,
+        "code": "return (data) => expensiveOperation(data);",
+        "explanation": "返回一个箭头函数，该函数接受 data 参数并调用 expensiveOperation"
+      },
+      {
+        "line": 3,
+        "code": "}, [dependency]);",
+        "explanation": "依赖数组，只有当 dependency 改变时才会重新计算"
+      }
+    ],
+    "concepts": [
+      "React Hooks",
+      "记忆化（Memoization）",
+      "性能优化",
+      "依赖数组"
+    ],
+    "performance_impact": "通过记忆化避免在每次渲染时重新创建函数，提高性能"
+  }
+}
+```
+
+### 代码重构
+
+重构代码以提高可读性和可维护性。
+
+```http
+POST /v1/code/refactor
+```
+
+**请求体:**
+
+```json
+{
+  "code": "function calc(a, b, op) {\n  if (op === '+') return a + b;\n  if (op === '-') return a - b;\n  if (op === '*') return a * b;\n  if (op === '/') return a / b;\n}",
+  "language": "javascript",
+  "refactor_type": "improve_structure",
+  "target_patterns": ["strategy_pattern", "error_handling"]
+}
+```
+
+**响应:**
+
+```json
+{
+  "refactored_code": "class Calculator {\n  private operations = {\n    '+': (a: number, b: number) => a + b,\n    '-': (a: number, b: number) => a - b,\n    '*': (a: number, b: number) => a * b,\n    '/': (a: number, b: number) => {\n      if (b === 0) throw new Error('Division by zero');\n      return a / b;\n    }\n  };\n\n  calculate(a: number, b: number, op: string): number {\n    const operation = this.operations[op];\n    if (!operation) {\n      throw new Error(`Unsupported operation: ${op}`);\n    }\n    return operation(a, b);\n  }\n}",
+  "changes": [
+    "应用了策略模式来处理不同的运算操作",
+    "添加了错误处理机制",
+    "使用 TypeScript 类型注解",
+    "提高了代码的可扩展性"
+  ],
+  "benefits": [
+    "更容易添加新的运算操作",
+    "更好的错误处理",
+    "类型安全",
+    "代码更清晰易懂"
+  ]
+}
+```
+
+## 项目管理 API
+
+### 项目初始化
+
+```http
+POST /v1/project/init
+```
+
+**请求体:**
+
+```json
+{
+  "name": "my-awesome-project",
+  "template": "react-typescript",
+  "options": {
+    "include_tests": true,
+    "include_docs": true,
+    "use_eslint": true,
+    "use_prettier": true
+  }
+}
+```
+
+### 项目分析
+
+```http
+POST /v1/project/analyze
+```
+
+**请求体:**
+
+```json
+{
+  "project_path": "/path/to/project",
+  "analysis_type": "full",
+  "include_dependencies": true
+}
+```
+
+**响应:**
+
+```json
+{
+  "project_info": {
+    "name": "my-project",
+    "type": "web",
+    "language": "typescript",
+    "framework": "react",
+    "size": {
+      "files": 156,
+      "lines": 12450,
+      "size_mb": 2.3
+    }
+  },
+  "code_quality": {
+    "score": 8.2,
+    "issues": 12,
+    "warnings": 5,
+    "suggestions": 8
+  },
+  "dependencies": {
+    "total": 45,
+    "outdated": 3,
+    "vulnerable": 1
+  },
+  "architecture": {
+    "complexity": "medium",
+    "maintainability": "high",
+    "testability": "high"
+  }
+}
+```
+
+## 文档生成 API
+
+### 自动生成文档
+
+```http
+POST /v1/docs/generate
+```
+
+**请求体:**
+
+```json
+{
+  "source_files": [
+    "/src/components/Button.tsx",
+    "/src/utils/helpers.ts"
+  ],
+  "doc_type": "api",
+  "format": "markdown",
+  "include_examples": true
+}
+```
+
+**响应:**
+
+```json
+{
+  "documentation": "# API 文档\n\n## Button 组件\n\n这是一个可重用的按钮组件...\n\n### 属性\n\n- `onClick`: 点击事件处理函数\n- `disabled`: 是否禁用按钮\n- `variant`: 按钮样式变体\n\n### 示例\n\n```tsx\n<Button onClick={() => alert('Clicked!')} variant=\"primary\">\n  点击我\n</Button>\n```",
+  "files_processed": 2,
+  "total_functions": 8,
+  "total_components": 3
+}
+```
+
+## 测试生成 API
+
+### 生成单元测试
+
+```http
+POST /v1/test/generate
+```
+
+**请求体:**
+
+```json
+{
+  "source_code": "export function add(a: number, b: number): number {\n  return a + b;\n}",
+  "test_framework": "jest",
+  "coverage_target": 90,
+  "include_edge_cases": true
+}
+```
+
+**响应:**
+
+```json
+{
+  "test_code": "import { add } from './math';\n\ndescribe('add function', () => {\n  test('should add two positive numbers', () => {\n    expect(add(2, 3)).toBe(5);\n  });\n\n  test('should handle negative numbers', () => {\n    expect(add(-1, 1)).toBe(0);\n  });\n\n  test('should handle zero', () => {\n    expect(add(0, 5)).toBe(5);\n  });\n\n  test('should handle decimal numbers', () => {\n    expect(add(1.5, 2.5)).toBe(4);\n  });\n});",
+  "coverage_info": {
+    "estimated_coverage": 95,
+    "test_cases": 4,
+    "edge_cases": 2
+  }
+}
+```
+
+## 配置 API
+
+### 获取配置
+
+```http
+GET /v1/config
+```
+
+**响应:**
+
+```json
+{
+  "model": "claude-3-5-sonnet-20241022",
+  "temperature": 0.7,
+  "max_tokens": 4096,
+  "tools": ["code_execution", "file_operations"],
+  "project_context": {
+    "language": "typescript",
+    "framework": "react"
+  }
+}
+```
+
+### 更新配置
+
+```http
+PUT /v1/config
+```
+
+**请求体:**
+
+```json
+{
+  "temperature": 0.8,
+  "max_tokens": 8192,
+  "tools": ["code_execution", "file_operations", "web_search"]
+}
+```
+
+## 错误处理
+
+### 错误响应格式
+
+```json
+{
+  "error": {
+    "type": "ValidationError",
+    "message": "Invalid request parameters",
+    "details": {
+      "field": "language",
+      "issue": "Unsupported language: 'unknown'"
+    },
+    "code": "INVALID_LANGUAGE"
+  }
+}
+```
+
+### 常见错误码
+
+| 错误码 | 描述 | HTTP 状态码 |
+|-------|-----|-----------|
+| `INVALID_API_KEY` | API 密钥无效 | 401 |
+| `RATE_LIMIT_EXCEEDED` | 超过速率限制 | 429 |
+| `INVALID_LANGUAGE` | 不支持的编程语言 | 400 |
+| `FILE_TOO_LARGE` | 文件太大 | 413 |
+| `CONTEXT_TOO_LONG` | 上下文过长 | 400 |
+| `INTERNAL_ERROR` | 内部服务器错误 | 500 |
+
+## 速率限制
+
+### 限制说明
+
+| 计划 | 每分钟请求 | 每小时请求 | 每天请求 |
+|-----|----------|----------|----------|
+| 免费版 | 20 | 100 | 1000 |
+| 专业版 | 100 | 1000 | 10000 |
+| 企业版 | 500 | 5000 | 50000 |
+
+### 响应头
+
+```http
+X-RateLimit-Limit: 100
+X-RateLimit-Remaining: 95
+X-RateLimit-Reset: 1640995200
+```
+
+## SDK 和客户端库
+
+### JavaScript/TypeScript
+
+```bash
+npm install @anthropic/claude-code
+```
+
+```javascript
+import { ClaudeCode } from '@anthropic/claude-code';
+
+const claude = new ClaudeCode({
+  apiKey: process.env.ANTHROPIC_API_KEY
+});
+
+const result = await claude.generateCode({
+  prompt: '创建一个计算器组件',
+  language: 'typescript',
+  framework: 'react'
+});
+```
+
+### Python
+
+```bash
+pip install claude-code
+```
+
+```python
+from claude_code import ClaudeCode
+
+claude = ClaudeCode(api_key=os.getenv('ANTHROPIC_API_KEY'))
+
+result = claude.generate_code(
+    prompt='创建一个计算器组件',
+    language='python',
+    framework='flask'
+)
+```
+
+### Go
+
+```bash
+go get github.com/anthropics/claude-code-go
+```
+
+```go
+package main
+
+import (
+    "github.com/anthropics/claude-code-go"
+)
+
+func main() {
+    client := claudecode.NewClient(os.Getenv("ANTHROPIC_API_KEY"))
+    
+    result, err := client.GenerateCode(claudecode.GenerateCodeRequest{
+        Prompt:    "创建一个HTTP服务器",
+        Language:  "go",
+        Framework: "gin",
+    })
+}
+```
+
+## Webhook 集成
+
+### 配置 Webhook
+
+```http
+POST /v1/webhooks
+```
+
+**请求体:**
+
+```json
+{
+  "url": "https://your-app.com/webhook",
+  "events": ["code.generated", "review.completed"],
+  "secret": "your-webhook-secret"
+}
+```
+
+### Webhook 事件
+
+```json
+{
+  "event": "code.generated",
+  "timestamp": "2024-01-15T10:30:00Z",
+  "data": {
+    "request_id": "req_123456",
+    "language": "typescript",
+    "lines_generated": 45,
+    "success": true
+  }
+}
+```
+
+## 最佳实践
+
+### 性能优化
+
+1. **使用流式响应** - 对于大型代码生成任务
+2. **缓存结果** - 缓存重复的请求
+3. **批量处理** - 合并多个小请求
+4. **异步处理** - 使用异步调用提高并发性
+
+### 安全建议
+
+1. **API 密钥管理** - 使用环境变量存储密钥
+2. **输入验证** - 验证所有用户输入
+3. **速率限制** - 实施客户端速率限制
+4. **错误处理** - 适当处理和记录错误
+
+<Callout type="info">
+  **提示**: 查看 [完整示例](https://github.com/anthropics/claude-code-examples) 了解更多实际应用场景。
+</Callout>
+
+---
+
+*API 文档持续更新中。如有问题或建议，请访问 [GitHub Issues](https://github.com/anthropics/claude-code/issues)。*

@@ -1,0 +1,377 @@
+---
+title: "Resources & Tools"
+description: "Useful resources and tools in the Claude Code ecosystem"
+---
+
+import { Callout } from 'nextra/components'
+
+# Resources & Tools 🔧
+
+Explore useful resources, tools, and extensions in the Claude Code ecosystem to enhance your AI programming experience.
+
+## Official Resources
+
+### 📖 Documentation and Guides
+
+- **[Official Documentation](https://docs.anthropic.com/en/docs/claude-code)** - Complete API reference and usage guide
+- **[Quick Start Guide](/en/quick-start)** - Get started in 5 minutes
+- **[Complete Tutorial](/en/tutorial)** - Learn all features in depth
+- **[Best Practices Guide](https://docs.anthropic.com/en/docs/claude-code/best-practices)** - Professional development advice
+
+### 🔧 Development Tools
+
+- **[Claude Code CLI](https://github.com/anthropics/claude-code)** - Command-line tool
+- **[VS Code Extension](https://marketplace.visualstudio.com/search?term=claude%20code)** - Editor integration
+- **[JetBrains Plugin](https://plugins.jetbrains.com/search?search=claude%20code)** - IDE integration
+- **[GitHub Actions](https://github.com/marketplace/actions/claude-code)** - CI/CD integration
+
+## IDE Integration
+
+### Visual Studio Code
+
+```bash
+# Install VS Code extension
+code --install-extension anthropic.claude-code
+
+# Or search "Claude Code" in marketplace
+```
+
+**Key Features:**
+- 🎯 Intelligent code completion
+- 🔍 Real-time code explanation
+- 🐛 Error detection and fixing
+- 📝 Automatic documentation generation
+- 🧪 Test generation
+
+### JetBrains IDEs
+
+Supports IntelliJ IDEA, WebStorm, PyCharm, GoLand, etc.:
+
+```bash
+# Install through plugin marketplace
+# File → Settings → Plugins → Marketplace → Search "Claude Code"
+```
+
+**Key Features:**
+- 🚀 Code refactoring suggestions
+- 🎨 Code style optimization
+- 🔄 Automated workflows
+- 📊 Code quality analysis
+
+### Vim/Neovim
+
+```lua
+-- Using packer.nvim
+use {
+  'anthropics/claude-code.nvim',
+  config = function()
+    require('claude-code').setup({
+      api_key = vim.env.ANTHROPIC_API_KEY,
+      model = "claude-3-5-sonnet-20241022"
+    })
+  end
+}
+```
+
+## Command Line Tools
+
+### Core Commands
+
+```bash
+# Project management
+claude init              # Initialize project
+claude config            # Configure settings
+claude status            # View status
+
+# Code operations
+claude generate          # Generate code
+claude review            # Code review
+claude refactor          # Refactor code
+claude test              # Testing related
+
+# Documentation and help
+claude docs              # Documentation operations
+claude help              # Help information
+claude --version         # Version information
+```
+
+### Advanced Tools
+
+```bash
+# MCP integration
+claude mcp add           # Add MCP server
+claude mcp list          # List servers
+claude mcp config        # Configure MCP
+
+# Performance and analysis
+claude analyze           # Code analysis
+claude benchmark         # Performance testing
+claude security          # Security check
+
+# Team collaboration
+claude share             # Share configuration
+claude sync              # Sync settings
+claude team              # Team management
+```
+
+## Extensions and Plugins
+
+### Community Extensions
+
+<Callout type="info">
+  **Note**: These extensions are developed by the community. Please verify their reliability before use.
+</Callout>
+
+#### Web Development
+
+- **[Claude React Helper](https://github.com/example/claude-react)** - React component generator
+- **[Claude Vue Assistant](https://github.com/example/claude-vue)** - Vue.js development assistant
+- **[Claude Angular Tools](https://github.com/example/claude-angular)** - Angular project tools
+
+#### Backend Development
+
+- **[Claude API Generator](https://github.com/example/claude-api)** - REST API generator
+- **[Claude Database Tools](https://github.com/example/claude-db)** - Database operation assistant
+- **[Claude DevOps Helper](https://github.com/example/claude-devops)** - DevOps automation
+
+#### Data Science
+
+- **[Claude Data Analysis](https://github.com/example/claude-data)** - Data analysis tools
+- **[Claude ML Helper](https://github.com/example/claude-ml)** - Machine learning assistant
+- **[Claude Jupyter Extension](https://github.com/example/claude-jupyter)** - Jupyter integration
+
+## Templates and Examples
+
+### Project Templates
+
+```bash
+# Use official templates
+claude init --template react-typescript
+claude init --template node-express
+claude init --template python-fastapi
+claude init --template go-gin
+
+# Custom templates
+claude init --template https://github.com/your-org/claude-template
+```
+
+### Example Projects
+
+- **[React + TypeScript](https://github.com/anthropics/claude-examples/tree/main/react-typescript)** - Modern React application
+- **[Node.js API](https://github.com/anthropics/claude-examples/tree/main/node-api)** - RESTful API service
+- **[Python FastAPI](https://github.com/anthropics/claude-examples/tree/main/python-fastapi)** - Python Web API
+- **[Go Microservice](https://github.com/anthropics/claude-examples/tree/main/go-microservice)** - Go microservice
+
+## Configuration Examples
+
+### Basic Configuration
+
+```json
+// .claude/settings.json
+{
+  "model": "claude-3-5-sonnet-20241022",
+  "temperature": 0.7,
+  "max_tokens": 4096,
+  "tools": ["code_execution", "file_operations"],
+  "project_context": {
+    "language": "typescript",
+    "framework": "react",
+    "testing": "jest",
+    "styling": "tailwind"
+  }
+}
+```
+
+### Advanced Configuration
+
+```json
+{
+  "model": "claude-3-5-sonnet-20241022",
+  "temperature": 0.7,
+  "max_tokens": 4096,
+  "tools": ["code_execution", "file_operations", "web_search"],
+  "project_context": {
+    "language": "typescript",
+    "framework": "next.js",
+    "database": "postgresql",
+    "orm": "prisma",
+    "testing": "jest",
+    "e2e_testing": "playwright",
+    "styling": "tailwind",
+    "deployment": "vercel"
+  },
+  "hooks": {
+    "pre-commit": "claude review --fix",
+    "post-commit": "claude docs update",
+    "pre-push": "claude test run"
+  },
+  "mcp": {
+    "servers": ["filesystem", "git", "database"],
+    "timeout": 30000
+  }
+}
+```
+
+## Third-party Integrations
+
+### CI/CD Platforms
+
+#### GitHub Actions
+
+```yaml
+# .github/workflows/claude-code.yml
+name: Claude Code Review
+on: [pull_request]
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Claude Code Review
+        uses: anthropics/claude-code-action@v1
+        with:
+          api-key: ${{ secrets.ANTHROPIC_API_KEY }}
+          command: "review"
+```
+
+#### GitLab CI
+
+```yaml
+# .gitlab-ci.yml
+stages:
+  - review
+
+claude-review:
+  stage: review
+  image: node:18
+  script:
+    - npm install -g claude-code
+    - claude review --output gitlab-ci
+  only:
+    - merge_requests
+```
+
+### Deployment Platforms
+
+#### Vercel
+
+```json
+// vercel.json
+{
+  "buildCommand": "claude build optimize",
+  "outputDirectory": "dist",
+  "env": {
+    "ANTHROPIC_API_KEY": "@anthropic-api-key"
+  }
+}
+```
+
+#### Netlify
+
+```toml
+# netlify.toml
+[build]
+  command = "claude build optimize"
+  publish = "dist"
+
+[build.environment]
+  ANTHROPIC_API_KEY = "your-api-key"
+```
+
+## Learning Resources
+
+### 📚 Tutorials and Courses
+
+- **[Claude Code Complete Tutorial](/en/tutorial)** - From beginner to expert
+- **[YouTube Official Channel](https://youtube.com/@anthropic)** - Video tutorials
+- **[Online Courses](https://learn.anthropic.com)** - Structured learning paths
+- **[Practice Projects](https://github.com/anthropics/claude-code-projects)** - Hands-on exercises
+
+### 🎥 Video Resources
+
+- **[Claude Code Quick Start](https://www.youtube.com/watch?v=example)** - Get started in 10 minutes
+- **[Advanced Features Explained](https://www.youtube.com/watch?v=example)** - Deep dive into advanced features
+- **[Best Practices Sharing](https://www.youtube.com/watch?v=example)** - Expert experience sharing
+- **[Project Case Studies](https://www.youtube.com/watch?v=example)** - Real project development
+
+### 📖 Blogs and Articles
+
+- **[Claude Code Official Blog](https://blog.anthropic.com)** - Latest news and technical sharing
+- **[Developer Stories](https://developers.anthropic.com/stories)** - User success stories
+- **[Technical Deep Dives](https://technical.anthropic.com)** - Technical principle explanations
+
+## Community and Support
+
+### 💬 Community Communication
+
+- **[GitHub Discussions](https://github.com/anthropics/claude-code/discussions)** - Official discussion area
+- **[Discord Community](https://discord.gg/anthropic)** - Real-time communication
+- **[Reddit Community](https://reddit.com/r/ClaudeCode)** - Experience sharing
+- **[Stack Overflow](https://stackoverflow.com/questions/tagged/claude-code)** - Technical Q&A
+
+### 🆘 Getting Help
+
+- **[FAQ](https://docs.anthropic.com/en/docs/claude-code/faq)** - Frequently asked questions
+- **[Troubleshooting](https://docs.anthropic.com/en/docs/claude-code/troubleshooting)** - Problem solving guide
+- **[Submit Issues](https://github.com/anthropics/claude-code/issues)** - Report bugs or request features
+- **[Contact Support](mailto:support@anthropic.com)** - Technical support
+
+## Performance Optimization
+
+### Configuration Optimization
+
+```json
+{
+  "performance": {
+    "cache_enabled": true,
+    "cache_ttl": 3600,
+    "parallel_requests": 3,
+    "request_timeout": 30000,
+    "retry_attempts": 3
+  }
+}
+```
+
+### Usage Tips
+
+1. **Use Cache Wisely** - Enable response caching for better speed
+2. **Batch Operations** - Process multiple files at once
+3. **Incremental Updates** - Only process changed parts
+4. **Preload Context** - Load project information in advance
+
+## Security Best Practices
+
+### API Key Management
+
+```bash
+# Use environment variables
+export ANTHROPIC_API_KEY="your-key-here"
+
+# Use key manager
+claude config set api-key --from-keychain
+
+# Use .env file (don't commit to version control)
+echo "ANTHROPIC_API_KEY=your-key" > .env
+```
+
+### Access Control
+
+```json
+{
+  "security": {
+    "allowed_commands": ["generate", "review", "docs"],
+    "blocked_paths": ["secrets/", "config/"],
+    "max_file_size": "10MB",
+    "scan_for_secrets": true
+  }
+}
+```
+
+---
+
+<Callout type="success">
+  **Tip**: Check the [official documentation](https://docs.anthropic.com/en/docs/claude-code) regularly for the latest tools and resources!
+</Callout>
+
+*Have new tools or resources to recommend? Share them in [GitHub Discussions](https://github.com/anthropics/claude-code/discussions)!*

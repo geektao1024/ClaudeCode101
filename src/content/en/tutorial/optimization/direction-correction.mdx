@@ -1,0 +1,278 @@
+---
+title: "Direction Correction"
+description: "Techniques for course-correcting when Claude Code goes off-track or misunderstands requirements"
+---
+
+# Direction Correction
+
+Learn how to effectively redirect Claude Code when it misunderstands your requirements or goes off-track during development tasks.
+
+## Recognizing When Course Correction is Needed
+
+### Common Signs
+- Claude is working on wrong files or components
+- Implementation doesn't match your requirements
+- Solution is overly complex for the problem
+- Claude is making assumptions about project structure
+- Output doesn't align with existing code patterns
+
+### Early Detection
+Monitor these indicators:
+- First few lines of code changes
+- File selections and modifications
+- Approach explanations
+- Question patterns from Claude
+
+## Course Correction Techniques
+
+### 1. Immediate Redirection
+
+**Stop and Clarify**
+```
+Stop. Before continuing, let me clarify the requirements.
+I need you to focus specifically on [specific aspect].
+The current approach is not what I'm looking for.
+```
+
+**Redirect Focus**
+```
+Actually, let's take a different approach. 
+Instead of modifying the entire component, 
+I only need you to [specific limited task].
+```
+
+### 2. Context Reset
+
+**Provide Fresh Context**
+```
+Let me restart with clearer context:
+- Current file: src/components/UserProfile.tsx
+- Specific issue: The username validation on line 45
+- Required change: Only update the regex pattern
+- Don't modify: Any other validation logic
+```
+
+**Clarify Scope**
+```
+This task should only involve:
+1. [Specific action 1]
+2. [Specific action 2]
+3. [Specific action 3]
+
+Do not:
+- Refactor existing code
+- Add new dependencies
+- Modify other components
+```
+
+### 3. Constraint Setting
+
+**Technical Constraints**
+```
+Important constraints for this task:
+- Use only existing dependencies
+- Maintain current API interface
+- Follow existing error handling patterns
+- No breaking changes to public methods
+```
+
+**Scope Constraints**
+```
+Limit changes to:
+- Only the calculateTotal function
+- Only the validation logic
+- Only the CSS styling for mobile view
+```
+
+## Effective Correction Patterns
+
+### The "Actually" Pattern
+```
+Actually, that's not quite what I need.
+Let me be more specific: [clear instruction]
+```
+
+### The "Instead" Pattern
+```
+Instead of creating a new component,
+please modify the existing LoginForm component
+to include the password strength indicator.
+```
+
+### The "Focus" Pattern
+```
+Let's focus specifically on the error handling.
+Ignore the UI changes for now and just fix
+the async/await pattern in the API call.
+```
+
+### The "Step Back" Pattern
+```
+Let's step back. The core issue is [simple problem].
+We don't need to restructure anything,
+just [minimal change needed].
+```
+
+## Advanced Correction Strategies
+
+### 1. Incremental Correction
+
+**Approach**
+- Correct one aspect at a time
+- Validate each correction before proceeding
+- Build up to complete solution
+
+**Example**
+```
+First, let's just get the basic function working.
+Don't worry about error handling or optimization yet.
+Once we have the core logic right, we'll add those features.
+```
+
+### 2. Reference-Based Correction
+
+**Use Existing Examples**
+```
+Look at how we handle authentication in src/auth/login.ts.
+Use that same pattern for the logout functionality.
+Don't create a new pattern.
+```
+
+**Point to Specific Code**
+```
+See the error handling in UserService.ts lines 23-35?
+Apply that exact same pattern to the ProductService,
+but change the error messages appropriately.
+```
+
+### 3. Assumption Challenging
+
+**Question Assumptions**
+```
+Why are you creating a new configuration file?
+The existing config in settings.json should handle this.
+Please use the existing configuration structure.
+```
+
+**Clarify Misunderstandings**
+```
+I think there's a misunderstanding.
+I don't want to replace the entire navigation system.
+I just want to add one menu item to the existing nav.
+```
+
+## Preventing Off-Track Situations
+
+### 1. Clear Initial Instructions
+
+**Be Specific from the Start**
+```
+Please update ONLY the password validation regex
+in src/utils/validation.ts line 42.
+Change from /^.{6,}$/ to /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/
+Do not modify any other validation functions.
+```
+
+### 2. Provide Examples
+
+**Show Expected Outcome**
+```
+The result should look like this:
+[provide code example or description]
+
+Not like this:
+[provide counter-example]
+```
+
+### 3. Set Boundaries
+
+**Define What NOT to Do**
+```
+For this task, please do not:
+- Modify the database schema
+- Change the API endpoints
+- Update any test files
+- Install new packages
+```
+
+## Recovery Strategies
+
+### When Claude Has Gone Too Far Off-Track
+
+**1. Full Reset**
+```
+Let's start over completely.
+Please ignore everything we've discussed so far.
+Here's what I actually need: [fresh, clear instruction]
+```
+
+**2. Partial Recovery**
+```
+The first part of your approach is correct.
+However, for step 2, instead of [incorrect approach],
+please [correct approach].
+```
+
+**3. Selective Acceptance**
+```
+Keep the changes to the component structure,
+but revert the styling changes.
+I'll provide specific CSS requirements separately.
+```
+
+## Common Correction Scenarios
+
+### 1. Over-Engineering
+**Problem**: Claude creates complex solution for simple problem
+**Solution**: 
+```
+This is much more complex than needed.
+I just need a simple [specific requirement].
+Can you provide a minimal solution?
+```
+
+### 2. Wrong File Focus
+**Problem**: Claude modifies wrong files
+**Solution**:
+```
+Stop working on those files.
+The issue is specifically in [correct file].
+Please focus only on that file.
+```
+
+### 3. Scope Creep
+**Problem**: Claude keeps adding related improvements
+**Solution**:
+```
+Please limit the changes to exactly what I requested.
+Don't add any additional improvements or optimizations.
+```
+
+### 4. Pattern Deviation
+**Problem**: Claude uses different patterns than existing code
+**Solution**:
+```
+Use the same pattern as [existing example].
+Don't create a new approach.
+Consistency with existing code is important.
+```
+
+## Best Practices for Direction Correction
+
+### Do
+- Interrupt early when you notice issues
+- Be specific about what's wrong
+- Provide clear alternative direction
+- Reference existing code patterns
+- Set explicit boundaries
+
+### Don't
+- Let Claude continue on wrong path
+- Use vague correction language
+- Assume Claude will infer the right direction
+- Skip providing positive examples
+- Ignore early warning signs
+
+---
+
+**Next**: Return to [Tutorial Home](/en/tutorial) to explore other optimization techniques.

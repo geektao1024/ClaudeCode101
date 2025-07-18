@@ -1,0 +1,375 @@
+---
+title: "自定义命令"
+description: "为Claude Code工作流创建自定义命令快捷方式和自动化"
+---
+
+# 自定义命令
+
+自定义命令允许你为Claude Code中频繁使用的工作流创建快捷方式和自动化。
+
+## 什么是自定义命令？
+
+自定义命令是：
+- **快捷方式**：快速访问复杂操作
+- **自动化**：简化重复任务
+- **模板**：可重用的指令模式
+- **工作流**：多步骤过程自动化
+
+## 自定义命令类型
+
+### 1. 斜杠命令
+
+以 `/` 开头的快速快捷方式：
+
+```markdown
+# .claude/commands/deploy.md
+---
+name: deploy
+description: 将应用程序部署到暂存环境
+---
+
+请执行生产就绪部署：
+1. 运行所有测试并确保通过
+2. 为生产环境构建应用程序
+3. 运行安全检查和代码检查
+4. 部署到暂存环境
+5. 验证部署健康检查
+6. 提供部署摘要
+```
+
+使用方法：
+```
+/deploy
+```
+
+### 2. 工作流命令
+
+多步骤自动化序列：
+
+```markdown
+# .claude/commands/feature.md
+---
+name: feature
+description: 开始新功能开发
+parameters:
+  - name: feature_name
+    type: string
+    required: true
+  - name: branch_prefix
+    type: string
+    default: "feature"
+---
+
+创建新功能分支并设置：
+1. 创建分支：{{branch_prefix}}/{{feature_name}}
+2. 更新本地依赖
+3. 在src/components/{{feature_name}}/中创建基本组件结构
+4. 将功能添加到主导航
+5. 创建初始测试文件
+6. 用功能概述更新文档
+```
+
+使用方法：
+```
+/feature user-dashboard
+/feature payment-system --branch_prefix=enhancement
+```
+
+### 3. 分析命令
+
+代码分析和报告快捷方式：
+
+```markdown
+# .claude/commands/analyze.md
+---
+name: analyze
+description: 全面的代码库分析
+---
+
+对当前代码库执行全面分析：
+1. 分析项目结构和架构
+2. 识别潜在的性能瓶颈
+3. 检查代码重复和重构机会
+4. 审查安全考虑
+5. 评估测试覆盖率
+6. 生成改进建议
+```
+
+## 创建自定义命令
+
+### 命令文件结构
+
+```
+.claude/
+├── commands/
+│   ├── deploy.md
+│   ├── feature.md
+│   ├── analyze.md
+│   └── refactor.md
+└── templates/
+    ├── component.md
+    └── api.md
+```
+
+### 命令元数据
+
+```markdown
+---
+name: command_name
+description: 命令功能的简要描述
+parameters:
+  - name: param1
+    type: string|number|boolean
+    required: true|false
+    default: default_value
+    description: 参数描述
+tags:
+  - development
+  - testing
+  - deployment
+---
+
+命令指令在这里...
+```
+
+### 参数使用
+
+```markdown
+# 在命令中使用参数
+请创建一个名为{{component_name}}的{{component_type}}组件：
+1. 创建文件：src/components/{{component_name}}/{{component_name}}.tsx
+2. 如果指定了{{features}}则包含
+3. 使用{{export_type}}导出添加到index.ts
+```
+
+## 高级命令功能
+
+### 1. 条件逻辑
+
+```markdown
+# .claude/commands/setup.md
+---
+name: setup
+parameters:
+  - name: environment
+    type: string
+    default: "development"
+  - name: with_database
+    type: boolean
+    default: false
+---
+
+设置{{environment}}环境：
+
+{% if environment == "production" %}
+1. 验证生产凭据
+2. 运行安全审计
+3. 启用监控
+{% else %}
+1. 设置开发数据库
+2. 安装开发依赖
+3. 配置调试模式
+{% endif %}
+
+{% if with_database %}
+4. 初始化数据库模式
+5. 运行迁移
+6. 播种测试数据
+{% endif %}
+```
+
+### 2. 模板继承
+
+```markdown
+# .claude/templates/base-component.md
+---
+template: true
+---
+
+创建React组件包含：
+1. TypeScript接口
+2. 适当的prop验证
+3. 无障碍属性
+4. 单元测试
+5. Storybook故事
+
+# .claude/commands/ui-component.md
+---
+extends: base-component
+name: ui-component
+---
+
+{% include "base-component" %}
+
+UI组件还需要：
+6. 设计系统集成
+7. 响应式设计
+8. 主题支持
+```
+
+### 3. 命令组合
+
+```markdown
+# .claude/commands/full-feature.md
+---
+name: full-feature
+description: 完整的功能开发工作流
+---
+
+执行完整的功能开发工作流：
+
+1. {% command "feature" feature_name %}
+2. {% command "test" type="unit" %}
+3. {% command "analyze" focus="security" %}
+4. {% command "deploy" environment="staging" %}
+```
+
+## 配置
+
+### 全局命令
+
+```json
+// .claude/config.json
+{
+  "commands": {
+    "globalPath": "~/.claude/global-commands",
+    "autoload": true,
+    "aliases": {
+      "d": "deploy",
+      "f": "feature",
+      "a": "analyze"
+    }
+  }
+}
+```
+
+### 项目特定命令
+
+```json
+// .claude/project.json
+{
+  "name": "my-project",
+  "commands": {
+    "path": ".claude/commands",
+    "enabled": [
+      "deploy",
+      "feature",
+      "analyze"
+    ],
+    "disabled": [
+      "production-deploy"
+    ]
+  }
+}
+```
+
+## 最佳实践
+
+### 1. 命令设计
+
+**保持命令专注**
+- 单一职责原则
+- 清晰、具体的结果
+- 最小化参数复杂性
+
+**使用描述性名称**
+```markdown
+# 好的例子
+/deploy-staging
+/create-api-endpoint
+/run-security-audit
+
+# 避免
+/do-stuff
+/fix
+/update
+```
+
+### 2. 参数验证
+
+```markdown
+---
+parameters:
+  - name: component_name
+    type: string
+    required: true
+    pattern: "^[A-Z][a-zA-Z0-9]*$"
+    description: "PascalCase组件名称"
+  - name: port
+    type: number
+    min: 1000
+    max: 9999
+    default: 3000
+---
+```
+
+### 3. 文档
+
+```markdown
+# .claude/commands/deploy.md
+---
+name: deploy
+description: 使用全面检查部署应用程序
+examples:
+  - "/deploy"
+  - "/deploy --environment=production"
+  - "/deploy --skip-tests=true"
+---
+
+## 此命令的功能：
+- 运行完整测试套件
+- 构建优化的生产包
+- 执行安全扫描
+- 部署到指定环境
+- 验证部署健康状况
+
+## 先决条件：
+- 干净的git工作目录
+- 有效的部署凭据
+- 所有测试在本地通过
+```
+
+## 命令库示例
+
+### 开发命令
+
+```markdown
+# .claude/commands/setup-dev.md
+设置完整的开发环境，包含热重载和调试工具
+
+# .claude/commands/clean-build.md
+清理所有构建工件并执行全新安装
+
+# .claude/commands/update-deps.md
+更新所有依赖并检查安全漏洞
+```
+
+### 测试命令
+
+```markdown
+# .claude/commands/test-coverage.md
+运行完整测试套件，包含覆盖率报告和分析
+
+# .claude/commands/test-ci.md
+在CI模式下运行测试，包含适当的退出代码和报告
+
+# .claude/commands/test-performance.md
+运行性能基准测试并生成比较报告
+```
+
+### 部署命令
+
+```markdown
+# .claude/commands/deploy-staging.md
+部署到暂存环境并进行冒烟测试
+
+# .claude/commands/rollback.md
+回滚到先前的部署版本并验证
+
+# .claude/commands/health-check.md
+验证所有服务正在运行并正确响应
+```
+
+---
+
+**下一步**：返回[教程首页](/zh/tutorial)探索Claude Code的其他功能。

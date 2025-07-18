@@ -1,0 +1,130 @@
+@reference "tailwindcss";
+
+.container {
+  position: relative;
+}
+
+.content {
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+  padding-left: max(env(safe-area-inset-left), 1.5rem);
+  padding-right: max(env(safe-area-inset-right), 1.5rem);
+  max-width: 90rem;
+  text-align: center;
+  @apply pb-12 md:pb-16 pt-8 md:pt-16;
+}
+
+.badgeContainer {
+  @apply mt-4 md:mt-8;
+}
+
+.badge {
+  padding: 0.75rem 1.5rem;
+  border-radius: 2em;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(147, 51, 234, 0.1));
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  color: hsl(220 100% 45%);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+  }
+
+  &:hover {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(147, 51, 234, 0.15));
+    border-color: rgba(59, 130, 246, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.25);
+
+    &::before {
+      left: 100%;
+    }
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:focus-visible {
+    outline: 2px solid hsl(220 100% 50%);
+    outline-offset: 2px;
+  }
+
+  :global(.dark) & {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(147, 51, 234, 0.15));
+    border-color: rgba(59, 130, 246, 0.3);
+    color: hsl(220 100% 60%);
+
+    &:hover {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(147, 51, 234, 0.2));
+      border-color: rgba(59, 130, 246, 0.4);
+      box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.3);
+    }
+  }
+}
+
+.headline {
+  margin-top: 2rem;
+  background-image: linear-gradient(146deg, #1a1a1a, #4a5568);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size: min(4.5rem, max(8vw, 3rem));
+  font-weight: 800;
+  font-feature-settings: initial;
+  line-height: 1.1;
+  letter-spacing: -0.05rem;
+  text-align: center;
+  position: relative;
+
+  :global(.dark) & {
+    background-image: linear-gradient(146deg, #ffffff, #e2e8f0);
+  }
+
+  /* Subtle text shadow for depth */
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  
+  :global(.dark) & {
+    text-shadow: 0 1px 3px rgba(255, 255, 255, 0.1);
+  }
+
+  @apply flex max-lg:flex max-lg:flex-col items-center justify-center gap-2;
+}
+
+.subtitle {
+  margin-top: 1.5em;
+  font-size: min(1.4rem, max(3.5vw, 1.2rem));
+  font-feature-settings: initial;
+  font-weight: 400;
+  line-height: 1.7;
+  max-width: 42rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.actions {
+  margin-top: 1.6em;
+  margin-bottom: 1.4em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  font-size: min(1.3rem, max(3.5vw, 1.1rem));
+  font-weight: 500;
+}

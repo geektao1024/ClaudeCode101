@@ -1,0 +1,199 @@
+---
+title: "最新更新"
+description: "Claude Code 最新功能和更新日志"
+---
+
+import { Callout } from 'nextra/components'
+
+# Claude Code 最新更新 🚀
+
+了解 Claude Code 的最新功能、改进和更新。
+
+<Callout emoji={<span className='icon-[lucide--sparkles]'></span>} type="info">
+重要提醒
+
+Claude Code 现已正式发布！所有功能都已经过充分测试，可以放心使用。如遇到任何问题，请及时[反馈](https://github.com/anthropics/claude-code/issues)。
+</Callout>
+
+## 🎉 2024-2025 重大更新
+
+### ✨ 正式发布
+
+Claude Code 现已正式发布！经过广泛的研究预览和用户反馈，我们带来了:
+
+- 📈 **扩展的开发者协作功能**
+- 🔧 **GitHub Actions 后台任务支持**
+- 🎨 **VS Code 和 JetBrains 原生集成**
+- 🔄 **文件内直接编辑显示**
+
+### 🛠️ 新增 API 功能
+
+四个强大的新 API 功能，让开发者构建更强大的 AI 智能体：
+
+1. **🧮 代码执行工具** - 直接在对话中运行代码
+2. **🔗 MCP 连接器** - 模型上下文协议集成
+3. **📁 Files API** - 文件管理和操作
+4. **💾 提示缓存** - 高达1小时的提示缓存
+
+## 🔥 核心功能更新
+
+### 🎯 MCP (模型上下文协议) 集成
+
+```bash
+# 交互式 MCP 设置向导
+claude mcp add
+
+# 项目级 MCP 配置
+# 在 .mcp.json 中配置并提交到仓库
+```
+
+**新功能：**
+- 🏗️ 项目级 MCP 作用域
+- 🔧 交互式设置向导
+- 📥 从 Claude Desktop 导入 MCP 服务器
+- ⏱️ 可配置启动超时（MCP_TIMEOUT）
+
+### ⚡ 自定义斜杠命令
+
+在 `.claude/commands/` 目录下的 Markdown 文件现在会自动显示为自定义斜杠命令：
+
+```markdown
+# .claude/commands/deploy.md
+部署应用程序到生产环境
+```
+
+使用：`/deploy`
+
+### 🎣 Hooks 系统
+
+全新的 Hooks 系统让你可以创建自定义自动化和工作流集成。
+
+### 🧠 思考模式增强
+
+- 🤔 **think** - 基础思考模式
+- 💭 **think harder** - 深度思考
+- 🚀 **ultrathink** - 超级思考模式
+
+### 📋 新增命令
+
+- `/release-notes` - 随时查看发布说明
+- `/approved-tools` - 管理工具权限
+- `/vim` - 启用 Vim 按键绑定
+- `/config` - 配置设置
+
+## 🔧 开发者工具集成
+
+### 💻 跨平台支持
+
+- ✅ **Windows 原生支持** (需要 Git for Windows)
+- ☁️ **Bedrock API 支持** (AWS_BEARER_TOKEN_BEDROCK)
+- 🔐 **macOS 钥匙串集成** - API 密钥安全存储
+
+### 📝 文件导入功能
+
+```markdown
+# CLAUDE.md
+@path/to/additional-file.md
+
+# 在启动时自动加载额外文件
+```
+
+### ⌨️ 编辑器集成
+
+- 🎯 **Vim 按键绑定** - 熟悉的编辑体验
+- 📊 **增强的配置命令** - 接受多个值
+- 🔍 **MCP 调试模式** - `--mcp-debug` 标志
+
+## 🎨 用户体验改进
+
+### 🌟 智能代码生成
+
+- 🎯 **上下文感知** - 理解你的代码库
+- 🔄 **实时协作** - 直接在编辑器中显示更改
+- 📚 **多语言支持** - 支持主流编程语言
+
+### 🤖 AI 助手功能
+
+- 💬 **自然语言命令** - 用日常语言描述需求
+- 🔍 **代码解释** - 理解复杂代码逻辑
+- 🌊 **Git 工作流** - 自动化版本控制操作
+
+## 📱 移动端支持
+
+虽然 Claude Code 主要为桌面开发设计，但我们也在不断优化移动端体验：
+
+- 📱 **响应式界面** - 适配不同屏幕尺寸
+- 🔧 **核心功能** - 移动端访问主要功能
+- 💬 **聊天界面** - 优化的对话体验
+
+## 🔜 即将推出
+
+### 🎯 计划中的功能
+
+- 🎨 **可视化代码编辑器**
+- 🌐 **Web 界面**
+- 📊 **项目分析仪表板**
+- 🤝 **团队协作功能**
+
+### 💡 社区反馈
+
+我们持续关注社区反馈，正在开发：
+
+- 🔌 **更多 IDE 集成**
+- 📈 **性能优化**
+- 🌍 **国际化支持**
+- 🎓 **学习资源扩展**
+
+## 🚀 开始使用
+
+准备好体验最新的 Claude Code 功能了吗？
+
+### 💾 安装最新版本
+
+```bash
+# 全局安装
+npm install -g claude-code
+
+# 或使用 homebrew (macOS)
+brew install claude-code
+
+# 验证安装
+claude --version
+```
+
+### 🎯 快速开始
+
+1. **初始化项目**
+   ```bash
+   claude init
+   ```
+
+2. **配置设置**
+   ```bash
+   claude config
+   ```
+
+3. **开始编程**
+   ```bash
+   claude "帮我创建一个React组件"
+   ```
+
+## 📚 学习资源
+
+- 📖 **[完整教程](/zh/tutorial)** - 从零开始学习
+- 🎥 **[视频教程](https://www.youtube.com/results?search_query=claude+code)** - 可视化学习
+- 💬 **[社区讨论](https://github.com/anthropics/claude-code/discussions)** - 交流经验
+- 📋 **[官方文档](https://docs.anthropic.com/en/docs/claude-code)** - 详细参考
+
+## 🎉 加入我们
+
+成为 Claude Code 社区的一员：
+
+- ⭐ **[GitHub Star](https://github.com/anthropics/claude-code)** - 支持项目
+- 🐛 **[报告问题](https://github.com/anthropics/claude-code/issues)** - 帮助改进
+- 💡 **[提交建议](https://github.com/anthropics/claude-code/discussions)** - 分享想法
+- 🤝 **[贡献代码](https://github.com/anthropics/claude-code/blob/main/CONTRIBUTING.md)** - 参与开发
+
+---
+
+*最后更新: 2024年12月*

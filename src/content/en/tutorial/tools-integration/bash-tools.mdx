@@ -1,0 +1,279 @@
+---
+title: "Bash Tools"
+description: "Working with command-line tools and shell commands in Claude Code"
+---
+
+# Bash Tools
+
+Claude Code provides powerful integration with command-line tools through the Bash tool, allowing you to execute shell commands and work with various CLI utilities.
+
+## Basic Bash Tool Usage
+
+### Simple Commands
+
+Claude can execute basic shell commands:
+
+```
+Run `ls -la` to see all files in the current directory
+```
+
+Claude executes:
+```bash
+ls -la
+```
+
+### Complex Commands
+
+```
+Check git status and show recent commits
+```
+
+Claude executes:
+```bash
+git status
+git log --oneline -5
+```
+
+## Common Development Workflows
+
+### 1. Package Management
+
+**npm/yarn/pnpm Operations**
+```
+Install new dependencies and update package.json
+```
+
+Claude executes:
+```bash
+npm install lodash @types/lodash
+npm update
+```
+
+**Version Management**
+```
+Check current Node.js and npm versions
+```
+
+Claude executes:
+```bash
+node --version
+npm --version
+```
+
+### 2. Git Operations
+
+**Repository Status**
+```
+Show current branch, status, and recent changes
+```
+
+Claude executes:
+```bash
+git branch
+git status
+git diff --stat
+```
+
+**Branch Management**
+```
+Create a new feature branch and switch to it
+```
+
+Claude executes:
+```bash
+git checkout -b feature/new-dashboard
+git push -u origin feature/new-dashboard
+```
+
+### 3. Build and Test Commands
+
+**Running Tests**
+```
+Run unit tests and generate coverage report
+```
+
+Claude executes:
+```bash
+npm test
+npm run test:coverage
+```
+
+**Build Operations**
+```
+Build the project and check for errors
+```
+
+Claude executes:
+```bash
+npm run build
+npm run type-check
+```
+
+## Advanced Bash Integration
+
+### 1. Piped Commands
+
+```
+Find all TypeScript files and search for specific function
+```
+
+Claude executes:
+```bash
+find . -name "*.ts" -type f | xargs grep -l "useEffect"
+```
+
+### 2. Environment Management
+
+```
+Set environment variables and run development server
+```
+
+Claude executes:
+```bash
+export NODE_ENV=development
+export DEBUG=true
+npm run dev
+```
+
+### 3. File Operations
+
+```
+Create directory structure and initialize files
+```
+
+Claude executes:
+```bash
+mkdir -p src/components/Dashboard/{components,hooks,utils}
+touch src/components/Dashboard/index.ts
+touch src/components/Dashboard/Dashboard.tsx
+```
+
+## Tool Integration Examples
+
+### Docker Operations
+```
+Build and run Docker container for the application
+```
+
+Claude executes:
+```bash
+docker build -t my-app .
+docker run -p 3000:3000 my-app
+```
+
+### Database Management
+```
+Run database migrations and seed data
+```
+
+Claude executes:
+```bash
+npx prisma migrate dev
+npx prisma db seed
+```
+
+### Linting and Formatting
+```
+Fix code formatting and linting issues
+```
+
+Claude executes:
+```bash
+npm run lint -- --fix
+npm run format
+```
+
+## Best Practices
+
+### 1. Command Validation
+
+Claude validates commands before execution:
+- Checks for potentially dangerous operations
+- Confirms file paths exist
+- Validates command syntax
+
+### 2. Error Handling
+
+When commands fail, Claude:
+- Analyzes error output
+- Suggests alternative approaches
+- Provides troubleshooting steps
+
+### 3. Path Management
+
+**Absolute vs Relative Paths**
+```bash
+# Claude prefers absolute paths when possible
+cd /full/path/to/project
+npm install
+
+# Rather than relative navigation
+cd ../../../project && npm install
+```
+
+## Security Considerations
+
+### Allowed Operations
+- File system navigation and inspection
+- Package management operations
+- Git repository management
+- Build and test commands
+- Development server operations
+
+### Restricted Operations
+- System-level modifications
+- User account management
+- Network configuration changes
+- Destructive operations without confirmation
+
+## Configuration Options
+
+### Tool Permissions
+
+Configure allowed Bash commands in your Claude Code settings:
+
+```json
+{
+  "allowedTools": [
+    "Bash(npm:*)",
+    "Bash(git:*)",
+    "Bash(docker:*)",
+    "Bash(ls:*)",
+    "Bash(cd:*)"
+  ]
+}
+```
+
+### Command Timeouts
+
+Set timeout limits for long-running commands:
+
+```json
+{
+  "bashTimeout": 300000,
+  "buildTimeout": 600000
+}
+```
+
+## Troubleshooting
+
+### Common Issues
+
+**Command Not Found**
+- Verify tool is installed
+- Check PATH environment variable
+- Use absolute path to executable
+
+**Permission Denied**
+- Check file permissions
+- Verify write access to directory
+- Consider using sudo (if allowed)
+
+**Command Timeouts**
+- Increase timeout settings
+- Break down into smaller commands
+- Use background processes for long operations
+
+---
+
+**Next**: [MCP Servers](/en/tutorial/tools-integration/mcp-servers) - Learn about Model Context Protocol server integration.

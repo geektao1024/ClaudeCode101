@@ -1,0 +1,231 @@
+---
+title: "Basic Usage"
+description: "Learn fundamental Claude Code usage patterns and workflows"
+---
+
+# Basic Usage
+
+After installing Claude Code, learn the essential usage patterns that will make you productive with this AI-powered development assistant.
+
+## Starting a Conversation
+
+### Simple Commands
+
+Claude Code works best with clear, specific instructions:
+
+```
+Create a React component for a user profile card
+```
+
+```
+Fix the TypeScript errors in the authentication module
+```
+
+```
+Add unit tests for the shopping cart functionality
+```
+
+### Natural Language
+
+You can interact with Claude using natural language:
+
+```
+I'm getting a 404 error when trying to access the /api/users endpoint. 
+Can you help me debug this issue?
+```
+
+```
+The mobile navigation menu isn't working properly on small screens. 
+Please help me make it responsive.
+```
+
+## Essential Workflows
+
+### 1. Explore-Plan-Code
+
+This is the most versatile Claude Code pattern:
+
+**Step 1: Explore**
+```
+Help me understand the current authentication system in this codebase
+```
+
+**Step 2: Plan**
+```
+I need to add OAuth login support. What's the best approach for this project?
+```
+
+**Step 3: Code**
+```
+Implement Google OAuth integration using the plan we discussed
+```
+
+### 2. File Operations
+
+**Reading Files**
+```
+Show me the content of src/components/Header.tsx
+```
+
+**Editing Code**
+```
+Update the Header component to include a dark mode toggle
+```
+
+**Creating Files**
+```
+Create a new utility function for formatting dates in src/utils/date.ts
+```
+
+### 3. Testing and Quality
+
+**Running Tests**
+```
+Run the test suite and fix any failing tests
+```
+
+**Code Quality**
+```
+Review this component for potential improvements and best practices
+```
+
+**Error Fixing**
+```
+Fix the build errors and make sure the project compiles successfully
+```
+
+## Working with Projects
+
+### Project Context
+
+Claude automatically understands your project structure:
+
+```
+Add a new API endpoint for user preferences following the existing patterns
+```
+
+```
+Create a component that matches the design system used in other components
+```
+
+### Code Style Consistency
+
+Claude maintains consistency with your existing code:
+
+```
+Refactor this function to match the coding style used in the rest of the project
+```
+
+```
+Add TypeScript types following the patterns in the existing codebase
+```
+
+## Advanced Usage Patterns
+
+### 1. Multi-Step Tasks
+
+Break complex tasks into manageable steps:
+
+```
+I need to implement a complete user authentication system. 
+Let's start by planning the architecture and then implement it step by step.
+```
+
+### 2. Context Building
+
+Provide relevant context for better results:
+
+```
+I'm working on an e-commerce app using React and Node.js. 
+The payment system uses Stripe. I need to add subscription billing.
+Here's the current payment code: [paste code]
+```
+
+### 3. Iterative Development
+
+Build features incrementally:
+
+```
+Create a basic user dashboard with just the profile section first.
+We'll add analytics and settings in the next iteration.
+```
+
+## Best Practices
+
+### 1. Be Specific
+
+**Good**: "Fix the memory leak in the useEffect hook in UserProfile.tsx"
+**Better**: "The useEffect in UserProfile.tsx on line 15 is causing a memory leak because it's not cleaning up the event listener"
+
+### 2. Provide Context
+
+**Good**: "Add error handling"
+**Better**: "Add error handling to the API calls in the user service, following the pattern used in the auth service"
+
+### 3. Use Examples
+
+**Good**: "Style this button"
+**Better**: "Style this button to match the primary buttons in the design system, like the one in LoginForm.tsx"
+
+### 4. Reference Existing Code
+
+```
+Create a new component similar to UserCard but for displaying product information
+```
+
+```
+Use the same validation pattern as in the registration form
+```
+
+## Common Commands
+
+### Development
+- `Start the development server`
+- `Build the project for production`
+- `Run the linting checks`
+- `Update the dependencies`
+
+### Debugging
+- `Help me debug this error: [error message]`
+- `Check why the tests are failing`
+- `Investigate the performance issue in [component]`
+
+### Code Quality
+- `Review this code for security issues`
+- `Optimize this function for better performance`
+- `Add proper error handling to this API call`
+
+### Documentation
+- `Add JSDoc comments to this function`
+- `Update the README with the new features`
+- `Create API documentation for these endpoints`
+
+## Getting Help
+
+### Ask for Explanations
+```
+Explain how this authentication middleware works
+```
+
+### Request Best Practices
+```
+What's the best way to handle state management in this React app?
+```
+
+### Troubleshooting
+```
+The build is failing with this error: [error]. How do I fix it?
+```
+
+## Next Steps
+
+Once you're comfortable with basic usage:
+
+1. **Learn Configuration**: Set up CLAUDE.md and tool allowlists
+2. **Explore Workflows**: Master advanced patterns like test-driven development
+3. **Optimize Performance**: Learn context management and direction correction
+4. **Integrate Tools**: Connect with GitHub CLI, databases, and other services
+
+---
+
+**Next**: [Configuration](/en/tutorial/configuration) - Learn how to customize Claude Code for your workflow.

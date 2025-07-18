@@ -1,0 +1,69 @@
+---
+title: "Headless Mode Automation"
+description: "Using Claude Code headless mode for infrastructure automation"
+---
+
+# Headless Mode Automation
+
+Claude Code includes headless mode for non-interactive contexts like CI, pre-commit hooks, build scripts, and automation.
+
+## What is Headless Mode
+
+Headless mode allows you to use Claude Code programmatically without an interactive interface. Use the `-p` flag with a prompt to enable headless mode.
+
+## Basic Usage
+
+```bash
+claude -p "Analyze current project code quality and generate a report"
+```
+
+## Common Parameters
+
+- `--output-format stream-json` - Streaming JSON output
+- `--allowedTools` - Specify allowed tools
+- `--verbose` - Verbose output for debugging
+
+## Use Cases
+
+### 1. Issue Triage
+
+Headless mode can support automation triggered by GitHub events:
+
+```bash
+claude -p "Analyze this GitHub Issue and add appropriate labels" \
+  --allowedTools "Read,Bash(gh:*)"
+```
+
+### 2. Code Review
+
+Subjective code review beyond traditional tool detection:
+
+```bash
+claude -p "Check code for typos, outdated comments, and misleading function names" \
+  --allowedTools "Read,Write"
+```
+
+### 3. Batch Processing
+
+Handle large migrations or analysis tasks:
+
+```bash
+# Generate task list
+claude -p "Generate list of files needing React to Vue migration"
+
+# Process in loop
+for file in $(cat migration-list.txt); do
+  claude -p "Migrate $file from React to Vue" \
+    --allowedTools "Edit,Bash(git commit:*)"
+done
+```
+
+## Important Notes
+
+- Headless mode doesn't persist between sessions - must restart each time
+- Use `--verbose` for debugging, disable in production
+- Ensure stable network connection
+
+---
+
+**Related**: [Multi-Claude Collaboration](/en/tutorial/advanced/multi-claude) - Learn parallel collaboration workflows.

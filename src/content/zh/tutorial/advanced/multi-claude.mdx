@@ -1,0 +1,221 @@
+---
+title: "多Claude协作工作流程"
+description: "通过并行运行多个Claude实例实现高效协作开发"
+---
+
+# 多Claude协作工作流程
+
+除了独立使用外，一些最强大的应用涉及并行运行多个 Claude 实例，实现高效的协作开发。
+
+## 协作模式
+
+### 1. 编码与验证分离
+
+让一个 Claude 编写代码，另一个审查或测试：
+
+```bash
+# 终端1：编写代码
+claude
+> 请实现用户认证功能
+
+# 终端2：代码审查  
+claude
+> 请审查刚才实现的用户认证代码，重点关注安全性
+```
+
+**工作流程**：
+1. Claude A 编写代码
+2. 运行 `/clear` 或启动新的 Claude 实例
+3. Claude B 审查 Claude A 的工作
+4. Claude C 根据反馈编辑代码
+
+### 2. 测试驱动协作
+
+```bash
+# Claude 1：编写测试
+claude
+> 为用户登录功能编写完整的测试用例
+
+# Claude 2：实现功能
+claude  
+> 根据这些测试用例实现登录功能，确保所有测试通过
+```
+
+## 多检出策略
+
+### Git 多检出
+
+为不同任务创建独立的工作区：
+
+```bash
+# 创建多个检出
+git clone <repo> project-auth
+git clone <repo> project-ui  
+git clone <repo> project-api
+
+# 在每个目录启动Claude
+cd project-auth && claude &
+cd project-ui && claude &
+cd project-api && claude &
+```
+
+### Git 工作树
+
+更轻量级的多分支管理：
+
+```bash
+# 创建工作树
+git worktree add ../project-feature-a feature-a
+git worktree add ../project-feature-b feature-b
+
+# 在每个工作树启动Claude
+cd ../project-feature-a && claude &
+cd ../project-feature-b && claude &
+```
+
+**工作树优势**：
+- 共享 Git 历史和 reflog
+- 独立的工作目录和文件
+- 轻量级，无需重复克隆
+
+## 协作最佳实践
+
+### 1. 任务分工
+
+```bash
+# Claude 1：专注后端API
+claude
+> 专门负责实现 RESTful API 和数据库操作
+
+# Claude 2：专注前端UI
+claude
+> 专门负责React组件和用户交互逻辑
+
+# Claude 3：专注测试
+claude  
+> 专门负责编写和维护测试用例
+```
+
+### 2. 共享工作板
+
+让Claude实例通过文档进行通信：
+
+```bash
+# 创建共享工作板
+echo "# 项目协作板" > COLLABORATION.md
+
+# Claude 1 写入任务
+claude
+> 在 COLLABORATION.md 中记录我完成的API接口
+
+# Claude 2 读取并响应
+claude
+> 查看 COLLABORATION.md，根据API接口实现前端调用
+```
+
+### 3. 版本控制协调
+
+```bash
+# 定期同步
+git fetch origin
+git rebase origin/main
+
+# 避免冲突
+git status
+git diff
+```
+
+## 进阶协作模式
+
+### 扇出模式
+
+适用于大规模迁移或分析：
+
+```python
+# 生成任务脚本
+tasks = generate_migration_tasks()
+
+for task in tasks:
+    subprocess.run([
+        "claude", "-p", f"迁移文件 {task.file}",
+        "--allowedTools", "Edit,Bash(git commit:*)"
+    ])
+```
+
+### 管道模式
+
+将Claude集成到数据处理管道：
+
+```bash
+# 数据处理管道
+cat data.json | claude -p "分析数据质量" --json | process_results.py
+```
+
+## 环境设置
+
+### iTerm2 通知
+
+在Mac上设置通知提醒：
+
+```bash
+# ~/.zshrc
+export CLAUDE_NOTIFY=true
+
+# 任务完成时通知
+claude && osascript -e 'display notification "Claude任务完成"'
+```
+
+### 终端管理
+
+```bash
+# 使用tmux管理多个会话
+tmux new-session -d -s claude-auth
+tmux new-session -d -s claude-ui
+tmux new-session -d -s claude-test
+
+# 切换会话
+tmux attach -t claude-auth
+```
+
+## 清理和维护
+
+### 工作树清理
+
+```bash
+# 查看工作树
+git worktree list
+
+# 删除完成的工作树
+git worktree remove ../project-feature-a
+git branch -d feature-a
+```
+
+### 进程管理
+
+```bash
+# 查看运行中的Claude进程
+ps aux | grep claude
+
+# 批量停止
+pkill -f "claude"
+```
+
+## 团队协作
+
+### 共享配置
+
+```bash
+# 团队共享的 CLAUDE.md
+git add CLAUDE.md
+git commit -m "Update team Claude configuration"
+```
+
+### 协作规范
+
+1. **命名约定**：为不同任务使用一致的分支和工作树命名
+2. **沟通协议**：定义何时需要人工介入和决策
+3. **合并策略**：确定何时合并独立开发的功能
+
+---
+
+**相关阅读**: [无头模式](/zh/tutorial/advanced/headless-mode) - 了解自动化基础设施的实现。

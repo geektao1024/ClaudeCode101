@@ -1,0 +1,115 @@
+---
+title: "Specific Instructions"
+description: "Writing effective specific instructions for Claude Code to achieve better results"
+---
+
+# Specific Instructions
+
+Learn how to write clear, specific instructions that help Claude Code understand exactly what you want to accomplish.
+
+## Why Specificity Matters
+
+Claude Code performs best when given:
+- Clear, actionable instructions
+- Specific context about your goals
+- Relevant constraints and requirements
+- Expected outcomes
+
+## Writing Effective Instructions
+
+### 1. Be Explicit About Goals
+
+**Poor**: "Fix this code"
+**Better**: "Fix the TypeScript compilation errors in the user authentication module"
+
+### 2. Provide Context
+
+**Poor**: "Add a button"
+**Better**: "Add a submit button to the login form that validates user input before sending the request"
+
+### 3. Specify Constraints
+
+**Poor**: "Make it faster"
+**Better**: "Optimize the database query to reduce load time to under 200ms while maintaining data accuracy"
+
+### 4. Include Success Criteria
+
+**Poor**: "Improve the UI"
+**Better**: "Improve the mobile responsiveness of the dashboard to display correctly on screens 320px wide and larger"
+
+## Common Instruction Patterns
+
+### For Bug Fixes
+```
+Fix the [specific error/issue] in [file/component/module] that occurs when [specific conditions]. The expected behavior should be [describe correct behavior].
+```
+
+### For Features
+```
+Implement [feature name] that allows users to [specific capability]. It should include [list requirements] and follow [design/architectural patterns].
+```
+
+### For Refactoring
+```
+Refactor [specific code section] to [specific improvement] while maintaining [existing functionality/API compatibility].
+```
+
+## Advanced Instruction Techniques
+
+### Progressive Disclosure
+Start with high-level goals, then provide details as needed:
+
+1. **Initial**: "Create a user dashboard"
+2. **Follow-up**: "Include widgets for analytics, recent activity, and quick actions"
+3. **Detail**: "The analytics widget should show daily active users for the past 30 days"
+
+### Conditional Instructions
+Use "if-then" patterns for complex scenarios:
+
+```
+If the database migration fails, rollback to the previous version and create a detailed error log. If it succeeds, run the integration tests and update the deployment documentation.
+```
+
+### Reference Instructions
+Point to existing patterns:
+
+```
+Create a new API endpoint following the same pattern as the existing user endpoints, but for managing projects.
+```
+
+## Best Practices
+
+### Do
+- Use specific technical terms
+- Reference exact file paths and line numbers when relevant
+- Provide examples of expected output
+- Mention any dependencies or prerequisites
+- Specify testing requirements
+
+### Don't
+- Use vague terms like "better" or "cleaner"
+- Assume Claude knows your specific business logic
+- Skip important context to save time
+- Provide conflicting requirements
+- Forget to mention edge cases
+
+## Example: Complete Instruction
+
+```
+Please create a React component called UserProfileCard that:
+
+1. Displays user avatar, name, email, and join date
+2. Accepts user data as props with TypeScript interface
+3. Uses our existing design system (src/components/ui/)
+4. Handles loading and error states
+5. Is responsive for mobile and desktop
+6. Includes hover effects matching our brand guidelines
+7. Has proper accessibility attributes
+8. Includes unit tests using Jest and React Testing Library
+
+The component should be created in src/components/UserProfileCard/ with index.tsx, styles.module.css, and UserProfileCard.test.tsx files.
+```
+
+---
+
+**Next**: [Context Management](/en/tutorial/optimization/context-management) - Learn how to manage context effectively.

@@ -1,0 +1,340 @@
+---
+title: "MCP Servers"
+description: "Integrating Model Context Protocol servers to extend Claude Code capabilities"
+---
+
+# MCP Servers
+
+Model Context Protocol (MCP) servers allow you to extend Claude Code's capabilities by connecting to external services and data sources.
+
+## What is MCP?
+
+MCP is an open standard that enables secure connections between Claude Code and external systems:
+- **Standardized Interface**: Consistent way to connect tools and data
+- **Secure Communication**: Controlled access to external resources
+- **Extensible Architecture**: Easy to add new capabilities
+
+## Common MCP Server Types
+
+### 1. Database Servers
+Connect to databases for data analysis and queries:
+
+```json
+{
+  "mcpServers": {
+    "postgres": {
+      "command": "mcp-server-postgres",
+      "args": ["--connection-string", "postgresql://..."]
+    }
+  }
+}
+```
+
+### 2. File System Servers
+Enhanced file system operations:
+
+```json
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "mcp-server-filesystem",
+      "args": ["--base-path", "/project/data"]
+    }
+  }
+}
+```
+
+### 3. API Integration Servers
+Connect to REST APIs and web services:
+
+```json
+{
+  "mcpServers": {
+    "github": {
+      "command": "mcp-server-github",
+      "env": {
+        "GITHUB_TOKEN": "your-token-here"
+      }
+    }
+  }
+}
+```
+
+## Installing MCP Servers
+
+### From npm Registry
+
+```bash
+npm install -g @modelcontextprotocol/server-postgres
+npm install -g @modelcontextprotocol/server-filesystem
+npm install -g @modelcontextprotocol/server-github
+```
+
+### Custom Server Installation
+
+```bash
+# Clone and build custom server
+git clone https://github.com/example/custom-mcp-server
+cd custom-mcp-server
+npm install
+npm run build
+npm link
+```
+
+## Configuration
+
+### Claude Code Settings
+
+Configure MCP servers in your settings file:
+
+```json
+{
+  "mcpServers": {
+    "database": {
+      "command": "mcp-server-postgres",
+      "args": [
+        "--connection-string", 
+        "postgresql://user:password@localhost:5432/mydb"
+      ],
+      "env": {
+        "NODE_ENV": "development"
+      }
+    },
+    "files": {
+      "command": "mcp-server-filesystem",
+      "args": ["--base-path", "/workspace/data"],
+      "allowedPaths": ["/workspace", "/tmp"]
+    }
+  }
+}
+```
+
+### Environment Variables
+
+```bash
+# Database connection
+export DATABASE_URL="postgresql://localhost:5432/myapp"
+
+# API credentials
+export GITHUB_TOKEN="ghp_xxxxxxxxxxxx"
+export SLACK_BOT_TOKEN="xoxb-xxxxxxxxxxxx"
+
+# Server configuration
+export MCP_LOG_LEVEL="debug"
+```
+
+## Usage Examples
+
+### Database Queries
+
+```
+Query the users table to find all active accounts created in the last 30 days
+```
+
+Claude uses MCP database server:
+```sql
+SELECT id, username, email, created_at 
+FROM users 
+WHERE status = 'active' 
+  AND created_at >= NOW() - INTERVAL '30 days'
+ORDER BY created_at DESC;
+```
+
+### File System Operations
+
+```
+Analyze all JSON files in the data directory and summarize their structure
+```
+
+Claude uses MCP filesystem server to:
+1. List all .json files
+2. Read file contents
+3. Analyze data structure
+4. Generate summary report
+
+### GitHub Integration
+
+```
+Create an issue for the bug we just discussed and assign it to the current milestone
+```
+
+Claude uses MCP GitHub server:
+```bash
+gh issue create \
+  --title "Fix user authentication timeout" \
+  --body "Detailed description..." \
+  --milestone "v2.1.0" \
+  --assignee "@me"
+```
+
+## Custom MCP Server Development
+
+### Basic Server Structure
+
+```typescript
+// server.ts
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+
+const server = new Server(
+  {
+    name: 'custom-server',
+    version: '1.0.0',
+  },
+  {
+    capabilities: {
+      tools: {},
+      resources: {},
+    },
+  }
+);
+
+// Define tools
+server.setRequestHandler('tools/list', async () => {
+  return {
+    tools: [
+      {
+        name: 'custom_tool',
+        description: 'Performs custom operation',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            input: { type: 'string' }
+          }
+        }
+      }
+    ]
+  };
+});
+
+// Handle tool calls
+server.setRequestHandler('tools/call', async (request) => {
+  const { name, arguments: args } = request.params;
+  
+  if (name === 'custom_tool') {
+    // Perform custom operation
+    return {
+      content: [
+        {
+          type: 'text',
+          text: `Processed: ${args.input}`
+        }
+      ]
+    };
+  }
+});
+
+// Start server
+const transport = new StdioServerTransport();
+await server.connect(transport);
+```
+
+### Resource Providers
+
+```typescript
+// Provide data resources
+server.setRequestHandler('resources/list', async () => {
+  return {
+    resources: [
+      {
+        uri: 'custom://data/users',
+        name: 'User Data',
+        description: 'Access to user information'
+      }
+    ]
+  };
+});
+
+server.setRequestHandler('resources/read', async (request) => {
+  const { uri } = request.params;
+  
+  if (uri === 'custom://data/users') {
+    const userData = await fetchUserData();
+    return {
+      contents: [
+        {
+          uri,
+          mimeType: 'application/json',
+          text: JSON.stringify(userData, null, 2)
+        }
+      ]
+    };
+  }
+});
+```
+
+## Security Best Practices
+
+### 1. Access Control
+
+```json
+{
+  "mcpServers": {
+    "database": {
+      "allowedOperations": ["SELECT", "INSERT", "UPDATE"],
+      "restrictedTables": ["admin_users", "system_config"]
+    }
+  }
+}
+```
+
+### 2. Environment Isolation
+
+```json
+{
+  "mcpServers": {
+    "filesystem": {
+      "sandboxPath": "/workspace/safe-zone",
+      "readOnly": false,
+      "allowedExtensions": [".txt", ".json", ".md"]
+    }
+  }
+}
+```
+
+### 3. Credential Management
+
+```bash
+# Use environment variables for sensitive data
+export DB_PASSWORD=$(cat /secure/db-password)
+export API_KEY=$(vault kv get -field=key secret/api)
+```
+
+## Troubleshooting
+
+### Common Issues
+
+**Server Connection Failed**
+- Check server installation
+- Verify configuration syntax
+- Test server independently
+
+**Permission Denied**
+- Review access control settings
+- Check file system permissions
+- Validate environment variables
+
+**Tool Not Found**
+- Confirm server capabilities
+- Check tool name spelling
+- Verify server registration
+
+### Debugging
+
+```json
+{
+  "mcpServers": {
+    "debug-server": {
+      "command": "mcp-server-example",
+      "env": {
+        "MCP_LOG_LEVEL": "debug",
+        "DEBUG": "*"
+      }
+    }
+  }
+}
+```
+
+---
+
+**Next**: [Custom Commands](/en/tutorial/tools-integration/custom-commands) - Learn how to create custom command shortcuts.

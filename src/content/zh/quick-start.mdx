@@ -1,0 +1,289 @@
+---
+title: "快速开始"
+description: "5分钟内学会使用Claude Code进行AI编程"
+---
+
+import { Callout } from 'nextra/components'
+
+# 快速开始 🚀
+
+欢迎使用Claude Code！这是一个强大的AI编程助手，能够帮助您高效地编写、理解和优化代码。
+
+## 安装 Claude Code
+
+### 方式一：使用 npm（推荐）
+
+```bash
+# 全局安装
+npm install -g claude-code
+
+# 或使用 pnpm
+pnpm add -g claude-code
+
+# 或使用 yarn
+yarn global add claude-code
+```
+
+### 方式二：使用 Homebrew (macOS)
+
+```bash
+brew install claude-code
+```
+
+### 方式三：使用 Scoop (Windows)
+
+```bash
+scoop install claude-code
+```
+
+## 配置 API 密钥
+
+<Callout type="info">
+  **获取API密钥**: 前往 [Claude.ai](https://claude.ai) 创建账户并获取API密钥
+</Callout>
+
+### 设置环境变量
+
+```bash
+export ANTHROPIC_API_KEY="your_api_key_here"
+```
+
+### 或使用配置命令
+
+```bash
+claude config set api-key your_api_key_here
+```
+
+## 第一个项目
+
+### 1. 初始化项目
+
+```bash
+# 创建新的项目目录
+mkdir my-claude-project
+cd my-claude-project
+
+# 初始化Claude Code配置
+claude init
+```
+
+### 2. 创建项目配置
+
+Claude Code 会自动生成 `.claude` 配置文件夹：
+
+```
+my-claude-project/
+├── .claude/
+│   ├── settings.json
+│   └── commands/
+├── CLAUDE.md
+└── README.md
+```
+
+### 3. 开始编程
+
+```bash
+# 启动交互式会话
+claude "帮我创建一个简单的React组件"
+
+# 或使用文件模式
+claude -f components.js "优化这个组件的性能"
+```
+
+## 基础用法
+
+### 自然语言命令
+
+```bash
+# 代码生成
+claude "创建一个用户登录表单"
+
+# 代码解释
+claude "解释这个函数的作用" -f utils.js
+
+# 代码优化
+claude "优化这个算法的性能" -f algorithm.py
+
+# 错误修复
+claude "修复这个bug" -f broken-code.js
+```
+
+### 项目级别操作
+
+```bash
+# 分析整个项目
+claude "分析项目架构并提供改进建议"
+
+# 添加功能
+claude "为这个项目添加用户认证功能"
+
+# 重构代码
+claude "重构这个模块使其更具可维护性"
+```
+
+## 常用功能
+
+### 🔧 代码审查
+
+```bash
+# 检查代码质量
+claude review
+
+# 检查安全问题
+claude security-check
+
+# 检查性能问题
+claude performance-check
+```
+
+### 📋 文档生成
+
+```bash
+# 生成API文档
+claude docs generate
+
+# 生成README
+claude docs readme
+
+# 生成类型定义
+claude docs types
+```
+
+### 🧪 测试辅助
+
+```bash
+# 生成单元测试
+claude test generate
+
+# 运行测试分析
+claude test analyze
+
+# 生成测试数据
+claude test data
+```
+
+## 高级特性
+
+### MCP (模型上下文协议) 集成
+
+```bash
+# 设置MCP服务器
+claude mcp add
+
+# 列出可用的MCP服务器
+claude mcp list
+
+# 配置项目级MCP
+claude mcp config
+```
+
+### 自定义命令
+
+在 `.claude/commands/` 目录创建自定义命令：
+
+```markdown
+// .claude/commands/deploy.md
+部署当前项目到生产环境，包括构建、测试和部署步骤
+```
+
+使用自定义命令：
+
+```bash
+claude /deploy
+```
+
+### Hooks 系统
+
+配置自动化工作流：
+
+```json
+// .claude/settings.json
+{
+  "hooks": {
+    "pre-commit": "claude review --fix",
+    "post-commit": "claude docs update"
+  }
+}
+```
+
+## 最佳实践
+
+### 1. 项目结构
+
+```
+project/
+├── .claude/
+│   ├── settings.json      # 项目配置
+│   ├── commands/          # 自定义命令
+│   └── .mcp.json         # MCP配置
+├── CLAUDE.md             # 项目说明
+├── src/
+└── tests/
+```
+
+### 2. 配置文件示例
+
+```json
+{
+  "model": "claude-3-5-sonnet-20241022",
+  "temperature": 0.7,
+  "tools": ["code_execution", "file_operations"],
+  "project_context": {
+    "language": "typescript",
+    "framework": "react",
+    "testing": "jest"
+  }
+}
+```
+
+### 3. 编写良好的提示
+
+```bash
+# 好的提示 ✅
+claude "创建一个TypeScript React组件，包含用户登录表单，使用Tailwind CSS样式，包含表单验证"
+
+# 不好的提示 ❌
+claude "做个登录"
+```
+
+## 故障排除
+
+### 常见问题
+
+<Callout type="error">
+  **API密钥错误**: 检查环境变量或使用 `claude config show` 查看当前配置
+</Callout>
+
+<Callout type="warning">
+  **网络连接问题**: 确保网络连接正常，或配置代理设置
+</Callout>
+
+### 调试模式
+
+```bash
+# 启用详细日志
+claude --debug "你的命令"
+
+# 查看配置
+claude config show
+
+# 检查连接
+claude health check
+```
+
+## 下一步
+
+恭喜！您已经成功设置了Claude Code。接下来可以：
+
+1. 🎓 [完整教程](/zh/tutorial) - 深入学习所有功能
+2. 🔧 [资源和工具](/zh/resources) - 探索更多实用工具
+3. 📖 [API参考](/zh/api-reference) - 查看详细的API文档
+4. ✨ [最新更新](/zh/upgrade) - 了解最新功能
+
+<Callout type="success">
+  **提示**: 加入我们的 [GitHub 社区](https://github.com/anthropics/claude-code/discussions) 与其他开发者交流经验！
+</Callout>
+
+---
+
+*需要帮助？查看我们的 [故障排除指南](https://docs.anthropic.com/en/docs/claude-code/troubleshooting) 或 [联系支持](https://github.com/anthropics/claude-code/issues)。*

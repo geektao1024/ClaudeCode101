@@ -1,0 +1,279 @@
+---
+title: "Bash 工具"
+description: "在Claude Code中使用命令行工具和shell命令"
+---
+
+# Bash 工具
+
+Claude Code通过Bash工具提供了强大的命令行工具集成，允许你执行shell命令并使用各种CLI实用程序。
+
+## 基本Bash工具使用
+
+### 简单命令
+
+Claude可以执行基本的shell命令：
+
+```
+运行 `ls -la` 查看当前目录中的所有文件
+```
+
+Claude执行：
+```bash
+ls -la
+```
+
+### 复杂命令
+
+```
+检查git状态并显示最近的提交
+```
+
+Claude执行：
+```bash
+git status
+git log --oneline -5
+```
+
+## 常见开发工作流
+
+### 1. 包管理
+
+**npm/yarn/pnpm操作**
+```
+安装新依赖并更新package.json
+```
+
+Claude执行：
+```bash
+npm install lodash @types/lodash
+npm update
+```
+
+**版本管理**
+```
+检查当前Node.js和npm版本
+```
+
+Claude执行：
+```bash
+node --version
+npm --version
+```
+
+### 2. Git操作
+
+**仓库状态**
+```
+显示当前分支、状态和最近更改
+```
+
+Claude执行：
+```bash
+git branch
+git status
+git diff --stat
+```
+
+**分支管理**
+```
+创建新功能分支并切换到它
+```
+
+Claude执行：
+```bash
+git checkout -b feature/new-dashboard
+git push -u origin feature/new-dashboard
+```
+
+### 3. 构建和测试命令
+
+**运行测试**
+```
+运行单元测试并生成覆盖率报告
+```
+
+Claude执行：
+```bash
+npm test
+npm run test:coverage
+```
+
+**构建操作**
+```
+构建项目并检查错误
+```
+
+Claude执行：
+```bash
+npm run build
+npm run type-check
+```
+
+## 高级Bash集成
+
+### 1. 管道命令
+
+```
+查找所有TypeScript文件并搜索特定函数
+```
+
+Claude执行：
+```bash
+find . -name "*.ts" -type f | xargs grep -l "useEffect"
+```
+
+### 2. 环境管理
+
+```
+设置环境变量并运行开发服务器
+```
+
+Claude执行：
+```bash
+export NODE_ENV=development
+export DEBUG=true
+npm run dev
+```
+
+### 3. 文件操作
+
+```
+创建目录结构并初始化文件
+```
+
+Claude执行：
+```bash
+mkdir -p src/components/Dashboard/{components,hooks,utils}
+touch src/components/Dashboard/index.ts
+touch src/components/Dashboard/Dashboard.tsx
+```
+
+## 工具集成示例
+
+### Docker操作
+```
+为应用程序构建并运行Docker容器
+```
+
+Claude执行：
+```bash
+docker build -t my-app .
+docker run -p 3000:3000 my-app
+```
+
+### 数据库管理
+```
+运行数据库迁移并种子数据
+```
+
+Claude执行：
+```bash
+npx prisma migrate dev
+npx prisma db seed
+```
+
+### 代码检查和格式化
+```
+修复代码格式化和检查问题
+```
+
+Claude执行：
+```bash
+npm run lint -- --fix
+npm run format
+```
+
+## 最佳实践
+
+### 1. 命令验证
+
+Claude在执行前验证命令：
+- 检查潜在危险操作
+- 确认文件路径存在
+- 验证命令语法
+
+### 2. 错误处理
+
+当命令失败时，Claude：
+- 分析错误输出
+- 建议替代方法
+- 提供故障排除步骤
+
+### 3. 路径管理
+
+**绝对路径与相对路径**
+```bash
+# Claude在可能时优先使用绝对路径
+cd /full/path/to/project
+npm install
+
+# 而不是相对导航
+cd ../../../project && npm install
+```
+
+## 安全考虑
+
+### 允许的操作
+- 文件系统导航和检查
+- 包管理操作
+- Git仓库管理
+- 构建和测试命令
+- 开发服务器操作
+
+### 受限操作
+- 系统级修改
+- 用户账户管理
+- 网络配置更改
+- 未经确认的破坏性操作
+
+## 配置选项
+
+### 工具权限
+
+在Claude Code设置中配置允许的Bash命令：
+
+```json
+{
+  "allowedTools": [
+    "Bash(npm:*)",
+    "Bash(git:*)",
+    "Bash(docker:*)",
+    "Bash(ls:*)",
+    "Bash(cd:*)"
+  ]
+}
+```
+
+### 命令超时
+
+为长时间运行的命令设置超时限制：
+
+```json
+{
+  "bashTimeout": 300000,
+  "buildTimeout": 600000
+}
+```
+
+## 故障排除
+
+### 常见问题
+
+**命令未找到**
+- 验证工具已安装
+- 检查PATH环境变量
+- 使用可执行文件的绝对路径
+
+**权限被拒绝**
+- 检查文件权限
+- 验证目录写入访问权限
+- 考虑使用sudo（如果允许）
+
+**命令超时**
+- 增加超时设置
+- 分解为较小的命令
+- 对长操作使用后台进程
+
+---
+
+**下一步**：[MCP 服务器](/zh/tutorial/tools-integration/mcp-servers) - 学习模型上下文协议服务器集成。

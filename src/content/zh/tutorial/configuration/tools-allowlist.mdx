@@ -1,0 +1,299 @@
+---
+title: "工具权限管理"
+description: "管理 Claude Code 的工具允许列表和权限设置"
+---
+
+# 工具权限管理
+
+Claude Code 默认会为任何可能修改系统的操作请求权限。了解如何管理工具权限列表，平衡安全性和便利性。
+
+## 权限管理方式
+
+### 1. 会话期间选择
+
+当 Claude 请求工具权限时，选择"始终允许"：
+
+```
+Claude 请求使用 Edit 工具
+[ ] 仅此次允许
+[x] 始终允许  
+[ ] 拒绝
+```
+
+### 2. 使用 /permissions 命令
+
+在 Claude Code 会话中使用权限命令：
+
+```
+/permissions add Edit
+/permissions add Bash(git commit:*)
+/permissions add mcp__puppeteer__puppeteer_navigate
+/permissions remove Bash(rm:*)
+/permissions list
+```
+
+### 3. 手动编辑配置文件
+
+编辑 `.claude/settings.json` 或 `~/.claude.json`：
+
+```json
+{
+  "allowedTools": [
+    "Read",
+    "Write", 
+    "Edit",
+    "Bash(git:*)",
+    "Bash(npm:*)",
+    "Bash(pnpm:*)"
+  ]
+}
+```
+
+### 4. 使用 CLI 标志
+
+为特定会话设置权限：
+
+```bash
+claude --allowedTools "Read,Write,Edit,Bash(git:*)"
+```
+
+## 推荐权限配置
+
+### 安全的基础权限
+
+```json
+{
+  "allowedTools": [
+    "Read",
+    "Glob", 
+    "Grep",
+    "LS"
+  ]
+}
+```
+
+### 开发常用权限
+
+```json
+{
+  "allowedTools": [
+    "Read",
+    "Write",
+    "Edit", 
+    "MultiEdit",
+    "Bash(git:*)",
+    "Bash(npm:*)",
+    "Bash(pnpm:*)",
+    "Bash(yarn:*)"
+  ]
+}
+```
+
+### 完整开发权限
+
+```json
+{
+  "allowedTools": [
+    "Read",
+    "Write", 
+    "Edit",
+    "MultiEdit",
+    "Bash(git:*)",
+    "Bash(npm:*)",
+    "Bash(pnpm:*)",
+    "Bash(docker:*)",
+    "Bash(gh:*)",
+    "WebFetch",
+    "TodoWrite"
+  ]
+}
+```
+
+## 权限模式说明
+
+### 工具级权限
+
+```json
+"allowedTools": ["Read", "Write", "Edit"]
+```
+
+### 命令级权限
+
+```json
+"allowedTools": [
+  "Bash(git:*)",      // 允许所有git命令
+  "Bash(git commit:*)", // 仅允许git commit
+  "Bash(npm install)", // 仅允许npm install
+]
+```
+
+### MCP 工具权限
+
+```json
+"allowedTools": [
+  "mcp__puppeteer__puppeteer_navigate",
+  "mcp__filesystem__read_file",
+  "mcp__github__create_issue"
+]
+```
+
+## 风险等级分类
+
+### 🟢 低风险工具
+
+**推荐始终允许**：
+- `Read` - 读取文件
+- `Glob` - 文件模式匹配
+- `Grep` - 文本搜索
+- `LS` - 列出目录
+- `WebFetch` - 获取网页内容
+
+### 🟡 中风险工具
+
+**谨慎允许**：
+- `Write` - 写入文件
+- `Edit` - 编辑文件
+- `MultiEdit` - 批量编辑
+- `Bash(git:*)` - Git 操作
+- `Bash(npm:*)` - 包管理
+
+### 🔴 高风险工具
+
+**需要确认**：
+- `Bash(rm:*)` - 删除操作
+- `Bash(sudo:*)` - 管理员权限
+- `Bash(curl:*)` - 网络请求
+- `Bash(chmod:*)` - 权限修改
+
+## 项目级配置
+
+### 在项目根目录
+
+```json
+// .claude/settings.json
+{
+  "allowedTools": [
+    "Read",
+    "Write",
+    "Edit",
+    "Bash(npm:*)",
+    "Bash(git:*)"
+  ]
+}
+```
+
+**提交到版本控制**：
+
+```bash
+git add .claude/settings.json
+git commit -m "Add Claude Code project settings"
+```
+
+### 个人全局配置
+
+```json
+// ~/.claude.json
+{
+  "allowedTools": [
+    "Read",
+    "Write", 
+    "Edit",
+    "Bash(git:*)"
+  ]
+}
+```
+
+## 安全最佳实践
+
+### 1. 最小权限原则
+
+只授予必要的权限：
+
+```json
+{
+  "allowedTools": [
+    "Read",
+    "Edit",
+    "Bash(git status)",
+    "Bash(git diff)",
+    "Bash(npm test)"
+  ]
+}
+```
+
+### 2. 环境隔离
+
+在容器或虚拟机中使用宽松权限：
+
+```bash
+# 在Docker容器中
+docker run -it --rm -v $(pwd):/workspace node:18
+claude --dangerously-skip-permissions
+```
+
+### 3. 定期审查
+
+定期检查和更新权限设置：
+
+```bash
+# 查看当前权限
+/permissions list
+
+# 清理不需要的权限
+/permissions remove Bash(sudo:*)
+```
+
+### 4. 团队协作
+
+统一团队权限配置：
+
+```json
+// 团队推荐配置
+{
+  "allowedTools": [
+    "Read",
+    "Write",
+    "Edit", 
+    "Bash(git:*)",
+    "Bash(npm:*)",
+    "Bash(pnpm:*)"
+  ],
+  "blockedTools": [
+    "Bash(rm:*)",
+    "Bash(sudo:*)",
+    "Bash(curl:*)"
+  ]
+}
+```
+
+## 故障排除
+
+### 权限被拒绝
+
+```bash
+# 检查当前权限
+/permissions list
+
+# 添加需要的权限
+/permissions add Edit
+```
+
+### 权限过于宽松
+
+```bash
+# 移除危险权限
+/permissions remove Bash(rm:*)
+/permissions remove Bash(sudo:*)
+```
+
+### 重置权限
+
+```bash
+# 删除配置文件重新开始
+rm ~/.claude.json
+rm .claude/settings.json
+```
+
+---
+
+**下一步**: [GitHub CLI 集成](/zh/tutorial/configuration/github-cli) - 了解如何集成 gh 命令行工具。

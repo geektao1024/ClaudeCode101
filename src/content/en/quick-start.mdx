@@ -1,0 +1,289 @@
+---
+title: "Quick Start"
+description: "Get started with Claude Code in 5 minutes"
+---
+
+import { Callout } from 'nextra/components'
+
+# Quick Start 🚀
+
+Welcome to Claude Code! This is a powerful AI programming assistant that helps you write, understand, and optimize code efficiently.
+
+## Install Claude Code
+
+### Method 1: Using npm (Recommended)
+
+```bash
+# Global installation
+npm install -g claude-code
+
+# Or using pnpm
+pnpm add -g claude-code
+
+# Or using yarn
+yarn global add claude-code
+```
+
+### Method 2: Using Homebrew (macOS)
+
+```bash
+brew install claude-code
+```
+
+### Method 3: Using Scoop (Windows)
+
+```bash
+scoop install claude-code
+```
+
+## Configure API Key
+
+<Callout type="info">
+  **Get API Key**: Visit [Claude.ai](https://claude.ai) to create an account and get your API key
+</Callout>
+
+### Set Environment Variable
+
+```bash
+export ANTHROPIC_API_KEY="your_api_key_here"
+```
+
+### Or Use Configuration Command
+
+```bash
+claude config set api-key your_api_key_here
+```
+
+## Your First Project
+
+### 1. Initialize Project
+
+```bash
+# Create new project directory
+mkdir my-claude-project
+cd my-claude-project
+
+# Initialize Claude Code configuration
+claude init
+```
+
+### 2. Create Project Configuration
+
+Claude Code will automatically generate the `.claude` configuration folder:
+
+```
+my-claude-project/
+├── .claude/
+│   ├── settings.json
+│   └── commands/
+├── CLAUDE.md
+└── README.md
+```
+
+### 3. Start Programming
+
+```bash
+# Start interactive session
+claude "Help me create a simple React component"
+
+# Or use file mode
+claude -f components.js "Optimize this component's performance"
+```
+
+## Basic Usage
+
+### Natural Language Commands
+
+```bash
+# Code generation
+claude "Create a user login form"
+
+# Code explanation
+claude "Explain what this function does" -f utils.js
+
+# Code optimization
+claude "Optimize this algorithm's performance" -f algorithm.py
+
+# Bug fixing
+claude "Fix this bug" -f broken-code.js
+```
+
+### Project-level Operations
+
+```bash
+# Analyze entire project
+claude "Analyze project architecture and provide improvement suggestions"
+
+# Add features
+claude "Add user authentication to this project"
+
+# Refactor code
+claude "Refactor this module for better maintainability"
+```
+
+## Common Features
+
+### 🔧 Code Review
+
+```bash
+# Check code quality
+claude review
+
+# Check security issues
+claude security-check
+
+# Check performance issues
+claude performance-check
+```
+
+### 📋 Documentation Generation
+
+```bash
+# Generate API documentation
+claude docs generate
+
+# Generate README
+claude docs readme
+
+# Generate type definitions
+claude docs types
+```
+
+### 🧪 Testing Support
+
+```bash
+# Generate unit tests
+claude test generate
+
+# Run test analysis
+claude test analyze
+
+# Generate test data
+claude test data
+```
+
+## Advanced Features
+
+### MCP (Model Context Protocol) Integration
+
+```bash
+# Set up MCP server
+claude mcp add
+
+# List available MCP servers
+claude mcp list
+
+# Configure project-level MCP
+claude mcp config
+```
+
+### Custom Commands
+
+Create custom commands in the `.claude/commands/` directory:
+
+```markdown
+// .claude/commands/deploy.md
+Deploy current project to production environment, including build, test, and deployment steps
+```
+
+Use custom commands:
+
+```bash
+claude /deploy
+```
+
+### Hooks System
+
+Configure automated workflows:
+
+```json
+// .claude/settings.json
+{
+  "hooks": {
+    "pre-commit": "claude review --fix",
+    "post-commit": "claude docs update"
+  }
+}
+```
+
+## Best Practices
+
+### 1. Project Structure
+
+```
+project/
+├── .claude/
+│   ├── settings.json      # Project configuration
+│   ├── commands/          # Custom commands
+│   └── .mcp.json         # MCP configuration
+├── CLAUDE.md             # Project description
+├── src/
+└── tests/
+```
+
+### 2. Configuration File Example
+
+```json
+{
+  "model": "claude-3-5-sonnet-20241022",
+  "temperature": 0.7,
+  "tools": ["code_execution", "file_operations"],
+  "project_context": {
+    "language": "typescript",
+    "framework": "react",
+    "testing": "jest"
+  }
+}
+```
+
+### 3. Writing Good Prompts
+
+```bash
+# Good prompt ✅
+claude "Create a TypeScript React component with user login form, using Tailwind CSS styles, including form validation"
+
+# Bad prompt ❌
+claude "make login"
+```
+
+## Troubleshooting
+
+### Common Issues
+
+<Callout type="error">
+  **API Key Error**: Check environment variables or use `claude config show` to view current configuration
+</Callout>
+
+<Callout type="warning">
+  **Network Connection Issues**: Ensure network connection is stable, or configure proxy settings
+</Callout>
+
+### Debug Mode
+
+```bash
+# Enable verbose logging
+claude --debug "your command"
+
+# View configuration
+claude config show
+
+# Check connection
+claude health check
+```
+
+## Next Steps
+
+Congratulations! You've successfully set up Claude Code. Next, you can:
+
+1. 🎓 [Complete Tutorial](/en/tutorial) - Learn all features in depth
+2. 🔧 [Resources & Tools](/en/resources) - Explore more useful tools
+3. 📖 [API Reference](/en/api-reference) - View detailed API documentation
+4. ✨ [What's New](/en/upgrade) - Learn about latest features
+
+<Callout type="success">
+  **Tip**: Join our [GitHub Community](https://github.com/anthropics/claude-code/discussions) to share experiences with other developers!
+</Callout>
+
+---
+
+*Need help? Check our [Troubleshooting Guide](https://docs.anthropic.com/en/docs/claude-code/troubleshooting) or [Contact Support](https://github.com/anthropics/claude-code/issues).*

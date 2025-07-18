@@ -1,0 +1,377 @@
+---
+title: "资源和工具"
+description: "Claude Code 生态系统中的实用资源和工具"
+---
+
+import { Callout } from 'nextra/components'
+
+# 资源和工具 🔧
+
+探索Claude Code生态系统中的实用资源、工具和扩展，提升你的AI编程体验。
+
+## 官方资源
+
+### 📖 文档和指南
+
+- **[官方文档](https://docs.anthropic.com/en/docs/claude-code)** - 完整的API参考和使用指南
+- **[快速开始指南](/zh/quick-start)** - 5分钟快速上手
+- **[完整教程](/zh/tutorial)** - 深入学习所有功能
+- **[最佳实践指南](https://docs.anthropic.com/en/docs/claude-code/best-practices)** - 专业开发建议
+
+### 🔧 开发工具
+
+- **[Claude Code CLI](https://github.com/anthropics/claude-code)** - 命令行工具
+- **[VS Code 扩展](https://marketplace.visualstudio.com/search?term=claude%20code)** - 编辑器集成
+- **[JetBrains 插件](https://plugins.jetbrains.com/search?search=claude%20code)** - IDE集成
+- **[GitHub Actions](https://github.com/marketplace/actions/claude-code)** - CI/CD集成
+
+## IDE 集成
+
+### Visual Studio Code
+
+```bash
+# 安装VS Code扩展
+code --install-extension anthropic.claude-code
+
+# 或从市场搜索 "Claude Code"
+```
+
+**主要功能：**
+- 🎯 智能代码补全
+- 🔍 实时代码解释
+- 🐛 错误检测和修复
+- 📝 自动文档生成
+- 🧪 测试生成
+
+### JetBrains IDEs
+
+支持 IntelliJ IDEA、WebStorm、PyCharm、GoLand 等：
+
+```bash
+# 通过插件市场安装
+# File → Settings → Plugins → Marketplace → 搜索 "Claude Code"
+```
+
+**主要功能：**
+- 🚀 代码重构建议
+- 🎨 代码风格优化
+- 🔄 自动化工作流
+- 📊 代码质量分析
+
+### Vim/Neovim
+
+```lua
+-- 使用 packer.nvim
+use {
+  'anthropics/claude-code.nvim',
+  config = function()
+    require('claude-code').setup({
+      api_key = vim.env.ANTHROPIC_API_KEY,
+      model = "claude-3-5-sonnet-20241022"
+    })
+  end
+}
+```
+
+## 命令行工具
+
+### 核心命令
+
+```bash
+# 项目管理
+claude init              # 初始化项目
+claude config            # 配置设置
+claude status            # 查看状态
+
+# 代码操作
+claude generate          # 生成代码
+claude review            # 代码审查
+claude refactor          # 重构代码
+claude test              # 测试相关
+
+# 文档和帮助
+claude docs              # 文档操作
+claude help              # 帮助信息
+claude --version         # 版本信息
+```
+
+### 高级工具
+
+```bash
+# MCP 集成
+claude mcp add           # 添加MCP服务器
+claude mcp list          # 列出服务器
+claude mcp config        # 配置MCP
+
+# 性能和分析
+claude analyze           # 代码分析
+claude benchmark         # 性能测试
+claude security          # 安全检查
+
+# 团队协作
+claude share             # 分享配置
+claude sync              # 同步设置
+claude team              # 团队管理
+```
+
+## 扩展和插件
+
+### 社区扩展
+
+<Callout type="info">
+  **注意**: 这些扩展由社区开发，使用前请确认其可靠性
+</Callout>
+
+#### Web开发
+
+- **[Claude React Helper](https://github.com/example/claude-react)** - React组件生成器
+- **[Claude Vue Assistant](https://github.com/example/claude-vue)** - Vue.js开发助手
+- **[Claude Angular Tools](https://github.com/example/claude-angular)** - Angular项目工具
+
+#### 后端开发
+
+- **[Claude API Generator](https://github.com/example/claude-api)** - REST API生成器
+- **[Claude Database Tools](https://github.com/example/claude-db)** - 数据库操作助手
+- **[Claude DevOps Helper](https://github.com/example/claude-devops)** - DevOps自动化
+
+#### 数据科学
+
+- **[Claude Data Analysis](https://github.com/example/claude-data)** - 数据分析工具
+- **[Claude ML Helper](https://github.com/example/claude-ml)** - 机器学习助手
+- **[Claude Jupyter Extension](https://github.com/example/claude-jupyter)** - Jupyter集成
+
+## 模板和示例
+
+### 项目模板
+
+```bash
+# 使用官方模板
+claude init --template react-typescript
+claude init --template node-express
+claude init --template python-fastapi
+claude init --template go-gin
+
+# 自定义模板
+claude init --template https://github.com/your-org/claude-template
+```
+
+### 示例项目
+
+- **[React + TypeScript](https://github.com/anthropics/claude-examples/tree/main/react-typescript)** - 现代React应用
+- **[Node.js API](https://github.com/anthropics/claude-examples/tree/main/node-api)** - RESTful API服务
+- **[Python FastAPI](https://github.com/anthropics/claude-examples/tree/main/python-fastapi)** - Python Web API
+- **[Go Microservice](https://github.com/anthropics/claude-examples/tree/main/go-microservice)** - Go微服务
+
+## 配置文件示例
+
+### 基础配置
+
+```json
+// .claude/settings.json
+{
+  "model": "claude-3-5-sonnet-20241022",
+  "temperature": 0.7,
+  "max_tokens": 4096,
+  "tools": ["code_execution", "file_operations"],
+  "project_context": {
+    "language": "typescript",
+    "framework": "react",
+    "testing": "jest",
+    "styling": "tailwind"
+  }
+}
+```
+
+### 高级配置
+
+```json
+{
+  "model": "claude-3-5-sonnet-20241022",
+  "temperature": 0.7,
+  "max_tokens": 4096,
+  "tools": ["code_execution", "file_operations", "web_search"],
+  "project_context": {
+    "language": "typescript",
+    "framework": "next.js",
+    "database": "postgresql",
+    "orm": "prisma",
+    "testing": "jest",
+    "e2e_testing": "playwright",
+    "styling": "tailwind",
+    "deployment": "vercel"
+  },
+  "hooks": {
+    "pre-commit": "claude review --fix",
+    "post-commit": "claude docs update",
+    "pre-push": "claude test run"
+  },
+  "mcp": {
+    "servers": ["filesystem", "git", "database"],
+    "timeout": 30000
+  }
+}
+```
+
+## 第三方集成
+
+### CI/CD 平台
+
+#### GitHub Actions
+
+```yaml
+# .github/workflows/claude-code.yml
+name: Claude Code Review
+on: [pull_request]
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Claude Code Review
+        uses: anthropics/claude-code-action@v1
+        with:
+          api-key: ${{ secrets.ANTHROPIC_API_KEY }}
+          command: "review"
+```
+
+#### GitLab CI
+
+```yaml
+# .gitlab-ci.yml
+stages:
+  - review
+
+claude-review:
+  stage: review
+  image: node:18
+  script:
+    - npm install -g claude-code
+    - claude review --output gitlab-ci
+  only:
+    - merge_requests
+```
+
+### 部署平台
+
+#### Vercel
+
+```json
+// vercel.json
+{
+  "buildCommand": "claude build optimize",
+  "outputDirectory": "dist",
+  "env": {
+    "ANTHROPIC_API_KEY": "@anthropic-api-key"
+  }
+}
+```
+
+#### Netlify
+
+```toml
+# netlify.toml
+[build]
+  command = "claude build optimize"
+  publish = "dist"
+
+[build.environment]
+  ANTHROPIC_API_KEY = "your-api-key"
+```
+
+## 学习资源
+
+### 📚 教程和课程
+
+- **[Claude Code 完整教程](/zh/tutorial)** - 从入门到精通
+- **[YouTube 官方频道](https://youtube.com/@anthropic)** - 视频教程
+- **[在线课程](https://learn.anthropic.com)** - 结构化学习路径
+- **[实践项目](https://github.com/anthropics/claude-code-projects)** - 动手练习
+
+### 🎥 视频资源
+
+- **[Claude Code 快速入门](https://www.youtube.com/watch?v=example)** - 10分钟快速上手
+- **[高级功能详解](https://www.youtube.com/watch?v=example)** - 深入了解高级特性
+- **[最佳实践分享](https://www.youtube.com/watch?v=example)** - 专家经验分享
+- **[项目实战案例](https://www.youtube.com/watch?v=example)** - 真实项目开发
+
+### 📖 博客和文章
+
+- **[Claude Code 官方博客](https://blog.anthropic.com)** - 最新资讯和技术分享
+- **[开发者故事](https://developers.anthropic.com/stories)** - 用户成功案例
+- **[技术深度解析](https://technical.anthropic.com)** - 技术原理解释
+
+## 社区和支持
+
+### 💬 社区交流
+
+- **[GitHub Discussions](https://github.com/anthropics/claude-code/discussions)** - 官方讨论区
+- **[Discord 社区](https://discord.gg/anthropic)** - 实时交流
+- **[Reddit 社区](https://reddit.com/r/ClaudeCode)** - 经验分享
+- **[Stack Overflow](https://stackoverflow.com/questions/tagged/claude-code)** - 技术问答
+
+### 🆘 获取帮助
+
+- **[常见问题](https://docs.anthropic.com/en/docs/claude-code/faq)** - 常见问题解答
+- **[故障排除](https://docs.anthropic.com/en/docs/claude-code/troubleshooting)** - 问题解决指南
+- **[提交问题](https://github.com/anthropics/claude-code/issues)** - 报告bug或请求功能
+- **[联系支持](mailto:support@anthropic.com)** - 技术支持
+
+## 性能优化
+
+### 配置优化
+
+```json
+{
+  "performance": {
+    "cache_enabled": true,
+    "cache_ttl": 3600,
+    "parallel_requests": 3,
+    "request_timeout": 30000,
+    "retry_attempts": 3
+  }
+}
+```
+
+### 使用技巧
+
+1. **合理使用缓存** - 启用响应缓存提高速度
+2. **批量操作** - 一次处理多个文件
+3. **增量更新** - 只处理变更的部分
+4. **预加载上下文** - 提前加载项目信息
+
+## 安全最佳实践
+
+### API 密钥管理
+
+```bash
+# 使用环境变量
+export ANTHROPIC_API_KEY="your-key-here"
+
+# 使用密钥管理器
+claude config set api-key --from-keychain
+
+# 使用.env文件（不要提交到版本控制）
+echo "ANTHROPIC_API_KEY=your-key" > .env
+```
+
+### 访问控制
+
+```json
+{
+  "security": {
+    "allowed_commands": ["generate", "review", "docs"],
+    "blocked_paths": ["secrets/", "config/"],
+    "max_file_size": "10MB",
+    "scan_for_secrets": true
+  }
+}
+```
+
+---
+
+<Callout type="success">
+  **提示**: 定期检查 [官方文档](https://docs.anthropic.com/en/docs/claude-code) 获取最新的工具和资源更新！
+</Callout>
+
+*有新的工具或资源推荐？欢迎在 [GitHub Discussions](https://github.com/anthropics/claude-code/discussions) 中分享！*

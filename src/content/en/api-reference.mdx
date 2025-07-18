@@ -1,0 +1,568 @@
+---
+title: "API Reference"
+description: "Complete reference documentation for Claude Code API"
+---
+
+import { Callout } from 'nextra/components'
+
+# API Reference 📖
+
+Claude Code provides a rich set of API interfaces supporting multiple programming languages and use cases.
+
+## Authentication
+
+### API Key
+
+All API calls require a valid API key.
+
+```bash
+# Set environment variable
+export ANTHROPIC_API_KEY="your-api-key-here"
+
+# Or set in code
+```
+
+```javascript
+const claude = new ClaudeCode({
+  apiKey: 'your-api-key-here'
+});
+```
+
+### Authentication Header
+
+```http
+Authorization: Bearer your-api-key-here
+Content-Type: application/json
+```
+
+## Core API
+
+### Code Generation
+
+Generate code snippets that meet requirements.
+
+```http
+POST /v1/code/generate
+```
+
+**Request Body:**
+
+```json
+{
+  "prompt": "Create a user login component",
+  "language": "typescript",
+  "framework": "react",
+  "context": {
+    "project_type": "web",
+    "styling": "tailwind"
+  },
+  "options": {
+    "include_tests": true,
+    "include_docs": true
+  }
+}
+```
+
+**Response:**
+
+```json
+{
+  "code": "import React, { useState } from 'react';\n\nconst LoginForm = () => {\n  // Component implementation\n};\n\nexport default LoginForm;",
+  "explanation": "This is a login form component built with React and TypeScript...",
+  "tests": "import { render, screen } from '@testing-library/react';\nimport LoginForm from './LoginForm';\n\ndescribe('LoginForm', () => {\n  // Test code\n});",
+  "metadata": {
+    "language": "typescript",
+    "framework": "react",
+    "estimated_lines": 45,
+    "complexity": "medium"
+  }
+}
+```
+
+### Code Review
+
+Analyze code quality and provide improvement suggestions.
+
+```http
+POST /v1/code/review
+```
+
+**Request Body:**
+
+```json
+{
+  "code": "function getUserData(id) {\n  return fetch('/api/users/' + id).then(r => r.json());\n}",
+  "language": "javascript",
+  "check_types": ["security", "performance", "best_practices"],
+  "context": {
+    "project_type": "web",
+    "environment": "node"
+  }
+}
+```
+
+**Response:**
+
+```json
+{
+  "score": 7.5,
+  "issues": [
+    {
+      "type": "security",
+      "severity": "medium",
+      "line": 2,
+      "message": "Potential XSS vulnerability: unvalidated user input",
+      "suggestion": "Add input validation and parameterized queries"
+    },
+    {
+      "type": "performance",
+      "severity": "low",
+      "line": 2,
+      "message": "Consider using modern async/await syntax",
+      "suggestion": "Use async/await instead of Promise.then"
+    }
+  ],
+  "suggestions": [
+    "Add error handling",
+    "Implement caching mechanism",
+    "Add type definitions"
+  ],
+  "fixed_code": "async function getUserData(id: string): Promise<User> {\n  if (!id || typeof id !== 'string') {\n    throw new Error('Invalid user ID');\n  }\n  \n  try {\n    const response = await fetch(`/api/users/${encodeURIComponent(id)}`);\n    if (!response.ok) {\n      throw new Error(`HTTP error! status: ${response.status}`);\n    }\n    return await response.json();\n  } catch (error) {\n    console.error('Failed to fetch user data:', error);\n    throw error;\n  }\n}"
+}
+```
+
+### Code Explanation
+
+Explain code functionality and implementation principles.
+
+```http
+POST /v1/code/explain
+```
+
+**Request Body:**
+
+```json
+{
+  "code": "const memoizedFn = useMemo(() => {\n  return (data) => expensiveOperation(data);\n}, [dependency]);",
+  "language": "javascript",
+  "detail_level": "detailed"
+}
+```
+
+**Response:**
+
+```json
+{
+  "explanation": {
+    "summary": "This code uses React's useMemo Hook to cache an expensive function operation...",
+    "breakdown": [
+      {
+        "line": 1,
+        "code": "const memoizedFn = useMemo(() => {",
+        "explanation": "Declares a constant memoizedFn, using useMemo Hook to create a memoized function"
+      },
+      {
+        "line": 2,
+        "code": "return (data) => expensiveOperation(data);",
+        "explanation": "Returns an arrow function that takes data parameter and calls expensiveOperation"
+      },
+      {
+        "line": 3,
+        "code": "}, [dependency]);",
+        "explanation": "Dependency array, only recalculates when dependency changes"
+      }
+    ],
+    "concepts": [
+      "React Hooks",
+      "Memoization",
+      "Performance Optimization",
+      "Dependency Array"
+    ],
+    "performance_impact": "Avoids recreating function on every render through memoization, improving performance"
+  }
+}
+```
+
+### Code Refactoring
+
+Refactor code to improve readability and maintainability.
+
+```http
+POST /v1/code/refactor
+```
+
+**Request Body:**
+
+```json
+{
+  "code": "function calc(a, b, op) {\n  if (op === '+') return a + b;\n  if (op === '-') return a - b;\n  if (op === '*') return a * b;\n  if (op === '/') return a / b;\n}",
+  "language": "javascript",
+  "refactor_type": "improve_structure",
+  "target_patterns": ["strategy_pattern", "error_handling"]
+}
+```
+
+**Response:**
+
+```json
+{
+  "refactored_code": "class Calculator {\n  private operations = {\n    '+': (a: number, b: number) => a + b,\n    '-': (a: number, b: number) => a - b,\n    '*': (a: number, b: number) => a * b,\n    '/': (a: number, b: number) => {\n      if (b === 0) throw new Error('Division by zero');\n      return a / b;\n    }\n  };\n\n  calculate(a: number, b: number, op: string): number {\n    const operation = this.operations[op];\n    if (!operation) {\n      throw new Error(`Unsupported operation: ${op}`);\n    }\n    return operation(a, b);\n  }\n}",
+  "changes": [
+    "Applied strategy pattern for handling different operations",
+    "Added error handling mechanisms",
+    "Used TypeScript type annotations",
+    "Improved code extensibility"
+  ],
+  "benefits": [
+    "Easier to add new operations",
+    "Better error handling",
+    "Type safety",
+    "Cleaner, more understandable code"
+  ]
+}
+```
+
+## Project Management API
+
+### Project Initialization
+
+```http
+POST /v1/project/init
+```
+
+**Request Body:**
+
+```json
+{
+  "name": "my-awesome-project",
+  "template": "react-typescript",
+  "options": {
+    "include_tests": true,
+    "include_docs": true,
+    "use_eslint": true,
+    "use_prettier": true
+  }
+}
+```
+
+### Project Analysis
+
+```http
+POST /v1/project/analyze
+```
+
+**Request Body:**
+
+```json
+{
+  "project_path": "/path/to/project",
+  "analysis_type": "full",
+  "include_dependencies": true
+}
+```
+
+**Response:**
+
+```json
+{
+  "project_info": {
+    "name": "my-project",
+    "type": "web",
+    "language": "typescript",
+    "framework": "react",
+    "size": {
+      "files": 156,
+      "lines": 12450,
+      "size_mb": 2.3
+    }
+  },
+  "code_quality": {
+    "score": 8.2,
+    "issues": 12,
+    "warnings": 5,
+    "suggestions": 8
+  },
+  "dependencies": {
+    "total": 45,
+    "outdated": 3,
+    "vulnerable": 1
+  },
+  "architecture": {
+    "complexity": "medium",
+    "maintainability": "high",
+    "testability": "high"
+  }
+}
+```
+
+## Documentation Generation API
+
+### Auto-generate Documentation
+
+```http
+POST /v1/docs/generate
+```
+
+**Request Body:**
+
+```json
+{
+  "source_files": [
+    "/src/components/Button.tsx",
+    "/src/utils/helpers.ts"
+  ],
+  "doc_type": "api",
+  "format": "markdown",
+  "include_examples": true
+}
+```
+
+**Response:**
+
+```json
+{
+  "documentation": "# API Documentation\n\n## Button Component\n\nThis is a reusable button component...\n\n### Props\n\n- `onClick`: Click event handler\n- `disabled`: Whether the button is disabled\n- `variant`: Button style variant\n\n### Example\n\n```tsx\n<Button onClick={() => alert('Clicked!')} variant=\"primary\">\n  Click me\n</Button>\n```",
+  "files_processed": 2,
+  "total_functions": 8,
+  "total_components": 3
+}
+```
+
+## Test Generation API
+
+### Generate Unit Tests
+
+```http
+POST /v1/test/generate
+```
+
+**Request Body:**
+
+```json
+{
+  "source_code": "export function add(a: number, b: number): number {\n  return a + b;\n}",
+  "test_framework": "jest",
+  "coverage_target": 90,
+  "include_edge_cases": true
+}
+```
+
+**Response:**
+
+```json
+{
+  "test_code": "import { add } from './math';\n\ndescribe('add function', () => {\n  test('should add two positive numbers', () => {\n    expect(add(2, 3)).toBe(5);\n  });\n\n  test('should handle negative numbers', () => {\n    expect(add(-1, 1)).toBe(0);\n  });\n\n  test('should handle zero', () => {\n    expect(add(0, 5)).toBe(5);\n  });\n\n  test('should handle decimal numbers', () => {\n    expect(add(1.5, 2.5)).toBe(4);\n  });\n});",
+  "coverage_info": {
+    "estimated_coverage": 95,
+    "test_cases": 4,
+    "edge_cases": 2
+  }
+}
+```
+
+## Configuration API
+
+### Get Configuration
+
+```http
+GET /v1/config
+```
+
+**Response:**
+
+```json
+{
+  "model": "claude-3-5-sonnet-20241022",
+  "temperature": 0.7,
+  "max_tokens": 4096,
+  "tools": ["code_execution", "file_operations"],
+  "project_context": {
+    "language": "typescript",
+    "framework": "react"
+  }
+}
+```
+
+### Update Configuration
+
+```http
+PUT /v1/config
+```
+
+**Request Body:**
+
+```json
+{
+  "temperature": 0.8,
+  "max_tokens": 8192,
+  "tools": ["code_execution", "file_operations", "web_search"]
+}
+```
+
+## Error Handling
+
+### Error Response Format
+
+```json
+{
+  "error": {
+    "type": "ValidationError",
+    "message": "Invalid request parameters",
+    "details": {
+      "field": "language",
+      "issue": "Unsupported language: 'unknown'"
+    },
+    "code": "INVALID_LANGUAGE"
+  }
+}
+```
+
+### Common Error Codes
+
+| Error Code | Description | HTTP Status |
+|-----------|-------------|-------------|
+| `INVALID_API_KEY` | Invalid API key | 401 |
+| `RATE_LIMIT_EXCEEDED` | Rate limit exceeded | 429 |
+| `INVALID_LANGUAGE` | Unsupported programming language | 400 |
+| `FILE_TOO_LARGE` | File too large | 413 |
+| `CONTEXT_TOO_LONG` | Context too long | 400 |
+| `INTERNAL_ERROR` | Internal server error | 500 |
+
+## Rate Limiting
+
+### Limits
+
+| Plan | Requests/min | Requests/hour | Requests/day |
+|------|-------------|---------------|--------------|
+| Free | 20 | 100 | 1000 |
+| Pro | 100 | 1000 | 10000 |
+| Enterprise | 500 | 5000 | 50000 |
+
+### Response Headers
+
+```http
+X-RateLimit-Limit: 100
+X-RateLimit-Remaining: 95
+X-RateLimit-Reset: 1640995200
+```
+
+## SDKs and Client Libraries
+
+### JavaScript/TypeScript
+
+```bash
+npm install @anthropic/claude-code
+```
+
+```javascript
+import { ClaudeCode } from '@anthropic/claude-code';
+
+const claude = new ClaudeCode({
+  apiKey: process.env.ANTHROPIC_API_KEY
+});
+
+const result = await claude.generateCode({
+  prompt: 'Create a calculator component',
+  language: 'typescript',
+  framework: 'react'
+});
+```
+
+### Python
+
+```bash
+pip install claude-code
+```
+
+```python
+from claude_code import ClaudeCode
+
+claude = ClaudeCode(api_key=os.getenv('ANTHROPIC_API_KEY'))
+
+result = claude.generate_code(
+    prompt='Create a calculator component',
+    language='python',
+    framework='flask'
+)
+```
+
+### Go
+
+```bash
+go get github.com/anthropics/claude-code-go
+```
+
+```go
+package main
+
+import (
+    "github.com/anthropics/claude-code-go"
+)
+
+func main() {
+    client := claudecode.NewClient(os.Getenv("ANTHROPIC_API_KEY"))
+    
+    result, err := client.GenerateCode(claudecode.GenerateCodeRequest{
+        Prompt:    "Create an HTTP server",
+        Language:  "go",
+        Framework: "gin",
+    })
+}
+```
+
+## Webhook Integration
+
+### Configure Webhook
+
+```http
+POST /v1/webhooks
+```
+
+**Request Body:**
+
+```json
+{
+  "url": "https://your-app.com/webhook",
+  "events": ["code.generated", "review.completed"],
+  "secret": "your-webhook-secret"
+}
+```
+
+### Webhook Events
+
+```json
+{
+  "event": "code.generated",
+  "timestamp": "2024-01-15T10:30:00Z",
+  "data": {
+    "request_id": "req_123456",
+    "language": "typescript",
+    "lines_generated": 45,
+    "success": true
+  }
+}
+```
+
+## Best Practices
+
+### Performance Optimization
+
+1. **Use Streaming Responses** - For large code generation tasks
+2. **Cache Results** - Cache repeated requests
+3. **Batch Processing** - Combine multiple small requests
+4. **Async Processing** - Use async calls for better concurrency
+
+### Security Recommendations
+
+1. **API Key Management** - Use environment variables to store keys
+2. **Input Validation** - Validate all user inputs
+3. **Rate Limiting** - Implement client-side rate limiting
+4. **Error Handling** - Properly handle and log errors
+
+<Callout type="info">
+  **Tip**: Check out [complete examples](https://github.com/anthropics/claude-code-examples) for more practical use cases.
+</Callout>
+
+---
+
+*API documentation is continuously updated. For questions or suggestions, please visit [GitHub Issues](https://github.com/anthropics/claude-code/issues).*
