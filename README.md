@@ -8,14 +8,14 @@
 
 中文 | [English](README-en.md)
 
-[![Deploy](https://img.shields.io/badge/passing-black?style=flat&logo=Vercel&label=Vercel&color=3bb92c&labelColor=black)](https://claudecode.vercel.app)
+[![Deploy](https://img.shields.io/badge/passing-black?style=flat&logo=Vercel&label=Vercel&color=3bb92c&labelColor=black)](https://claudecode-one.vercel.app)
 [![GitHub Workflow Status (branch)](https://img.shields.io/badge/passing-black?style=flat&label=build&color=3bb92c)](https://github.com/geektao1024/ClaudeCode101/deployments)
 [![thanks](https://badgen.net/badge/thanks/♥/pink)](https://github.com/geektao1024)
 [![License](https://img.shields.io/github/license/geektao1024/ClaudeCode101?color=466fe8)](https://github.com/geektao1024/ClaudeCode101/blob/main/LICENSE)
 
 🤖 **Claude Code 中文教程和最佳实践指南** - 基于 React v19 + Next.js + Nextra (v4) + TypeScript + TailwindCSS (v4) + Shadcn UI 构建
 
-- [🚀 在线访问](https://claudecode.vercel.app/zh)
+- [🚀 在线访问](https://claudecode-one.vercel.app/zh)
 - [🌐 官方 Claude Code](https://claude.ai/code)
 - [📚 Claude Code 官方文档](https://docs.anthropic.com/en/docs/claude-code)
 
@@ -65,28 +65,34 @@
 ## 📋 教程内容
 
 ### 🚀 快速开始
+
 - [安装与配置](/zh/tutorial/getting-started/installation) - 快速安装和初始配置
 - [基础使用](/zh/tutorial/getting-started/basic-usage) - 第一次使用指南
 
 ### ⚙️ 自定义设置
+
 - [CLAUDE.md 配置](/zh/tutorial/configuration/claude-md) - 创建和优化配置文件
 - [工具权限管理](/zh/tutorial/configuration/tools-allowlist) - 管理允许的工具
 - [GitHub CLI 集成](/zh/tutorial/configuration/github-cli) - 集成 gh 命令行工具
 
 ### 🔧 工具集成
+
 - [Bash 工具](/zh/tutorial/tools-integration/bash-tools) - 与命令行工具协作
 - [MCP 服务器](/zh/tutorial/tools-integration/mcp-servers) - 模型上下文协议集成
 - [自定义命令](/zh/tutorial/tools-integration/custom-commands) - 创建斜杠命令
 
 ### 💼 工作流程
+
 - [探索-规划-编码](/zh/tutorial/workflows/explore-plan-code) - 多功能工作流程
 
 ### 🎯 工作流优化
+
 - [具体指令](/zh/tutorial/optimization/specific-instructions) - 编写有效的提示词
 - [上下文管理](/zh/tutorial/optimization/context-management) - 保持上下文聚焦
 - [方向修正](/zh/tutorial/optimization/direction-correction) - 及时纠正和指导
 
 ### 🚀 高级应用
+
 - [无头模式](/zh/tutorial/advanced/headless-mode) - 自动化基础设施
 - [多Claude协作](/zh/tutorial/advanced/multi-claude) - 并行协作工作流
 
@@ -169,12 +175,12 @@ export default function Home() {
 
 ## 🌟 相关资源
 
-| 资源名称 | 描述 | 链接 |
-|---------|------|------|
-| Claude Code 官方网站 | Anthropic 官方 Claude Code 工具 | [claude.ai/code](https://claude.ai/code) |
-| Claude Code 官方文档 | 英文官方文档和API参考 | [docs.anthropic.com](https://docs.anthropic.com/en/docs/claude-code) |
-| Anthropic GitHub | 官方 GitHub 组织 | [github.com/anthropics](https://github.com/anthropics) |
-| Claude 3.5 Sonnet | Claude Code 背后的强大模型 | [claude.ai](https://claude.ai) |
+| 资源名称             | 描述                            | 链接                                                                 |
+| -------------------- | ------------------------------- | -------------------------------------------------------------------- |
+| Claude Code 官方网站 | Anthropic 官方 Claude Code 工具 | [claude.ai/code](https://claude.ai/code)                             |
+| Claude Code 官方文档 | 英文官方文档和API参考           | [docs.anthropic.com](https://docs.anthropic.com/en/docs/claude-code) |
+| Anthropic GitHub     | 官方 GitHub 组织                | [github.com/anthropics](https://github.com/anthropics)               |
+| Claude 3.5 Sonnet    | Claude Code 背后的强大模型      | [claude.ai](https://claude.ai)                                       |
 
 ## 🚨 免责声明
 
@@ -197,6 +203,6 @@ export default function Home() {
 
 **让 AI 成为你最得力的编程伙伴** 🤖✨
 
-[开始学习](https://claudecode.vercel.app/zh) • [GitHub](https://github.com/geektao1024/ClaudeCode101) • [问题反馈](https://github.com/geektao1024/ClaudeCode101/issues)
+[开始学习](https://claudecode-one.vercel.app/zh) • [GitHub](https://github.com/geektao1024/ClaudeCode101) • [问题反馈](https://github.com/geektao1024/ClaudeCode101/issues)
 
 </div>
