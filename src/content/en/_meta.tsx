@@ -18,7 +18,7 @@ export default {
   },
   tutorial: '📚 Tutorial',
   upgrade: {
-    title: "✨ What's New",
+    title: '✨ What\'s New',
     type: 'page',
     theme: {
       navbar: true,

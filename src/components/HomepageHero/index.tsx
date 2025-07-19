@@ -1,9 +1,8 @@
 'use client'
-import Marquee from 'react-fast-marquee'
+import { FinalCTA } from '@/components/FinalCTA'
 import { PanelParticles } from '@/components/PanelParticles'
 import { ResourceCards } from '@/components/ResourceCards'
 import { SocialProof } from '@/components/SocialProof'
-import { FinalCTA } from '@/components/FinalCTA'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { useLocale } from '@/hooks'
 import { cn } from '@/lib/utils'
@@ -59,10 +58,10 @@ export default function HomepageHero() {
       >
         <ResourceCards />
       </Section>
-      
+
       {/* Social Proof Section */}
       <SocialProof />
-      
+
       <div className="relative z-1">
         {/* Features Section - replacing tech stack */}
         <Section
@@ -84,7 +83,7 @@ export default function HomepageHero() {
                 {currentLocale === 'zh' ? '基于上下文的精准代码生成，支持多种编程语言和框架' : 'Context-aware precise code generation supporting multiple languages and frameworks'}
               </p>
             </div>
-            
+
             <div className="text-center p-6 rounded-2xl bg-gradient-to-br from-green-50 to-emerald-100 dark:from-green-900/20 dark:to-emerald-900/20 border border-green-200 dark:border-green-800 hover:shadow-lg transition-all duration-300">
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-500 text-white mb-4 text-2xl">
                 <span className="icon-[lucide--search-check]"></span>
@@ -96,7 +95,7 @@ export default function HomepageHero() {
                 {currentLocale === 'zh' ? '自动发现潜在问题，提供优化建议和最佳实践指导' : 'Automatically detect issues and provide optimization suggestions with best practices'}
               </p>
             </div>
-            
+
             <div className="text-center p-6 rounded-2xl bg-gradient-to-br from-purple-50 to-violet-100 dark:from-purple-900/20 dark:to-violet-900/20 border border-purple-200 dark:border-purple-800 hover:shadow-lg transition-all duration-300">
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-purple-500 text-white mb-4 text-2xl">
                 <span className="icon-[lucide--users]"></span>
@@ -110,7 +109,7 @@ export default function HomepageHero() {
             </div>
           </div>
         </Section>
-        
+
         <Section
           title={t('faqTitle')}
           tallPaddingY
@@ -136,7 +135,7 @@ export default function HomepageHero() {
           </Accordion>
         </Section>
       </div>
-      
+
       {/* Final CTA Section */}
       <FinalCTA />
     </>

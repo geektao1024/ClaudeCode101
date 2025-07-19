@@ -34,23 +34,25 @@ export function SetupHero(props: Props) {
           >
             <span className="icon-[simple-icons--anthropic] text-[#FF6B35]" aria-hidden="true"></span>
           </MotionWrapperFlash>
-          {currentLocale === 'zh' ? (
-            <>
-              Claude Code
-              <br className="sm:hidden" />
-              <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent">
-                AI 编程助手教程中心
-              </span>
-            </>
-          ) : (
-            <>
-              <span className="leading-tight">Claude Code</span>
-              <br className="sm:hidden" />
-              <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent leading-tight">
-                AI Programming Assistant
-              </span>
-            </>
-          )}
+          {currentLocale === 'zh'
+            ? (
+                <>
+                  Claude Code
+                  <br className="sm:hidden" />
+                  <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent">
+                    AI 编程助手教程中心
+                  </span>
+                </>
+              )
+            : (
+                <>
+                  <span className="leading-tight">Claude Code</span>
+                  <br className="sm:hidden" />
+                  <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent leading-tight">
+                    AI Programming Assistant
+                  </span>
+                </>
+              )}
         </h1>
 
         <Link
@@ -78,48 +80,50 @@ export function SetupHero(props: Props) {
             'text-neutral-600 dark:text-neutral-300 text-lg md:text-xl leading-relaxed',
           ])}
           >
-            {currentLocale === 'zh' ? (
-              <>
-                让 AI 成为你的
-                <FlipWords
-                  words={[
-                    '编程伙伴',
-                    '代码审查师',
-                    '架构顾问',
-                    '调试专家',
-                    '学习导师',
-                    '效率助手',
-                  ]}
-                  className="text-blue-600 dark:text-blue-400 font-semibold"
-                />
-                <br className="hidden sm:block" />
-                掌握专业的 AI 辅助编程技能，
-                <LinkPreview url="https://claude.ai/code" className="text-blue-600 dark:text-blue-400 font-medium hover:text-blue-700">
-                  Claude Code
-                </LinkPreview>
-                让编程更智能、更高效
-              </>
-            ) : (
-              <>
-                Make AI your
-                <FlipWords
-                  words={[
-                    'coding partner',
-                    'code reviewer', 
-                    'architecture advisor',
-                    'debugging expert',
-                    'learning mentor',
-                    'efficiency booster',
-                  ]}
-                  className="text-blue-600 dark:text-blue-400 font-semibold"
-                />
-                <br className="hidden sm:block" />
-                Master professional AI-assisted programming with
-                <LinkPreview url="https://claude.ai/code" className="text-blue-600 dark:text-blue-400 font-medium hover:text-blue-700">
-                  Claude Code
-                </LinkPreview>
-              </>
-            )}
+            {currentLocale === 'zh'
+              ? (
+                  <>
+                    让 AI 成为你的
+                    <FlipWords
+                      words={[
+                        '编程伙伴',
+                        '代码审查师',
+                        '架构顾问',
+                        '调试专家',
+                        '学习导师',
+                        '效率助手',
+                      ]}
+                      className="text-blue-600 dark:text-blue-400 font-semibold"
+                    />
+                    <br className="hidden sm:block" />
+                    掌握专业的 AI 辅助编程技能，
+                    <LinkPreview url="https://claude.ai/code" className="text-blue-600 dark:text-blue-400 font-medium hover:text-blue-700">
+                      Claude Code
+                    </LinkPreview>
+                    让编程更智能、更高效
+                  </>
+                )
+              : (
+                  <>
+                    Make AI your
+                    <FlipWords
+                      words={[
+                        'coding partner',
+                        'code reviewer',
+                        'architecture advisor',
+                        'debugging expert',
+                        'learning mentor',
+                        'efficiency booster',
+                      ]}
+                      className="text-blue-600 dark:text-blue-400 font-semibold"
+                    />
+                    <br className="hidden sm:block" />
+                    Master professional AI-assisted programming with
+                    <LinkPreview url="https://claude.ai/code" className="text-blue-600 dark:text-blue-400 font-medium hover:text-blue-700">
+                      Claude Code
+                    </LinkPreview>
+                  </>
+                )}
           </div>
         </div>
 
@@ -170,15 +174,27 @@ export function SetupHero(props: Props) {
             </Button>
           </div>
         </div>
-        
+
         {/* Quick Start Hint */}
         <div className="mt-6 text-center">
           <p className="text-sm text-neutral-500 dark:text-neutral-400">
-            {currentLocale === 'zh' ? (
-              <>💡 无需安装，打开终端输入 <code className="bg-neutral-100 dark:bg-neutral-800 px-2 py-1 rounded text-blue-600 dark:text-blue-400">claude</code> 即可开始</>
-            ) : (
-              <>💡 No installation required, just type <code className="bg-neutral-100 dark:bg-neutral-800 px-2 py-1 rounded text-blue-600 dark:text-blue-400">claude</code> in your terminal</>
-            )}
+            {currentLocale === 'zh'
+              ? (
+                  <>
+                    💡 无需安装，打开终端输入
+                    <code className="bg-neutral-100 dark:bg-neutral-800 px-2 py-1 rounded text-blue-600 dark:text-blue-400">claude</code>
+                    {' '}
+                    即可开始
+                  </>
+                )
+              : (
+                  <>
+                    💡 No installation required, just type
+                    <code className="bg-neutral-100 dark:bg-neutral-800 px-2 py-1 rounded text-blue-600 dark:text-blue-400">claude</code>
+                    {' '}
+                    in your terminal
+                  </>
+                )}
           </p>
         </div>
       </div>

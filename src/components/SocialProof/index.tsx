@@ -39,7 +39,7 @@ export function SocialProof() {
       name: 'Alex Chen',
       role: currentLocale === 'zh' ? '全栈开发工程师' : 'Full Stack Developer',
       company: 'Tech Startup',
-      content: currentLocale === 'zh' 
+      content: currentLocale === 'zh'
         ? 'Claude Code 让我的开发效率提升了 3 倍，代码质量也明显改善了。'
         : 'Claude Code increased my development efficiency by 3x and significantly improved code quality.',
       avatar: '👨‍💻',
@@ -79,10 +79,9 @@ export function SocialProof() {
             {currentLocale === 'zh' ? '数万开发者的共同选择' : 'Trusted by Thousands of Developers'}
           </h2>
           <p className="text-lg text-neutral-600 dark:text-neutral-400 max-w-2xl mx-auto">
-            {currentLocale === 'zh' 
+            {currentLocale === 'zh'
               ? '加入全球开发者社区，体验 AI 驱动的编程革命'
-              : 'Join the global developer community and experience the AI-powered programming revolution'
-            }
+              : 'Join the global developer community and experience the AI-powered programming revolution'}
           </p>
         </motion.div>
 
@@ -100,8 +99,9 @@ export function SocialProof() {
                 'inline-flex items-center justify-center w-16 h-16 rounded-full',
                 'bg-gradient-to-br from-white to-neutral-100',
                 'dark:from-neutral-800 dark:to-neutral-700',
-                'shadow-lg mb-4'
-              )}>
+                'shadow-lg mb-4',
+              )}
+              >
                 <span className={cn(stat.icon, stat.color, 'text-2xl')} />
               </div>
               <div className="text-3xl md:text-4xl font-bold text-neutral-900 dark:text-white mb-2">
@@ -141,7 +141,7 @@ export function SocialProof() {
                 'border border-neutral-200 dark:border-neutral-700',
                 'shadow-lg hover:shadow-xl',
                 'transition-all duration-300',
-                'hover:scale-105'
+                'hover:scale-105',
               )}
             >
               <div className="flex items-center mb-4">
@@ -151,15 +151,20 @@ export function SocialProof() {
                     {testimonial.name}
                   </div>
                   <div className="text-sm text-neutral-600 dark:text-neutral-400">
-                    {testimonial.role} at {testimonial.company}
+                    {testimonial.role}
+                    {' '}
+                    at
+                    {testimonial.company}
                   </div>
                 </div>
               </div>
               <p className="text-neutral-700 dark:text-neutral-300 italic">
-                "{testimonial.content}"
+                "
+                {testimonial.content}
+                "
               </p>
               <div className="flex text-yellow-400 mt-4">
-                {[...Array(5)].map((_, i) => (
+                {[...Array.from({ length: 5 })].map((_, i) => (
                   <span key={i} className="icon-[lucide--star] text-sm" />
                 ))}
               </div>

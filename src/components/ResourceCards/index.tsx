@@ -49,14 +49,14 @@ export function ResourceCards() {
 
   const getBadgeStyle = (badge: string) => {
     const styles = {
-      'Recommended': 'bg-gradient-to-r from-blue-500 to-purple-600 text-white',
-      '推荐': 'bg-gradient-to-r from-blue-500 to-purple-600 text-white',
-      'Official': 'bg-gradient-to-r from-green-500 to-emerald-600 text-white',
-      '官方资源': 'bg-gradient-to-r from-green-500 to-emerald-600 text-white',
-      'Community': 'bg-gradient-to-r from-orange-500 to-red-500 text-white',
-      '社区资源': 'bg-gradient-to-r from-orange-500 to-red-500 text-white',
-      'Videos': 'bg-gradient-to-r from-pink-500 to-rose-500 text-white',
-      '视频资源': 'bg-gradient-to-r from-pink-500 to-rose-500 text-white',
+      Recommended: 'bg-gradient-to-r from-blue-500 to-purple-600 text-white',
+      推荐: 'bg-gradient-to-r from-blue-500 to-purple-600 text-white',
+      Official: 'bg-gradient-to-r from-green-500 to-emerald-600 text-white',
+      官方资源: 'bg-gradient-to-r from-green-500 to-emerald-600 text-white',
+      Community: 'bg-gradient-to-r from-orange-500 to-red-500 text-white',
+      社区资源: 'bg-gradient-to-r from-orange-500 to-red-500 text-white',
+      Videos: 'bg-gradient-to-r from-pink-500 to-rose-500 text-white',
+      视频资源: 'bg-gradient-to-r from-pink-500 to-rose-500 text-white',
     }
     return styles[badge as keyof typeof styles] || 'bg-neutral-200 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-300'
   }
@@ -66,7 +66,7 @@ export function ResourceCards() {
       {resourceList.map((item, index) => {
         const isExternal = item.link.startsWith('http')
         const CardComponent = isExternal ? 'a' : Link
-        const cardProps = isExternal 
+        const cardProps = isExternal
           ? { href: item.link, target: '_blank', rel: 'noopener noreferrer' }
           : { href: item.link }
 
@@ -91,12 +91,12 @@ export function ResourceCards() {
                 'hover:border-blue-200 dark:hover:border-blue-800',
                 'cursor-pointer',
                 'relative overflow-hidden',
-                'h-full flex flex-col min-h-[280px]'
+                'h-full flex flex-col min-h-[280px]',
               )}
             >
               {/* Background gradient on hover */}
               <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-purple-50/50 dark:from-blue-900/10 dark:to-purple-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              
+
               {/* Content */}
               <div className="relative z-10 flex flex-col h-full">
                 {/* Header */}
@@ -106,39 +106,43 @@ export function ResourceCards() {
                       'w-12 h-12 rounded-xl flex items-center justify-center',
                       'bg-gradient-to-br from-neutral-100 to-neutral-200',
                       'dark:from-neutral-800 dark:to-neutral-700',
-                      'group-hover:scale-110 transition-transform duration-300'
-                    )}>
+                      'group-hover:scale-110 transition-transform duration-300',
+                    )}
+                    >
                       <span className={cn(item.icon.props.className, 'text-xl text-neutral-600 dark:text-neutral-400')} />
                     </div>
                   </div>
                   <span className={cn(
                     'px-3 py-1 rounded-full text-xs font-medium',
                     'shadow-sm',
-                    getBadgeStyle(item.badge)
-                  )}>
+                    getBadgeStyle(item.badge),
+                  )}
+                  >
                     {item.badge}
                   </span>
                 </div>
-                
+
                 {/* Title */}
                 <h3 className="font-bold text-lg text-neutral-900 dark:text-white mb-3 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
                   {item.title}
                 </h3>
-                
+
                 {/* Description */}
                 <p className="text-neutral-600 dark:text-neutral-400 text-sm leading-relaxed mb-4 flex-grow">
                   {item.description}
                 </p>
-                
+
                 {/* Action */}
                 <div className="flex items-center text-blue-600 dark:text-blue-400 text-sm font-medium mt-auto">
                   <span>{currentLocale === 'zh' ? '查看详情' : 'Learn More'}</span>
                   <span className="ml-2 group-hover:translate-x-1 transition-transform duration-300">
-                    {isExternal ? (
-                      <span className="icon-[lucide--external-link] w-4 h-4" />
-                    ) : (
-                      <span className="icon-[lucide--arrow-right] w-4 h-4" />
-                    )}
+                    {isExternal
+                      ? (
+                          <span className="icon-[lucide--external-link] w-4 h-4" />
+                        )
+                      : (
+                          <span className="icon-[lucide--arrow-right] w-4 h-4" />
+                        )}
                   </span>
                 </div>
               </div>
