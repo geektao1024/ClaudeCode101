@@ -26,7 +26,7 @@ Disallow: /admin/
 Disallow: /private/
 
 # 站点地图
-Sitemap: https://claudecode101.com/sitemap.xml
+Sitemap: https://www.claudecode101.com/sitemap.xml
 
 # 爬取延迟
 Crawl-delay: 1

@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next'
 import process from 'node:process'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://claudecode101.com'
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.claudecode101.com'
 
   // 基础页面
   const routes = [
