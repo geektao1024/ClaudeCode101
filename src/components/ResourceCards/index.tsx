@@ -10,10 +10,10 @@ export function ResourceCards() {
 
   const resourceList = [
     {
-      title: currentLocale === 'zh' ? 'Claude Code 最佳实践' : 'Claude Code Best Practices',
+      title: currentLocale === 'zh' ? 'ClaudeCode 教程最佳实践' : 'ClaudeCode Tutorial Best Practices',
       description: currentLocale === 'zh'
-        ? '学习如何有效使用 Claude Code 进行智能体编程的完整指南，包括设置、工作流程和优化技巧。'
-        : 'A comprehensive guide to effectively using Claude Code for agentic programming, including setup, workflows, and optimization tips.',
+        ? '学习如何有效使用 ClaudeCode 进行智能体编程的完整 Claude Code 教程指南，包括设置、工作流程和优化技巧。'
+        : 'A comprehensive ClaudeCode tutorial guide to effectively using Claude Code for agentic programming, including setup, workflows, and optimization tips.',
       link: `/${currentLocale}/tutorial`,
       icon: <span className="icon-[material-symbols--school]"></span>,
       badge: currentLocale === 'zh' ? '推荐' : 'Recommended',
@@ -21,8 +21,8 @@ export function ResourceCards() {
     {
       title: currentLocale === 'zh' ? '官方文档' : 'Official Documentation',
       description: currentLocale === 'zh'
-        ? 'Claude Code 官方英文文档，包含最新的功能介绍和API参考。'
-        : 'Official Claude Code documentation with the latest feature introductions and API references.',
+        ? 'ClaudeCode 官方英文文档，包含最新的 Claude Code 功能介绍和API参考。'
+        : 'Official ClaudeCode documentation with the latest Claude Code feature introductions and API references.',
       link: 'https://docs.anthropic.com/en/docs/claude-code',
       icon: <span className="icon-[material-symbols--description]"></span>,
       badge: currentLocale === 'zh' ? '官方资源' : 'Official',
@@ -39,8 +39,8 @@ export function ResourceCards() {
     {
       title: currentLocale === 'zh' ? 'YouTube 视频' : 'YouTube Videos',
       description: currentLocale === 'zh'
-        ? '观看 Claude Code 相关的教程、演示和技术分享视频。'
-        : 'Watch Claude Code related tutorials, demos, and technical sharing videos.',
+        ? '观看 ClaudeCode 教程相关的 Claude Code 演示、技术分享和实战视频。'
+        : 'Watch ClaudeCode tutorial related Claude Code demos, technical sharing and hands-on videos.',
       link: 'https://www.youtube.com/results?search_query=claude+code',
       icon: <span className="icon-[mingcute--youtube-line]"></span>,
       badge: currentLocale === 'zh' ? '视频资源' : 'Videos',

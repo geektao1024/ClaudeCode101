@@ -65,8 +65,8 @@ export default function HomepageHero() {
       <div className="relative z-1">
         {/* Features Section - replacing tech stack */}
         <Section
-          title={currentLocale === 'zh' ? 'Claude Code 核心特性' : 'Core Features'}
-          description={currentLocale === 'zh' ? '让 AI 成为你最得力的编程助手' : 'Make AI your most powerful programming companion'}
+          title={currentLocale === 'zh' ? 'ClaudeCode 教程核心特性' : 'ClaudeCode Tutorial Core Features'}
+          description={currentLocale === 'zh' ? '通过 Claude Code 教程，让 AI 成为你最得力的编程助手' : 'Through ClaudeCode tutorial, make AI your most powerful programming companion'}
           titleProps={{
             disabledAnimation: false,
           }}
@@ -80,7 +80,7 @@ export default function HomepageHero() {
                 {currentLocale === 'zh' ? '智能代码生成' : 'Intelligent Code Generation'}
               </h3>
               <p className="text-neutral-600 dark:text-neutral-400">
-                {currentLocale === 'zh' ? '基于上下文的精准代码生成，支持多种编程语言和框架' : 'Context-aware precise code generation supporting multiple languages and frameworks'}
+                {currentLocale === 'zh' ? '通过 ClaudeCode 教程学习基于上下文的精准代码生成，支持多种编程语言和框架' : 'Learn context-aware precise code generation through ClaudeCode tutorial, supporting multiple languages and frameworks'}
               </p>
             </div>
 
@@ -92,7 +92,7 @@ export default function HomepageHero() {
                 {currentLocale === 'zh' ? '代码审查与优化' : 'Code Review & Optimization'}
               </h3>
               <p className="text-neutral-600 dark:text-neutral-400">
-                {currentLocale === 'zh' ? '自动发现潜在问题，提供优化建议和最佳实践指导' : 'Automatically detect issues and provide optimization suggestions with best practices'}
+                {currentLocale === 'zh' ? 'Claude Code 教程教你自动发现潜在问题，提供优化建议和最佳实践指导' : 'Claude Code tutorial teaches you to automatically detect issues and provide optimization suggestions with best practices'}
               </p>
             </div>
 
@@ -104,7 +104,7 @@ export default function HomepageHero() {
                 {currentLocale === 'zh' ? '团队协作' : 'Team Collaboration'}
               </h3>
               <p className="text-neutral-600 dark:text-neutral-400">
-                {currentLocale === 'zh' ? '无缝集成Git工作流，支持多人协作和代码标准化' : 'Seamless Git workflow integration with multi-user collaboration and code standardization'}
+                {currentLocale === 'zh' ? 'ClaudeCode 教程指导你无缝集成Git工作流，支持多人协作和代码标准化' : 'ClaudeCode tutorial guides you to seamless Git workflow integration with multi-user collaboration and code standardization'}
               </p>
             </div>
           </div>

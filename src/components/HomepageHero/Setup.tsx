@@ -96,11 +96,11 @@ export function SetupHero(props: Props) {
                       className="text-blue-600 dark:text-blue-400 font-semibold"
                     />
                     <br className="hidden sm:block" />
-                    掌握专业的 AI 辅助编程技能，
+                    掌握专业的 AI 辅助编程技能，通过
                     <LinkPreview url="https://claude.ai/code" className="text-blue-600 dark:text-blue-400 font-medium hover:text-blue-700">
-                      Claude Code
+                      ClaudeCode
                     </LinkPreview>
-                    让编程更智能、更高效
+                    教程让编程更智能、更高效
                   </>
                 )
               : (
@@ -120,8 +120,9 @@ export function SetupHero(props: Props) {
                     <br className="hidden sm:block" />
                     Master professional AI-assisted programming with
                     <LinkPreview url="https://claude.ai/code" className="text-blue-600 dark:text-blue-400 font-medium hover:text-blue-700">
-                      Claude Code
+                      ClaudeCode
                     </LinkPreview>
+                    tutorial
                   </>
                 )}
           </div>
@@ -152,7 +153,7 @@ export function SetupHero(props: Props) {
             >
               <Link href={`/${currentLocale}/tutorial`}>
                 <span className="icon-[lucide--rocket] mr-2"></span>
-                {currentLocale === 'zh' ? '开始学习 (5分钟上手)' : 'Start Learning (5 min setup)'}
+                {currentLocale === 'zh' ? '开始 ClaudeCode 教程学习 (5分钟上手)' : 'Start ClaudeCode Tutorial Learning (5 min setup)'}
                 <span className="w-[20px] translate-x-[6px] transition-all group-hover:translate-x-[10px] icon-[mingcute--arrow-right-fill]"></span>
               </Link>
             </Button>
@@ -181,18 +182,18 @@ export function SetupHero(props: Props) {
             {currentLocale === 'zh'
               ? (
                   <>
-                    💡 无需安装，打开终端输入
+                    💡 ClaudeCode 无需安装，打开终端输入
                     <code className="bg-neutral-100 dark:bg-neutral-800 px-2 py-1 rounded text-blue-600 dark:text-blue-400">claude</code>
                     {' '}
-                    即可开始
+                    即可开始学习 Claude Code 教程
                   </>
                 )
               : (
                   <>
-                    💡 No installation required, just type
+                    💡 ClaudeCode requires no installation, just type
                     <code className="bg-neutral-100 dark:bg-neutral-800 px-2 py-1 rounded text-blue-600 dark:text-blue-400">claude</code>
                     {' '}
-                    in your terminal
+                    in terminal to start
                   </>
                 )}
           </p>

@@ -22,14 +22,14 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: I18
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://claudecode101.com'
   const siteName = lang === 'zh' ? 'Claude Code 教程中心' : 'Claude Code Tutorial Center'
   const title = lang === 'zh'
-    ? 'Claude Code 教程中心 - 智能编程助手完整指南'
-    : 'Claude Code Tutorial Center - Complete AI Programming Assistant Guide'
+    ? 'ClaudeCode 教程中心 - Claude Code 智能编程助手完整指南'
+    : 'ClaudeCode Tutorial Center - Complete Claude Code AI Programming Assistant Guide'
   const description = lang === 'zh'
-    ? 'Claude Code 中文教程，学习如何使用 AI 驱动的编程助手进行智能体编程，包含最佳实践、工作流程和优化技巧。'
-    : 'Complete Claude Code tutorial. Learn how to use AI-powered programming assistant for agentic programming, including best practices, workflows, and optimization tips.'
+    ? 'ClaudeCode 中文教程，学习如何使用 Claude Code 进行智能体编程。专业的 ClaudeCode 教程包含最佳实践、工作流程和优化技巧，助您掌握 AI 驱动的编程助手。'
+    : 'ClaudeCode tutorial in Chinese. Learn how to use Claude Code for agentic programming. Professional ClaudeCode tutorial includes best practices, workflows, and optimization tips to master AI-powered programming assistant.'
   const keywords = lang === 'zh'
-    ? ['Claude Code', 'AI编程', '智能编程助手', 'Anthropic', '编程教程', '最佳实践', 'MCP', '代码生成', '编程自动化']
-    : ['Claude Code', 'AI Programming', 'AI Programming Assistant', 'Anthropic', 'Programming Tutorial', 'Best Practices', 'MCP', 'Code Generation', 'Programming Automation']
+    ? ['ClaudeCode', 'Claude Code 教程', 'claudecode', 'AI编程', '智能编程助手', 'Anthropic', '编程教程', '最佳实践', 'MCP', '代码生成', '编程自动化', 'Claude Code 中文教程']
+    : ['ClaudeCode', 'Claude Code tutorial', 'claudecode', 'AI Programming', 'AI Programming Assistant', 'Anthropic', 'Programming Tutorial', 'Best Practices', 'MCP', 'Code Generation', 'Programming Automation', 'Claude Code guide']
 
   return {
     title,
@@ -184,10 +184,10 @@ export default async function RootLayout({ children, params }: Props) {
             __html: JSON.stringify({
               '@context': 'https://schema.org',
               '@type': 'WebSite',
-              name: lang === 'zh' ? 'Claude Code 教程中心' : 'Claude Code Tutorial Center',
+              name: lang === 'zh' ? 'ClaudeCode 教程中心 - Claude Code 学习平台' : 'ClaudeCode Tutorial Center - Claude Code Learning Platform',
               description: lang === 'zh'
-                ? 'Claude Code 中文教程，学习如何使用 AI 驱动的编程助手进行智能体编程，包含最佳实践、工作流程和优化技巧。'
-                : 'Complete Claude Code tutorial. Learn how to use AI-powered programming assistant for agentic programming, including best practices, workflows, and optimization tips.',
+                ? 'ClaudeCode 中文教程，学习如何使用 Claude Code 进行智能体编程。专业的 ClaudeCode 教程包含最佳实践、工作流程和优化技巧，助您掌握 AI 驱动的编程助手。'
+                : 'ClaudeCode tutorial in Chinese. Learn how to use Claude Code for agentic programming. Professional ClaudeCode tutorial includes best practices, workflows, and optimization tips to master AI-powered programming assistant.',
               url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://claude-code-tutorial.com'}/${lang}`,
               publisher: {
                 '@type': 'Organization',
@@ -220,10 +220,10 @@ export default async function RootLayout({ children, params }: Props) {
             __html: JSON.stringify({
               '@context': 'https://schema.org',
               '@type': 'Course',
-              name: lang === 'zh' ? 'Claude Code 完整教程' : 'Complete Claude Code Tutorial',
+              name: lang === 'zh' ? 'ClaudeCode 完整教程 - Claude Code 编程指南' : 'Complete ClaudeCode Tutorial - Claude Code Programming Guide',
               description: lang === 'zh'
-                ? '学习如何使用 Claude Code 进行智能体编程的完整课程'
-                : 'Complete course on learning how to use Claude Code for agentic programming',
+                ? '学习如何使用 ClaudeCode 进行智能体编程的完整 Claude Code 教程课程'
+                : 'Complete ClaudeCode tutorial course on learning how to use Claude Code for agentic programming',
               provider: {
                 '@type': 'Organization',
                 name: 'Claude Code Tutorial Center',
@@ -232,8 +232,8 @@ export default async function RootLayout({ children, params }: Props) {
               educationalLevel: lang === 'zh' ? '初级到高级' : 'Beginner to Advanced',
               coursePrerequisites: lang === 'zh' ? '基础编程知识' : 'Basic programming knowledge',
               teaches: lang === 'zh'
-                ? ['AI 编程', '代码生成', '智能体编程', '最佳实践']
-                : ['AI Programming', 'Code Generation', 'Agentic Programming', 'Best Practices'],
+                ? ['ClaudeCode 使用', 'Claude Code 教程', 'AI 编程', '代码生成', '智能体编程', '最佳实践', 'Claude Code 工作流程']
+                : ['ClaudeCode usage', 'Claude Code tutorial', 'AI Programming', 'Code Generation', 'Agentic Programming', 'Best Practices', 'Claude Code workflows'],
               inLanguage: lang === 'zh' ? 'zh-CN' : 'en-US',
             }),
           }}
