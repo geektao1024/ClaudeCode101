@@ -1,0 +1,499 @@
+# Architecture Analysis
+
+Leverage Claude Code's analytical capabilities to understand, evaluate, and improve software architecture across different scales and domains.
+
+## System Architecture Understanding
+
+### High-Level Architecture Analysis
+
+Claude Code can help you comprehend complex system architectures:
+
+```
+Analyze this system architecture diagram and explain:
+1. Component relationships and dependencies
+2. Data flow patterns
+3. Potential bottlenecks
+4. Scalability considerations
+5. Security implications
+[Attach architecture diagram]
+```
+
+### Microservices Architecture
+
+**Service Decomposition**:
+```
+Analyze this monolithic application for microservices extraction:
+1. Identify bounded contexts
+2. Suggest service boundaries
+3. Evaluate data consistency requirements
+4. Recommend communication patterns
+5. Assess migration complexity
+```
+
+**Service Mesh Analysis**:
+```
+Evaluate service mesh implementation:
+- Traffic management patterns
+- Security policy enforcement
+- Observability requirements
+- Performance impact assessment
+- Operational complexity
+```
+
+### Event-Driven Architecture
+
+**Event Flow Analysis**:
+```
+Analyze event-driven system design:
+1. Event sourcing patterns
+2. CQRS implementation
+3. Saga pattern usage
+4. Event ordering guarantees
+5. Failure handling strategies
+```
+
+**Message Queue Architecture**:
+```
+Evaluate messaging architecture:
+- Queue vs topic selection
+- Partitioning strategies
+- Dead letter queue handling
+- Backpressure management
+- Delivery guarantees
+```
+
+## Application Architecture Patterns
+
+### Layered Architecture
+
+**Layer Separation Analysis**:
+```
+Review layered architecture implementation:
+1. Presentation layer responsibilities
+2. Business logic encapsulation
+3. Data access layer design
+4. Cross-cutting concerns handling
+5. Dependency direction validation
+```
+
+**Clean Architecture Assessment**:
+```
+Evaluate Clean Architecture compliance:
+- Dependency inversion adherence
+- Entity and use case isolation
+- Interface adapter implementation
+- Framework independence
+- Testability improvements
+```
+
+### Hexagonal Architecture
+
+**Port and Adapter Analysis**:
+```
+Analyze hexagonal architecture:
+1. Port definition clarity
+2. Adapter implementation quality
+3. Domain logic isolation
+4. External dependency management
+5. Testing strategy effectiveness
+```
+
+### Domain-Driven Design
+
+**Bounded Context Analysis**:
+```
+Evaluate DDD implementation:
+- Bounded context boundaries
+- Aggregate design quality
+- Domain service placement
+- Repository pattern usage
+- Ubiquitous language consistency
+```
+
+**Strategic Design Assessment**:
+```
+Analyze strategic DDD patterns:
+1. Context mapping accuracy
+2. Anti-corruption layer necessity
+3. Shared kernel appropriateness
+4. Customer-supplier relationships
+5. Conformist pattern usage
+```
+
+## Data Architecture Analysis
+
+### Database Design Evaluation
+
+**Relational Database Analysis**:
+```
+Review database schema design:
+1. Normalization level appropriateness
+2. Index strategy effectiveness
+3. Constraint implementation
+4. Performance optimization opportunities
+5. Scalability limitations
+```
+
+**NoSQL Database Assessment**:
+```
+Evaluate NoSQL database choice:
+- Data model fit assessment
+- Consistency requirements
+- Scalability characteristics
+- Query pattern optimization
+- Migration complexity
+```
+
+### Data Pipeline Architecture
+
+**ETL/ELT Process Analysis**:
+```
+Analyze data processing pipeline:
+1. Data ingestion strategies
+2. Transformation logic efficiency
+3. Error handling robustness
+4. Monitoring and alerting
+5. Scalability considerations
+```
+
+**Real-time Data Architecture**:
+```
+Evaluate streaming data architecture:
+- Stream processing frameworks
+- Windowing strategies
+- State management approaches
+- Fault tolerance mechanisms
+- Latency optimization
+```
+
+## Security Architecture Review
+
+### Authentication and Authorization
+
+**Identity Management Analysis**:
+```
+Review identity architecture:
+1. Authentication flow security
+2. Authorization model effectiveness
+3. Token management strategies
+4. Session handling security
+5. Multi-factor authentication integration
+```
+
+**Zero Trust Architecture**:
+```
+Evaluate Zero Trust implementation:
+- Identity verification mechanisms
+- Device trust assessment
+- Network segmentation strategies
+- Continuous monitoring
+- Least privilege enforcement
+```
+
+### Security Patterns Assessment
+
+**Defense in Depth**:
+```
+Analyze security layer implementation:
+1. Perimeter security measures
+2. Network security controls
+3. Application security features
+4. Data protection mechanisms
+5. Endpoint security coverage
+```
+
+**Threat Modeling**:
+```
+Conduct architecture threat analysis:
+- Attack surface identification
+- Threat vector assessment
+- Vulnerability impact analysis
+- Mitigation strategy evaluation
+- Security control effectiveness
+```
+
+## Performance Architecture Analysis
+
+### Scalability Assessment
+
+**Horizontal Scaling Analysis**:
+```
+Evaluate horizontal scaling design:
+1. Stateless component identification
+2. Load balancing strategies
+3. Data partitioning approaches
+4. Cache distribution patterns
+5. Auto-scaling mechanisms
+```
+
+**Vertical Scaling Considerations**:
+```
+Analyze vertical scaling limitations:
+- Resource utilization patterns
+- Bottleneck identification
+- Hardware constraint assessment
+- Cost-benefit analysis
+- Migration planning
+```
+
+### Caching Architecture
+
+**Multi-Level Caching**:
+```
+Review caching strategy:
+1. Cache hierarchy design
+2. Invalidation strategies
+3. Consistency guarantees
+4. Performance impact measurement
+5. Memory usage optimization
+```
+
+**Distributed Caching**:
+```
+Evaluate distributed cache implementation:
+- Partitioning strategies
+- Replication mechanisms
+- Consistency models
+- Failure handling
+- Network overhead
+```
+
+## Cloud Architecture Analysis
+
+### Multi-Cloud Strategy
+
+**Cloud Service Evaluation**:
+```
+Analyze multi-cloud architecture:
+1. Service selection rationale
+2. Vendor lock-in mitigation
+3. Data sovereignty compliance
+4. Cost optimization strategies
+5. Disaster recovery planning
+```
+
+**Hybrid Cloud Assessment**:
+```
+Review hybrid cloud implementation:
+- Workload placement decisions
+- Network connectivity design
+- Security boundary management
+- Data synchronization strategies
+- Compliance requirements
+```
+
+### Serverless Architecture
+
+**Function-as-a-Service Analysis**:
+```
+Evaluate serverless architecture:
+1. Function granularity appropriateness
+2. Cold start impact assessment
+3. State management strategies
+4. Cost optimization opportunities
+5. Vendor dependency risks
+```
+
+**Event-Driven Serverless**:
+```
+Analyze serverless event processing:
+- Event source integration
+- Function chaining patterns
+- Error handling mechanisms
+- Monitoring and debugging
+- Performance optimization
+```
+
+## Architecture Quality Assessment
+
+### Quality Attributes Evaluation
+
+**Maintainability Analysis**:
+```
+Assess architecture maintainability:
+1. Code organization clarity
+2. Dependency management
+3. Documentation completeness
+4. Testing strategy coverage
+5. Change impact assessment
+```
+
+**Reliability Assessment**:
+```
+Evaluate system reliability:
+- Fault tolerance mechanisms
+- Recovery procedures
+- Monitoring capabilities
+- SLA compliance
+- Incident response planning
+```
+
+### Technical Debt Analysis
+
+**Architecture Debt Identification**:
+```
+Identify architectural technical debt:
+1. Design pattern violations
+2. Coupling and cohesion issues
+3. Performance anti-patterns
+4. Security vulnerabilities
+5. Scalability limitations
+```
+
+**Refactoring Prioritization**:
+```
+Prioritize architecture improvements:
+- Business impact assessment
+- Technical risk evaluation
+- Implementation complexity
+- Resource requirement analysis
+- Timeline considerations
+```
+
+## Architecture Documentation
+
+### Architecture Decision Records
+
+**ADR Creation**:
+```
+Document architecture decisions:
+1. Decision context and forces
+2. Considered alternatives
+3. Decision rationale
+4. Consequences and trade-offs
+5. Implementation guidelines
+```
+
+**Decision Review Process**:
+```
+Establish ADR review workflow:
+- Stakeholder involvement
+- Review criteria definition
+- Approval processes
+- Version control integration
+- Change management
+```
+
+### Architecture Visualization
+
+**Diagram Generation**:
+```
+Create architecture diagrams:
+1. System context diagrams
+2. Container diagrams
+3. Component diagrams
+4. Deployment diagrams
+5. Sequence diagrams
+```
+
+**Documentation Standards**:
+```
+Establish documentation guidelines:
+- Diagram notation standards
+- Description templates
+- Update procedures
+- Tool selection criteria
+- Accessibility requirements
+```
+
+## Architecture Evolution
+
+### Migration Planning
+
+**Legacy System Analysis**:
+```
+Analyze legacy system architecture:
+1. Current state assessment
+2. Business capability mapping
+3. Technical constraint identification
+4. Migration risk evaluation
+5. Modernization roadmap
+```
+
+**Incremental Migration**:
+```
+Plan incremental architecture evolution:
+- Strangler Fig pattern implementation
+- Feature flag strategies
+- Data migration approaches
+- Rollback procedures
+- Success metrics definition
+```
+
+### Continuous Architecture
+
+**Architecture Fitness Functions**:
+```
+Implement architecture governance:
+1. Automated compliance checking
+2. Performance threshold monitoring
+3. Security policy enforcement
+4. Dependency analysis
+5. Quality gate implementation
+```
+
+**Evolution Monitoring**:
+```
+Track architecture evolution:
+- Metric collection strategies
+- Trend analysis approaches
+- Anomaly detection methods
+- Feedback loop establishment
+- Continuous improvement
+```
+
+## Tools and Techniques
+
+### Analysis Tools
+- **Static Analysis**: SonarQube, NDepend, Structure101
+- **Dynamic Analysis**: APM tools, profilers, load testing
+- **Dependency Analysis**: Dependency cruiser, jdeps
+- **Security Analysis**: OWASP ZAP, Veracode, Checkmarx
+- **Performance Analysis**: JProfiler, dotTrace, Chrome DevTools
+
+### Modeling Tools
+- **Architecture Modeling**: ArchiMate, Sparx EA, Lucidchart
+- **Diagram Creation**: Draw.io, PlantUML, Mermaid
+- **Code Visualization**: Sourcetrail, CodeScene, Understand
+- **Cloud Architecture**: AWS Architecture Center, Azure Architecture Center
+
+### Assessment Frameworks
+- **ATAM**: Architecture Tradeoff Analysis Method
+- **SAAM**: Software Architecture Analysis Method
+- **CBAM**: Cost Benefit Analysis Method
+- **TOGAF**: The Open Group Architecture Framework
+- **Zachman Framework**: Enterprise Architecture Framework
+
+## Best Practices
+
+### Analysis Methodology
+
+1. **Stakeholder Involvement**: Include all relevant stakeholders
+2. **Multiple Perspectives**: Consider different viewpoints
+3. **Iterative Approach**: Refine analysis over time
+4. **Evidence-Based**: Use metrics and data
+5. **Risk-Focused**: Prioritize high-risk areas
+
+### Communication Strategies
+
+```
+Effective architecture communication:
+1. Audience-appropriate abstractions
+2. Visual representation usage
+3. Concrete examples provision
+4. Trade-off explanation
+5. Decision rationale sharing
+```
+
+### Continuous Improvement
+
+```
+Establish improvement processes:
+- Regular architecture reviews
+- Feedback collection mechanisms
+- Lesson learned documentation
+- Best practice sharing
+- Knowledge transfer planning
+```
+
+By systematically analyzing architecture with Claude Code's assistance, you can identify improvement opportunities, mitigate risks, and ensure your systems meet both current and future requirements effectively.

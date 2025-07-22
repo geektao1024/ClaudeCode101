@@ -1,0 +1,33 @@
+# 架构分析
+
+用 Roo Code 插件分析项目架构，生成架构图，让 Claude Code 更好地理解你的项目。
+
+## 安装配置
+
+配置很简单：
+
+1. VS Code装Roo Code插件
+2. 选择Claude Code供应商，用Sonnet模型（Opus太贵）
+3. 交互模式选**Architect**
+
+![Roo Code 配置](/img/media/image8.png)
+![Roo Code 模型选择](/img/media/image9.png)  
+![Roo Code 交互模式](/img/media/image10.png)
+
+记住一点：只用Roo Code做架构设计，不要让它写代码，太慢了而且效果不如Claude Code。
+
+## 实际应用
+
+我之前做过一个AI微信客服机器人，直接跟Roo Code说需求，它帮我分析了整个系统架构。反复讨论后，得到了很清晰的数据库设计图和系统架构图。
+
+![数据库设计图](/img/media/image11.png)
+
+![完整架构设计](/img/media/image12.png)
+
+[这是在线的架构图链接](https://mermaid.live/edit#pako:eNqFk1tPGkEUx7_KZp7aBIjswgr7YAMIZBMFCmtJu_CwylaN5RKEpC2SWK2ACRcbKmCamGotmDZAL8YmiPbTzAx8C_eCcmkN8zS753f-539mzqTASjQkAgasxoXYGsFZAxFCWpvJZfVHAPjFZV90ZUNMwJ87AaCG5eX38cNQ6xTl_uDv7SCh1c4RNrfLxff-HqPiV9w6wQcZeHQeHGbKYYXz2m3PeHSZQ-_aEoo-Xg45MRJSN__4UXmYy-Cr9xOWZD1F2LrkcNi9A2ncLcPML5jvjFhQAYV1et1LHhk-6vR2rwe6Y34HhEJz7KLMVi_71Qv8rQpLXyY7fNi5hYW5M1RpTrhWJBVxh9u7aOG4e-focxd2SzBfGfdzj6n-PZyBd8fEiIWV91rDqHMppkAer9tqsbILLPech608OrxA2w1U38HFbO-mDLOdqeZh5jduVtB-o3eSn2hgRFwpNm-3sT7W7UqpBYg5ol_Lwe3uk_Qw546RE7ZQrb1FcF7W6ZRa7zXqsPRBOqtPx_CsEHwgBR7Utwi_heV4fNXAV03c3Ic3e-qxTR-hwx-o0ILNGtw5n7wM1YXah5V_5Hu6sJ4QBwmd8uMRP3L10QmaVrW_V8DXLXVcRktKz8HBOnlcbMPTXViq9bMlFQ0OJ26SHjvn_wblqx9zBDTSG18PASYRT4oaEBbjYUH-BCk5GgCJNTEsBgAjbUNCfEN2mJZyYkLkRTQavkuLR5Ora4B5KbzalL6SsZCQEOfXBanHISIVFOO2aDKSAAxpNCkagEmB14DR6806mpohzSRJUbTZSFIa8AYwBp2RNppIykRTBtJEmcm0BrxVqup1lMGop2fo2Vk9bSJJMn0LYnS4tA)
+
+关键是别让Roo Code写代码，它在这方面很慢而且效果不好。只用它做架构设计，设计完了让它输出一份Markdown文档，然后把这个文档给Claude Code，让它按照架构写具体代码。
+
+这样分工很清楚：Roo Code负责想怎么做，Claude Code负责具体怎么写。有了清晰的架构图，后面出问题也好定位，不会像无头苍蝇一样到处找bug。
+
+我一般都是先跟Roo Code讨论核心功能，逐步完善整个架构。架构不用一开始就很复杂，可以从最基本的功能开始，后面再慢慢扩展。

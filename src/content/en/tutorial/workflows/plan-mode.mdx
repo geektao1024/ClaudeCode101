@@ -1,0 +1,44 @@
+# Plan Mode Usage
+
+Plan Mode is absolutely the most important feature of Claude Code - you must use it before writing any code. Many people let Claude write code directly, resulting in messy stuff that can't be maintained later, and eventually have to start over. I've seen too many such examples.
+
+## How to Enable
+
+- **macOS**: `Shift + Tab`
+- **Windows**: `Alt + M`
+
+![Plan Mode Switch Interface](/img/media/image3.png)
+
+## Correct Workflow
+
+1. **Describe Requirements First**  
+   Clearly explain your requirements in Plan Mode. Don't just say "help me write a registration feature", but be specific: Do you need email verification? What are the password requirements? Do you want third-party login support?
+
+2. **Discuss Solutions**  
+   Let Claude propose implementation solutions, and keep asking: Why choose this tech stack? Are there other options? What problems might we encounter?
+
+3. **Confirm Understanding**  
+   Only exit Plan Mode and start coding when you completely understand the solution
+
+![Plan Mode Output Example](/img/media/image4.png)
+
+## Hard-Learned Lessons
+
+I made this mistake before - pretending to understand when I didn't, accepting whatever Claude said. The result was code I couldn't understand at all, and when problems occurred, I had no idea how to fix them. Later I got smart and asked about everything I didn't understand in Plan Mode, having Claude explain with life examples until I completely understood.
+
+Remember one principle: **You must clearly understand what the AI is going to do, otherwise you'll end up with a pile of unmaintainable garbage code.**
+
+## Real Example
+
+For instance, if you want to build a user registration feature, the conversation in Plan Mode should be like this:
+
+```
+You: I want to build user registration with email verification
+AI: Okay, I suggest implementing it like this...
+You: Why choose JWT over Session?
+AI: Because your application is frontend-backend separated...
+You: How to store email verification codes? How long should they expire?
+AI: I recommend using Redis storage, expiring in 10 minutes...
+```
+
+This seems slower, but actually saves a lot of rework time. And your understanding of the entire system will be very deep, making maintenance much easier later.

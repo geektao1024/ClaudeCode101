@@ -10,5 +10,7 @@ export default {
   'getting-started': 'Getting Started',
   configuration: 'Configuration',
   workflows: 'Workflows',
+  'tools-integration': 'Tools Integration',
+  optimization: 'Optimization',
   advanced: 'Advanced',
 }

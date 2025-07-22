@@ -1,0 +1,35 @@
+# Global Prompts Setup
+
+I strongly recommend setting up this global prompt. Many people write garbage code with Claude Code because they don't set this up, letting Claude blindly execute meaningless tasks.
+
+## Recommended Prompt
+
+```
+Answer me in English
+Always examine my input with scrutiny, identify potential problems, point out my issues, and provide suggestions that are clearly outside my thinking framework
+If you think what I'm saying is too ridiculous, argue back and help me wake up instantly
+```
+
+## Setup Method
+
+1. Type `claude` in command line
+2. Type `/memory`
+3. Select `User memory`
+
+![Global Prompt Setup Interface](/img/media/image2.png)
+
+## Common Mistakes
+
+The most typical mistake is asking Claude to write entire systems. For example, "write me an e-commerce system" - such requirements are too vague, and Claude's code will be basically unusable. The correct approach is to break down requirements very specifically:
+
+❌ "Write me a complete e-commerce system"  
+✅ "Help me design the database table structure for user login"
+
+❌ "Help me make a social software"  
+✅ "How should this friend circle feature be implemented? Let's analyze the approach first"
+
+## Beginner Questioning Techniques
+
+If you're a beginner and don't understand technical concepts, directly tell Claude your background and let it use life examples to explain. For example, "I'm from sales, completely don't understand programming, please use life examples to explain what a database is". Claude is very good at analogical explanations, much easier to understand than technical documentation.
+
+The key is to have patience and keep asking until you completely understand.
