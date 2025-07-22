@@ -279,6 +279,9 @@ export default async function RootLayout({ children, params }: Props) {
           // ... Your additional layout options
           >
             {children}
+            
+            {/* Adsterra Ad Container */}
+            <div id="container-f45fea6468637f2b2fb47a4f10d061e2"></div>
           </Layout>
         </ThemeProvider>
       </body>
@@ -289,6 +292,14 @@ export default async function RootLayout({ children, params }: Props) {
         async
         src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6152848695010247"
         crossOrigin="anonymous"
+        strategy="afterInteractive"
+      />
+      
+      {/* Adsterra */}
+      <Script
+        async
+        src="//pl27236491.profitableratecpm.com/f45fea6468637f2b2fb47a4f10d061e2/invoke.js"
+        data-cfasync="false"
         strategy="afterInteractive"
       />
       
