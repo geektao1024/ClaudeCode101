@@ -177,6 +177,9 @@ export default async function RootLayout({ children, params }: Props) {
       suppressHydrationWarning
     >
       <Head>
+        {/* Google AdSense */}
+        <meta name="google-adsense-account" content="ca-pub-6152848695010247" />
+        
         {/* 结构化数据 */}
         <script
           type="application/ld+json"
@@ -280,6 +283,15 @@ export default async function RootLayout({ children, params }: Props) {
         </ThemeProvider>
       </body>
       <GoogleAnalytics gaId="G-4683BGZTR8" />
+      
+      {/* Google AdSense */}
+      <Script
+        async
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6152848695010247"
+        crossOrigin="anonymous"
+        strategy="afterInteractive"
+      />
+      
       <Script
         id="microsoft-clarity"
         strategy="afterInteractive"
