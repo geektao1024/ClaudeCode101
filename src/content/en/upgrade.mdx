@@ -1,199 +1,193 @@
 ---
-title: "What's New"
-description: "Latest Claude Code features and changelog"
+title: "Claude Code Changelog"
+description: "Version history and updates for Claude Code - The AI coding assistant"
 ---
 
 import { Callout } from 'nextra/components'
 
-# Claude Code Latest Updates 🚀
+# Claude Code Changelog
 
-Stay up-to-date with the latest features, improvements, and updates in Claude Code.
+Track the evolution of Claude Code with detailed version updates, new features, and improvements.
 
-<Callout emoji={<span className='icon-[lucide--sparkles]'></span>} type="info">
-Important Notice
+<Callout emoji="⚡" type="info">
+**Latest Version: 1.0.62** - Published July 29, 2025
 
-Claude Code is now officially released! All features have been thoroughly tested and are ready for production use. If you encounter any issues, please [report them](https://github.com/anthropics/claude-code/issues).
+Claude Code is now generally available with 153+ versions released. [Install latest version](#installation) or [view GitHub releases](https://github.com/anthropics/claude-code).
 </Callout>
-
-## 🎉 2024-2025 Major Updates
-
-### ✨ General Availability
-
-Claude Code is now generally available! After extensive research preview and user feedback, we bring you:
-
-- 📈 **Extended developer collaboration features**
-- 🔧 **GitHub Actions background task support**
-- 🎨 **Native VS Code and JetBrains integration**
-- 🔄 **Direct file editing display**
-
-### 🛠️ New API Capabilities
-
-Four powerful new API capabilities enable developers to build more powerful AI agents:
-
-1. **🧮 Code Execution Tool** - Run code directly in conversations
-2. **🔗 MCP Connector** - Model Context Protocol integration
-3. **📁 Files API** - File management and operations
-4. **💾 Prompt Caching** - Up to 1 hour of prompt caching
-
-## 🔥 Core Feature Updates
-
-### 🎯 MCP (Model Context Protocol) Integration
-
-```bash
-# Interactive MCP setup wizard
-claude mcp add
-
-# Project-level MCP configuration
-# Configure in .mcp.json and commit to repository
-```
-
-**New Features:**
-- 🏗️ Project-level MCP scope
-- 🔧 Interactive setup wizard
-- 📥 Import MCP servers from Claude Desktop
-- ⏱️ Configurable startup timeout (MCP_TIMEOUT)
-
-### ⚡ Custom Slash Commands
-
-Markdown files in `.claude/commands/` directories now appear as custom slash commands:
-
-```markdown
-# .claude/commands/deploy.md
-Deploy application to production environment
-```
-
-Usage: `/deploy`
-
-### 🎣 Hooks System
-
-A new hooks system allows you to create custom automation and workflow integrations.
-
-### 🧠 Enhanced Thinking Mode
-
-- 🤔 **think** - Basic thinking mode
-- 💭 **think harder** - Deep thinking
-- 🚀 **ultrathink** - Super thinking mode
-
-### 📋 New Commands
-
-- `/release-notes` - View release notes anytime
-- `/approved-tools` - Manage tool permissions
-- `/vim` - Enable Vim key bindings
-- `/config` - Configure settings
-
-## 🔧 Developer Tools Integration
-
-### 💻 Cross-Platform Support
-
-- ✅ **Native Windows Support** (requires Git for Windows)
-- ☁️ **Bedrock API Support** (AWS_BEARER_TOKEN_BEDROCK)
-- 🔐 **macOS Keychain Integration** - Secure API key storage
-
-### 📝 File Import Functionality
-
-```markdown
-# CLAUDE.md
-@path/to/additional-file.md
-
-# Automatically load additional files at startup
-```
-
-### ⌨️ Editor Integration
-
-- 🎯 **Vim Key Bindings** - Familiar editing experience
-- 📊 **Enhanced Config Commands** - Accept multiple values
-- 🔍 **MCP Debug Mode** - `--mcp-debug` flag
-
-## 🎨 User Experience Improvements
-
-### 🌟 Intelligent Code Generation
-
-- 🎯 **Context-Aware** - Understands your codebase
-- 🔄 **Real-time Collaboration** - Direct editor change display
-- 📚 **Multi-language Support** - Supports mainstream programming languages
-
-### 🤖 AI Assistant Features
-
-- 💬 **Natural Language Commands** - Describe needs in everyday language
-- 🔍 **Code Explanation** - Understand complex code logic
-- 🌊 **Git Workflows** - Automated version control operations
-
-## 📱 Mobile Support
-
-While Claude Code is primarily designed for desktop development, we're continuously optimizing mobile experience:
-
-- 📱 **Responsive Interface** - Adapts to different screen sizes
-- 🔧 **Core Features** - Mobile access to main functionality
-- 💬 **Chat Interface** - Optimized conversation experience
-
-## 🔜 Coming Soon
-
-### 🎯 Planned Features
-
-- 🎨 **Visual Code Editor**
-- 🌐 **Web Interface**
-- 📊 **Project Analytics Dashboard**
-- 🤝 **Team Collaboration Features**
-
-### 💡 Community Feedback
-
-We continuously monitor community feedback and are developing:
-
-- 🔌 **More IDE Integrations**
-- 📈 **Performance Optimizations**
-- 🌍 **Internationalization Support**
-- 🎓 **Extended Learning Resources**
-
-## 🚀 Getting Started
-
-Ready to experience the latest Claude Code features?
-
-### 💾 Install Latest Version
-
-```bash
-# Global installation
-npm install -g claude-code
-
-# Or using homebrew (macOS)
-brew install claude-code
-
-# Verify installation
-claude --version
-```
-
-### 🎯 Quick Start
-
-1. **Initialize Project**
-   ```bash
-   claude init
-   ```
-
-2. **Configure Settings**
-   ```bash
-   claude config
-   ```
-
-3. **Start Coding**
-   ```bash
-   claude "Help me create a React component"
-   ```
-
-## 📚 Learning Resources
-
-- 📖 **[Complete Tutorial](/en/tutorial)** - Learn from scratch
-- 🎥 **[Video Tutorials](https://www.youtube.com/results?search_query=claude+code)** - Visual learning
-- 💬 **[Community Discussions](https://github.com/anthropics/claude-code/discussions)** - Share experiences
-- 📋 **[Official Documentation](https://docs.anthropic.com/en/docs/claude-code)** - Detailed reference
-
-## 🎉 Join Us
-
-Become a member of the Claude Code community:
-
-- ⭐ **[GitHub Star](https://github.com/anthropics/claude-code)** - Support the project
-- 🐛 **[Report Issues](https://github.com/anthropics/claude-code/issues)** - Help improve
-- 💡 **[Submit Suggestions](https://github.com/anthropics/claude-code/discussions)** - Share ideas
-- 🤝 **[Contribute Code](https://github.com/anthropics/claude-code/blob/main/CONTRIBUTING.md)** - Join development
 
 ---
 
-*Last updated: December 2024*
+## Version 1.0.62
+**July 29, 2025 • 11 hours ago**
+
+Latest stable release with performance improvements and bug fixes.
+
+### Improvements
+- Enhanced stability for long-running sessions
+- Optimized memory usage for large codebases
+- Improved error handling for network connectivity issues
+
+---
+
+## Version 1.0.61
+**July 25, 2025 • 4 days ago**
+
+### New Features
+- **Export Conversations** - New `/export` command for sharing conversations
+- **Enhanced Queue System** - Hit Enter to queue additional messages while Claude is working
+
+### Improvements
+- Better handling of image file drag-and-drop
+- Improved MCP server connection stability
+- Enhanced keyboard shortcuts (Ctrl+Z to suspend, Ctrl+U for undo)
+
+---
+
+## Version 1.0.60
+**July 24, 2025 • 5 days ago**
+
+### New Features
+- **Hooks System** - Custom automation and workflow integrations
+- **Session Initialization** - Run commands when Claude Code starts
+- **Community-Driven Development** - Built based on GitHub Issues feedback
+
+### Improvements
+- Restored namespacing in custom slash commands
+- Commands now support subdirectory structure (`.claude/commands/frontend/component.md` → `/frontend:component`)
+- Better error messages for MCP debug mode
+
+---
+
+## Version 1.0.0 - General Availability
+**May 22, 2025**
+
+🎉 **Claude Code reaches General Availability!** After months of research preview, Claude Code is now production-ready.
+
+### Major Features
+- **GitHub Actions Integration** - Background task support
+- **IDE Extensions** - Native VS Code and JetBrains integration with inline edits
+- **Extensible SDK** - TypeScript and Python SDK for custom agents
+- **Enterprise Ready** - Built-in security, privacy, and compliance features
+
+### Platform Support
+- **Multi-Cloud AI** - Support for Anthropic API, AWS Bedrock, Google Vertex AI
+- **Cross-Platform** - Windows (including WSL2), macOS, Linux
+- **Plan Integration** - Available with Pro and Max subscriptions
+
+---
+
+## Version 0.2.x Series - Research Preview
+**February 24, 2025 - May 21, 2025**
+
+The research preview phase that introduced Claude Code to the world.
+
+### 0.2.93 - Resume Conversations
+**April 2025**
+- **Resume Functionality** - Continue conversations across sessions
+- **Session Persistence** - Maintain context between restarts
+
+### 0.2.75 - Visual Enhancements
+**March 2025**
+- **Image Paste Support** - Drag and drop or copy/paste images
+- **File @-mentioning** - Reference files directly in conversations
+- **Enhanced UI** - Improved terminal interface
+
+### 0.2.14 - Early Features
+**February 2025**
+- **Basic MCP Support** - Initial Model Context Protocol integration
+- **Custom Commands** - Early slash command system
+- **Tool Permissions** - Granular control over tool access
+
+---
+
+## Feature Timeline
+
+### 🤖 AI & Model Capabilities
+- **Claude 4 Integration** - Sonnet 4 and Opus 4 models
+- **Thinking Modes** - `think`, `think harder`, `ultrathink` commands
+- **Context Awareness** - Deep codebase understanding
+- **Code Execution** - Run code directly in conversations
+
+### 🔧 Developer Tools
+- **MCP Integration** - Model Context Protocol with OAuth 2.0, SSE/HTTP transport
+- **Custom Slash Commands** - Markdown-based command system with namespacing
+- **Vim Key Bindings** - Familiar editing experience with `/vim` command
+- **PDF Reading** - Direct PDF file analysis
+- **Multi-format Export** - Conversation sharing capabilities
+
+### 🔐 Security & Authentication
+- **macOS Keychain** - Secure API key storage (Mac only)
+- **OAuth 2.0** - Remote MCP server authentication
+- **Token-based Auth** - Support for various authentication methods
+- **Enterprise Security** - Built-in compliance features
+
+### 🌐 Platform Integration
+- **VS Code Extension** - Inline editing with proposed changes
+- **JetBrains Plugin** - Direct IDE integration
+- **GitHub Actions** - Background task automation
+- **Slack Integration** - Update notifications and context sharing
+
+---
+
+## Installation
+
+### Install Latest Version
+
+```bash
+# Install Claude Code
+npm install -g @anthropic-ai/claude-code
+
+# Verify installation
+claude --version
+
+# Update to latest
+claude update
+```
+
+### Version Management
+
+```bash
+# Check current version
+claude --version
+
+# Update manually
+npm install -g @anthropic-ai/claude-code@latest
+
+# Run diagnostics
+claude doctor
+```
+
+---
+
+## Migration Guide
+
+### From 0.2.x to 1.0.x
+- **Breaking Changes**: Minimal - most configurations carry forward
+- **New Features**: Hooks, enhanced MCP, improved commands
+- **Recommendations**: Update to latest for best experience
+
+### Compatibility
+- **Minimum Version**: 1.0.24+ recommended
+- **Legacy Support**: 0.2.9 and older require update
+- **Node.js**: Compatible with modern Node.js versions
+
+---
+
+## Resources
+
+- 📚 **[Official Documentation](https://docs.anthropic.com/en/docs/claude-code)** - Complete guide
+- 🐛 **[Report Issues](https://github.com/anthropics/claude-code/issues)** - Bug reports and feature requests  
+- 💬 **[Community Forum](https://github.com/anthropics/claude-code/discussions)** - Ask questions and share tips
+- 📦 **[NPM Package](https://www.npmjs.com/package/@anthropic-ai/claude-code)** - Download stats and version history
+
+---
+
+<Callout emoji="🔍" type="default">
+**Having Issues?**
+
+Run `claude doctor` to diagnose problems, or check our [troubleshooting guide](https://docs.anthropic.com/en/docs/claude-code/troubleshooting) for common solutions.
+</Callout>
+
+---
+
+*Last updated: July 29, 2025 • Auto-updated from official releases*
