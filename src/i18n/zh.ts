@@ -1,5 +1,5 @@
 export default {
-  systemTitle: '🤖 Claude Code 教程中心',
+  systemTitle: 'ClaudeCode101',
   banner: {
     title: '👋 欢迎来到 Claude Code 中文教程!',
     more: '了解详情',

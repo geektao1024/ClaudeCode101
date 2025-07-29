@@ -1,5 +1,5 @@
 export default {
-  systemTitle: '🤖 Claude Code Tutorial Center',
+  systemTitle: 'ClaudeCode101',
   banner: {
     title: '👋 Welcome to Claude Code Tutorials!',
     more: 'Learn more',

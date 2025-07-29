@@ -119,11 +119,17 @@ const CustomBanner = async ({ lang }: I18nLangAsyncProps) => {
 
 
 const CustomNavbar = async ({ lang }: I18nLangAsyncProps) => {
-  const { t } = await useServerLocale(lang)
   return (
     <Navbar
       logo={(
-        <span>{ t('systemTitle') }</span>
+        <div className="flex items-center gap-2">
+          <img
+            src="/img/Logo-cc.png"
+            alt="ClaudeCode101"
+            className="h-8 w-8"
+          />
+          <span className="font-semibold">ClaudeCode101</span>
+        </div>
       )}
       logoLink={`/${lang}`}
       projectLink={repo}
@@ -179,7 +185,7 @@ export default async function RootLayout({ children, params }: Props) {
       <Head>
         {/* Google AdSense */}
         <meta name="google-adsense-account" content="ca-pub-6152848695010247" />
-        
+
         {/* 结构化数据 */}
         <script
           type="application/ld+json"
@@ -279,14 +285,14 @@ export default async function RootLayout({ children, params }: Props) {
           // ... Your additional layout options
           >
             {children}
-            
+
             {/* Adsterra Ad Container */}
             <div id="container-f45fea6468637f2b2fb47a4f10d061e2"></div>
           </Layout>
         </ThemeProvider>
       </body>
       <GoogleAnalytics gaId="G-4683BGZTR8" />
-      
+
       {/* Google AdSense */}
       <Script
         async
@@ -294,7 +300,7 @@ export default async function RootLayout({ children, params }: Props) {
         crossOrigin="anonymous"
         strategy="afterInteractive"
       />
-      
+
       {/* Adsterra */}
       <Script
         async
@@ -302,7 +308,7 @@ export default async function RootLayout({ children, params }: Props) {
         data-cfasync="false"
         strategy="afterInteractive"
       />
-      
+
       <Script
         id="microsoft-clarity"
         strategy="afterInteractive"
