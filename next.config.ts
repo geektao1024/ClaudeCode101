@@ -25,4 +25,18 @@ export default withNextra({
   sassOptions: {
     silenceDeprecations: ['legacy-js-api'],
   },
+  async redirects() {
+    return [
+      {
+        source: '/zh/quick-start',
+        destination: '/zh/tutorial',
+        permanent: true,
+      },
+      {
+        source: '/en/quick-start',
+        destination: '/en/tutorial',
+        permanent: true,
+      },
+    ]
+  },
 })
