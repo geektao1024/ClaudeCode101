@@ -73,7 +73,7 @@ export function SetupHero(props: Props) {
         />
 
 
-        {/* Value Proposition */}
+        {/* Value Proposition - 优化关键词密度和语义相关性 */}
         <div className="mt-6 max-w-4xl mx-auto">
           <div className={clsx([
             styles.subtitle,
@@ -86,21 +86,27 @@ export function SetupHero(props: Props) {
                     让 AI 成为你的
                     <FlipWords
                       words={[
-                        '编程伙伴',
-                        '代码审查师',
-                        '架构顾问',
-                        '调试专家',
-                        '学习导师',
-                        '效率助手',
+                        '智能编程伙伴',
+                        '专业代码审查师',
+                        '架构设计顾问',
+                        '高效调试专家',
+                        'AI 编程导师',
+                        '开发效率助手',
                       ]}
                       className="text-blue-600 dark:text-blue-400 font-semibold"
                     />
                     <br className="hidden sm:block" />
-                    掌握专业的 AI 辅助编程技能，通过
+                    掌握
+                    <span className="font-semibold text-neutral-700 dark:text-neutral-200">AI 辅助编程</span>
+                    和
+                    <span className="font-semibold text-neutral-700 dark:text-neutral-200">智能体编程</span>
+                    技能，通过
                     <LinkPreview url="https://claude.ai/code" className="text-blue-600 dark:text-blue-400 font-medium hover:text-blue-700">
-                      ClaudeCode
+                      ClaudeCode 教程
                     </LinkPreview>
-                    教程让编程更智能、更高效
+                    学习
+                    <span className="font-semibold text-neutral-700 dark:text-neutral-200">Claude Code 最佳实践</span>
+                    ，让编程更智能、更高效
                   </>
                 )
               : (
@@ -108,21 +114,26 @@ export function SetupHero(props: Props) {
                     Make AI your
                     <FlipWords
                       words={[
-                        'coding partner',
-                        'code reviewer',
-                        'architecture advisor',
-                        'debugging expert',
-                        'learning mentor',
-                        'efficiency booster',
+                        'intelligent coding partner',
+                        'professional code reviewer',
+                        'architecture design advisor',
+                        'efficient debugging expert',
+                        'AI programming mentor',
+                        'development efficiency booster',
                       ]}
                       className="text-blue-600 dark:text-blue-400 font-semibold"
                     />
                     <br className="hidden sm:block" />
-                    Master professional AI-assisted programming with
+                    Master
+                    <span className="font-semibold text-neutral-700 dark:text-neutral-200">AI-assisted programming</span>
+                    and
+                    <span className="font-semibold text-neutral-700 dark:text-neutral-200">agentic programming</span>
+                    skills with
                     <LinkPreview url="https://claude.ai/code" className="text-blue-600 dark:text-blue-400 font-medium hover:text-blue-700">
-                      ClaudeCode
+                      ClaudeCode tutorial
                     </LinkPreview>
-                    tutorial
+                    and learn
+                    <span className="font-semibold text-neutral-700 dark:text-neutral-200">Claude Code best practices</span>
                   </>
                 )}
           </div>
@@ -153,7 +164,7 @@ export function SetupHero(props: Props) {
             >
               <Link href={`/${currentLocale}/tutorial`}>
                 <span className="icon-[lucide--rocket] mr-2"></span>
-                {currentLocale === 'zh' ? '开始 ClaudeCode 教程学习 (5分钟上手)' : 'Start ClaudeCode Tutorial Learning (5 min setup)'}
+                {currentLocale === 'zh' ? '开始 Claude Code 智能编程教程 (5分钟掌握 AI 编程)' : 'Start Claude Code AI Programming Tutorial (5 min to master AI coding)'}
                 <span className="w-[20px] translate-x-[6px] transition-all group-hover:translate-x-[10px] icon-[mingcute--arrow-right-fill]"></span>
               </Link>
             </Button>
@@ -176,24 +187,32 @@ export function SetupHero(props: Props) {
           </div>
         </div>
 
-        {/* Quick Start Hint */}
+        {/* Quick Start Hint - 优化长尾关键词 */}
         <div className="mt-6 text-center">
           <p className="text-sm text-neutral-500 dark:text-neutral-400">
             {currentLocale === 'zh'
               ? (
                   <>
-                    💡 ClaudeCode 无需安装，打开终端输入
-                    <code className="bg-neutral-100 dark:bg-neutral-800 px-2 py-1 rounded text-blue-600 dark:text-blue-400">claude</code>
-                    {' '}
-                    即可开始学习 Claude Code 教程
+                    💡 
+                    <span className="font-medium">Claude Code AI 编程助手</span>
+                    无需复杂安装，打开终端输入
+                    <code className="bg-neutral-100 dark:bg-neutral-800 px-2 py-1 rounded text-blue-600 dark:text-blue-400 font-medium">claude</code>
+                    命令即可开始
+                    <span className="font-medium">智能编程</span>
+                    和学习
+                    <span className="font-medium">ClaudeCode 最佳实践教程</span>
                   </>
                 )
               : (
                   <>
-                    💡 ClaudeCode requires no installation, just type
-                    <code className="bg-neutral-100 dark:bg-neutral-800 px-2 py-1 rounded text-blue-600 dark:text-blue-400">claude</code>
-                    {' '}
-                    in terminal to start
+                    💡 
+                    <span className="font-medium">Claude Code AI Programming Assistant</span>
+                    requires no complex installation, just type
+                    <code className="bg-neutral-100 dark:bg-neutral-800 px-2 py-1 rounded text-blue-600 dark:text-blue-400 font-medium">claude</code>
+                    command in terminal to start
+                    <span className="font-medium">intelligent programming</span>
+                    and learn
+                    <span className="font-medium">ClaudeCode best practices tutorial</span>
                   </>
                 )}
           </p>
