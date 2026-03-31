@@ -6,9 +6,18 @@ import { useLocale } from '@/hooks'
 import { cn } from '@/lib/utils'
 
 export function ResourceCards() {
-  const { t, currentLocale } = useLocale()
+  const { currentLocale } = useLocale()
 
   const resourceList = [
+    {
+      title: currentLocale === 'zh' ? '资源和工具总览' : 'Resources & Tools Hub',
+      description: currentLocale === 'zh'
+        ? '先进入资源页，再按工作流场景查看推荐工具、发布素材专题和高相关外部站点。'
+        : 'Start with the resources hub to explore recommended tools, launch-asset guidance, and related external sites in one place.',
+      link: `/${currentLocale}/resources`,
+      icon: <span className="icon-[lucide--folder-kanban]"></span>,
+      badge: currentLocale === 'zh' ? '汇聚入口' : 'Hub',
+    },
     {
       title: currentLocale === 'zh' ? 'ClaudeCode 教程最佳实践' : 'ClaudeCode Tutorial Best Practices',
       description: currentLocale === 'zh'
@@ -28,22 +37,22 @@ export function ResourceCards() {
       badge: currentLocale === 'zh' ? '官方资源' : 'Official',
     },
     {
-      title: currentLocale === 'zh' ? 'GitHub 仓库' : 'GitHub Repository',
+      title: currentLocale === 'zh' ? 'Musikalis AI 音乐生成器' : 'Musikalis AI Music Generator',
       description: currentLocale === 'zh'
-        ? '提交问题、查看文档和参与社区讨论。'
-        : 'Submit issues, view documentation, and participate in community discussions.',
-      link: 'https://github.com/anthropics/claude-code',
-      icon: <span className="icon-[mingcute--github-line]"></span>,
-      badge: currentLocale === 'zh' ? '社区资源' : 'Community',
+        ? '当你用 Claude Code 做完官网、组件或产品 demo 后，可以用 Musikalis 快速生成适合视频、播客、游戏原型和社媒内容的免版税音乐。'
+        : 'After building a site, component, or product demo with Claude Code, use Musikalis to quickly generate royalty-free music for videos, podcasts, game prototypes, and social content.',
+      link: 'https://musikalis.com/',
+      icon: <span className="icon-[lucide--music-4]"></span>,
+      badge: currentLocale === 'zh' ? '创作者工具' : 'Creator Tool',
     },
     {
-      title: currentLocale === 'zh' ? 'YouTube 视频' : 'YouTube Videos',
+      title: 'Suno AI Musical',
       description: currentLocale === 'zh'
-        ? '观看 ClaudeCode 教程相关的 Claude Code 演示、技术分享和实战视频。'
-        : 'Watch ClaudeCode tutorial related Claude Code demos, technical sharing and hands-on videos.',
-      link: 'https://www.youtube.com/results?search_query=claude+code',
-      icon: <span className="icon-[mingcute--youtube-line]"></span>,
-      badge: currentLocale === 'zh' ? '视频资源' : 'Videos',
+        ? '如果你更需要快速生成适合视频、播客和社媒短内容的版权友好音乐，Suno AI Musical 也是一个自然的第二选择。'
+        : 'If you need fast copyright-friendly music for videos, podcasts, and short social content, Suno AI Musical is another practical option.',
+      link: 'https://sunoaimusical.com/',
+      icon: <span className="icon-[lucide--audio-lines]"></span>,
+      badge: currentLocale === 'zh' ? '可选工具' : 'Alternative',
     },
   ]
 
@@ -51,18 +60,24 @@ export function ResourceCards() {
     const styles = {
       Recommended: 'bg-gradient-to-r from-blue-500 to-purple-600 text-white',
       推荐: 'bg-gradient-to-r from-blue-500 to-purple-600 text-white',
+      Hub: 'bg-gradient-to-r from-amber-500 to-orange-600 text-white',
+      汇聚入口: 'bg-gradient-to-r from-amber-500 to-orange-600 text-white',
       Official: 'bg-gradient-to-r from-green-500 to-emerald-600 text-white',
       官方资源: 'bg-gradient-to-r from-green-500 to-emerald-600 text-white',
       Community: 'bg-gradient-to-r from-orange-500 to-red-500 text-white',
       社区资源: 'bg-gradient-to-r from-orange-500 to-red-500 text-white',
       Videos: 'bg-gradient-to-r from-pink-500 to-rose-500 text-white',
       视频资源: 'bg-gradient-to-r from-pink-500 to-rose-500 text-white',
+      'Creator Tool': 'bg-gradient-to-r from-cyan-500 to-sky-600 text-white',
+      创作者工具: 'bg-gradient-to-r from-cyan-500 to-sky-600 text-white',
+      Alternative: 'bg-gradient-to-r from-violet-500 to-fuchsia-600 text-white',
+      可选工具: 'bg-gradient-to-r from-violet-500 to-fuchsia-600 text-white',
     }
     return styles[badge as keyof typeof styles] || 'bg-neutral-200 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-300'
   }
 
   return (
-    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto px-4">
+    <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 max-w-7xl mx-auto px-4">
       {resourceList.map((item, index) => {
         const isExternal = item.link.startsWith('http')
         const CardComponent = isExternal ? 'a' : Link

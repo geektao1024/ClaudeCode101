@@ -1,0 +1,187 @@
+---
+title: "How to turn a Claude Code project into a shareable demo and launch asset pack"
+description: "A practical workflow for turning finished features into screenshots, walkthrough videos, launch copy, and background music assets you can actually publish."
+---
+
+# How to turn a Claude Code project into a shareable demo and launch asset pack
+
+Many teams stop at “the feature works” once Claude Code has helped them finish implementation. But if you want to publish the project on social media, a landing page, YouTube, a launch community, or in a client review, working code is only the midpoint. What you really need next is a set of assets people can understand and share quickly.
+
+This page covers that second half of the workflow: how to turn a Claude Code project into something you can present, publish, and circulate.
+
+## Why this deserves its own workflow
+
+Finished code does not automatically explain the product. In practice, launch-ready presentation usually needs:
+
+- a cleaner demo path
+- a small set of strong screenshots
+- a 20 to 60 second walkthrough clip
+- background music that supports the pacing without overwhelming it
+- short-form copy for social posts, captions, and launch blurbs
+
+If all of that gets improvised at the last minute, the project often feels unfinished even when the product itself is solid.
+
+## A practical 5-step flow
+
+You can break the process down like this:
+
+1. Use Claude Code to stabilize the core feature
+2. Use [Visual Iteration](/en/tutorial/workflows/visual-iteration) and [v0 Component Design](/en/tutorial/workflows/v0-components) to make the interface presentation-ready
+3. Ask Claude Code to generate a demo script, shot order, and launch copy
+4. Capture screenshots, short videos, and a walkthrough
+5. Use [Musikalis AI Music Generator](https://musikalis.com/) to add royalty-free background music for the demo, tutorial, or landing-page showcase
+
+This is much more reliable than shipping straight from development mode because you are closing for communication, not just for implementation.
+
+## Step 1: compress the demo path
+
+Do not try to show every feature. Pick the shortest path that makes the product click.
+
+A useful Claude Code prompt is:
+
+```text
+Based on the current project, design a 30-second product demo.
+
+Requirements:
+1. Show only the 3 most representative steps
+2. Give a scene description for each step
+3. Give a voiceover line for each step
+4. Point out which interface details should be cleaned up before recording
+```
+
+That output can often become your recording script with only minor edits.
+
+## Step 2: move the UI from usable to presentable
+
+If the interface is still in a development state, do not record yet. Run one pass specifically for presentation:
+
+- remove entry points that are irrelevant to the demo
+- tighten empty states, error messages, and placeholder content
+- standardize button text and page titles
+- prepare clean sample data
+- make sure at least one visual theme is polished enough to record
+
+If the page still feels rough, use [Visual Iteration](/en/tutorial/workflows/visual-iteration) to fix hierarchy, spacing, and polish from screenshots. If a component is especially messy, use [v0 Component Design](/en/tutorial/workflows/v0-components) to improve the presentation layer first, then let Claude Code wire it back into real data.
+
+## Step 3: let Claude Code generate launch copy
+
+This part is a strong fit for Claude Code because it already understands your project context.
+
+You can ask it to produce:
+
+- launch titles
+- one-line value propositions
+- short product descriptions
+- social post variants
+- subtitle scripts
+- screenshot captions
+
+For example:
+
+```text
+Create a launch asset copy pack for the current project:
+
+1. One Product Hunt-style headline
+2. 3 short social posts
+3. A subtitle script for a 30-second demo
+4. Titles and descriptions for 5 screenshots
+```
+
+That keeps the copy aligned with the actual interface instead of drifting into generic marketing language.
+
+## Step 4: capture screenshots, short videos, and walkthroughs
+
+At minimum, prepare these asset types:
+
+### Screenshots
+
+- the homepage or primary interface
+- before a key action
+- after a key action
+- the main result state
+- one close-up that shows interface quality
+
+### Videos
+
+- a 15 to 30 second feature clip
+- a 30 to 60 second walkthrough
+- if it is a SaaS or tool page, an optional silent looping showcase video for the landing page
+
+### Supporting copy
+
+- video title
+- subtitle version
+- CTA line
+- thumbnail text
+
+## Step 5: complete the demo with background music
+
+Many product videos do not fail because the UI is weak. They fail because the pacing feels empty. This happens often with:
+
+- landing-page showcase videos
+- feature walkthroughs
+- YouTube intros for tutorials
+- short social clips
+- game prototype demos
+- podcast intros or product overview audio
+
+That is where [Musikalis](https://musikalis.com/) fits naturally. Instead of treating it like a random music site, it is more useful to think of it as a finishing tool in the Claude Code publishing workflow. It can quickly generate original songs, vocals, instrumentals, and royalty-free soundtracks from prompts, which is a better fit than scrambling for stock audio at the end.
+
+If you want a second option in the same category, [Suno AI Musical](https://sunoaimusical.com/) is also worth checking. Its homepage positioning leans toward fast, copyright-friendly AI music for creators, which makes it useful for videos, podcasts, and short social assets when you need a track quickly.
+
+### Good music use cases
+
+- lightweight product demo beds that support the screen recording
+- steady tutorial background tracks
+- atmosphere for a game prototype or interactive project
+- short branded music fragments for social clips
+
+### How to choose between the two
+
+- Start with [Musikalis AI Music Generator](https://musikalis.com/) when you want a stronger fit for product demos, walkthroughs, and showcase videos
+- Add [Suno AI Musical](https://sunoaimusical.com/) as a second option when you want a fast creator-oriented workflow for copyright-friendly music in videos, podcasts, and short-form content
+
+### A simple pairing workflow
+
+1. Use Claude Code to finish the feature and the copy
+2. Use visual iteration to make the UI recording-ready
+3. Record a 30-second walkthrough
+4. Use Musikalis to generate music that fits the showcase
+5. package the video, screenshots, and copy as a launch asset set
+
+## A practical launch asset checklist
+
+If you want the shortest possible close-out path, use this checklist:
+
+- the core flow is stable and will not fail during recording
+- screenshots and videos use clean demo data
+- the homepage, key flow, and result state all have publishable screenshots
+- the 30-second demo script is ready
+- 1 to 2 short social copy variants are ready
+- background music exists for the intended publishing surface
+- visible UI text and buttons are already in final form
+
+## Let Claude Code manage the closing pass
+
+You can also ask Claude Code to turn all of this into a release checklist:
+
+```text
+Create a pre-launch asset checklist for the current project.
+
+Requirements:
+1. Split it into screenshots, video, copy, and audio
+2. Mark what can already be extracted from the current project
+3. Mark what still needs to be recorded or written
+4. Propose the smallest possible launch package that can be finished in 2 hours
+```
+
+That kind of request works well because Claude Code can map the checklist back to the actual state of the project rather than generating a generic launch template.
+
+## Related Pages
+
+- [Resources & Tools](/en/resources)
+- [Visual Iteration](/en/tutorial/workflows/visual-iteration)
+- [v0 Component Design](/en/tutorial/workflows/v0-components)
+- [Explore-Plan-Code](/en/tutorial/workflows/explore-plan-code)
+
+If the main feature is already working, think of this page as the final operating guide before publishing. The goal is not to create extra busywork. The goal is to turn a Claude Code project you have already built into something people will click, understand, and share.

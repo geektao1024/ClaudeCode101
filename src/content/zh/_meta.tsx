@@ -33,6 +33,14 @@ export default {
       toc: true,
     },
   },
+  musikalis: {
+    title: '🎵 Musikalis',
+    href: 'https://musikalis.com/',
+  },
+  'suno-ai-musical': {
+    title: '🎧 Suno AI Musical',
+    href: 'https://sunoaimusical.com/',
+  },
   'api-reference': {
     title: '📖 API 参考',
     type: 'page',

@@ -69,7 +69,7 @@ import { HoverEffect } from '@/components/ui/card-hover-effect'
 
 ## 🔧 工具集成
 
-<div className="grid md:grid-cols-3 gap-6 my-8">
+<div className="grid md:grid-cols-2 xl:grid-cols-4 gap-6 my-8">
   <div className="group relative p-6 rounded-2xl bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-900/20 dark:to-violet-900/20 border border-purple-200 dark:border-purple-800 hover:shadow-lg transition-all duration-300">
     <div className="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-900/50 flex items-center justify-center mb-4">
       <span className="icon-[lucide--terminal] text-2xl text-purple-600 dark:text-purple-400"></span>
@@ -170,6 +170,22 @@ import { HoverEffect } from '@/components/ui/card-hover-effect'
       查看详情 <span className="icon-[lucide--arrow-right] ml-1 w-4 h-4"></span>
     </a>
   </div>
+
+  <div className="group relative p-6 rounded-2xl bg-gradient-to-br from-fuchsia-50 to-pink-50 dark:from-fuchsia-900/20 dark:to-pink-900/20 border border-fuchsia-200 dark:border-fuchsia-800 hover:shadow-lg transition-all duration-300">
+    <div className="flex items-start gap-4 mb-4">
+      <div className="w-12 h-12 rounded-xl bg-fuchsia-100 dark:bg-fuchsia-900/50 flex items-center justify-center">
+        <span className="icon-[lucide--clapperboard] text-2xl text-fuchsia-600 dark:text-fuchsia-400"></span>
+      </div>
+      <div>
+        <h3 className="font-bold text-lg text-fuchsia-900 dark:text-fuchsia-100">Demo 与发布素材</h3>
+        <span className="text-xs bg-fuchsia-200 dark:bg-fuchsia-800 text-fuchsia-800 dark:text-fuchsia-200 px-2 py-1 rounded-full">专题</span>
+      </div>
+    </div>
+    <p className="text-fuchsia-700 dark:text-fuchsia-300 mb-4">把 Claude Code 项目整理成可分享的截图、短视频、发布文案和配乐素材。</p>
+    <a href="/zh/tutorial/workflows/demo-assets" className="inline-flex items-center text-fuchsia-600 dark:text-fuchsia-400 font-medium">
+      查看详情 <span className="icon-[lucide--arrow-right] ml-1 w-4 h-4"></span>
+    </a>
+  </div>
 </div>
 
 ## 🎯 学习路径
@@ -248,9 +264,22 @@ import { HoverEffect } from '@/components/ui/card-hover-effect'
   </div>
 </div>
 
-## 🤝 社区资源
+## 🔗 精选资源
 
-<div className="grid md:grid-cols-3 gap-6 my-8">
+如果你想把工具推荐、发布素材专题和外部站点放在同一个上下文里看，先从 [资源和工具页](/zh/resources) 进入会更系统。
+
+<div className="grid md:grid-cols-2 xl:grid-cols-5 gap-6 my-8">
+  <a href="/zh/resources" className="group block p-6 rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 hover:shadow-lg transition-all duration-300">
+    <div className="w-12 h-12 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+      <span className="icon-[lucide--folder-kanban] text-2xl text-neutral-600 dark:text-neutral-400"></span>
+    </div>
+    <h3 className="font-bold text-lg text-neutral-900 dark:text-white mb-2">资源和工具页</h3>
+    <p className="text-neutral-600 dark:text-neutral-400 text-sm mb-4">先看站内汇聚页，再进入发布素材专题和相关外部工具</p>
+    <div className="flex items-center text-blue-600 dark:text-blue-400 text-sm font-medium">
+      进入资源页 <span className="icon-[lucide--arrow-right] ml-1 w-4 h-4"></span>
+    </div>
+  </a>
+
   <a href="https://github.com/anthropics/claude-code" target="_blank" rel="noopener noreferrer" className="group block p-6 rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 hover:shadow-lg transition-all duration-300">
     <div className="w-12 h-12 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
       <span className="icon-[mingcute--github-line] text-2xl text-neutral-600 dark:text-neutral-400"></span>
@@ -273,14 +302,25 @@ import { HoverEffect } from '@/components/ui/card-hover-effect'
     </div>
   </a>
 
-  <a href="https://www.youtube.com/results?search_query=claude+code" target="_blank" rel="noopener noreferrer" className="group block p-6 rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 hover:shadow-lg transition-all duration-300">
+  <a href="https://musikalis.com/" target="_blank" rel="noopener noreferrer" className="group block p-6 rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 hover:shadow-lg transition-all duration-300">
     <div className="w-12 h-12 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-      <span className="icon-[mingcute--youtube-line] text-2xl text-neutral-600 dark:text-neutral-400"></span>
+      <span className="icon-[lucide--music-4] text-2xl text-neutral-600 dark:text-neutral-400"></span>
     </div>
-    <h3 className="font-bold text-lg text-neutral-900 dark:text-white mb-2">视频教程</h3>
-    <p className="text-neutral-600 dark:text-neutral-400 text-sm mb-4">演示、技术分享和实战视频</p>
+    <h3 className="font-bold text-lg text-neutral-900 dark:text-white mb-2">Musikalis 官网</h3>
+    <p className="text-neutral-600 dark:text-neutral-400 text-sm mb-4">为产品 demo、教程视频、播客片头和游戏原型快速生成免版税音乐</p>
     <div className="flex items-center text-blue-600 dark:text-blue-400 text-sm font-medium">
-      观看视频 <span className="icon-[lucide--external-link] ml-1 w-4 h-4"></span>
+      访问官网 <span className="icon-[lucide--external-link] ml-1 w-4 h-4"></span>
+    </div>
+  </a>
+
+  <a href="https://sunoaimusical.com/" target="_blank" rel="noopener noreferrer" className="group block p-6 rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 hover:shadow-lg transition-all duration-300">
+    <div className="w-12 h-12 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+      <span className="icon-[lucide--audio-lines] text-2xl text-neutral-600 dark:text-neutral-400"></span>
+    </div>
+    <h3 className="font-bold text-lg text-neutral-900 dark:text-white mb-2">Suno AI Musical</h3>
+    <p className="text-neutral-600 dark:text-neutral-400 text-sm mb-4">快速生成适合视频、播客和社媒短内容的版权友好 AI 音乐</p>
+    <div className="flex items-center text-blue-600 dark:text-blue-400 text-sm font-medium">
+      查看工具 <span className="icon-[lucide--external-link] ml-1 w-4 h-4"></span>
     </div>
   </a>
 </div>

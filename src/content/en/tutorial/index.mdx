@@ -69,7 +69,7 @@ import { HoverEffect } from '@/components/ui/card-hover-effect'
 
 ## 🔧 Tools Integration
 
-<div className="grid md:grid-cols-3 gap-6 my-8">
+<div className="grid md:grid-cols-2 xl:grid-cols-4 gap-6 my-8">
   <div className="group relative p-6 rounded-2xl bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-900/20 dark:to-violet-900/20 border border-purple-200 dark:border-purple-800 hover:shadow-lg transition-all duration-300">
     <div className="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-900/50 flex items-center justify-center mb-4">
       <span className="icon-[lucide--terminal] text-2xl text-purple-600 dark:text-purple-400"></span>
@@ -170,6 +170,22 @@ import { HoverEffect } from '@/components/ui/card-hover-effect'
       View Details <span className="icon-[lucide--arrow-right] ml-1 w-4 h-4"></span>
     </a>
   </div>
+
+  <div className="group relative p-6 rounded-2xl bg-gradient-to-br from-fuchsia-50 to-pink-50 dark:from-fuchsia-900/20 dark:to-pink-900/20 border border-fuchsia-200 dark:border-fuchsia-800 hover:shadow-lg transition-all duration-300">
+    <div className="flex items-start gap-4 mb-4">
+      <div className="w-12 h-12 rounded-xl bg-fuchsia-100 dark:bg-fuchsia-900/50 flex items-center justify-center">
+        <span className="icon-[lucide--clapperboard] text-2xl text-fuchsia-600 dark:text-fuchsia-400"></span>
+      </div>
+      <div>
+        <h3 className="font-bold text-lg text-fuchsia-900 dark:text-fuchsia-100">Demo & Launch Assets</h3>
+        <span className="text-xs bg-fuchsia-200 dark:bg-fuchsia-800 text-fuchsia-800 dark:text-fuchsia-200 px-2 py-1 rounded-full">Guide</span>
+      </div>
+    </div>
+    <p className="text-fuchsia-700 dark:text-fuchsia-300 mb-4">Turn a Claude Code project into screenshots, short videos, launch copy, and background music assets.</p>
+    <a href="/en/tutorial/workflows/demo-assets" className="inline-flex items-center text-fuchsia-600 dark:text-fuchsia-400 font-medium">
+      View Details <span className="icon-[lucide--arrow-right] ml-1 w-4 h-4"></span>
+    </a>
+  </div>
 </div>
 
 ## 🎯 Learning Paths
@@ -248,9 +264,22 @@ import { HoverEffect } from '@/components/ui/card-hover-effect'
   </div>
 </div>
 
-## 🤝 Community Resources
+## 🔗 Featured Resources
 
-<div className="grid md:grid-cols-3 gap-6 my-8">
+If you want to view tool recommendations, the launch-assets guide, and external sites in one place, start with the [Resources & Tools](/en/resources) hub first.
+
+<div className="grid md:grid-cols-2 xl:grid-cols-5 gap-6 my-8">
+  <a href="/en/resources" className="group block p-6 rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 hover:shadow-lg transition-all duration-300">
+    <div className="w-12 h-12 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+      <span className="icon-[lucide--folder-kanban] text-2xl text-neutral-600 dark:text-neutral-400"></span>
+    </div>
+    <h3 className="font-bold text-lg text-neutral-900 dark:text-white mb-2">Resources & Tools Hub</h3>
+    <p className="text-neutral-600 dark:text-neutral-400 text-sm mb-4">Start from the internal hub before branching into launch workflows and external tools</p>
+    <div className="flex items-center text-blue-600 dark:text-blue-400 text-sm font-medium">
+      Open Hub <span className="icon-[lucide--arrow-right] ml-1 w-4 h-4"></span>
+    </div>
+  </a>
+
   <a href="https://github.com/anthropics/claude-code" target="_blank" rel="noopener noreferrer" className="group block p-6 rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 hover:shadow-lg transition-all duration-300">
     <div className="w-12 h-12 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
       <span className="icon-[mingcute--github-line] text-2xl text-neutral-600 dark:text-neutral-400"></span>
@@ -273,14 +302,25 @@ import { HoverEffect } from '@/components/ui/card-hover-effect'
     </div>
   </a>
 
-  <a href="https://www.youtube.com/results?search_query=claude+code" target="_blank" rel="noopener noreferrer" className="group block p-6 rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 hover:shadow-lg transition-all duration-300">
+  <a href="https://musikalis.com/" target="_blank" rel="noopener noreferrer" className="group block p-6 rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 hover:shadow-lg transition-all duration-300">
     <div className="w-12 h-12 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-      <span className="icon-[mingcute--youtube-line] text-2xl text-neutral-600 dark:text-neutral-400"></span>
+      <span className="icon-[lucide--music-4] text-2xl text-neutral-600 dark:text-neutral-400"></span>
     </div>
-    <h3 className="font-bold text-lg text-neutral-900 dark:text-white mb-2">Video Tutorials</h3>
-    <p className="text-neutral-600 dark:text-neutral-400 text-sm mb-4">Demos, technical sharing, and hands-on videos</p>
+    <h3 className="font-bold text-lg text-neutral-900 dark:text-white mb-2">Musikalis</h3>
+    <p className="text-neutral-600 dark:text-neutral-400 text-sm mb-4">Generate royalty-free music for product demos, tutorial videos, podcast intros, and game prototypes</p>
     <div className="flex items-center text-blue-600 dark:text-blue-400 text-sm font-medium">
-      Watch Videos <span className="icon-[lucide--external-link] ml-1 w-4 h-4"></span>
+      Visit Website <span className="icon-[lucide--external-link] ml-1 w-4 h-4"></span>
+    </div>
+  </a>
+
+  <a href="https://sunoaimusical.com/" target="_blank" rel="noopener noreferrer" className="group block p-6 rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 hover:shadow-lg transition-all duration-300">
+    <div className="w-12 h-12 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+      <span className="icon-[lucide--audio-lines] text-2xl text-neutral-600 dark:text-neutral-400"></span>
+    </div>
+    <h3 className="font-bold text-lg text-neutral-900 dark:text-white mb-2">Suno AI Musical</h3>
+    <p className="text-neutral-600 dark:text-neutral-400 text-sm mb-4">Fast copyright-friendly AI music for videos, podcasts, and short social content</p>
+    <div className="flex items-center text-blue-600 dark:text-blue-400 text-sm font-medium">
+      Explore Tool <span className="icon-[lucide--external-link] ml-1 w-4 h-4"></span>
     </div>
   </a>
 </div>
