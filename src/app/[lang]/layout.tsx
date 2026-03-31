@@ -17,8 +17,13 @@ import { getDirection } from '../_dictionaries/get-dictionary'
 import { ThemeProvider } from './_components/ThemeProvider'
 import './styles/index.css'
 
-export async function generateMetadata({ params }: { params: Promise<{ lang: I18nLangKeys }> }): Promise<Metadata> {
-  const { lang } = await params
+function normalizeLang(lang: string): I18nLangKeys {
+  return lang === 'en' ? 'en' : 'zh'
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
+  const { lang: rawLang } = await params
+  const lang = normalizeLang(rawLang)
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://claudecode101.com'
   const siteName = lang === 'zh' ? 'Claude Code 教程中心' : 'Claude Code Tutorial Center'
   const title = lang === 'zh'
@@ -147,11 +152,12 @@ const CustomNavbar = async ({ lang }: I18nLangAsyncProps) => {
 
 interface Props {
   children: ReactNode
-  params: Promise<{ lang: I18nLangKeys }>
+  params: Promise<{ lang: string }>
 }
 
 export default async function RootLayout({ children, params }: Props) {
-  const { lang } = await params
+  const { lang: rawLang } = await params
+  const lang = normalizeLang(rawLang)
   const pageMap = await getPageMap(lang)
   const { t } = await useServerLocale(lang)
 
