@@ -1,0 +1,345 @@
+---
+title: 'Claude Code Latest Version, Update Commands, and Changelog'
+description: 'Check the latest Claude Code version, latest vs stable channels, update commands for every installer, changelog links, version mismatch fixes, and upgrade checklists.'
+---
+
+# Claude Code Latest Version, Update Commands, and Changelog
+
+This page helps with the practical version questions people actually search for: **what is the current Claude Code version, how do I update it, and what should I check if behavior changes after an update**.
+
+<Callout type="info">
+  Last checked on May 24, 2026. npm reports `@anthropic-ai/claude-code`
+  `latest` and `next` as `2.1.150`, and `stable` as `2.1.142`. The official
+  changelog currently starts with `2.1.150`, dated May 23, 2026. Claude Code
+  ships quickly, so verify again before upgrading production developer machines.
+</Callout>
+
+## 30-Second Answer
+
+To check the current state:
+
+```bash
+claude --version
+npm view @anthropic-ai/claude-code dist-tags --json
+```
+
+Then update with the command that matches your install method:
+
+| Install method | Update command | Notes |
+| -------------- | -------------- | ----- |
+| Native installer | `claude update` | Native installs also update in the background. |
+| npm global package | `npm install -g @anthropic-ai/claude-code@latest` | Do not rely on `npm update -g` for latest. |
+| Homebrew stable | `brew upgrade claude-code` | Tracks the more conservative stable channel. |
+| Homebrew latest | `brew upgrade claude-code@latest` | Receives new versions sooner. |
+| WinGet | `winget upgrade Anthropic.ClaudeCode` | Close running Claude Code sessions if Windows locks the executable. |
+| apt | `sudo apt update && sudo apt upgrade claude-code` | Uses the system package manager. |
+| dnf | `sudo dnf upgrade claude-code` | Uses the system package manager. |
+| apk | `apk update && apk upgrade claude-code` | Used for Alpine. |
+
+Do not trust a random screenshot as the source of truth. Claude Code has latest and stable channels, several installers, and background auto-updates, so different machines can show different versions on the same day.
+
+## How to Check the Current Latest Version
+
+### Check Your Installed Version
+
+```bash
+claude --version
+```
+
+If the command is missing, return to the [installation guide](/en/tutorial/getting-started/installation) and check PATH plus the install method used in your real development terminal.
+
+### Check npm Dist Tags
+
+```bash
+npm view @anthropic-ai/claude-code dist-tags --json
+```
+
+You may see output like:
+
+```json
+{
+  "latest": "2.1.150",
+  "next": "2.1.150",
+  "stable": "2.1.142"
+}
+```
+
+Use the tags this way:
+
+| Tag | Meaning | Best for |
+| --- | ------- | -------- |
+| `latest` | Fastest public release channel. | Personal development and early feature access. |
+| `next` | A moving release tag; currently the same as latest when both point to the same version. | People watching rolling releases. |
+| `stable` | More conservative channel, typically behind latest. | Teams, production repositories, and client delivery work. |
+
+### Read the Official Changelog
+
+Use official sources for release notes:
+
+- [Claude Code Changelog](https://code.claude.com/docs/en/changelog)
+- [Claude Code npm package](https://www.npmjs.com/package/@anthropic-ai/claude-code)
+
+At the time this page was checked, `2.1.150` was the newest changelog entry and contained internal infrastructure improvements. The previous `2.1.149` release included user-facing changes such as a more detailed `/usage` view, keyboard scrolling in diff detail view, GitHub-Flavored Markdown task list rendering, and several permission, PowerShell, and git worktree fixes.
+
+## latest vs stable: Which One Should You Use?
+
+Many searches for “Claude Code latest version” are really asking: **should I chase latest or stay on stable?**
+
+| Scenario | Recommended channel | Why |
+| -------- | ------------------- | --- |
+| Personal learning | `latest` | You can try new capabilities early. |
+| Everyday solo development | `latest` or `stable` | Use latest if small changes are acceptable; stable if the repo is sensitive. |
+| Shared team workflow | Start with `stable` | Reduces version-related collaboration drift. |
+| Client or production repository | `stable` or a pinned version | Avoid surprise behavior changes during delivery. |
+| Known bug fix | Check changelog first | Upgrade when a newer version actually fixes your issue. |
+
+If you are working on a SaaS template, payments, database migrations, Cloudflare deployment, or SEO URL migration, treat an upgrade like a small engineering change: verify it locally before making it part of the main workflow.
+
+## How to Update Claude Code
+
+### Native Installer
+
+Native installs normally update in the background. To update immediately:
+
+```bash
+claude update
+claude --version
+```
+
+For a more conservative release channel, set:
+
+```json
+{
+  "autoUpdatesChannel": "stable"
+}
+```
+
+You can also pin a version floor:
+
+```json
+{
+  "autoUpdatesChannel": "stable",
+  "minimumVersion": "2.1.100"
+}
+```
+
+### npm Install
+
+If you installed Claude Code globally with npm:
+
+```bash
+npm install -g @anthropic-ai/claude-code@latest
+claude --version
+```
+
+The official setup docs warn against relying on `npm update -g` for the newest release because it may respect the semver range from the original install.
+
+Avoid:
+
+```bash
+sudo npm install -g @anthropic-ai/claude-code
+```
+
+Using `sudo` for global npm installs can create permission and security problems. Fix the npm global directory or use the native installer instead.
+
+### Homebrew
+
+Stable cask:
+
+```bash
+brew upgrade claude-code
+claude --version
+```
+
+Latest cask:
+
+```bash
+brew upgrade claude-code@latest
+claude --version
+```
+
+Homebrew keeps older versions on disk after upgrades. Reclaim space with:
+
+```bash
+brew cleanup
+```
+
+### WinGet
+
+```powershell
+winget upgrade Anthropic.ClaudeCode
+claude --version
+```
+
+If the upgrade fails, close all running Claude Code sessions and try again. Windows can block replacement while the executable is still running.
+
+### apt / dnf / apk
+
+Debian or Ubuntu:
+
+```bash
+sudo apt update && sudo apt upgrade claude-code
+```
+
+Fedora or RHEL:
+
+```bash
+sudo dnf upgrade claude-code
+```
+
+Alpine:
+
+```bash
+apk update && apk upgrade claude-code
+```
+
+These package-manager installs generally update through the system package manager, not through Claude Code background updates.
+
+## Pre-Upgrade Checklist
+
+Before upgrading, check:
+
+| Check | Why it matters |
+| ----- | -------------- |
+| Which install method is active? | native, npm, Homebrew, WinGet, apt, dnf, and apk use different update paths. |
+| What version is installed now? | Run `claude --version` before changing anything. |
+| Do you need a new feature or a bug fix? | If not, stable may be the better choice. |
+| Is a release or migration in progress? | Avoid adding version drift during sensitive work. |
+| Does the team need one version? | Different versions can change permission modes, UI labels, and command behavior. |
+| Is this a production repository? | Test in a small repo or branch first. |
+
+For database, auth, payment, Cloudflare, MCP permissions, or SEO URL work, start with [Plan Mode](/en/tutorial/workflows/plan-mode) and make the upgrade a reviewed step.
+
+## Post-Upgrade Verification
+
+After updating:
+
+```bash
+claude --version
+claude doctor
+```
+
+Then check a small project:
+
+1. Claude Code starts normally.
+2. Authentication still works.
+3. Project files can be read.
+4. Your common slash commands are available.
+5. Permission mode behavior matches expectations.
+6. MCP servers connect if you use them.
+7. IDE or terminal integration still works.
+8. Hooks, skills, and plugins do not throw startup errors.
+
+For teams, record:
+
+| Record | Example |
+| ------ | ------- |
+| Previous version | `2.1.142` |
+| New version | `2.1.150` |
+| Install method | Homebrew stable / npm / native |
+| Reason | Required bug fix or feature |
+| Verification result | `claude doctor` OK, MCP OK |
+| Rollback path | Reinstall previous version or switch back to stable |
+
+## Version Mismatch Troubleshooting
+
+### `claude --version` Still Shows an Old Version
+
+Check which binary your shell resolves:
+
+```bash
+which claude
+npm list -g @anthropic-ai/claude-code --depth=0
+```
+
+On macOS or Linux, multiple `claude` binaries can exist and PATH order decides which one runs. On Windows, check PowerShell, CMD, Git Bash, WSL, and the IDE terminal separately.
+
+### npm Shows Latest, But Your Local CLI Does Not
+
+Common causes:
+
+- You did not install with npm.
+- You installed the Homebrew stable cask.
+- A native update has downloaded but not taken effect yet.
+- PATH points to an old binary.
+- npm global permissions prevented replacement.
+
+Confirm the install method first, then use the matching update command.
+
+### Windows and WSL Show Different Versions
+
+PowerShell, CMD, Git Bash, and WSL are separate environments. Updating in PowerShell does not update WSL. Check and update Claude Code inside the terminal where the project actually runs.
+
+### A Feature Disappeared or Behavior Changed
+
+Check:
+
+- whether you switched latest/stable channels;
+- whether permission mode changed;
+- whether auto mode is enabled or disabled;
+- whether a new setting or managed setting applies;
+- whether you are using CLI, Desktop, Web, VS Code, or another IDE entry;
+- whether you need to restart the terminal or IDE.
+
+If the update disrupts production work, move back to the last known-good version or stable, then investigate.
+
+## How to Pin a Version
+
+Use one of these strategies:
+
+| Strategy | How | Best for |
+| -------- | --- | -------- |
+| Stable channel | `autoUpdatesChannel: "stable"` or Homebrew stable cask | Team defaults. |
+| Minimum version | `minimumVersion` | Prevent very old machines. |
+| Specific version | Native installer with a version number | Client delivery, reproduction, rollback. |
+
+Specific version example:
+
+```bash
+curl -fsSL https://claude.ai/install.sh | bash -s 2.1.89
+```
+
+Official releases also provide manifest and signature verification for controlled environments.
+
+## FAQ
+
+### What is the latest Claude Code version?
+
+As checked on May 24, 2026, npm reports `latest` and `next` as `2.1.150`, and `stable` as `2.1.142`. Always verify before upgrading:
+
+```bash
+npm view @anthropic-ai/claude-code dist-tags --json
+```
+
+### Why do npm and the official changelog sometimes look different?
+
+Package publishing, documentation generation, and package-manager sync can have small delays. Use the source tied to your install method, then read the official changelog to decide whether the change matters.
+
+### Should I always upgrade to latest?
+
+No. Use latest for personal experimentation. Use stable or a pinned version for shared teams, client work, and production repositories.
+
+### Does Claude Code auto-update?
+
+Native installs auto-update in the background. Homebrew, WinGet, apt, dnf, apk, and npm installs usually require manual updates.
+
+### Should I use `claude update` or `npm install -g`?
+
+Use the command that matches your original install method. Native installer users should use `claude update`; npm users should use `npm install -g @anthropic-ai/claude-code@latest`. Mixing installers is the fastest way to create version confusion.
+
+## Related Guides
+
+- [How to install Claude Code](/en/faqs/how-to-install-claude-code)
+- [Install Claude Code on Windows](/en/faqs/how-to-install-claude-code-on-windows)
+- [Claude Code usage limits](/en/faqs/claude-code-usage-limits)
+- [Plan Mode guide](/en/tutorial/workflows/plan-mode)
+- [Tools allowlist](/en/tutorial/configuration/tools-allowlist)
+- [Claude Code API documentation](/en/faqs/claude-code-api-documentation)
+- [Troubleshooting hub](/en/troubleshooting)
+
+## Official Sources
+
+- [Claude Code Changelog](https://code.claude.com/docs/en/changelog)
+- [Claude Code Advanced setup](https://code.claude.com/docs/en/installation)
+- [Claude Code npm package](https://www.npmjs.com/package/@anthropic-ai/claude-code)
+- [Troubleshoot installation and login](https://code.claude.com/docs/en/troubleshoot-install)

@@ -1,0 +1,246 @@
+---
+title: 'Claude Code Plan Mode'
+description: 'A practical Claude Code Plan Mode guide covering safe analysis, permission behavior, prompts, approval checklists, migration planning, headless usage, and team defaults.'
+---
+
+Plan Mode is Claude Code's safe analysis workflow. It tells Claude to inspect the codebase and create a plan before editing files. Use it when a wrong change would be expensive: migrations, refactors, auth, payment, database, MCP permissions, SEO-sensitive pages, production configuration, and multi-file features.
+
+> Last checked on May 24, 2026. Official Claude Code documentation describes Plan Mode as a permission mode for read-only analysis. It can analyze and plan, but it should not modify files or execute commands while in plan mode. UI labels and shortcuts may change, so verify the current behavior in your installed version.
+
+## Quick Answer
+
+Use Plan Mode before work that needs judgment. Claude should first understand the repository, identify affected files, compare implementation options, explain risks, and propose verification steps. You approve or revise the plan before switching back to implementation.
+
+The shortest useful pattern is:
+
+1. Start in Plan Mode.
+2. Describe the goal, constraints, and risk zones.
+3. Ask Claude to inspect relevant code and produce a plan.
+4. Review the plan for missing files, hidden assumptions, and test strategy.
+5. Only then allow edits.
+
+For a tiny typo, Plan Mode is overhead. For anything touching shared logic, public SEO routes, billing, auth, migrations, or unfamiliar code, it is cheap insurance.
+
+## How To Enter Plan Mode
+
+Claude Code supports several official ways to use Plan Mode:
+
+| Situation | Recommended entry |
+| --- | --- |
+| You are already in an interactive Claude Code session | Press `Shift+Tab` to cycle permission modes until the status shows plan mode. |
+| You want a new interactive session to start in Plan Mode | Run `claude --permission-mode plan`. |
+| You want a one-shot analysis without editing | Run `claude --permission-mode plan -p "Analyze this project and propose a migration plan"`. |
+| You want a project to default to Plan Mode | Set `"defaultMode": "plan"` under `permissions` in `.claude/settings.json`. |
+
+Official common-workflow guidance notes that `Shift+Tab` cycles through permission modes. From normal mode, it may pass through auto-accept edits before reaching plan mode. Watch the status line instead of assuming one keypress is enough.
+
+Some teams also create custom slash commands or prompts named around planning. That is useful, but it is not the same as the official permission mode unless the session is actually in Plan Mode.
+
+## What Plan Mode Can And Cannot Do
+
+| Action | Plan Mode behavior | Practical implication |
+| --- | --- | --- |
+| Read files, list directories, search code | Allowed as read-only analysis. | Good for architecture discovery and risk mapping. |
+| Modify files | Not allowed in plan mode. | You must approve and switch modes before implementation. |
+| Execute commands | Official IAM docs describe plan mode as unable to execute commands. | Ask for command recommendations; run them later in implementation or normal mode. |
+| Propose a sequence of edits | Allowed. | This is the main output you want. |
+| Compare approaches | Allowed. | Use it for migrations, refactors, and unclear bugs. |
+| Guarantee no future mistake | Not a guarantee. | Keep permissions, hooks, CI, and review in place. |
+
+The value is not that Claude becomes perfect. The value is that the risky part of the work becomes visible before files change.
+
+## When To Use Plan Mode
+
+Use Plan Mode when the cost of a bad edit is higher than the cost of a short analysis pass:
+
+- Multi-file features that touch routes, components, services, and content.
+- Refactors that cross package or module boundaries.
+- Authentication, billing, database, storage, deployment, or permission changes.
+- Public SEO pages where titles, slugs, canonical URLs, sitemap entries, or redirects matter.
+- MCP server setup, tool allowlists, hooks, or workspace permission changes.
+- Bugs where the root cause is not obvious.
+- Work in a codebase you have not inspected yet.
+- Tasks where the user or reviewer needs to approve the direction first.
+
+Skip Plan Mode for small, reversible edits: a spelling fix, one broken link, one obvious import path, or a single text correction. The goal is not ceremony; the goal is avoiding blind edits.
+
+## A Good Plan Mode Prompt
+
+The best prompt gives Claude the goal, the boundary, and the definition of done.
+
+```text
+Start in Plan Mode.
+
+Goal: improve the Plan Mode guide page so it is useful for developers searching for Claude Code planning workflows.
+
+Constraints:
+- Do not change the route structure.
+- Do not edit shared Fumadocs layout components.
+- Preserve English and Chinese parity.
+- Use official Claude Code sources for current behavior.
+
+Please inspect the relevant content files, identify gaps, propose the exact sections to add, list affected files, and include verification steps. Do not edit files yet.
+```
+
+For code work, add:
+
+```text
+Before planning, inspect the route, the component that renders it, the data model, and the tests that protect it. If there are multiple implementation options, compare them and recommend the lowest-risk path.
+```
+
+For debugging, add:
+
+```text
+Do not jump to a fix. First identify the reproduction path, the likely failing layer, the files to inspect, and the smallest verification command that would prove the fix.
+```
+
+## What A Good Plan Contains
+
+A useful Plan Mode response should be concrete enough that a reviewer can approve or reject it. Look for:
+
+| Plan element | What it should say |
+| --- | --- |
+| Goal restatement | The task in one or two sentences, with scope clarified. |
+| Files and routes | The files, directories, routes, or config surfaces likely affected. |
+| Current behavior | What Claude found in the repository before proposing changes. |
+| Proposed sequence | Step-by-step implementation order. |
+| Alternatives | Major trade-offs if more than one path is plausible. |
+| Risk zones | What could break: auth, billing, SEO, data, permissions, performance, layout. |
+| User decisions | Any choice that needs human confirmation. |
+| Verification | Build, tests, browser checks, curl checks, screenshot checks, or manual review. |
+| Rollback thinking | How to revert or limit blast radius if the change fails. |
+
+If the plan only says "update the page" or "refactor the code", it is not a plan. Ask it to name files, assumptions, and verification.
+
+## Review Checklist Before Approving
+
+Before you let Claude edit, check:
+
+- Does the plan mention all affected files and routes?
+- Did Claude inspect the current implementation instead of guessing?
+- Are assumptions separated from facts?
+- Is the implementation sequence small enough to review?
+- Does the plan preserve existing services, helpers, layout, or content model?
+- Does it avoid unnecessary abstractions?
+- Are high-risk areas called out explicitly?
+- Is the verification realistic for the local project?
+- Are there user-facing SEO fields that need title, description, canonical, or sitemap checks?
+- Is there a clear stopping point if something fails?
+
+This is where Plan Mode pays for itself. The review is usually faster than cleaning up a wide, wrong diff.
+
+## Example: Safe Refactor Plan
+
+A good Plan Mode output for a refactor might look like this:
+
+```md
+## Proposed Plan
+
+1. Inspect `src/app/[locale]/(knowledge)` to confirm the current rendering boundary.
+2. Read the shared MDX page component before changing content.
+3. Update only `content/pages/mechanics/plan-mode.mdx` and `.zh.mdx`.
+4. Keep the route and metadata fields intact.
+5. Run `pnpm build`.
+6. Open `/en/mechanics/plan-mode` and `/zh/mechanics/plan-mode` to verify headings, tables, JSON-LD, and console output.
+
+Risk: Fumadocs pages already render the H1 from frontmatter, so the MDX body should not add a top-level `#`.
+```
+
+Notice that this plan is specific. It names files, explains the rendering risk, and includes verification.
+
+## Example: Headless Plan Mode
+
+Headless Plan Mode is useful when you want analysis output from scripts or CI-like workflows without editing:
+
+```bash
+claude --permission-mode plan -p "Analyze the authentication flow and list risks before we refactor it."
+```
+
+Use this for:
+
+- architecture review before a migration;
+- security-oriented review of a risky area;
+- planning a test strategy;
+- summarizing likely impact before assigning a ticket;
+- checking whether a change touches forbidden directories.
+
+Do not treat headless output as final approval. It is analysis. A human or a follow-up implementation session still needs to decide what to do.
+
+## Configure Plan Mode As A Team Default
+
+For repositories where mistakes are expensive, a team can make Plan Mode the default permission mode:
+
+```json
+{
+  "permissions": {
+    "defaultMode": "plan"
+  }
+}
+```
+
+Put shared defaults in `.claude/settings.json` if the team agrees. Use `.claude/settings.local.json` for personal experimentation. Organization-managed settings can take precedence in enterprise environments.
+
+This is useful for:
+
+- production infrastructure repositories;
+- payment or auth-heavy applications;
+- regulated environments;
+- repositories with many new Claude Code users;
+- SEO sites where URL and metadata changes must be reviewed.
+
+It can be frustrating for tiny edits, so do not force it everywhere without a reason.
+
+## Plan Mode And Cost Control
+
+Plan Mode can reduce wasted usage because it catches wrong directions early. But planning is not free. A plan that reads half the repository without focus can waste context.
+
+Keep it efficient:
+
+- Name the target route, feature, or module when you can.
+- Point to relevant files with `@file` references in interactive sessions.
+- Ask for "the smallest sufficient inspection" instead of "read everything".
+- Use `CLAUDE.md` to store stable project rules so you do not repeat them.
+- Use `/clear` or `/compact` when a long investigation gets noisy.
+- Switch back to implementation only after the plan is accepted.
+
+The best Plan Mode session is not the longest one. It is the one that finds the right files and exposes the right risks before edits start.
+
+## Common Mistakes
+
+| Mistake | Why it hurts | Better approach |
+| --- | --- | --- |
+| Asking for a plan after Claude already edited files | The risky diff already exists. | Start in Plan Mode before implementation. |
+| Approving a vague plan | The implementation can still wander. | Ask for files, sequence, risks, and verification. |
+| Planning without constraints | Claude may optimize for the wrong goal. | State what must not change. |
+| Using Plan Mode for every tiny change | Slows down simple work. | Reserve it for uncertain or risky changes. |
+| Treating Plan Mode as security enforcement | It is a permission mode, not a full policy system. | Use permissions, hooks, and CI for hard guarantees. |
+| Forgetting to verify after implementation | A good plan does not prove the code works. | Run the verification steps from the plan. |
+
+## Practical Workflow
+
+For most serious work, use this rhythm:
+
+1. **Explore:** Ask Claude to inspect only the relevant files and summarize current behavior.
+2. **Plan:** Require a concrete plan with affected files, risks, and verification.
+3. **Approve:** Revise the plan until it matches the real goal.
+4. **Implement:** Switch out of Plan Mode and make the smallest coherent change.
+5. **Verify:** Run build, tests, route checks, or browser checks.
+6. **Summarize:** Record what changed and what remains.
+
+This is the same habit behind the "Explore, Plan, Code" workflow: understand first, plan second, edit third.
+
+## Related Pages
+
+- [What is Plan Mode?](/en/faqs/what-is-plan-mode)
+- [Plan Mode workflow tutorial](/en/tutorial/workflows/plan-mode)
+- [Explore, plan, code](/en/tutorial/workflows/explore-plan-code)
+- [CLAUDE.md guide](/en/mechanics/claude-md)
+- [Tools allowlist](/en/tutorial/configuration/tools-allowlist)
+- [Claude Code headless mode](/en/faqs/claude-code-headless-mode)
+
+## Official Sources
+
+- [Claude Code common workflows](https://code.claude.com/docs/en/common-workflows)
+- [Claude Code IAM and permission modes](https://code.claude.com/docs/en/iam)
+- [Claude Code settings](https://code.claude.com/docs/en/settings)
+- [Claude Code CLI reference](https://code.claude.com/docs/en/cli-usage)

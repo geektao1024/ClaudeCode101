@@ -1,0 +1,131 @@
+---
+title: 'Claude Code FAQ'
+description: 'Claude Code 高频问题总入口：安装、Windows 配置、价格、用量限制、CLAUDE.md、Plan Mode、MCP、自定义命令、Headless 和 API 文档。'
+---
+
+这个页面是 ClaudeCode101 的短答案入口。用户搜索一个具体 Claude Code 问题时，先在这里得到可执行结论，再进入完整教程、机制专题、MCP 页面、价格说明或故障排查页面。
+
+> 最后核查：2026 年 5 月 24 日。Claude Code 的安装方式、套餐权限、模型可用性和用量限制变化很快。这个页面负责帮你找到正确入口；涉及账号价格、用量和模型权限时，以官方页面和你自己账号内显示的信息为准。
+
+## 快速结论
+
+按你的搜索意图进入：
+
+- **安装 Claude Code：** 先看安装 FAQ；如果失败，再进完整安装教程和故障排查。
+- **Windows 配置：** 先判断用原生 Windows 还是 WSL，再处理 PATH、Shell 和包管理器。
+- **价格和用量：** 把价格、限制、`/model`、`/usage`、`/clear`、`/compact` 放在一起看。
+- **项目记忆：** 写大段项目说明前，先看 CLAUDE.md 应该写什么。
+- **Plan Mode：** 多文件改动、迁移、价格页、重定向、登录、支付等高风险任务先规划。
+- **MCP servers：** 一次只接一个 server，并收紧工具权限。
+- **自动化：** 重复提示词用自定义命令；脚本化运行看 headless；程序化集成看 Agent SDK/API 文档。
+
+FAQ 页面负责回答第一个问题，链接页负责帮你真正执行。
+
+## 从这些问题开始
+
+| 问题 | 简短答案 | 下一步 |
+| --- | --- | --- |
+| [如何安装 Claude Code？](/zh/faqs/how-to-install-claude-code) | 按当前官方路径安装，验证 `claude` 命令，再完成认证。 | [安装教程](/zh/tutorial/getting-started/installation) |
+| [Windows 上如何安装 Claude Code？](/zh/faqs/how-to-install-claude-code-on-windows) | Windows 项目优先原生安装；Linux 工具链优先 WSL 2。 | [Windows PATH 排障](/zh/troubleshooting/claude-code-windows-path) |
+| [Claude Code 多少钱？](/zh/faqs/how-much-is-claude-code) | 订阅用户看 Free、Pro、Max、Team、Enterprise；API 用户看 token 成本。 | [价格与限制中心](/zh/pricing) |
+| [Claude Code 用量限制是什么？](/zh/faqs/claude-code-usage-limits) | 限制取决于登录方式、模型、上下文大小，以及订阅/API 计费方式。 | [Rate limit 排障](/zh/troubleshooting/claude-code-rate-limit-error) |
+| [CLAUDE.md 是什么？](/zh/faqs/what-is-claude-md) | 它是项目长期记忆，适合放命令、规范、架构边界和评审规则。 | [CLAUDE.md 机制](/zh/mechanics/claude-md) |
+| [Plan Mode 是什么？](/zh/faqs/what-is-plan-mode) | 它让 Claude Code 先读代码并提出计划，再决定是否编辑文件。 | [Plan Mode 机制](/zh/mechanics/plan-mode) |
+| [MCP servers 是什么？](/zh/faqs/claude-code-mcp-servers) | MCP 让 Claude Code 接入 GitHub、浏览器、文档、数据库或内部系统。 | [MCP 目录](/zh/mcp) |
+| [自定义命令是什么？](/zh/faqs/claude-code-custom-commands) | 自定义命令和 slash commands 能把重复提示词变成命名工作流。 | [Slash Commands 机制](/zh/mechanics/slash-commands) |
+| [Headless mode 是什么？](/zh/faqs/claude-code-headless-mode) | Headless 用于脚本、JSON 输出、检查任务和类 CI 流程。 | [API 文档 FAQ](/zh/faqs/claude-code-api-documentation) |
+| [Claude Code API 文档在哪里？](/zh/faqs/claude-code-api-documentation) | CLI 看终端文档，Agent SDK 看代理自动化，Claude API 看模型调用。 | [Headless mode FAQ](/zh/faqs/claude-code-headless-mode) |
+
+## 安装和首次运行问题
+
+安装问题通常拆成两个决策：操作系统和认证方式。
+
+| 你在问什么 | 先看 | 需要验证 |
+| --- | --- | --- |
+| “现在该怎么安装 Claude Code？” | [如何安装 Claude Code](/zh/faqs/how-to-install-claude-code) | `claude --version`、Shell PATH、登录方式。 |
+| “为什么 Windows 不一样？” | [Windows 安装指南](/zh/faqs/how-to-install-claude-code-on-windows) | 原生终端还是 WSL、包管理器和 PATH。 |
+| “为什么 `claude` 运行不了？” | [command not found 修复](/zh/troubleshooting/claude-command-not-found) | binary 位置和当前 Shell 加载的 PATH。 |
+| “为什么登录失败？” | [登录排障](/zh/troubleshooting/claude-code-login-or-authentication-error) | 浏览器登录、API key、组织席位、本地凭据状态。 |
+
+CLI 没安装好、PATH 不通、或还没完成认证前，不要急着排查价格、MCP 或 Plan Mode。
+
+## 价格、用量和成本问题
+
+Claude Code 价格问题容易混，因为订阅用量和 API 计费是两套不同表面。
+
+| 问题 | 实用答案 |
+| --- | --- |
+| “Claude Code 免费吗？” | 计划可用性会变化，先查官方 pricing 和自己的账号。有些工作流可能需要付费套餐或 API 计费。 |
+| “该选 Pro、Max、Team 还是 Enterprise？” | 看编码频率、团队协作、管理/安全要求，以及是否需要组织级控制。 |
+| “为什么触发限制？” | 检查登录方式、当前模型、上下文大小、长会话，以及你是订阅用量还是 API metering。 |
+| “怎么让额度更耐用？” | 无关任务用 `/clear`，长会话用 `/compact`，模型选择看 `/model`，prompt 尽量指向文件和具体问题。 |
+| “怎么追踪成本？” | 订阅用户看 plan usage；API 用户看 `/usage`、`/cost`、Console 或云厂商账单页。 |
+
+做预算时，先看 [Claude Code 多少钱？](/zh/faqs/how-much-is-claude-code)，再看 [Claude Code 用量限制](/zh/faqs/claude-code-usage-limits)。
+
+## 工作流和机制问题
+
+机制页面解释为什么这样用，以及真实项目里要避开什么。
+
+| 工作流需求 | 先看 | 再读 |
+| --- | --- | --- |
+| 固定项目规则 | [CLAUDE.md 是什么？](/zh/faqs/what-is-claude-md) | [CLAUDE.md 机制](/zh/mechanics/claude-md) |
+| 修改前先规划 | [Plan Mode 是什么？](/zh/faqs/what-is-plan-mode) | [Plan Mode 机制](/zh/mechanics/plan-mode) |
+| 减少上下文膨胀和额度浪费 | [用量限制](/zh/faqs/claude-code-usage-limits) | [上下文管理](/zh/mechanics/context-management) |
+| 复用重复提示词 | [自定义命令](/zh/faqs/claude-code-custom-commands) | [Slash Commands](/zh/mechanics/slash-commands) |
+| 增加自动护栏 | [自定义命令](/zh/faqs/claude-code-custom-commands) | [Hooks](/zh/mechanics/hooks) |
+| 委派噪音很大的旁路任务 | [API 文档](/zh/faqs/claude-code-api-documentation) | [Subagents](/zh/mechanics/subagents) |
+
+如果你问“应该先配置什么”，通常顺序是：`CLAUDE.md`、权限、一个可复用命令、Plan Mode 习惯，然后等模式反复出现后再加 hooks 或 subagents。
+
+## MCP、API 和自动化问题
+
+当 Claude Code 要离开基础终端工作流时，看这些入口。
+
+| 需求 | 最佳入口 | 注意点 |
+| --- | --- | --- |
+| 接入 GitHub、浏览器、文档或数据库 | [MCP servers FAQ](/zh/faqs/claude-code-mcp-servers) | 一次只接一个 server，权限要窄。 |
+| 选择 MCP server | [MCP 目录](/zh/mcp) | 优先可信来源和明确 scope。 |
+| 脚本化运行 prompt | [Headless mode FAQ](/zh/faqs/claude-code-headless-mode) | 权限、凭据和输出格式必须显式。 |
+| 做程序化自动化 | [API 文档 FAQ](/zh/faqs/claude-code-api-documentation) | 不要混用 CLI、Agent SDK 和 Claude API 文档。 |
+| 让 MCP 更安全 | [MCP 安全清单](/zh/mcp/mcp-security-checklist) | 外部工具可能读写真实系统。 |
+
+MCP 和自动化出错成本更高。工具访问要当成生产决策，而不是便利开关。
+
+## 如何使用这个 FAQ
+
+FAQ 页面负责第一个答案，不替代完整手册。好的问题页应该做到：
+
+1. 开头几行直接回答问题。
+2. 说明哪些信息变化快、必须核查。
+3. 给出下一步可执行动作。
+4. 链接到更深的教程或机制页。
+5. 链接到官方来源和账号内真实信息。
+
+做生产决策前，请核查：
+
+- 当前套餐和账单规则是否变化。
+- Claude Code 当前用的是哪个账号、组织或 API key。
+- `/model` 当前模型是否正确。
+- 当前任务适合交互运行、Plan Mode、headless mode，还是 Agent SDK。
+- MCP 和工具权限是否足够收敛。
+- 你看的页面是否有近期 “最后核查” 日期。
+
+## 相关入口
+
+- [Claude Code 教程中心](/zh/tutorial)
+- [Claude Code 机制专题](/zh/mechanics)
+- [MCP 目录](/zh/mcp)
+- [故障排查](/zh/troubleshooting)
+- [价格与限制](/zh/pricing)
+- [资源和工具](/zh/resources)
+
+## 官方来源
+
+- [Claude Code docs](https://code.claude.com/docs)
+- [Claude pricing](https://claude.com/pricing)
+- [Claude Code setup](https://code.claude.com/docs/en/installation)
+- [Claude Code commands](https://code.claude.com/docs/en/commands)
+- [Claude Code usage and limits](https://support.claude.com/en/articles/14552983-models-usage-limits-in-claude-code)
+- [Manage costs effectively](https://code.claude.com/docs/en/costs)
+- [Claude Code Agent SDK](https://code.claude.com/docs/en/agent-sdk/overview)

@@ -1,0 +1,58 @@
+{
+  "metadata": {
+    "title": "ClaudeCode101 资源包",
+    "description": "Claude Code 模板、清单和示例内容正在整理中。你可以先从免费教程开始。"
+  },
+  "page": {
+    "title": "ClaudeCode101 资源包",
+    "sections": {
+      "pricing": {
+        "id": "pricing",
+        "title": "资源包整理中",
+        "description": "我们正在把常用模板、配置清单和实战示例整理成更方便复用的资源。当前可以先从免费教程开始。",
+        "groups": [
+          {
+            "name": "waitlist",
+            "title": "预告"
+          }
+        ],
+        "items": [
+          {
+            "title": "Claude Code 实战资源包",
+            "description": "面向安装配置、CLAUDE.md、MCP、Plan Mode 和团队工作流的模板与清单。",
+            "label": "整理中",
+            "features_title": "计划包含",
+            "features": [
+              "Claude Code 入门与环境配置",
+              "CLAUDE.md 项目规范模板",
+              "MCP 与常用工具链配置清单",
+              "真实项目调试与重构流程",
+              "团队协作与代码审查清单"
+            ],
+            "interval": "one-time",
+            "amount": 0,
+            "currency": "USD",
+            "price": "整理中",
+            "unit": "",
+            "is_featured": true,
+            "tip": "资源包准备好后会在本站更新；当前无需付费，先使用免费教程。",
+            "button": {
+              "title": "先看免费教程",
+              "url": "/tutorial",
+              "icon": "RiBookOpenLine"
+            },
+            "product_id": "claude-code-pack-waitlist",
+            "product_name": "ClaudeCode101 资源包",
+            "credits": 0,
+            "valid_days": 0,
+            "group": "waitlist"
+          }
+        ]
+      }
+    }
+  },
+  "messages": {
+    "current_plan": "当前方案",
+    "processing": "处理中"
+  }
+}

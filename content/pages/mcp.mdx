@@ -1,0 +1,199 @@
+---
+title: 'Claude Code MCP Directory'
+description: 'A practical Claude Code MCP directory for choosing GitHub MCP, Context7 MCP, Playwright MCP, transports, scopes, authentication, security, and team rollout patterns.'
+---
+
+MCP lets Claude Code connect to external tools, documentation, browser sessions, repositories, databases, monitoring systems, and internal APIs. The useful question is not "how many MCP servers can I install?" The useful question is: which server removes a repeated workflow bottleneck without exposing more data or write access than the task needs?
+
+> Last checked on May 24, 2026. Claude Code MCP supports local stdio servers, remote HTTP servers, older SSE servers, OAuth flows, local/project/user scopes, Claude.ai connectors, and enterprise-managed MCP policy. HTTP is now the preferred remote transport where available; SSE is deprecated in the current Claude Code docs.
+
+## Quick Answer
+
+Start with one MCP server only when the workflow repeatedly needs context outside the repository.
+
+- Use **GitHub MCP** when Claude needs issue, PR, review, release, or repository context.
+- Use **Context7 MCP** when Claude needs current library and framework documentation before editing code.
+- Use **Playwright MCP** when Claude needs to inspect a local page, interact with UI, or capture screenshot evidence.
+- Use the **MCP security checklist** before adding write scopes, tokens, authenticated browser sessions, databases, or internal systems.
+- Use local or project configuration only when you understand who owns credentials, updates, logs, and incident response.
+
+If a shell command, copied URL, or static `CLAUDE.md` note solves the problem, do not add MCP yet.
+
+## Choose An MCP Server By Workflow
+
+| Workflow need | Best entry point | First safe task | Main risk |
+| --- | --- | --- | --- |
+| Read issue or pull request context | [GitHub MCP](/en/mcp/github-mcp) | Summarize an issue or inspect a PR before implementation. | Write scopes, repo visibility, accidental comments or changes. |
+| Check current docs before editing code | [Context7 MCP](/en/mcp/context7-mcp) | Fetch docs for one library and verify one API decision. | Trusting stale or irrelevant docs without source checking. |
+| Verify UI behavior in a browser | [Playwright MCP](/en/mcp/playwright-mcp) | Open a local route, click through one flow, capture a screenshot. | Authenticated sessions, production actions, flaky environment state. |
+| Review MCP permissions before rollout | [MCP security checklist](/en/mcp/mcp-security-checklist) | Map read/write tools, secrets, logs, and owner before install. | Broad access without team governance. |
+| Fix a server that will not load | [MCP not connecting](/en/troubleshooting/claude-code-mcp-not-connecting) | Use `/mcp` and inspect config, startup, auth, and scopes. | Changing multiple variables at once. |
+| Learn the basic setup flow | [MCP server tutorial](/en/tutorial/tools-integration/mcp-servers) | Add one read-only server and run one focused prompt. | Installing servers because they look useful, not because a workflow needs them. |
+
+Good MCP adoption is usually boring: one server, one task, read-only first, measurable improvement.
+
+## What MCP Adds To Claude Code
+
+Model Context Protocol gives Claude Code a structured way to call tools outside the chat. A server can expose tools, resources, and prompts, while Claude Code remains the client that decides what context or action to request.
+
+MCP is useful when:
+
+- the needed context lives in another system, such as issues, PRs, browser state, docs, monitoring, tickets, or internal APIs;
+- the task repeats often enough that a tool call is safer than copy-paste;
+- the data source changes too often for static project memory;
+- the team can define clear read/write boundaries;
+- the value is visible in a real workflow, not just in a demo.
+
+MCP is not useful when the workflow is vague, the server requires broad credentials, or nobody owns the server after installation.
+
+## Choose The Transport Deliberately
+
+Claude Code can connect to local stdio servers and remote servers. Pick the transport that matches ownership and risk, not the newest-looking option.
+
+| Transport | Use when | Watch out for |
+| --- | --- | --- |
+| HTTP / Streamable HTTP | The server is hosted, cloud-based, organization-managed, or uses OAuth. | Network trust, auth scopes, endpoint governance, logs, and token handling. |
+| stdio | The server runs locally, wraps a CLI, uses Docker, or needs direct machine/project access. | Inherits local environment, can touch local files, and may depend on machine-specific paths. |
+| SSE | The server only supports older remote MCP deployments. | Claude Code docs now mark SSE as deprecated; prefer HTTP where available. |
+
+For remote production systems, HTTP with proper OAuth or controlled headers is usually easier to govern than a local command with hidden credentials. For local developer tools, stdio can be simpler and safer if credentials stay local.
+
+## Choose The Scope Deliberately
+
+MCP configuration scope changes who sees the server and where configuration is stored.
+
+| Scope | Loads in | Shared with team | Best use |
+| --- | --- | --- | --- |
+| Local | Current project only | No | Personal experiments, private credentials, first trials. |
+| Project | Current project only | Yes, through `.mcp.json` | Team-approved servers and repeatable repository workflows. |
+| User | All your projects | No | Personal cross-project tools that do not belong in one repo. |
+| Managed / enterprise | Admin-controlled machines | Admin-defined | Organization policy, allowlists, denylists, and mandatory servers. |
+
+Do not put secrets into versioned project config. Project scope is for server definitions and shared intent, not raw credentials.
+
+## Authentication And OAuth
+
+Many remote MCP servers require authentication. In Claude Code, `/mcp` is the place to inspect status and complete authentication flows.
+
+Practical rules:
+
+- Use `/mcp` after adding a server and complete the browser auth flow when prompted.
+- Use `/status` if Claude.ai connectors do not appear; active API keys or third-party providers can change which connectors load.
+- Use fixed OAuth callback ports only when the server requires a pre-registered redirect URI.
+- Use pinned OAuth scopes when the server advertises more access than your workflow needs.
+- Use dynamic headers or helper scripts only when your team can audit and maintain them.
+- Never commit tokens, client secrets, or personal credentials.
+
+If a remote server returns auth errors, do not keep reinstalling it. Inspect scopes, callback URL, account identity, and whether the server expects dynamic client registration or pre-configured credentials.
+
+## Claude.ai Connectors And Claude Code
+
+Claude.ai connectors use the same MCP infrastructure. If you sign in to Claude Code with a Claude.ai subscription account, connectors added in Claude.ai can appear inside Claude Code.
+
+This is convenient, but it can surprise teams:
+
+- connectors may not load when an API key, auth token helper, Bedrock, Vertex, or another provider is active;
+- a server added directly in Claude Code can take precedence over a connector that points to the same URL;
+- Team and Enterprise environments may restrict who can add connectors;
+- `/mcp` and `/status` are the fastest way to see what Claude Code actually loaded.
+
+For production work, document whether the workflow expects Claude.ai connectors, Claude Code local config, project `.mcp.json`, or managed enterprise config.
+
+## Safe Rollout Flow
+
+Use this order for a new MCP server:
+
+1. **Write the workflow in one sentence:** "Use GitHub MCP to read issue context before implementation."
+2. **Choose one server and one task:** avoid installing a bundle of servers at once.
+3. **Start read-only:** use the smallest permissions or OAuth scopes that prove value.
+4. **Add locally first:** keep it private until the workflow is validated.
+5. **Run a real task:** capture what became faster, safer, or more accurate.
+6. **Document boundaries in `CLAUDE.md`:** purpose, allowed actions, owner, and what not to do.
+7. **Promote to project scope only after review:** use `.mcp.json` for team-approved config.
+8. **Add hooks or allowlists when risk grows:** especially for write tools and internal systems.
+
+The first successful MCP setup should feel narrow. Broad access comes later, if ever.
+
+## Setup Pattern
+
+The exact command depends on the server, but the shape is usually:
+
+```bash
+claude mcp add --transport http <server-name> <server-url>
+```
+
+For a remote server with a bearer token:
+
+```bash
+claude mcp add --transport http secure-api https://api.example.com/mcp \
+  --header "Authorization: Bearer <token>"
+```
+
+For a local stdio server:
+
+```bash
+claude mcp add --transport stdio <server-name> -- <command> [args...]
+```
+
+After adding a server:
+
+```bash
+claude mcp list
+claude mcp get <server-name>
+```
+
+Then open Claude Code and run:
+
+```text
+/mcp
+```
+
+Start with a read-only prompt such as "list the tools this server exposes" or "retrieve one issue title" before allowing edits, comments, writes, browser actions, or database access.
+
+## What Not To Add Yet
+
+Skip an MCP server when:
+
+- a simple CLI command already solves the problem;
+- the server needs broad credentials but the use case is vague;
+- nobody owns updates, token rotation, incident response, or logs;
+- the server reads production data for a task that can be tested locally;
+- the team cannot explain what the server can read or write;
+- the same information belongs in `CLAUDE.md`, a tutorial, or a one-time prompt;
+- the first workflow is "maybe useful someday."
+
+MCP should reduce repeated friction. It should not become a hidden permission layer nobody understands.
+
+## Team And Enterprise Governance
+
+Teams should treat MCP like any other integration:
+
+| Governance question | Why it matters |
+| --- | --- |
+| Who owns the server? | Someone must update config, rotate credentials, and respond to incidents. |
+| Is it read-only or write-capable? | Write tools need reviews, hooks, or explicit approval habits. |
+| Where is it configured? | Local, project, user, Claude.ai connector, and managed config behave differently. |
+| How are secrets handled? | Secrets should stay in keychains, provider auth flows, env vars, or audited helpers, not docs. |
+| Can users add unapproved servers? | Enterprise allowlists and denylists may be needed for managed environments. |
+| What is logged? | Tool calls can touch sensitive project, browser, or customer data. |
+
+For high-risk environments, review [MCP security checklist](/en/mcp/mcp-security-checklist), [Tools allowlist](/en/tutorial/configuration/tools-allowlist), and [Hooks](/en/mechanics/hooks) before giving Claude Code write access through MCP.
+
+## Related Pages
+
+- [What are Claude Code MCP servers?](/en/faqs/claude-code-mcp-servers)
+- [MCP server tutorial](/en/tutorial/tools-integration/mcp-servers)
+- [MCP not connecting](/en/troubleshooting/claude-code-mcp-not-connecting)
+- [MCP security checklist](/en/mcp/mcp-security-checklist)
+- [Tools allowlist](/en/tutorial/configuration/tools-allowlist)
+- [Hooks](/en/mechanics/hooks)
+- [Context management](/en/mechanics/context-management)
+
+## Official Sources
+
+- [Claude Code MCP documentation](https://code.claude.com/docs/en/mcp)
+- [Managed MCP in Claude Code](https://code.claude.com/docs/en/managed-mcp)
+- [Model Context Protocol documentation](https://modelcontextprotocol.io/)
+- [GitHub MCP server](https://github.com/github/github-mcp-server)
+- [Context7 Claude Code setup](https://context7.com/docs/clients/claude-code)
+- [Playwright MCP documentation](https://playwright.dev/docs/getting-started-mcp)

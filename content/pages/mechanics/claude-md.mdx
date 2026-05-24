@@ -1,0 +1,220 @@
+---
+title: 'CLAUDE.md Guide for Claude Code'
+description: 'A practical Claude Code CLAUDE.md guide covering memory scope, file locations, what to write, what to avoid, project rules, auto memory, and team maintenance.'
+---
+
+`CLAUDE.md` is the persistent instruction layer Claude Code reads so every session does not start from zero. Use it for project facts that should be true across sessions: architecture boundaries, build commands, test expectations, code style, review rules, and workflow habits.
+
+> Last checked on May 24, 2026. Claude Code now has `CLAUDE.md`, `CLAUDE.local.md`, `.claude/rules/`, and auto memory. Treat this page as a practical operating guide, and verify edge cases against the official memory documentation before rolling it out to a large team.
+
+## Quick Answer
+
+Create a project `CLAUDE.md` when you want Claude Code to behave consistently in a repository. Keep it specific, current, and short enough to help rather than flood the context window. If the instruction is stable and should apply to most sessions, it belongs in `CLAUDE.md`. If it is personal, put it in `CLAUDE.local.md` or user memory. If it only applies to a path or file type, use `.claude/rules/`. If it is a repeatable task, consider a skill or slash command instead.
+
+The simplest useful version is not a long manifesto. It is a working map:
+
+- What this project is.
+- Where important code lives.
+- Which commands verify changes.
+- Which conventions are non-negotiable.
+- Which files or workflows require extra care.
+- When Claude Code should plan, ask, test, or stop.
+
+## What CLAUDE.md Is For
+
+Claude Code sessions begin with a fresh context window. `CLAUDE.md` gives the tool a durable starting point, so it can load project instructions before you repeat them in chat. It is especially valuable when the same repo is used by multiple people, when the project has non-obvious architecture, or when incorrect assumptions are expensive.
+
+Good `CLAUDE.md` instructions reduce:
+
+- repeated explanations about framework choices or directory boundaries;
+- accidental edits in generated, vendored, migration, or payment code;
+- forgotten test commands;
+- inconsistent code style;
+- unsafe permission or deployment behavior;
+- over-broad refactors when the task should stay narrow.
+
+It is not a hard security boundary. Claude reads it as context and tries to follow it, but enforced controls belong in settings, permissions, hooks, CI, and review. This distinction matters: write behavior guidance in `CLAUDE.md`, but use tooling when a rule must be guaranteed.
+
+## Memory Surfaces You Should Know
+
+| Surface | Typical location | Best use | Shared with |
+| --- | --- | --- | --- |
+| Managed organization instructions | Platform-specific managed policy path | Company-wide coding, security, or compliance reminders. | Everyone on managed machines. |
+| User instructions | `~/.claude/CLAUDE.md` | Personal preferences that apply across projects. | You. |
+| Project instructions | `./CLAUDE.md` or `./.claude/CLAUDE.md` | Team-shared repository rules, commands, architecture notes, and workflows. | Team if committed. |
+| Local project instructions | `./CLAUDE.local.md` | Personal project notes, sandbox URLs, local data, private shortcuts. | You, if gitignored. |
+| Project rules | `.claude/rules/*.md` | Modular or path-specific instructions for large projects. | Team if committed. |
+| Auto memory | Claude-managed memory directory | Learnings Claude saves from corrections and patterns. | Local machine, repository scoped. |
+
+For most teams, start with `./CLAUDE.md`. Add `.claude/rules/` only when the main file grows too large or when rules should load only for certain paths. Add `CLAUDE.local.md` for personal machine details that should not be committed.
+
+## Recommended Project File
+
+A strong project-level `CLAUDE.md` should be short enough to scan and concrete enough to verify. This template is a practical starting point:
+
+```md
+# Project Context
+
+This repository is a Next.js application using the App Router. Public content is stored in `content/pages`, and shared UI lives in `src/components`.
+
+## Commands
+
+- Install: `pnpm install`
+- Development: `pnpm dev`
+- Build: `pnpm build`
+- Type check: `pnpm typecheck`
+- Lint: `pnpm lint`
+
+## Working Rules
+
+- Prefer existing helpers and service wrappers before adding new abstractions.
+- Keep public SEO routes stable unless the task explicitly includes migration.
+- Do not edit payment, auth, or deployment code without first explaining the risk.
+- For multi-file changes, inspect the relevant route, content model, and shared component before editing.
+
+## Verification
+
+- Run `pnpm build` after content or route changes.
+- Run focused tests when touching shared logic.
+- Report any command that could not be run.
+
+## Content Style
+
+- Write for developers who want practical Claude Code answers.
+- Avoid internal migration language on public pages.
+- Include official sources when a Claude Code behavior may change.
+```
+
+Do not copy the template blindly. Replace commands, paths, and constraints with the actual project. A wrong command in `CLAUDE.md` is worse than no command because Claude will confidently repeat it.
+
+## What To Include
+
+The best sections are the ones that prevent real mistakes:
+
+| Section | What to write | Why it helps |
+| --- | --- | --- |
+| Project purpose | One or two sentences describing what the repository ships. | Prevents generic assumptions. |
+| Directory map | Only the directories that matter for daily work. | Speeds up navigation and reduces broad searches. |
+| Commands | Install, dev, build, lint, test, deploy preview. | Makes verification repeatable. |
+| Architecture rules | Boundaries between app, content, API, services, and UI. | Reduces accidental cross-layer changes. |
+| Risk zones | Auth, billing, migrations, analytics, SEO routes, generated files. | Encourages planning before risky edits. |
+| Style rules | Naming, formatting, component patterns, copy tone. | Improves consistency. |
+| Workflow rules | When to use Plan Mode, when to ask, when to run tests. | Prevents premature implementation. |
+| Source rules | Where to verify current Claude Code behavior. | Keeps fast-changing pages accurate. |
+
+Write rules as actions, not vibes. "Use existing server actions in `src/services` before adding new API code" is useful. "Keep the code clean" is too vague.
+
+## What Not To Include
+
+Do not turn `CLAUDE.md` into a dumping ground. The file loads into context, so every stale paragraph competes with the current task.
+
+Avoid:
+
+- long onboarding documents that humans rarely update;
+- outdated migration notes from a previous version;
+- private tokens, customer data, passwords, or local secrets;
+- one-off task instructions that only mattered yesterday;
+- duplicated content from README files unless it is essential;
+- contradictory rules across root, nested, local, and user files;
+- large API references that should live in docs or skills instead.
+
+If a section is useful once a month but not every session, move it out. If a procedure is long and repeatable, make a slash command or skill. If a rule must run automatically, use a hook or CI check.
+
+## CLAUDE.md vs Rules, Skills, Hooks, and Commands
+
+Use the right surface for the job:
+
+| Need | Better choice |
+| --- | --- |
+| Stable project context every session | `CLAUDE.md` |
+| Personal preference for all projects | `~/.claude/CLAUDE.md` |
+| Local-only project note | `CLAUDE.local.md` |
+| Rules that apply only to `src/api/**` or `*.mdx` | `.claude/rules/` with path scoping |
+| A repeatable multi-step workflow | Skill or slash command |
+| A check that must run at a lifecycle moment | Hook, CI, or permission rule |
+| A hard deny/allow policy | Claude Code settings and permissions |
+
+This separation keeps `CLAUDE.md` readable. It also makes the behavior easier to debug because each layer has a purpose.
+
+## How Claude Loads It
+
+Claude Code can load instructions from multiple locations. In normal repository work, it reads project-level files in and above the working directory, and it can load nested instructions when work moves into subdirectories. It may also load user-level or managed instructions depending on the environment.
+
+Practical implications:
+
+- Launch Claude Code from the repository root when possible.
+- Use `/memory` to confirm which memory and instruction files are active.
+- Keep nested instructions small and local to the subtree they govern.
+- In a monorepo, document which package root developers should start from.
+- If another team's ancestor `CLAUDE.md` pollutes the context, use the documented exclude setting carefully.
+
+For a small app, one root `CLAUDE.md` is usually enough. For a monorepo, combine a concise root file with path-scoped rules for packages that truly differ.
+
+## How To Maintain It
+
+Update `CLAUDE.md` when a repeated correction appears. A good rule of thumb: if you correct Claude twice about the same project fact, write it down. If a code review catches a recurring assumption Claude should have known, write that rule down too.
+
+Use this maintenance loop:
+
+1. After a session, note the repeated misunderstanding.
+2. Decide whether it is stable enough for every future session.
+3. Add the shortest concrete instruction that would have prevented it.
+4. Remove any older rule it contradicts.
+5. Run `/memory` or open the next session to confirm it loads.
+6. Review the file after major framework, route, deploy, or test changes.
+
+Do not add rules while angry at a single failed session. That is how files become crowded with exceptions. Add the rule only when it represents a real project invariant.
+
+## Team Pattern
+
+For a team repository, treat `CLAUDE.md` like lightweight engineering documentation:
+
+- Commit the shared project file.
+- Keep local secrets and sandbox URLs in gitignored `CLAUDE.local.md`.
+- Require review for changes to workflow or risk-zone instructions.
+- Add a small "last reviewed" note if the project changes quickly.
+- Point to deeper docs instead of pasting them.
+- Keep the root file focused; use `.claude/rules/` for package-specific guidance.
+
+This makes Claude Code more useful for new teammates and reduces hidden knowledge. It also gives reviewers one place to inspect the assumptions Claude will carry into sessions.
+
+## Troubleshooting
+
+If Claude ignores `CLAUDE.md`, check these first:
+
+| Symptom | Likely cause | Fix |
+| --- | --- | --- |
+| Claude does not follow a rule | The rule is vague or conflicts with another instruction. | Rewrite it as a concrete, testable instruction. |
+| Claude acts like the file does not exist | The file is not loaded for the current session. | Run `/memory` and verify the loaded files. |
+| Behavior changes after compaction | The instruction was only in conversation or a nested file did not reload yet. | Put durable rules in project `CLAUDE.md`. |
+| The session feels slower or noisier | The file is too long. | Trim it or move path-specific material into `.claude/rules/`. |
+| Personal notes leak into team behavior | Local details were committed. | Move them to `CLAUDE.local.md` and gitignore it. |
+| A must-run rule is skipped | `CLAUDE.md` is guidance, not enforcement. | Use a hook, permission rule, or CI check. |
+
+## Practical Checklist
+
+Before you consider the file ready, confirm:
+
+- The file reflects the current repository, not an old migration.
+- Every command can actually run.
+- Every path exists.
+- Risk zones are named clearly.
+- The file says when to plan before editing.
+- Public content tone is defined if the repo has SEO or docs pages.
+- There are no secrets, tokens, or customer data.
+- The file is not trying to replace hooks, skills, commands, or CI.
+- A new teammate could read it in under five minutes.
+
+## Related Pages
+
+- [What is CLAUDE.md?](/en/faqs/what-is-claude-md)
+- [CLAUDE.md setup tutorial](/en/tutorial/configuration/claude-md)
+- [Context management](/en/mechanics/context-management)
+- [Plan Mode](/en/mechanics/plan-mode)
+- [Claude Code custom commands](/en/faqs/claude-code-custom-commands)
+
+## Official Sources
+
+- [How Claude remembers your project](https://code.claude.com/docs/en/memory)
+- [Claude Code settings](https://code.claude.com/docs/en/settings)
+- [Claude Code common workflows](https://code.claude.com/docs/en/common-workflows)

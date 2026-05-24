@@ -1,0 +1,58 @@
+{
+  "metadata": {
+    "title": "ClaudeCode101 Resource Pack",
+    "description": "Claude Code templates, checklists, and examples are being organized. Start with the free tutorial for now."
+  },
+  "page": {
+    "title": "ClaudeCode101 Resource Pack",
+    "sections": {
+      "pricing": {
+        "id": "pricing",
+        "title": "Resource Pack in Progress",
+        "description": "We are organizing reusable templates, configuration checklists, and practical examples. For now, start with the free tutorial hub.",
+        "groups": [
+          {
+            "name": "waitlist",
+            "title": "Preview"
+          }
+        ],
+        "items": [
+          {
+            "title": "Claude Code Practical Resource Pack",
+            "description": "Templates and checklists for setup, CLAUDE.md, MCP, Plan Mode, and team workflows.",
+            "label": "In progress",
+            "features_title": "Planned contents",
+            "features": [
+              "Claude Code setup and onboarding",
+              "CLAUDE.md project templates",
+              "MCP and toolchain checklists",
+              "Real project debugging and refactoring workflows",
+              "Team collaboration and code review checklists"
+            ],
+            "interval": "one-time",
+            "amount": 0,
+            "currency": "USD",
+            "price": "In progress",
+            "unit": "",
+            "is_featured": true,
+            "tip": "The pack will be announced on the site when ready. No payment is needed now; use the free tutorials first.",
+            "button": {
+              "title": "Read Free Tutorial",
+              "url": "/tutorial",
+              "icon": "RiBookOpenLine"
+            },
+            "product_id": "claude-code-pack-waitlist",
+            "product_name": "ClaudeCode101 Resource Pack",
+            "credits": 0,
+            "valid_days": 0,
+            "group": "waitlist"
+          }
+        ]
+      }
+    }
+  },
+  "messages": {
+    "current_plan": "Current Plan",
+    "processing": "Processing"
+  }
+}

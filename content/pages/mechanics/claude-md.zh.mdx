@@ -1,0 +1,216 @@
+---
+title: 'Claude Code CLAUDE.md 指南'
+description: '系统讲解 Claude Code CLAUDE.md 的作用、加载范围、项目写法、团队维护、rules、auto memory 和常见错误。'
+---
+
+`CLAUDE.md` 是 Claude Code 的长期项目指令层。它的价值不是“写一段介绍”，而是让每次会话一开始就知道项目事实：架构边界、常用命令、测试要求、代码规范、评审规则，以及哪些地方不能随便改。
+
+> 最后核查：2026 年 5 月 24 日。Claude Code 现在同时有 `CLAUDE.md`、`CLAUDE.local.md`、`.claude/rules/` 和 auto memory。本文按当前官方文档整理，适合做项目实战配置参考；团队大规模使用前，仍建议核对官方 memory 文档。
+
+## 快速结论
+
+当你希望 Claude Code 在一个仓库里持续保持一致行为时，就应该写项目级 `CLAUDE.md`。它应该短、准、可维护。稳定且大多数会话都需要知道的内容，放进 `CLAUDE.md`；只属于个人机器的信息，放进 `CLAUDE.local.md` 或用户级记忆；只对某些目录或文件类型生效的规则，放进 `.claude/rules/`；重复执行的流程，可以沉淀成 skill 或 slash command。
+
+一个有用的 `CLAUDE.md` 通常回答六个问题：
+
+- 这个项目是什么；
+- 关键代码在哪里；
+- 修改后用什么命令验证；
+- 哪些规范不能破坏；
+- 哪些文件、模块或业务流程需要谨慎；
+- 什么时候必须先计划、先询问、先测试或停止。
+
+## 它真正解决什么问题
+
+Claude Code 每次会话都会从新的上下文开始。`CLAUDE.md` 的作用，是把稳定项目知识提前加载进去，减少你在每次对话里重复解释。
+
+它最适合解决这些问题：
+
+- Claude 反复不知道项目目录边界；
+- 经常忘记 build、lint、test 命令；
+- 总是把公共组件、服务封装或内容系统改乱；
+- 对支付、登录、部署、SEO 路由等高风险区域缺少警觉；
+- 代码风格和文案口径不一致；
+- 新成员接手时，需要反复说明同一套项目规则。
+
+但要注意：`CLAUDE.md` 不是强制安全边界。Claude 会把它当作上下文并尽力遵守，但如果某个规则必须被强制执行，应该用 settings、permissions、hooks、CI 或代码评审。`CLAUDE.md` 负责“行为指导”，工具链负责“硬约束”。
+
+## 你需要区分的记忆层
+
+| 记忆层 | 常见位置 | 适合写什么 | 谁会看到 |
+| --- | --- | --- | --- |
+| 组织级托管指令 | 官方文档列出的 managed policy 路径 | 公司统一编码、安全、合规要求。 | 受管机器上的所有人。 |
+| 用户级指令 | `~/.claude/CLAUDE.md` | 个人跨项目偏好。 | 你自己。 |
+| 项目级指令 | `./CLAUDE.md` 或 `./.claude/CLAUDE.md` | 团队共享的项目规则、命令、架构说明。 | 提交后团队可见。 |
+| 本地项目指令 | `./CLAUDE.local.md` | 本机沙箱地址、测试账号说明、个人快捷方式。 | 你自己，通常应 gitignore。 |
+| 项目 rules | `.claude/rules/*.md` | 更模块化、可按路径加载的规则。 | 提交后团队可见。 |
+| auto memory | Claude 管理的项目记忆目录 | Claude 从纠正和习惯里自动保存的经验。 | 当前机器、本仓库范围。 |
+
+大多数项目先写一个根目录 `CLAUDE.md` 就够了。只有当文件变长，或者不同目录有明显不同规则时，再拆 `.claude/rules/`。本机私有内容不要提交，放进 `CLAUDE.local.md`。
+
+## 推荐项目模板
+
+下面不是固定模板，而是一个实战骨架。你应该把路径、命令和风险区域替换成真实项目内容。
+
+```md
+# Project Context
+
+This repository is a Next.js application using the App Router. Public content is stored in `content/pages`, and shared UI lives in `src/components`.
+
+## Commands
+
+- Install: `pnpm install`
+- Development: `pnpm dev`
+- Build: `pnpm build`
+- Type check: `pnpm typecheck`
+- Lint: `pnpm lint`
+
+## Working Rules
+
+- Prefer existing helpers and service wrappers before adding new abstractions.
+- Keep public SEO routes stable unless the task explicitly includes migration.
+- Do not edit payment, auth, or deployment code without first explaining the risk.
+- For multi-file changes, inspect the relevant route, content model, and shared component before editing.
+
+## Verification
+
+- Run `pnpm build` after content or route changes.
+- Run focused tests when touching shared logic.
+- Report any command that could not be run.
+
+## Content Style
+
+- Write for developers who want practical Claude Code answers.
+- Avoid internal migration language on public pages.
+- Include official sources when a Claude Code behavior may change.
+```
+
+最重要的是不要照抄。错误命令、错误路径、过时描述会让 Claude 更自信地犯错。`CLAUDE.md` 必须反映当前项目，而不是历史版本。
+
+## 应该写什么
+
+优先写能防止真实错误的内容：
+
+| 模块 | 应该写什么 | 价值 |
+| --- | --- | --- |
+| 项目定位 | 一两句话说明仓库交付什么。 | 避免泛化理解。 |
+| 目录地图 | 只列日常工作真的会用到的目录。 | 减少无效搜索。 |
+| 命令 | install、dev、build、lint、test、preview。 | 让验证变成固定动作。 |
+| 架构边界 | app、content、API、services、UI 的职责划分。 | 避免跨层乱改。 |
+| 风险区域 | auth、billing、migration、analytics、SEO、生成文件。 | 让 Claude 在高风险修改前先计划。 |
+| 代码规范 | 命名、格式、组件模式、文案口径。 | 提升一致性。 |
+| 工作流规则 | 什么时候用 Plan Mode，什么时候询问，什么时候测试。 | 避免过早执行。 |
+| 信息来源 | 哪些行为必须查官方文档。 | 保持时效性。 |
+
+规则要具体，不要写口号。“优先复用 `src/services` 里的服务封装”有价值；“代码要优雅”没有操作性。
+
+## 不应该写什么
+
+`CLAUDE.md` 会进入上下文，过时内容会消耗注意力，也会制造错误。
+
+不建议放：
+
+- 很长、没人维护的新手手册；
+- 已经过时的迁移记录；
+- token、密码、客户数据、内部密钥；
+- 只对某一次任务有效的临时说明；
+- README 里已经有、且不影响每次会话的内容；
+- 根目录、子目录、本地文件之间互相矛盾的规则；
+- 大段 API 文档或工具说明。
+
+如果某段内容一个月只用一次，不该常驻上下文。如果是长流程，做成 slash command 或 skill。如果必须自动执行，交给 hook 或 CI。
+
+## CLAUDE.md 和其他机制怎么分工
+
+| 需求 | 更适合的机制 |
+| --- | --- |
+| 每次会话都需要的稳定项目事实 | `CLAUDE.md` |
+| 你个人所有项目通用偏好 | `~/.claude/CLAUDE.md` |
+| 本机私有项目说明 | `CLAUDE.local.md` |
+| 只对 `src/api/**` 或 `*.mdx` 生效的规则 | `.claude/rules/` |
+| 重复的多步骤任务 | skill 或 slash command |
+| 必须在生命周期节点执行的检查 | hook、CI 或权限规则 |
+| 强制允许或拒绝某些工具行为 | Claude Code settings 和 permissions |
+
+分工清楚以后，`CLAUDE.md` 会更干净，问题也更容易排查。
+
+## Claude Code 如何加载它
+
+在普通仓库里，Claude Code 会读取当前工作目录及上级目录里的相关 `CLAUDE.md`、`CLAUDE.local.md`，也可能按需加载子目录里的指令文件。用户级、组织级指令也可能进入上下文。
+
+实际使用时注意：
+
+- 尽量从项目根目录启动 Claude Code；
+- 用 `/memory` 检查当前会话到底加载了哪些指令；
+- 子目录指令要小而精准；
+- monorepo 里要说明推荐从哪个 package 根目录启动；
+- 如果上级目录的规则污染当前任务，再按官方设置排除。
+
+小项目通常一个根目录 `CLAUDE.md` 就够。大型仓库可以用根文件说明共识，再用 `.claude/rules/` 处理包级差异。
+
+## 团队如何维护
+
+维护规则很简单：不是每次出错都写进 `CLAUDE.md`，而是同类问题重复出现后再写。
+
+可以采用这个循环：
+
+1. 会话结束后记录重复误解；
+2. 判断它是否是未来每次都需要知道的稳定事实；
+3. 用最短、最具体的话写成规则；
+4. 删除与它冲突的旧规则；
+5. 用 `/memory` 或下一次会话确认已加载；
+6. 重大框架、路由、部署、测试变化后重新审阅。
+
+不要因为一次失败就不断加例外。那样文件会越来越长，Claude 反而更难遵守。
+
+## 团队项目推荐做法
+
+如果仓库多人协作，可以把 `CLAUDE.md` 当作轻量工程文档来管理：
+
+- 项目级文件提交到仓库；
+- 本地沙箱、测试账号、个人快捷方式放到 gitignored `CLAUDE.local.md`；
+- 工作流、风险区域、验证命令变化需要走 review；
+- 项目变化快时，加入简短的 last reviewed 信息；
+- 深层文档只链接，不全文粘贴；
+- 根文件保持聚焦，包级规则交给 `.claude/rules/`。
+
+这样新成员更容易上手，评审者也能看到 Claude Code 每次会话会携带哪些假设。
+
+## 常见问题排查
+
+| 现象 | 可能原因 | 处理方式 |
+| --- | --- | --- |
+| Claude 没遵守规则 | 规则太模糊或与其他规则冲突。 | 改成具体、可验证的指令。 |
+| Claude 像没看到文件 | 当前会话没有加载该文件。 | 运行 `/memory` 查看加载列表。 |
+| `/compact` 后指令像丢了 | 指令只存在对话里，或嵌套文件还没重新加载。 | 稳定规则写进项目级 `CLAUDE.md`。 |
+| 会话变慢、噪声变多 | 文件太长。 | 删减，或把路径相关内容放进 `.claude/rules/`。 |
+| 个人信息影响团队 | 本地内容被提交了。 | 移到 `CLAUDE.local.md` 并加入 gitignore。 |
+| 必须执行的规则被跳过 | `CLAUDE.md` 只是指导，不是强制。 | 用 hook、permission rule 或 CI。 |
+
+## 发布前检查清单
+
+写完后至少检查：
+
+- 内容反映当前项目，不是旧迁移阶段；
+- 所有命令都能运行；
+- 所有路径真实存在；
+- 高风险区域写清楚；
+- 多文件修改前是否要求先计划；
+- 如果项目有公开内容，是否定义了外部文案口径；
+- 没有任何密钥、token、客户数据；
+- 没有把 hooks、skills、commands、CI 的职责塞进来；
+- 新成员能在五分钟内读完。
+
+## 相关页面
+
+- [CLAUDE.md 是什么](/zh/faqs/what-is-claude-md)
+- [CLAUDE.md 配置教程](/zh/tutorial/configuration/claude-md)
+- [上下文管理](/zh/mechanics/context-management)
+- [Plan Mode](/zh/mechanics/plan-mode)
+- [Claude Code 自定义命令](/zh/faqs/claude-code-custom-commands)
+
+## 官方来源
+
+- [How Claude remembers your project](https://code.claude.com/docs/en/memory)
+- [Claude Code settings](https://code.claude.com/docs/en/settings)
+- [Claude Code common workflows](https://code.claude.com/docs/en/common-workflows)

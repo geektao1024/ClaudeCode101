@@ -1,0 +1,232 @@
+---
+title: 'Claude Code MCP Servers'
+description: 'Claude Code MCP servers explained: what MCP does, when to use it, claude mcp add syntax, local/project/user scopes, OAuth, tool search, context limits, and security checks.'
+schema_question: 'What are Claude Code MCP servers?'
+schema_answer: 'Claude Code MCP servers connect Claude Code to external tools and data sources through the Model Context Protocol. Use MCP when Claude needs a real tool such as GitHub, browser automation, docs search, databases, or internal APIs. Configure one server at a time, choose the right scope, keep credentials safe, and limit output.'
+---
+
+MCP servers let Claude Code connect to external tools and data sources through the Model Context Protocol. A server can expose tools, prompts, and resources that Claude Code can use during a session.
+
+Think of MCP as a bridge. Instead of pasting issue text, database schemas, browser state, or internal docs into chat, you connect a server that lets Claude Code request the exact external context it needs.
+
+> Last checked on May 24, 2026. MCP behavior and Claude Code tool search are moving quickly. Treat every MCP server as code with tool access, not as harmless decoration.
+
+## Short Answer
+
+Use MCP when Claude Code needs a real external capability. Do not add servers just because they exist.
+
+| Question | Practical answer |
+| --- | --- |
+| What is an MCP server? | A process or remote endpoint exposing tools, prompts, or resources to Claude Code. |
+| When should I use it? | When repeated work needs GitHub, browser, docs, database, ticketing, or internal API access. |
+| Where is config stored? | Local/user scope in `~/.claude.json`; project scope in `.mcp.json`. |
+| Is it safe by default? | No. Review the server, credentials, permissions, and output size. |
+| Does MCP consume context? | Yes, especially large tool results. Tool search helps reduce upfront context. |
+
+## When MCP Is Worth It
+
+| Need | MCP can help | Better alternative |
+| --- | --- | --- |
+| Read or update GitHub issues and PRs | GitHub MCP or curated integration. | Paste one issue link for a one-off task. |
+| Test a website in a real browser | Playwright or browser MCP. | Static code review if browser state is irrelevant. |
+| Query internal docs | Docs/search MCP. | Put stable rules in `CLAUDE.md`. |
+| Inspect database schemas | Read-only database MCP. | Export a schema file for a one-time review. |
+| Repeat team workflows | MCP prompts, tools, or plugin-bundled MCP. | Slash command or skill if no external system is needed. |
+| Pull monitoring or ticket context | Internal MCP server. | Manual summary for a rare incident. |
+
+The best first MCP server is the one attached to a workflow you already repeat every week.
+
+## Basic `claude mcp add` Syntax
+
+The command shape matters:
+
+```bash
+claude mcp add [options] <name> -- <command> [args...]
+```
+
+Options such as `--transport`, `--env`, `--scope`, and `--header` go before the server name. The `--` separator means everything after it is passed to the MCP server process.
+
+Example local stdio server:
+
+```bash
+claude mcp add --transport stdio docs -- npx -y @example/docs-mcp
+```
+
+Example HTTP server:
+
+```bash
+claude mcp add --transport http stripe https://mcp.stripe.com
+```
+
+Example with environment variable:
+
+```bash
+claude mcp add --transport stdio --env GITHUB_TOKEN=$GITHUB_TOKEN github \
+  -- npx -y @example/github-mcp
+```
+
+If a command fails, check option order first. Many MCP install problems come from putting `--env` or `--scope` after the server name.
+
+## MCP Scopes
+
+Choose the scope before adding the server.
+
+| Scope | Loads in | Shared with team | Stored in | Use for |
+| --- | --- | --- | --- | --- |
+| Local | Current project only | No | `~/.claude.json` | Personal experiments, private credentials, one repo. |
+| Project | Current project only | Yes, via version control | `.mcp.json` | Team-shared, reviewed MCP configs. |
+| User | All your projects | No | `~/.claude.json` | Personal tools used across many repos. |
+| Managed | Organization controlled | Yes, by policy | Managed config | Enterprise-approved servers. |
+
+Project scope is powerful because it makes tools consistent across a team, but it deserves review. Do not commit secrets into `.mcp.json`.
+
+Project-scoped example:
+
+```bash
+claude mcp add --transport http --scope project docs https://mcp.example.com/mcp
+```
+
+Result shape:
+
+```json
+{
+  "mcpServers": {
+    "docs": {
+      "type": "http",
+      "url": "https://mcp.example.com/mcp"
+    }
+  }
+}
+```
+
+## Managing Servers
+
+Useful commands:
+
+| Command | Purpose |
+| --- | --- |
+| `claude mcp list` | List configured servers. |
+| `claude mcp get <name>` | Show server details. |
+| `claude mcp remove <name>` | Remove a server. |
+| `/mcp` | Check status, authenticate remote servers, and inspect connection state inside Claude Code. |
+| `claude mcp reset-project-choices` | Reset approval choices for project-scoped `.mcp.json` servers. |
+| `claude mcp add-from-claude-desktop` | Import servers from Claude Desktop on supported platforms. |
+| `claude mcp serve` | Run Claude Code itself as an MCP server for other clients. |
+
+Use `/mcp` first when a server looks connected but tools are not available.
+
+## Transports and Authentication
+
+| Transport | Best for | Notes |
+| --- | --- | --- |
+| `stdio` | Local processes, local dev tools, simple private integrations. | Starts a local process. Credentials usually come from env vars. |
+| `http` | Remote services, hosted integrations, OAuth-capable servers. | Can use headers or OAuth depending on server support. |
+| `sse` | Older or streaming server setups. | Still appears in docs and integrations, but HTTP is the common remote pattern. |
+
+For remote servers that need OAuth, use `/mcp` in Claude Code to complete the browser login flow. Store client secrets in secure credential storage or environment variables, not in committed config.
+
+## Tool Search and Context
+
+MCP can bloat context if every tool schema loads upfront. Claude Code's tool search helps by deferring tool definitions until Claude needs them. In practice:
+
+- Adding more servers does not always mean every tool consumes full context immediately.
+- Large tool outputs still consume context once used.
+- Some environments or providers may disable tool search.
+- `alwaysLoad` can force a server's tools to load upfront, but use it sparingly.
+
+If an MCP answer is too large, narrow the request before raising output limits. `MAX_MCP_OUTPUT_TOKENS` is a last resort, not a default tuning knob.
+
+## Safe Setup Checklist
+
+1. Start with one server.
+2. Prefer read-only credentials for first tests.
+3. Use local scope until the team agrees a server should be shared.
+4. Keep secrets out of `.mcp.json`.
+5. Verify server source, package name, and update history.
+6. Use Plan Mode before allowing tools that can write, deploy, or mutate data.
+7. Watch `/mcp` status and context size after adding the server.
+8. Remove unused servers.
+
+Treat MCP like adding a new integration to your development environment. It deserves the same review as a GitHub app, database client, or CI secret.
+
+## Good MCP Prompts
+
+For GitHub:
+
+```text
+Use the GitHub MCP server to inspect issue #42 only.
+Summarize acceptance criteria, likely files, and risks.
+Do not modify code yet.
+```
+
+For docs lookup:
+
+```text
+Use the docs MCP server to check the current API shape.
+Return only the fields needed for this implementation and link the source.
+```
+
+For databases:
+
+```text
+Use the database MCP server in read-only mode.
+Inspect the schema for users and subscriptions, then propose a migration plan.
+Do not run writes.
+```
+
+Risky prompt:
+
+```text
+Read every issue, all tables, and the whole repo, then fix everything.
+```
+
+## MCP vs Plugins vs Skills
+
+| Need | Better tool |
+| --- | --- |
+| External system access | MCP server |
+| Reusable local workflow instructions | Skill |
+| Bundled extension that may include MCP, commands, hooks, and docs | Plugin |
+| Simple repeated prompt without external tools | Slash command |
+| Behavioral project rules | `CLAUDE.md` or `.claude/rules/` |
+
+MCP is strongest when the missing piece is external capability, not when the problem is merely repeated instructions.
+
+## Troubleshooting
+
+### `claude mcp add` fails
+
+Check option order and the `--` separator. Confirm the command runs outside Claude Code and that required env vars are available.
+
+### Server appears but tools are missing
+
+Open `/mcp`, check status, authentication, and whether the server exposes tools. Some servers expose resources or prompts rather than tools.
+
+### `.mcp.json` prompts for approval
+
+That is expected for project-scoped servers. Review the config before approving. Use `claude mcp reset-project-choices` if you need to revisit prior approval decisions.
+
+### MCP output floods the session
+
+Ask narrower questions, filter at the server level, or summarize resource lists before reading detailed resources. Raising `MAX_MCP_OUTPUT_TOKENS` should be rare.
+
+### Claude.ai connector does not appear in Claude Code
+
+Check `/status`. Claude.ai connectors only load when the active authentication path is the Claude.ai subscription path, not when API key/provider auth is active.
+
+## Related Guides
+
+- [MCP directory](/en/mcp)
+- [GitHub MCP](/en/mcp/github-mcp)
+- [Context7 MCP](/en/mcp/context7-mcp)
+- [Playwright MCP](/en/mcp/playwright-mcp)
+- [MCP security checklist](/en/mcp/mcp-security-checklist)
+- [Tools allowlist](/en/tutorial/configuration/tools-allowlist)
+
+## Official Sources
+
+- [Claude Code MCP docs](https://code.claude.com/docs/en/mcp)
+- [Agent SDK MCP docs](https://code.claude.com/docs/en/agent-sdk/mcp)
+- [Managed MCP configuration](https://code.claude.com/docs/en/managed-mcp)
+- [Claude Code commands](https://code.claude.com/docs/en/commands)
+- [Model Context Protocol](https://modelcontextprotocol.io/)

@@ -1,0 +1,169 @@
+---
+title: 'Claude Code 用量限制'
+description: '解释 Claude Code 用量限制：订阅与 API 计费、session/weekly limit、上下文长度、/usage、/cost、/clear、/compact、extra usage 和成本控制习惯。'
+schema_question: 'Claude Code 用量限制是什么？'
+schema_answer: 'Claude Code 用量限制取决于登录方式、计划或云厂商、当前模型、会话长度、项目上下文、工具输出和账号状态。订阅用户可能看到 session 或 weekly reset 窗口；API key 用户按 token 和供应商规则计费。'
+---
+
+Claude Code 用量限制，是账号、计划、上下文或计费规则决定你还能继续工作多久的边界。触顶后你可能需要等待 reset、清理上下文、切换模型、购买 extra usage、升级计划，或改用 API 计费。
+
+它不是简单的“还能发多少条消息”。一个很短的 prompt，如果发生在巨大上下文的长会话里，消耗可能比干净会话中的长 prompt 更高，因为 Claude Code 会携带历史对话、`CLAUDE.md`、已读取文件、工具输出和模型推理。
+
+> 最后核查：2026 年 5 月 24 日。具体额度、reset 窗口、模型名称、usage credits 和订阅计费规则都可能变化。遇到冲突时，以 Claude Code 内提示和账号后台为准。
+
+## 短答案
+
+如果你通过 Claude 订阅使用 Claude Code，用量受当前计划影响，并可能和其他 Claude 产品表面共享。如果你通过 API key 或云厂商使用，通常按 token 和供应商账单规则计费。
+
+| 问题 | 实用答案 |
+| --- | --- |
+| 用量限制是消息条数吗？ | 不是。上下文、模型、工具、文件和会话长度都会影响。 |
+| Claude Code 和 Claude App 共用限制吗？ | 对付费订阅，官方支持文档说明不同 Claude 产品表面会共享 usage limit。 |
+| API key 怎么算？ | 按 token / provider 计费，不是订阅 reset 窗口。 |
+| context 满了等于 usage limit 吗？ | 不等于。context length 是单个会话能承载多少内容。 |
+| 最快省额度的方法？ | 不同任务之间 `/clear`，长任务中途 `/compact`。 |
+
+## 四种不同的“限制”
+
+用户经常把这几类混在一起：
+
+| 限制类型 | 含义 | 应对方式 |
+| --- | --- | --- |
+| Usage limit | 当前订阅、席位或组织额度在本窗口内用完。 | 等 reset、用 `/usage` 查看、切模型、启用 extra usage 或升级。 |
+| Context / length limit | 会话带了太多历史、文件、工具输出或 MCP 输出。 | `/compact`、`/clear`、裁剪日志、拆小任务。 |
+| Rate limit | 请求或 token 速度超过账号/供应商允许范围。 | 降低并发、暂停脚本、稍后重试，或申请合适限额。 |
+| Credit / spend limit | API credits、auto-reload、云厂商配额或工作区 spend cap 阻止继续。 | 先查 Console 或云账单后台，再决定是否重试。 |
+
+别人说“Claude Code 到限制了”时，先判断是哪一种。不同限制的解决方式完全不一样。
+
+## 订阅和 API 计费差异
+
+| 登录方式 | 用量如何计算 | 到限制时的表现 | 哪里查看 |
+| --- | --- | --- | --- |
+| Pro / Max 通过 `/login` | 使用订阅内用量，并和 Claude 产品表面共享。 | session、weekly 或模型特定 reset 提示。 | Claude Code 用量提示、Claude 账号设置、`/usage`。 |
+| Team / Enterprise 通过 `/login` | 组织席位、共享池或 policy 规则。 | 团队/组织限制提示，或管理员限制。 | Admin console、组织 analytics、policy settings、`/usage`。 |
+| `ANTHROPIC_API_KEY` | 走 Claude Console 按量 token 计费。 | 通常没有订阅式 reset，而是继续计费，直到 credit/spend/rate limit。 | Claude Console usage、billing、spend limits、`/cost`。 |
+| Bedrock / Vertex / Microsoft Foundry | 云厂商 token 计费和配额。 | 云厂商 quota、rate 或 billing 行为。 | 云控制台、quota 页面、provider billing。 |
+
+重点：如果终端里启用了 `ANTHROPIC_API_KEY` 环境变量，Claude Code 可能走 API 计费，而不是你以为的订阅额度。高强度工作前先确认认证路径。
+
+## 什么会消耗用量
+
+每一轮都可能包含：
+
+1. 当前会话历史。
+2. `CLAUDE.md`、local memory、settings、rules 和加载的 skills。
+3. Claude Code 已经读取过的文件。
+4. 工具结果、命令输出、搜索结果、MCP 输出和 diff。
+5. 你的新 prompt。
+6. 当前模型和 reasoning effort。
+
+真正的放大器是累计上下文。一个已经探索过 20 个文件、打印过大日志、生成过多轮 diff 的会话，后续每一轮都会越来越重。
+
+## 有用命令
+
+| 命令 | 用途 |
+| --- | --- |
+| `/usage` | 查看可用的计划限制和 reset 信息。 |
+| `/cost` | 查看 API 计费会话的 token 和美元消耗估算。 |
+| `/model` | 查看可用模型，必要时切到更轻的模型。 |
+| `/clear` | 开启干净会话，适合切换任务。 |
+| `/compact` | 总结历史并继续同一任务。 |
+| `/context` | 查看上下文装了什么，定位膨胀来源。 |
+| `/status` | 在可用时确认当前账号、项目和认证路径。 |
+
+如果某个命令在你的版本或计划里不可见，就以界面提示、账号后台或云厂商后台为准。
+
+## 到限制后怎么办
+
+| 场景 | 最合适的下一步 |
+| --- | --- |
+| 提示 session limit / weekly limit 和 reset 时间 | 等 reset、切轻量模型、启用 extra usage，或暂停高强度任务。 |
+| 提示 Opus limit | 执行阶段切 Sonnet，Opus 只用于规划，或等待 reset。 |
+| Context window 满了 | 同一任务继续用 `/compact`；换任务用 `/clear`。 |
+| API 花费快速上涨 | 先停脚本，查 active credentials 和 Console/provider usage，再加 spend limits。 |
+| Rate limit 错误 | 降低并发、暂停自动化、稍后重试，或调整供应商/管理员限额。 |
+| 账号或计费路径不对 | 用 `/status`、`/login`、环境变量和 provider dashboard 确认后再继续。 |
+
+不要在触顶后盲目重试。重复重试可能继续浪费用量，甚至造成重复 API 花费。
+
+## 让额度更耐用的 5 个习惯
+
+### 1. 不同任务之间 clear
+
+当下一个任务放在全新终端里也能讲清楚时，先用 `/clear`。项目 memory 还在，但旧对话不会继续跟着每一轮发送。
+
+### 2. 长任务中途 compact
+
+同一个任务还没做完，但上下文已经很长时，用 `/compact`。它会保留摘要，而不是继续携带完整历史。
+
+### 3. 模型匹配任务难度
+
+日常编码默认 Sonnet。复杂规划、架构决策、疑难 bug 再用 Opus。简单查询、机械批量任务在可用时用 Haiku。
+
+### 4. 引用路径，不要粘贴整个文件
+
+大文件一旦粘进会话，会长期占上下文。写文件路径，让 Claude Code 只读相关部分。日志只贴关键 20-30 行，不要整段构建日志全贴。
+
+### 5. 大改动前先要 plan
+
+一个计划比一个错误的多文件 diff 便宜得多。迁移、价格页、认证、数据库、重定向和 MCP 权限，先用 [Plan Mode](/zh/faqs/what-is-plan-mode)。
+
+## 省用量工作流
+
+大任务可以这样做：
+
+1. 先 `/clear`，从干净上下文开始。
+2. 先要求只探索、只给计划。
+3. 规划问题真的难，再用 Opus。
+4. 计划明确后，用 Sonnet 执行。
+5. 在检查点运行 build/tests，不要反复让 Claude 重新扫全项目。
+6. 同一任务继续时用 `/compact`。
+7. 切换下一个任务前再 `/clear`。
+
+这样既保留质量，又避免最常见的浪费：一个超长会话连续做多个无关任务。
+
+## 即将变化的计费提示
+
+Claude Code 官方 legal 文档目前提示：从 **2026 年 6 月 15 日** 起，订阅计划中的 Agent SDK 和 `claude -p` 用量将使用每月 Agent SDK credit，并和交互式 usage limits 分开。因为这晚于本文的 2026 年 5 月 24 日核查日期，如果你要规划自动化、高频 headless 或 SDK 用量，发布前应重新核查官方文档。
+
+## 常见问题
+
+### 为什么我这么快就到限制？
+
+通常是四类原因：长会话从没清理、日常任务一直用 Opus、大文件/日志/工具输出进入上下文，或终端实际走了 API key 计费。
+
+### Max 是无限用 Claude Code 吗？
+
+不是。Max 比 Pro 用量高，但仍然有限。Opus、大上下文、长会话、并行终端和自动化脚本都会快速消耗。
+
+### Claude 网页聊天和 Claude Code 共用限制吗？
+
+对付费订阅，官方支持文档说明 Claude 产品表面会计入同一 usage limit。API 计费工作流不同，应看 Console 或云厂商账单。
+
+### 订阅到限制后要不要转 API？
+
+只有在你理解花费风险时才建议。API 适合自动化和高强度冲刺，但先设置 spend limit、告警和脚本保护。
+
+### Rate limit 和 usage limit 是一回事吗？
+
+不是。Usage limit 是时间窗口内额度；rate limit 是请求或 token 速度；context limit 是会话容量。三者要用不同方式处理。
+
+## 相关页面
+
+- [Claude Code 多少钱？](/zh/faqs/how-much-is-claude-code)
+- [Pricing and limits hub](/zh/pricing)
+- [Plan Mode](/zh/faqs/what-is-plan-mode)
+- [CLAUDE.md](/zh/faqs/what-is-claude-md)
+- [Context management](/zh/tutorial/optimization/context-management)
+- [Rate limit 排障](/zh/troubleshooting/claude-code-rate-limit-error)
+
+## 官方来源
+
+- [Models, usage, and limits in Claude Code](https://support.claude.com/en/articles/14552983-models-usage-limits-in-claude-code)
+- [How usage and length limits work](https://support.claude.com/en/articles/11647753-understanding-usage-and-length-)
+- [Claude Code error reference](https://code.claude.com/docs/en/errors)
+- [Claude Code cost management](https://code.claude.com/docs/en/costs)
+- [Use Claude Code with Pro or Max](https://support.claude.com/en/articles/11145838-using-claude-code-with-your-pro-or-max-plan)
+- [Extra Usage for Paid Claude Plans](https://support.claude.com/en/articles/12429409-extra-usage-for-max-20x-plans)
+- [Claude Code legal and compliance](https://code.claude.com/docs/en/legal-and-compliance)

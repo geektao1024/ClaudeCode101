@@ -1,0 +1,233 @@
+---
+title: 'What Is CLAUDE.md?'
+description: 'CLAUDE.md explained for Claude Code: where to place it, how project memory loads, what to write, what to avoid, imports, AGENTS.md migration, and team maintenance.'
+schema_question: 'What is CLAUDE.md in Claude Code?'
+schema_answer: 'CLAUDE.md is the main project memory file Claude Code reads to understand stable repository instructions. Put shared project rules in the repository root or nearest relevant directory, keep private notes in CLAUDE.local.md, use rules for scoped guidance, and avoid secrets or stale instructions.'
+---
+
+`CLAUDE.md` is the project memory file Claude Code reads so you do not need to repeat the same repository rules in every session. It is best for stable context: architecture, commands, coding standards, test expectations, permission habits, and review checklists.
+
+> Last checked on May 24, 2026. Claude Code memory behavior can evolve, so treat this page as a practical guide and verify unusual setups against the official memory docs.
+
+## Short Answer
+
+Create `CLAUDE.md` when Claude Code needs durable project context. Put the shared version where the team can find it, keep it short enough to stay useful, and update it only when a rule is stable.
+
+| Question | Practical answer |
+| --- | --- |
+| What is it? | A Markdown instruction file for Claude Code project memory. |
+| Where should it go? | Usually the repository root, or the closest directory that owns the work. |
+| Should it be committed? | Commit shared project rules; keep private notes out of git. |
+| Is it a security control? | No. Use permissions and managed settings for enforcement. |
+| How long should it be? | Long enough to remove repeated explanations, short enough to remain scannable. |
+
+## Where To Put CLAUDE.md
+
+For most repositories, start with one project-level file:
+
+```txt
+my-project/
+  CLAUDE.md
+  package.json
+  src/
+```
+
+This covers the common searches such as "where does CLAUDE.md go" and "how to set up CLAUDE.md". If your repository is a monorepo, add a top-level file for global rules and optional package-level files for local rules:
+
+```txt
+repo/
+  CLAUDE.md
+  apps/
+    web/
+      CLAUDE.md
+    worker/
+      CLAUDE.md
+  packages/
+    ui/
+      CLAUDE.md
+```
+
+Use the closest file for rules that only apply to one app, package, or directory. Do not put frontend rules, database rules, and deployment rules into one huge file if separate directories own those workflows.
+
+## Memory Levels
+
+| Memory surface | Typical location | Best use | Git policy |
+| --- | --- | --- | --- |
+| User memory | `~/.claude/CLAUDE.md` | Personal preferences across all repositories. | Do not commit. |
+| Project memory | `./CLAUDE.md` | Shared project architecture, commands, conventions. | Usually commit. |
+| Local memory | `./CLAUDE.local.md` | Private paths, local ports, temporary notes. | Usually gitignore. |
+| Scoped rules | `.claude/rules/*.md` | Focused guidance for file types, directories, or tasks. | Commit if shared. |
+
+Keep each layer honest. User memory is for how you like to work. Project memory is for how the repository works. Local memory is for your workstation. Rules are for targeted guidance.
+
+## What To Include
+
+Good `CLAUDE.md` content answers questions a developer would otherwise repeat:
+
+| Section | Useful content |
+| --- | --- |
+| Project shape | Main apps, packages, route system, content locations. |
+| Commands | Install, dev, build, test, format, typecheck, deploy preview. |
+| Architecture boundaries | What modules own what, and what should not be crossed casually. |
+| Coding standards | Existing patterns, naming rules, component style, data access rules. |
+| Verification | Required checks before saying work is done. |
+| SEO or content rules | URL preservation, metadata conventions, internal link rules. |
+| Safety notes | Permission boundaries, destructive commands to avoid, deploy rules. |
+
+Example:
+
+```md
+# ClaudeCode101 project notes
+
+## Commands
+- Install: `pnpm install`
+- Generate docs index: `pnpm exec fumadocs-mdx`
+- Build: `pnpm build`
+
+## Content rules
+- Preserve existing SEO URLs unless a redirect is planned.
+- Keep FAQ pages concise but useful: answer first, then expand with examples.
+- Link FAQ pages to the deeper tutorial, mechanics, or troubleshooting page.
+
+## Code rules
+- Prefer existing ShipAny template services and blocks.
+- Do not bypass existing auth, payment, or i18n services.
+- Use `apply_patch` for hand edits and run a build before handoff.
+
+## Review checklist
+- Metadata matches the search intent.
+- Internal links point to the correct locale.
+- Dark mode and mobile layout still work.
+```
+
+## What Not To Include
+
+Avoid turning `CLAUDE.md` into a dumping ground.
+
+| Avoid | Why |
+| --- | --- |
+| API keys, tokens, customer data | Memory files can be read by the assistant and may be committed by mistake. |
+| Long pasted docs | They waste context and go stale. Link to source docs instead. |
+| One-off preferences | They make the file noisy and hard to trust. |
+| Conflicting rules | Claude will need to guess which instruction wins. |
+| Old deployment notes | Stale operational guidance causes real mistakes. |
+| "Make it better" style instructions | They are not actionable. |
+
+If a note is temporary, keep it in the active conversation or a local scratch file. If it is stable and repeated, promote it into project memory.
+
+## CLAUDE.md vs CLAUDE.local.md
+
+Use `CLAUDE.md` for shared truth:
+
+- Framework and repository structure.
+- Team code style.
+- Required commands.
+- Test and review expectations.
+- Stable deployment rules.
+
+Use `CLAUDE.local.md` for personal context:
+
+- Your local dev server URL.
+- Local-only data paths.
+- Private notes about a branch.
+- Machine-specific scripts.
+- Temporary migration reminders.
+
+In a team repository, add `CLAUDE.local.md` to `.gitignore` unless your team intentionally shares it.
+
+## CLAUDE.md vs Rules
+
+`CLAUDE.md` is broad memory. Rules should be narrower.
+
+| Need | Better surface |
+| --- | --- |
+| "This repo uses Next.js, MDX, and Cloudflare Workers" | `CLAUDE.md` |
+| "All MDX FAQ files need schema fields" | `.claude/rules/mdx-faq.md` |
+| "Admin pages must use RBAC helpers" | `.claude/rules/admin.md` |
+| "Never deploy from feature threads" | `CLAUDE.md` or managed settings |
+| "My personal preference is Chinese final summaries" | User memory |
+
+If the rule only matters for a subset of files, scoped rules keep the main memory smaller.
+
+## Importing Other Files
+
+Claude Code supports importing extra context from Markdown files. This is useful when the core `CLAUDE.md` should stay short but a specific workflow needs more detail.
+
+```md
+# Project notes
+
+Read the release checklist when preparing a deploy:
+
+@docs/release-checklist.md
+```
+
+Use imports for stable references, not for dumping entire documentation trees. If an import becomes required every day, summarize the critical part in `CLAUDE.md` and keep the long version as reference.
+
+## AGENTS.md Migration
+
+Some repositories already have `AGENTS.md` from other coding-agent workflows. Do not duplicate everything blindly.
+
+| Situation | Recommendation |
+| --- | --- |
+| The repo only has `AGENTS.md` | Create `CLAUDE.md` and import it with `@AGENTS.md`, then add Claude-specific notes below. |
+| `AGENTS.md` is general and accurate | Use `@AGENTS.md` inside `CLAUDE.md` so both agent workflows share the same base rules. |
+| `AGENTS.md` is stale | Move only the accurate rules into `CLAUDE.md`, then clean the old file later. |
+
+```md
+@AGENTS.md
+
+## Claude Code
+- Use plan mode before large billing, auth, or deployment changes.
+```
+
+If you do not need Claude-specific notes, a symlink can work on Unix-like systems, but an import is easier to review and more portable.
+
+The goal is one trustworthy instruction set, not two conflicting documents.
+
+## Maintenance Workflow
+
+Use this lightweight rule:
+
+1. If you correct Claude once, keep working.
+2. If you correct the same project behavior twice, add a clear rule.
+3. If a rule is no longer true, remove it immediately.
+4. If the file grows too long, split stable detail into scoped rules or linked docs.
+5. Review the file after major framework, deployment, or route changes.
+
+The best `CLAUDE.md` is not the longest one. It is the file the assistant can actually follow.
+
+## Troubleshooting
+
+### Claude ignores my CLAUDE.md. What should I check?
+
+Confirm you are running Claude Code from the expected working directory. Then check whether the file is named exactly `CLAUDE.md`, whether the instruction is too vague, and whether another memory layer gives conflicting guidance.
+
+### Should CLAUDE.md live in the root or in `.claude/`?
+
+For a simple repository, root `CLAUDE.md` is easiest. Use `.claude/` for local configuration, rules, or more advanced organization when your team wants that structure.
+
+### Can CLAUDE.md force Claude to never edit a file?
+
+No. Treat it as guidance, not enforcement. Use permission settings, tool allowlists, managed settings, repository protections, and review workflows for real control.
+
+### Can I use CLAUDE.md as a template library?
+
+Keep small examples inside `CLAUDE.md`, but store large templates in separate files and import or link them. This keeps project memory readable.
+
+### How often should I update it?
+
+Update it when a rule becomes stable or when repeated mistakes show a missing instruction. Do not update it for every temporary task.
+
+## Related Guides
+
+- [CLAUDE.md tutorial](/en/tutorial/configuration/claude-md)
+- [CLAUDE.md mechanics](/en/mechanics/claude-md)
+- [Plan Mode](/en/faqs/what-is-plan-mode)
+- [Custom commands](/en/faqs/claude-code-custom-commands)
+- [Usage limits](/en/faqs/claude-code-usage-limits)
+
+## Official Sources
+
+- [Claude Code memory](https://code.claude.com/docs/en/memory)
+- [Claude Code settings](https://code.claude.com/docs/en/settings)
+- [Use Claude Code features in the SDK](https://code.claude.com/docs/en/agent-sdk/claude-code-features)

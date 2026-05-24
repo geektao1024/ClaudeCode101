@@ -1,0 +1,138 @@
+---
+title: 'Claude Code 机制专题'
+description: 'Claude Code 核心机制入口：CLAUDE.md、Plan Mode、上下文管理、Slash Commands、Hooks、Subagents、权限和团队工作流。'
+---
+
+Claude Code 机制专题解释的是安装之后真正影响日常开发体验的能力：`CLAUDE.md`、Plan Mode、上下文管理、Slash Commands、Hooks、Subagents、权限和工具边界。这个入口不是单纯目录，而是帮助你判断“当前问题应该用哪个机制解决”。
+
+> 最后核查：2026 年 5 月 24 日。Claude Code 更新很快，所以这个页面采用决策地图写法：先从工作流问题出发，再进入对应深度指南。
+
+## 快速结论
+
+如果 Claude Code 用起来不稳定、成本高、输出噪音大、或者同一类任务很难复用，通常不是把 prompt 写得更长，而是要选对机制：
+
+- Claude 需要长期项目规则时，用 `CLAUDE.md`。
+- 改动风险高、范围大时，用 Plan Mode。
+- 会话越来越长、上下文变乱时，做上下文管理。
+- 某个提示词反复使用时，做成 Slash Command。
+- 某件事应该围绕 Claude Code 事件自动发生时，用 Hooks。
+- 某个旁路任务会产生大量输出时，用 Subagent 隔离。
+- 工具访问需要策略而不是习惯时，用 permissions 和工具 allowlist。
+
+这些机制最好组合使用。一个稳定项目通常有简洁的 `CLAUDE.md`、少量可复用命令、保守权限、清晰上下文习惯，以及在流程验证后才加入的一两个 subagents 或 hooks。
+
+## 根据问题选择机制
+
+| 工作流问题 | 优先阅读 | 为什么适合 |
+| --- | --- | --- |
+| Claude 总是忘记项目约定 | [CLAUDE.md](/zh/mechanics/claude-md) | 持久项目说明会在会话里加载，让团队规则稳定可见。 |
+| 改动大、风险高、不确定性强 | [Plan Mode](/zh/mechanics/plan-mode) | 先只读规划，再确认实施顺序，减少意外修改。 |
+| 会话里塞满旧日志和无关文件 | [上下文管理](/zh/mechanics/context-management) | 控制上下文预算，让模型聚焦当前决策。 |
+| 每周都重复同一类提示词 | [Slash Commands](/zh/mechanics/slash-commands) | 把重复工作流变成命名入口。 |
+| 危险命令应该在执行前被拦截 | [Hooks](/zh/mechanics/hooks) | `PreToolUse` hooks 和 permissions 可以在执行点约束行为。 |
+| 测试、日志、资料研究输出太吵 | [Subagents](/zh/mechanics/subagents) | 子代理在独立上下文里做事，只返回有用摘要。 |
+| MCP 工具可能写外部系统 | [MCP 安全清单](/zh/mcp/mcp-security-checklist) | 外部工具访问需要明确边界和验证。 |
+| 团队希望 Claude 行为一致 | [工具权限管理](/zh/tutorial/configuration/tools-allowlist) | 共享权限让不同会话更可预测。 |
+
+不要一次性加上所有机制。先找当前失败模式，再用最小的功能解决它。
+
+## 核心指南
+
+### CLAUDE.md
+
+[CLAUDE.md](/zh/mechanics/claude-md) 是项目记忆文件，适合放长期有效的项目说明：架构边界、测试命令、分支规则、命名习惯、写作风格、禁止目录和交付标准。
+
+当某条规则需要跨会话生效时，把它写进 `CLAUDE.md`。但不要把它写成巨型手册。越具体、越新、越围绕 Claude 需要做的决策，效果越好。
+
+### Plan Mode
+
+[Plan Mode](/zh/mechanics/plan-mode) 是在编辑前主动放慢的模式。迁移、重构、生产修复、需求不明确、或者错改成本很高的任务，都适合先进入 Plan Mode。
+
+好的流程很简单：先探索代码，再说明准备怎么改，确认假设，最后实施。它不能替代测试，但能减少很多错误的第一步。
+
+### 上下文管理
+
+[上下文管理](/zh/mechanics/context-management) 解决的是会话变长后 Claude 注意力分散的问题。目标不是把上下文塞满，而是只保留会影响下一步决策的信息。
+
+实用习惯包括：无关任务开新会话、压缩前写交接摘要、给 subagent 明确文件路径和报错、不要一次粘贴与问题无关的大段日志。
+
+### Slash Commands
+
+[Slash Commands](/zh/mechanics/slash-commands) 把重复提示词变成命名工作流。适合代码审查、发布检查、文档更新、SEO 页面审查、迁移步骤等 prompt 结构很重要的任务。
+
+命令最好窄而稳定。如果一个 command 逐渐变成带大量领域规则的操作手册，可以考虑沉淀成 skill 或项目文档。
+
+### Hooks
+
+[Hooks](/zh/mechanics/hooks) 围绕 Claude Code 生命周期事件执行逻辑。它可以拦截危险 Bash、验证文件写入、编辑后运行检查、发送通知或记录活动。
+
+Hooks 的强大之处在于自动触发，风险也在这里。先 observe 或 warn，再考虑 deny。脚本要小、可审计，并写进 `CLAUDE.md`。
+
+### Subagents
+
+[Subagents](/zh/mechanics/subagents) 是带独立上下文和角色的专门 worker。适合处理噪音大的旁路任务：代码审查、测试失败分析、安全检查、官方资料核查、独立模块调研。
+
+Subagent 不是共享记忆。普通 subagent 不会自动知道主会话完整历史，所以委派提示词要明确路径、报错、结论和输出要求。
+
+## 推荐配置顺序
+
+新项目或刚迁移的项目，建议按这个顺序配置：
+
+1. **写一个小而清楚的 `CLAUDE.md`：** 项目目标、命令、目录和质量规则。
+2. **设置保守权限：** 允许常见读写，宽泛 Bash 或外部写操作前先询问。
+3. **创建一两个 Slash Commands：** 先做 review、content audit 或 release checklist。
+4. **高风险任务使用 Plan Mode：** 迁移、重定向、价格页、登录、支付、部署或大规模内容调整。
+5. **建立上下文习惯：** 按主题开会话，compact 前写交接，不混杂无关任务。
+6. **只为反复出现的噪音任务加 Subagents：** 测试分析、来源核查、代码审查或安全审查。
+7. **规则验证后再加 Hooks：** 拦截 `.env` 写入、deploy 前提醒、记录 MCP 写工具。
+
+这个顺序可以让系统保持可理解。常见错误是流程还没清楚，就先加自动化。
+
+## 不同阶段应该配置什么
+
+| 阶段 | 建议配置 | 暂时避免 |
+| --- | --- | --- |
+| 个人探索 | `CLAUDE.md`、Plan Mode、上下文纪律 | 团队 hooks 和复杂 agents |
+| 正式项目开发 | Slash commands、工具 allowlist、上下文规则 | 巨大的 memory 文件和过宽权限 |
+| 团队采用 | 项目 `CLAUDE.md`、共享命令、明确 review 流程 | 队友无法解释的隐藏自动化 |
+| 高风险仓库 | Permission rules、hooks、只读审查、发布清单 | 自动接受破坏性工具 |
+| 内容或文档站 | 来源核查 command、内容审查 subagent、带日期的官方来源 | 发布没有链接和核查的薄页面 |
+
+## 机制专题如何服务搜索流量
+
+对本站来说，机制页不是普通文档，而是承接 Claude Code 实战问题的搜索入口：
+
+| 搜索意图 | 页面类型 |
+| --- | --- |
+| "what is claude.md" | 深度机制解释加示例 |
+| "claude code plan mode" | 工作流决策指南 |
+| "claude code hooks" | 自动化和安全指南 |
+| "claude code subagents" | 角色、上下文和委派指南 |
+| "claude code slash commands" | 命令设置和复用指南 |
+| "claude code context management" | 成本、聚焦和压缩指南 |
+
+每个 mechanics 页面都应该先快速回答问题，再解释什么时候用、如何配置或落地、常见错误是什么，并链接到对应教程、FAQ、MCP 或故障排查页面。
+
+## 推荐学习路径
+
+不知道从哪里开始时，可以按路径走：
+
+- **新手路径：** [安装](/zh/tutorial/getting-started/installation) -> [基础使用](/zh/tutorial/getting-started/basic-usage) -> [CLAUDE.md](/zh/mechanics/claude-md) -> [Plan Mode](/zh/mechanics/plan-mode)
+- **团队配置路径：** [工具权限管理](/zh/tutorial/configuration/tools-allowlist) -> [CLAUDE.md](/zh/mechanics/claude-md) -> [Slash Commands](/zh/mechanics/slash-commands) -> [Hooks](/zh/mechanics/hooks)
+- **高级工作流路径：** [上下文管理](/zh/mechanics/context-management) -> [Subagents](/zh/mechanics/subagents) -> [MCP 安全清单](/zh/mcp/mcp-security-checklist)
+- **故障排查路径：** [故障排查中心](/zh/troubleshooting) -> [上下文管理](/zh/mechanics/context-management) -> [Hooks](/zh/mechanics/hooks)
+
+## 相关入口
+
+- [Claude Code 常见问题](/zh/faqs)
+- [Claude Code 教程中心](/zh/tutorial)
+- [MCP 目录](/zh/mcp)
+- [故障排查](/zh/troubleshooting)
+- [资源和工具](/zh/resources)
+
+## 官方来源
+
+- [Commands](https://code.claude.com/docs/en/commands)
+- [Create custom subagents](https://code.claude.com/docs/en/sub-agents)
+- [Hooks reference](https://code.claude.com/docs/en/hooks)
+- [Extend Claude Code](https://code.claude.com/docs/en/features-overview)

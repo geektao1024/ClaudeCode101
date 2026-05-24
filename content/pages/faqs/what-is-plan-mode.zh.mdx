@@ -1,0 +1,189 @@
+---
+title: 'Claude Code Plan Mode 是什么？'
+description: '解释 Claude Code Plan Mode：如何进入和退出、能做什么、批准计划后的模式、settings、提示词、和 ultrathink 的区别，以及适用场景。'
+schema_question: 'Claude Code Plan Mode 是什么？'
+schema_answer: 'Plan Mode 是 Claude Code 的一种权限模式，让 Claude 先探索代码并提出计划，再进行编辑。可以用 Shift+Tab、/plan 或 claude --permission-mode plan 进入。批准计划后会退出 Plan Mode，并按你选择的编辑模式继续执行。'
+---
+
+Plan Mode 是 Claude Code 的“先看清，再动手”工作流。Claude 可以阅读仓库、分析任务、提出实现计划，但在你批准之前不应该直接修改源文件。
+
+> 最后核查：2026 年 5 月 24 日。Claude Code 的权限模式、界面标签和批准流程可能继续变化，团队制定规则前建议核对官方 permission modes 文档。
+
+## 短答案
+
+当错误修改的代价高于先规划的代价时，就用 Plan Mode。它特别适合迁移、SEO URL 调整、认证、支付、数据库、MCP 权限和多文件重构。
+
+| 问题 | 实用答案 |
+| --- | --- |
+| 它是什么？ | 一种先读项目、先给计划、再决定是否编辑的权限模式。 |
+| 会直接改文件吗？ | 不会，除非你批准计划并选择进入编辑模式。 |
+| 怎么进入？ | `Shift+Tab`、`/plan`，或 `claude --permission-mode plan`。 |
+| 怎么退出？ | 批准计划、再次切换模式，或继续让 Claude 修改计划。 |
+| 和 ultrathink 一样吗？ | 不一样。Plan Mode 管权限和编辑流程；`ultrathink` 是让单轮推理更深入。 |
+
+## 如何进入 Plan Mode
+
+| 界面 | 方法 |
+| --- | --- |
+| CLI 会话中 | 按 `Shift+Tab`，直到状态显示 Plan Mode。 |
+| 单条提示 | 在 prompt 前加 `/plan`。 |
+| CLI 启动 | `claude --permission-mode plan` |
+| 非交互运行 | 用 `claude -p --permission-mode plan "..."` 让脚本保持先读后写。 |
+| 项目默认 | 在 `.claude/settings.json` 的 `permissions` 里设置 `"defaultMode": "plan"`。 |
+| VS Code / Desktop / Web | 使用界面提供的 mode selector。 |
+
+示例：
+
+```bash
+claude --permission-mode plan
+```
+
+项目默认：
+
+```json
+{
+  "permissions": {
+    "defaultMode": "plan"
+  }
+}
+```
+
+## Plan Mode 能做什么
+
+Plan Mode 不是“什么都不做”。它的目标是先收集足够上下文，再给出更安全的计划。
+
+| 动作 | Plan Mode 下的行为 |
+| --- | --- |
+| 读文件 | 可以，但仍受正常上下文和权限行为影响。 |
+| 搜索仓库 | 适合梳理归属边界和相关文件。 |
+| 运行探索命令 | 可以，但命令权限仍然生效。 |
+| 写计划 | 这是主要输出。 |
+| 追问需求 | 需求模糊时应该追问。 |
+| 编辑文件 | 等你批准计划并选择编辑模式后再做。 |
+| 绕过保护路径 | 不会。保护路径和权限规则仍然有效。 |
+
+关键不只是切到某个模式，而是得到一个可审查的计划：影响文件、实施顺序、风险、验证步骤和未确认问题。
+
+## 批准计划后会发生什么
+
+Claude 给出计划后，你批准计划就会退出 Plan Mode。接下来要选择实现阶段给它多大权限。
+
+| 选择 | 含义 |
+| --- | --- |
+| 继续规划 | 你反馈问题，让 Claude 重写或缩小计划。 |
+| 批准并手动审查 | Claude 开始执行，但你保留更严格的编辑和命令审批。 |
+| 批准并 accept edits | Claude 可以更流畅地修改文件，但仍受权限规则约束。 |
+| 批准并 auto mode | 在可用且允许时，让 Claude 更自主地完成较长任务。 |
+
+如果计划太大，不要因为它写得像样就直接批准。让它缩小范围，拆出检查点，并写明回滚步骤。
+
+## Plan Mode 和其他权限模式
+
+| 模式 | 实际含义 | 适用场景 |
+| --- | --- | --- |
+| `default` | 编辑和命令前会询问。 | 常规工作、新项目、敏感仓库。 |
+| `acceptEdits` | 文件编辑和常见文件操作更流畅。 | 已经认可方向，后续用 diff 审查。 |
+| `plan` | 先探索并提出计划，再编辑。 | 风险高或需求不清的任务。 |
+| `auto` | 在可用情况下更自主地完成长任务。 | 计划清晰后的实现阶段。 |
+| `dontAsk` | 只运行预先批准的工具。 | 受控脚本或类 CI 场景。 |
+| `bypassPermissions` | 跳过权限提示。 | 只适合隔离容器或虚拟机。 |
+
+生产仓库里，Plan Mode 常常是最安全的第一步。计划明确后，再切到更快的模式执行。
+
+## Plan Mode 和 Ultrathink 的区别
+
+很多搜索会把这两个概念混在一起，但它们解决的问题不同。
+
+| 功能 | 控制什么 | 适合什么 |
+| --- | --- | --- |
+| Plan Mode | 工具和编辑流程。 | “先别改，先分析并给方案。” |
+| `ultrathink` | 单轮推理深度。 | “这个权衡需要想得更深。” |
+| `/effort` 或模型 effort 设置 | 当前会话或模型推理强度。 | 更长、更难的工程任务。 |
+| Ultraplan | 在可用的 Claude Code Web 工作流里审查计划。 | 用更丰富界面审阅或细化计划。 |
+
+可以这样用：
+
+```text
+/plan ultrathink
+Analyze this migration before editing. Separate safe mechanical changes from risky behavior changes.
+List affected files, verification steps, and rollback options.
+```
+
+这相当于同时要求更深入推理和先读后写，但它们仍然是两套机制。
+
+## 什么时候应该用 Plan Mode
+
+凡是有真实影响面的任务，都值得先 plan：
+
+| 任务 | Plan Mode 的价值 |
+| --- | --- |
+| SEO 路由迁移 | 避免误伤 URL、metadata、redirect 和 sitemap。 |
+| 价格或计费内容 | 先核查官方来源，再发布事实性内容。 |
+| 认证或支付代码 | 减少隐藏副作用。 |
+| 数据库 schema | 先区分设计和执行。 |
+| MCP 权限 | 明确工具访问和信任边界。 |
+| 大重构 | 把第一步收窄到可 review 的范围。 |
+| 不清晰的故障排查 | 先形成假设，再动代码。 |
+
+错别字、单个坏链接、很小的文案修改，可以不用 Plan Mode。
+
+## 好的 Plan Mode 提示词
+
+代码修改：
+
+```text
+/plan Inspect the current implementation first.
+Return a plan with affected files, smallest safe implementation order, tests, and rollback steps.
+Do not edit files until I approve the plan.
+```
+
+SEO / 内容修改：
+
+```text
+/plan Update this FAQ for search intent.
+Preserve the existing URL, title intent, schema fields, and internal links.
+List official sources that need checking before writing.
+```
+
+迁移任务：
+
+```text
+/plan Map the old and new route structures.
+Identify redirects, canonical risks, sitemap changes, and pages that should not be moved.
+Wait for approval before editing.
+```
+
+## 批准前检查清单
+
+- 文件范围是否足够小？
+- 是否保留 URL、metadata、canonical、schema 和内部链接？
+- 是否标出哪些事实需要官方来源核查？
+- 是否包含测试或 build 命令？
+- 是否有回滚或检查点策略？
+- 是否把危险命令、部署、数据库操作和内容编辑分开？
+- 未确认问题有没有明确列出来，而不是藏在计划里？
+
+## 常见错误
+
+| 错误 | 更好的做法 |
+| --- | --- |
+| 要了计划，却批准一个超大重构。 | 让它拆成更小阶段，并给出第一检查点。 |
+| 把 Plan Mode 当成绝对保证。 | 仍然审查计划，并保留权限规则。 |
+| 把规划和部署混在一起。 | 先规划、再实现、再 build，部署单独决策。 |
+| 提示词太空。 | 明确要求影响文件、风险、验证和回滚。 |
+| 忘记退出 Plan Mode。 | 准备编辑时批准计划或切换模式。 |
+
+## 相关页面
+
+- [Explore-Plan-Code 工作流](/zh/tutorial/workflows/explore-plan-code)
+- [Plan Mode 教程](/zh/tutorial/workflows/plan-mode)
+- [CLAUDE.md](/zh/faqs/what-is-claude-md)
+- [Tools allowlist](/zh/tutorial/configuration/tools-allowlist)
+- [用量限制](/zh/faqs/claude-code-usage-limits)
+
+## 官方来源
+
+- [Claude Code permission modes](https://code.claude.com/docs/en/permission-modes)
+- [Claude Code commands](https://code.claude.com/docs/en/commands)
+- [Claude Code model configuration](https://code.claude.com/docs/en/model-config)
+- [Claude Code settings](https://code.claude.com/docs/en/configuration)

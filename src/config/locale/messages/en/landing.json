@@ -1,0 +1,192 @@
+{
+  "header": {
+    "id": "header",
+    "brand": {
+      "title": "ClaudeCode101",
+      "logo": {
+        "src": "/logo.png",
+        "alt": "ClaudeCode101",
+        "width": 100,
+        "height": 100
+      },
+      "url": "/"
+    },
+    "nav": {
+      "items": [
+        {
+          "title": "FAQ",
+          "url": "/faqs",
+          "icon": "Search"
+        },
+        {
+          "title": "Tutorials",
+          "url": "/tutorial",
+          "icon": "BookOpenText"
+        },
+        {
+          "title": "Install",
+          "url": "/tutorial/getting-started/installation",
+          "icon": "Download"
+        },
+        {
+          "title": "CLAUDE.md",
+          "url": "/tutorial/configuration/claude-md",
+          "icon": "FileText"
+        },
+        {
+          "title": "MCP",
+          "url": "/mcp",
+          "icon": "Network"
+        },
+        {
+          "title": "Resources",
+          "url": "/resources",
+          "icon": "Boxes"
+        },
+        {
+          "title": "Fixes",
+          "url": "/troubleshooting",
+          "icon": "Wrench"
+        }
+      ]
+    },
+    "buttons": [],
+    "user_nav": {
+      "show_name": true,
+      "show_credits": false,
+      "show_sign_out": true,
+      "items": []
+    },
+    "show_sign": false,
+    "show_theme": true,
+    "show_locale": true,
+    "topbanner": {
+      "text": ""
+    }
+  },
+  "footer": {
+    "id": "footer",
+    "show_built_with": false,
+    "brand": {
+      "title": "ClaudeCode101",
+      "description": "A practical Claude Code tutorial and workflow knowledge base for developers.",
+      "logo": {
+        "src": "/logo.png",
+        "alt": "ClaudeCode101",
+        "width": 100,
+        "height": 100
+      },
+      "url": "/"
+    },
+    "nav": {
+      "items": [
+        {
+          "title": "Learning",
+          "children": [
+            {
+              "title": "FAQ",
+              "url": "/faqs",
+              "target": "_self"
+            },
+            {
+              "title": "Tutorial Hub",
+              "url": "/tutorial",
+              "target": "_self"
+            },
+            {
+              "title": "Installation",
+              "url": "/tutorial/getting-started/installation",
+              "target": "_self"
+            },
+            {
+              "title": "Basic Usage",
+              "url": "/tutorial/getting-started/basic-usage",
+              "target": "_self"
+            },
+            {
+              "title": "Troubleshooting",
+              "url": "/troubleshooting",
+              "target": "_self"
+            }
+          ]
+        },
+        {
+          "title": "Core Topics",
+          "children": [
+            {
+              "title": "CLAUDE.md",
+              "url": "/mechanics/claude-md",
+              "target": "_self"
+            },
+            {
+              "title": "MCP Servers",
+              "url": "/mcp",
+              "target": "_self"
+            },
+            {
+              "title": "Plan Mode",
+              "url": "/mechanics/plan-mode",
+              "target": "_self"
+            }
+          ]
+        },
+        {
+          "title": "Site",
+          "children": [
+            {
+              "title": "Pricing and Limits",
+              "url": "/pricing",
+              "target": "_self"
+            },
+            {
+              "title": "Resources",
+              "url": "/resources",
+              "target": "_self"
+            },
+            {
+              "title": "Updates",
+              "url": "/upgrade",
+              "target": "_self"
+            },
+            {
+              "title": "Privacy Policy",
+              "url": "/privacy-policy",
+              "target": "_self"
+            }
+          ]
+        }
+      ]
+    },
+    "social": {
+      "items": [
+        {
+          "title": "GitHub",
+          "icon": "Github",
+          "url": "https://github.com/anthropics/claude-code",
+          "target": "_blank"
+        },
+        {
+          "title": "Email",
+          "icon": "Mail",
+          "url": "mailto:support@claudecode101.com",
+          "target": "_self"
+        }
+      ]
+    },
+    "agreement": {
+      "items": [
+        {
+          "title": "Privacy Policy",
+          "url": "/privacy-policy",
+          "target": "_self"
+        },
+        {
+          "title": "Terms of Service",
+          "url": "/terms-of-service",
+          "target": "_self"
+        }
+      ]
+    },
+    "copyright": "© 2026 ClaudeCode101. All rights reserved."
+  }
+}

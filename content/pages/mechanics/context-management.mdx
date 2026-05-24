@@ -1,0 +1,282 @@
+---
+title: 'Claude Code Context Management'
+description: 'A practical guide to Claude Code context management: context window, /context, /compact, /clear, CLAUDE.md, rules, skills, MCP, subagents, and cost control.'
+---
+
+Context management is how you keep a Claude Code session focused, cheap, and predictable. The context window contains what Claude knows right now: conversation history, files read, command outputs, `CLAUDE.md`, auto memory, loaded rules, skill content, system instructions, and other hidden session material. If the window fills with stale or irrelevant information, Claude becomes slower, costlier, and easier to steer in the wrong direction.
+
+> Last checked on May 24, 2026. Claude Code now exposes `/context`, `/compact`, `/clear`, session resume, auto memory, rules, skills, MCP, and subagents. The exact UI may change, but the operating principle stays the same: keep durable project facts in durable memory, keep task-specific context small, and reset or compact before the session becomes noisy.
+
+## Quick Answer
+
+Use `/context` to see what is consuming the window. Use `/compact` when you want to continue the same task but summarize history. Use `/clear` when you want a fresh task with empty conversation context while keeping the previous session resumable. Put stable rules in `CLAUDE.md` or unscoped rules, not in a long chat message. Use subagents for large research that should not bloat the main session. Use Plan Mode before large changes so the session reads only the files it needs.
+
+The practical rule is simple:
+
+- **Start focused:** give Claude a small goal, relevant files, and constraints.
+- **Inspect deliberately:** let it read the minimum code needed to plan.
+- **Watch context:** run `/context` when a session gets long or weird.
+- **Compact with intent:** summarize around the remaining task, not everything.
+- **Clear when switching tasks:** do not carry yesterday's migration into today's bug.
+- **Persist only stable facts:** move repeated rules to `CLAUDE.md`, not conversation history.
+
+## What Enters The Context Window
+
+Claude Code's context window is more than the visible chat. Some content appears in your terminal, and some loads silently.
+
+| Context source | When it enters | Why it matters |
+| --- | --- | --- |
+| Conversation history | As you chat | Long back-and-forth can crowd out the current task. |
+| Files Claude reads | When opened by tools | Large files and broad searches consume space quickly. |
+| Command output | When commands run | Logs, build output, and test failures can be very large. |
+| `CLAUDE.md` | At session start | Useful rules consume context on every request. Keep them concise. |
+| Auto memory | At session start | Helpful, but stale saved notes can add noise. |
+| `.claude/rules/` | At startup or when matching paths load | Path-scoped rules help reduce always-on context. |
+| Skills | Descriptions load early; full content loads when used | Good for repeatable procedures without putting everything in chat. |
+| MCP servers | Tool names load early; schemas can load on demand | Too many servers can still increase the tool surface. |
+| Subagents | Separate context window | Useful for research because their large reads do not directly fill the main session. |
+| Hooks | Run as code outside the prompt | Hook results can matter, but hook code itself is not normal conversation context. |
+
+Good context management starts before the first prompt. A repository with an oversized `CLAUDE.md`, too many always-on rules, many MCP servers, and vague task prompts can feel expensive before any useful work begins.
+
+## Use /context As A Diagnostic
+
+`/context` is the first command to run when Claude Code starts drifting. It shows what is currently consuming the context window and can surface optimization suggestions.
+
+Use it when:
+
+- Claude starts forgetting constraints you gave earlier.
+- A session has read many files or long command outputs.
+- The same answer starts repeating.
+- Claude proposes changes that ignore the current scope.
+- You are deciding whether to compact or clear.
+- You enabled new skills, MCP servers, rules, or memory and want to see the cost.
+
+Do not wait until the session is failing. A quick `/context` midway through a complex task tells you whether the session is still clean enough to continue.
+
+## /compact vs /clear vs /resume
+
+These commands solve different problems:
+
+| Command | Use when | What happens |
+| --- | --- | --- |
+| `/compact [instructions]` | You want to keep working on the same task, but the history is too large. | Claude summarizes the conversation so far, optionally focusing on your instructions. |
+| `/clear [name]` | You are switching to a new task and want empty context. | The previous conversation stays saved and resumable. |
+| `/resume` or `claude --resume` | You want to return to an earlier saved session. | The saved conversation is reopened. |
+| `/branch` | You want to try a different path without losing the current one. | A copy of the conversation becomes a new branch session. |
+
+Use `/compact` for continuity. Use `/clear` for separation. Use `/resume` for recovery. Use `/branch` when you want to explore an alternative plan without contaminating the main thread.
+
+## How To Compact Well
+
+Compaction is not just "make it shorter." It is a chance to preserve the right state and discard noise.
+
+Bad:
+
+```text
+/compact
+```
+
+Better:
+
+```text
+/compact focus on the current implementation plan, files changed, decisions made, remaining risks, and verification commands. Drop unrelated exploration and failed approaches.
+```
+
+For a bug:
+
+```text
+/compact keep the reproduction steps, confirmed failing layer, inspected files, current hypothesis, and the smallest verification command.
+```
+
+For content work:
+
+```text
+/compact preserve the target keyword, current page structure, sources already checked, decisions about tone, and remaining sections to write.
+```
+
+The more focused the compaction instruction, the less likely Claude is to preserve irrelevant history.
+
+## What Survives Compaction
+
+Official context-window guidance explains that different mechanisms survive compaction differently.
+
+| Mechanism | After compaction | Practical advice |
+| --- | --- | --- |
+| System prompt and output style | Remain unchanged. | Do not worry about them during normal compaction. |
+| Project-root `CLAUDE.md` | Re-injected from disk. | Put durable rules here if they must survive. |
+| Unscoped rules | Re-injected from disk. | Use for rules that should always apply. |
+| Auto memory | Re-injected from disk. | Audit if stale memory causes drift. |
+| Path-scoped rules | Lost until a matching file is read again. | Re-open relevant files after compaction if needed. |
+| Nested `CLAUDE.md` | Lost until a file in that subtree is read again. | Do not rely on nested rules for global behavior. |
+| Invoked skills | Re-injected with token caps. | Put the most important skill instructions near the top. |
+| Hooks | Not conversation context. | Hook logic runs separately; outputs may still affect the session. |
+
+This is why durable instructions belong in `CLAUDE.md`, not only in chat. A long instruction typed at the start of a session can be summarized away.
+
+## When To Clear Instead Of Compact
+
+Clear when the task boundary changes. Compact when the task remains the same.
+
+Use `/clear` when:
+
+- You finished one feature and are starting another.
+- The conversation contains too many wrong turns.
+- You changed branches or worktrees and the old context is misleading.
+- You want to ask a conceptual question unrelated to the current diff.
+- You need to stop Claude from overfitting to earlier assumptions.
+
+Before clearing, ask for a short handoff summary if there is anything worth preserving:
+
+```text
+Summarize only the durable facts, files touched, decisions made, and verification status. Do not include failed approaches unless they prevent future mistakes.
+```
+
+Then run `/clear` and paste the summary into the next focused prompt if needed.
+
+## Keep CLAUDE.md Useful But Small
+
+`CLAUDE.md` is one of the most important context-management tools because it loads at the start of every session. That is powerful, but it also means stale instructions cost context every time.
+
+Good `CLAUDE.md` entries:
+
+- explain project structure;
+- list real build, test, lint, and deploy commands;
+- name high-risk files or services;
+- define public content tone and SEO constraints;
+- tell Claude when to use Plan Mode;
+- link to deeper docs instead of pasting them.
+
+Bad `CLAUDE.md` entries:
+
+- outdated migration notes;
+- full onboarding manuals;
+- long API references;
+- one-off task instructions;
+- contradictory local and project rules;
+- private machine details that should be in `CLAUDE.local.md`.
+
+If a rule only matters for a path, move it into `.claude/rules/` with path scoping. If a procedure is long and repeatable, make it a skill or slash command.
+
+## Reduce File And Command Noise
+
+Most context waste comes from broad exploration:
+
+- reading generated files;
+- pasting huge logs into the conversation;
+- running commands that print thousands of lines;
+- searching the whole repository when a route or module is known;
+- opening many competitor pages without summarizing decisions;
+- letting a long bug hunt mix with an unrelated implementation task.
+
+Better habits:
+
+| Problem | Better pattern |
+| --- | --- |
+| Claude wants to read too many files | Ask it to name the smallest file set first. |
+| Test output is huge | Re-run a focused test or ask for the first failing block only. |
+| Logs are long | Save logs to a file and ask Claude to inspect the relevant range. |
+| Search is too broad | Start with route, component, service, and test names. |
+| Session is drifting | Stop and ask for current facts, assumptions, and next action. |
+| Context keeps filling after compaction | Identify the large file or output that keeps re-entering. |
+
+For large repositories, file discipline matters as much as prompt quality.
+
+## Use Subagents For Large Research
+
+Subagents help context management because they run with their own separate context window. A subagent can inspect many files, compare options, or research a narrow topic, then return a summary to the main session.
+
+Use a subagent when:
+
+- research may require many file reads;
+- you need a separate review role;
+- a background investigation should not pollute the main implementation context;
+- you want a concise recommendation rather than raw evidence.
+
+Do not use subagents as a shortcut for unclear goals. Give them a narrow brief and ask for a compact result: files inspected, conclusion, confidence, risks, and recommended next step.
+
+## Context Management And Usage Limits
+
+Context management directly affects cost and limits. A noisy session can burn usage through repeated file reads, large command outputs, model retries, and corrections. A clean session usually finishes faster because Claude sees the right information at the right time.
+
+Cost-aware habits:
+
+- Start with Sonnet for normal implementation and reserve harder reasoning for planning or stuck debugging.
+- Use Plan Mode before broad changes so exploration is intentional.
+- Keep `CLAUDE.md` under control.
+- Use `/context` before the session becomes full.
+- Compact with specific instructions.
+- Clear between unrelated tasks.
+- Keep MCP servers and skills scoped to the work.
+- Ask for verification commands before running expensive or noisy checks.
+
+This is not only about saving tokens. It also improves answer quality because Claude is less distracted.
+
+## Team Workflow
+
+For a team using Claude Code regularly, standardize context habits:
+
+1. Put stable project rules in `CLAUDE.md`.
+2. Put path-specific rules in `.claude/rules/`.
+3. Keep personal notes in `CLAUDE.local.md`.
+4. Use Plan Mode for risky work.
+5. Use `/context` during long sessions.
+6. Use `/compact` before a large implementation continues.
+7. Use `/clear` when switching tasks.
+8. Use subagents for heavy research.
+9. Review memory and rules after major architecture changes.
+10. Report which verification commands were actually run.
+
+This makes Claude Code sessions easier to resume, review, and hand off.
+
+## Common Mistakes
+
+| Mistake | Why it hurts | Better approach |
+| --- | --- | --- |
+| Treating conversation history as durable memory | It can be summarized away or forgotten. | Put stable rules in `CLAUDE.md`. |
+| Compacting without instructions | The summary may preserve the wrong details. | Tell `/compact` what to keep and what to drop. |
+| Continuing after the task changes | Old assumptions leak into new work. | Use `/clear` or start a new session. |
+| Reading the whole repo before planning | Context fills before decisions are made. | Ask for a minimal inspection plan. |
+| Keeping outdated memory | Claude follows stale facts. | Audit `/memory` and project rules. |
+| Loading every MCP server and skill | Tool surface and descriptions add noise. | Enable only what the task needs. |
+| Ignoring command output size | Logs can dominate the window. | Capture focused output or inspect a range. |
+
+## Practical Checklist
+
+Before starting a serious session:
+
+- Is the task narrow enough for one session?
+- Are the relevant files or route names known?
+- Is `CLAUDE.md` current?
+- Are unnecessary MCP servers, skills, or rules disabled?
+- Should this begin in Plan Mode?
+
+During the session:
+
+- Run `/context` if the answer quality drops.
+- Compact with focus before continuing a long task.
+- Clear when switching tasks.
+- Keep verification output focused.
+
+Before ending:
+
+- Ask for a handoff summary if the work will resume later.
+- Move repeated project facts into durable memory.
+- Remove stale rules that caused confusion.
+- Record commands that passed, failed, or were skipped.
+
+## Related Pages
+
+- [Claude Code usage limits](/en/faqs/claude-code-usage-limits)
+- [CLAUDE.md guide](/en/mechanics/claude-md)
+- [Plan Mode](/en/mechanics/plan-mode)
+- [Subagents](/en/mechanics/subagents)
+- [Context management tutorial](/en/tutorial/optimization/context-management)
+
+## Official Sources
+
+- [Explore the context window](https://code.claude.com/docs/en/context-window)
+- [Manage sessions](https://code.claude.com/docs/en/sessions)
+- [How Claude Code works](https://code.claude.com/docs/en/how-claude-code-works)
+- [Extend Claude Code](https://code.claude.com/docs/en/features-overview)
+- [Commands](https://code.claude.com/docs/en/commands)

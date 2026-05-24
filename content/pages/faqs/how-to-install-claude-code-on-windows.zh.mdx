@@ -1,0 +1,81 @@
+---
+title: 'Windows 上如何安装 Claude Code'
+description: '在 Windows 上选择原生安装或 WSL，使用 PowerShell、CMD、WinGet 安装 Claude Code，并处理首次配置问题。'
+schema_question: 'Windows 上如何安装 Claude Code？'
+schema_answer: 'Windows 上可以用 PowerShell、CMD 或 WinGet 原生安装 Claude Code，也可以在 WSL 2 中安装。Windows 原生项目适合原生安装，Linux 工具链和需要 sandbox 的项目更适合 WSL 2。'
+---
+
+Windows 有两条路线：原生 Windows 或 WSL。关键不是哪个更“高级”，而是你的项目实际运行在哪里。
+
+> 最后核查：2026 年 5 月 24 日。Windows 的 shell 行为、Git Bash 支持和 sandbox 能力变化较快，团队推广前请核对官方 setup 页面。
+
+## 短答案
+
+- Windows 原生项目、PowerShell、CMD 或 Windows 工具链，优先原生安装。
+- Linux 工具链、shell-heavy 项目或需要 sandbox，优先 WSL 2。
+- Git for Windows 不是硬性要求，但对原生 Windows 下的 Bash 工具有帮助。
+
+## 原生 Windows 安装
+
+PowerShell:
+
+```powershell
+irm https://claude.ai/install.ps1 | iex
+```
+
+CMD:
+
+```bat
+curl -fsSL https://claude.ai/install.cmd -o install.cmd && install.cmd && del install.cmd
+```
+
+WinGet:
+
+```powershell
+winget install Anthropic.ClaudeCode
+```
+
+验证：
+
+```powershell
+claude --version
+claude doctor
+```
+
+## 原生 Windows 还是 WSL
+
+| 选项 | 适合 | Sandboxing | 说明 |
+| --- | --- | --- | --- |
+| Native Windows | Windows 项目、PowerShell、CMD、Git Bash、Windows 工具链。 | 不像 WSL 2 那样支持。 | Git for Windows 可选，但推荐安装。 |
+| WSL 2 | Linux 项目、Node/Ruby/Python 工具链、sandboxed command execution。 | 支持。 | 在 WSL 内安装并启动 `claude`。 |
+| WSL 1 | 无法使用 WSL 2 的旧环境。 | 不支持。 | 能用 WSL 2 就不要优先 WSL 1。 |
+
+## 常见错误
+
+| 现象 | 原因 | 处理 |
+| --- | --- | --- |
+| `The token '&&' is not a valid statement separator` | 把 CMD 命令粘到了 PowerShell。 | 换用 PowerShell 的 `irm` 命令。 |
+| `'irm' is not recognized` | 把 PowerShell 命令粘到了 CMD。 | 换用 CMD 的 `curl ... install.cmd`。 |
+| Windows 能用，WSL 里不能用 | 只安装在 Windows 侧。 | 打开 WSL 后在里面运行 Linux 安装命令。 |
+| Bash 相关工具失败 | 缺少 Git Bash，或 Claude 找不到它。 | 安装 Git for Windows，或设置 `CLAUDE_CODE_GIT_BASH_PATH`。 |
+| WinGet 升级失败 | Windows 锁定正在运行的可执行文件。 | 关闭 Claude Code 会话后再升级。 |
+
+## 首次运行建议
+
+1. 打开与你项目位置一致的终端。
+2. 运行 `claude --version`。
+3. 运行 `claude doctor`。
+4. 从小仓库开始。
+5. 先只读分析，再进入 Plan Mode。
+
+## 相关页面
+
+- [如何安装 Claude Code](/zh/faqs/how-to-install-claude-code)
+- [command not found 修复](/zh/troubleshooting/claude-command-not-found)
+- [Windows PATH 排障](/zh/troubleshooting/claude-code-windows-path)
+- [Plan Mode](/zh/faqs/what-is-plan-mode)
+
+## 官方来源
+
+- [Claude Code installation](https://code.claude.com/docs/en/installation)
+- [Claude Code authentication](https://code.claude.com/docs/en/authentication)

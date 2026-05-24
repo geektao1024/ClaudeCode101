@@ -1,0 +1,34 @@
+---
+title: 'Claude Code Rate Limit Error'
+description: 'How to troubleshoot Claude Code 429, server temporarily limiting requests, session limit, weekly limit, and low credit balance messages.'
+---
+
+If Claude Code shows `Request rejected (429)`, `Server is temporarily limiting requests`, `session limit`, `weekly limit`, or `Credit balance is too low`, first identify whether the issue is temporary throttling, subscription usage, API billing, or provider-specific limits.
+
+## Quick Checks
+
+1. Run `/usage` to check current usage when Claude Code can start.
+2. Run `/status` to confirm whether you are using subscription login, API key, Bedrock, Vertex, Foundry, or another provider.
+3. Read the exact message before changing plans. A temporary 429 is different from a weekly usage limit.
+4. Reduce parallel sessions, subagents, and MCP work if the task is generating many calls.
+5. For API setups, check credit balance, workspace rate limits, and spend caps in the relevant console.
+
+## What The Message Usually Means
+
+`Request rejected (429)` often means the provider is limiting requests for a short period. `You've hit your session limit` or `weekly limit` usually means you need to wait for reset or change plan/account strategy. `Credit balance is too low` points to billing or workspace credit state rather than a code issue.
+
+## How To Keep Working
+
+Split the task into smaller checkpoints, switch to a lighter model if suitable, reduce unnecessary context, and stop broad repository scans before retrying. For long team sessions, document the active credential and expected usage path before starting.
+
+## Related Pages
+
+- [Claude Code pricing and usage guide](/en/pricing)
+- [Claude Code usage limits FAQ](/en/faqs/claude-code-usage-limits)
+- [Context management](/en/mechanics/context-management)
+- [Claude Code troubleshooting hub](/en/troubleshooting)
+
+## Official Sources
+
+- [Claude Code error reference](https://code.claude.com/docs/en/errors)
+- [Manage Claude Code costs effectively](https://code.claude.com/docs/en/costs)

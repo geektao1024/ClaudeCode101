@@ -1,0 +1,31 @@
+---
+title: 'Claude Code MCP server 连接失败'
+description: '排查 Claude Code MCP 服务器加载失败、认证失败、启动失败或不出现在 /mcp 中的问题。'
+---
+
+如果 MCP server 连不上，先判断问题属于配置、启动、认证还是权限。修改配置前，先在 Claude Code 内运行 `/mcp` 查看连接状态。
+
+## 快速检查
+
+1. 在 Claude Code 内运行 `/mcp`，查看 server 状态。
+2. 检查 MCP server 的名称、transport、命令、URL、headers 和环境变量。
+3. 远程 MCP server 需要完成 OAuth 或 token 配置。
+4. 本地 stdio server 先在 Claude Code 外部确认命令能独立运行。
+5. Windows 上本地 server 可能需要 Shell 包装。
+6. 如果使用项目级 `.mcp.json`，检查团队共享配置的审批选择。
+
+## 常见原因
+
+远程 MCP 连接失败常见于认证未完成、回调 URL 无法回到 Claude Code，或者服务端要求预配置 OAuth client。本地 MCP 失败常见于可执行文件路径、包管理器、环境变量或 Shell 包装方式错误。
+
+## 相关页面
+
+- [MCP 目录](/zh/mcp)
+- [MCP 安全检查清单](/zh/mcp/mcp-security-checklist)
+- [MCP 服务器教程](/zh/tutorial/tools-integration/mcp-servers)
+- [工具权限管理](/zh/tutorial/configuration/tools-allowlist)
+
+## 官方来源
+
+- [Claude Code MCP 文档](https://code.claude.com/docs/en/mcp)
+- [Debug your configuration](https://code.claude.com/docs/en/debug-your-config)

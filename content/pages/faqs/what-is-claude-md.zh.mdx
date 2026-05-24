@@ -1,0 +1,233 @@
+---
+title: 'CLAUDE.md 是什么？'
+description: '解释 Claude Code 里的 CLAUDE.md：放在哪里、项目 memory 如何加载、应该写什么、不该写什么、imports、AGENTS.md 迁移和团队维护方式。'
+schema_question: 'Claude Code 里的 CLAUDE.md 是什么？'
+schema_answer: 'CLAUDE.md 是 Claude Code 读取项目长期规则的主要 memory 文件。共享项目规则通常放在仓库根目录或最接近相关代码的目录，私人说明放到 CLAUDE.local.md，细粒度规则用 .claude/rules，并避免写入密钥、隐私数据和过时说明。'
+---
+
+`CLAUDE.md` 是 Claude Code 的项目长期上下文文件。它用来记录每次会话都需要知道的稳定规则，例如项目结构、常用命令、代码规范、测试要求、权限习惯和交付检查清单。
+
+> 最后核查：2026 年 5 月 24 日。Claude Code 的 memory 机制可能继续演进，特殊团队配置仍建议对照官方 memory 文档核查。
+
+## 短答案
+
+当 Claude Code 需要稳定理解一个仓库时，就创建 `CLAUDE.md`。共享规则放在团队能看到的位置，私人信息放到本地文件，内容要短、准、可维护。
+
+| 问题 | 实用答案 |
+| --- | --- |
+| 它是什么？ | Claude Code 的 Markdown 项目记忆文件。 |
+| 放在哪里？ | 通常放仓库根目录，或放在最接近相关代码的目录。 |
+| 要提交到 git 吗？ | 共享项目规则可以提交；私人说明不要提交。 |
+| 能当权限控制吗？ | 不能。真正的限制要用 permissions、managed settings 和代码评审。 |
+| 多长合适？ | 能减少重复解释即可，不要长到影响阅读。 |
+
+## CLAUDE.md 放在哪里
+
+大多数仓库先从根目录一个文件开始：
+
+```txt
+my-project/
+  CLAUDE.md
+  package.json
+  src/
+```
+
+这能覆盖常见搜索意图，例如“CLAUDE.md 放在哪里”“CLAUDE.md 怎么配置”。如果是 monorepo，可以用顶层文件写全局规则，再在具体应用或 package 下补局部规则：
+
+```txt
+repo/
+  CLAUDE.md
+  apps/
+    web/
+      CLAUDE.md
+    worker/
+      CLAUDE.md
+  packages/
+    ui/
+      CLAUDE.md
+```
+
+只属于某个 app、package、目录的规则，放在离它最近的位置。不要把前端、数据库、部署、内容运营规则全部塞进一个巨大的文件里。
+
+## Memory 层级
+
+| 记忆位置 | 常见路径 | 适合写什么 | Git 策略 |
+| --- | --- | --- | --- |
+| 用户 memory | `~/.claude/CLAUDE.md` | 所有项目通用的个人偏好。 | 不提交。 |
+| 项目 memory | `./CLAUDE.md` | 共享项目架构、命令、规范。 | 通常提交。 |
+| 本地 memory | `./CLAUDE.local.md` | 私人路径、本地端口、临时说明。 | 通常 gitignore。 |
+| 细粒度 rules | `.claude/rules/*.md` | 文件类型、目录或任务级规则。 | 共享规则可提交。 |
+
+把每一层的职责分清楚：用户 memory 写你的个人工作方式，项目 memory 写仓库事实，本地 memory 写你的机器环境，rules 写更窄的专项规则。
+
+## 应该写什么
+
+好的 `CLAUDE.md` 应该回答开发者每次都会重复交代的问题：
+
+| 板块 | 可写内容 |
+| --- | --- |
+| 项目结构 | 主应用、包结构、路由系统、内容目录。 |
+| 常用命令 | 安装、开发、构建、测试、格式化、类型检查、预览部署。 |
+| 架构边界 | 哪些模块负责什么，哪些边界不要随便跨。 |
+| 代码规范 | 现有模式、命名规则、组件风格、数据访问方式。 |
+| 验证要求 | 完成前必须跑哪些检查。 |
+| SEO 或内容规则 | URL 保留、metadata、内链、语言版本要求。 |
+| 安全说明 | 权限边界、禁止破坏性命令、部署规则。 |
+
+示例：
+
+```md
+# ClaudeCode101 project notes
+
+## Commands
+- Install: `pnpm install`
+- Generate docs index: `pnpm exec fumadocs-mdx`
+- Build: `pnpm build`
+
+## Content rules
+- Preserve existing SEO URLs unless a redirect is planned.
+- Keep FAQ pages concise but useful: answer first, then expand with examples.
+- Link FAQ pages to the deeper tutorial, mechanics, or troubleshooting page.
+
+## Code rules
+- Prefer existing ShipAny template services and blocks.
+- Do not bypass existing auth, payment, or i18n services.
+- Use `apply_patch` for hand edits and run a build before handoff.
+
+## Review checklist
+- Metadata matches the search intent.
+- Internal links point to the correct locale.
+- Dark mode and mobile layout still work.
+```
+
+## 不要写什么
+
+不要把 `CLAUDE.md` 变成垃圾桶。
+
+| 不建议写 | 原因 |
+| --- | --- |
+| API key、token、客户数据 | assistant 能读取，且容易被误提交。 |
+| 大段复制的官方文档 | 占用上下文，也容易过时。 |
+| 一次性偏好 | 会让文件越来越吵。 |
+| 互相冲突的规则 | Claude 会被迫猜哪条更重要。 |
+| 旧部署说明 | 过时运维信息容易导致真实错误。 |
+| “帮我做得更好” | 不可执行，也无法校验。 |
+
+临时任务放在当前会话或本地草稿里。稳定且反复出现的规则，才沉淀进项目 memory。
+
+## CLAUDE.md 和 CLAUDE.local.md 的区别
+
+`CLAUDE.md` 写共享事实：
+
+- 框架和仓库结构。
+- 团队代码风格。
+- 必要命令。
+- 测试和 review 要求。
+- 稳定部署规则。
+
+`CLAUDE.local.md` 写私人上下文：
+
+- 你的本地开发地址。
+- 本地数据路径。
+- 某个分支的私人说明。
+- 机器相关脚本。
+- 临时迁移提醒。
+
+团队仓库里，除非明确要共享，否则建议把 `CLAUDE.local.md` 加入 `.gitignore`。
+
+## CLAUDE.md 和 Rules 的区别
+
+`CLAUDE.md` 是宽范围记忆，rules 应该更窄。
+
+| 需求 | 更适合的位置 |
+| --- | --- |
+| “这个仓库使用 Next.js、MDX 和 Cloudflare Workers” | `CLAUDE.md` |
+| “所有 MDX FAQ 文件都必须有 schema 字段” | `.claude/rules/mdx-faq.md` |
+| “Admin 页面必须使用 RBAC helper” | `.claude/rules/admin.md` |
+| “不要在功能线程里部署” | `CLAUDE.md` 或 managed settings |
+| “我个人希望最终总结用中文” | 用户 memory |
+
+如果规则只影响一类文件，放进 scoped rules 会让主 memory 更干净。
+
+## 导入其他文件
+
+Claude Code 支持从 Markdown 文件导入额外上下文。适合在主 `CLAUDE.md` 保持简短的同时，把发布清单、内容规范、API 说明放到单独文件里。
+
+```md
+# Project notes
+
+Read the release checklist when preparing a deploy:
+
+@docs/release-checklist.md
+```
+
+imports 适合稳定参考资料，不适合把整个 docs 目录都塞进上下文。如果某个导入内容每天都必须看，就把关键摘要写进 `CLAUDE.md`，长版继续作为参考链接。
+
+## AGENTS.md 迁移
+
+有些仓库已经有其他 coding agent 使用的 `AGENTS.md`。不要简单重复复制。
+
+| 当前情况 | 推荐做法 |
+| --- | --- |
+| 仓库只有 `AGENTS.md` | 新建 `CLAUDE.md`，用 `@AGENTS.md` 导入，再在下面补 Claude Code 专属说明。 |
+| `AGENTS.md` 通用且准确 | 在 `CLAUDE.md` 中使用 `@AGENTS.md`，让两套 agent workflow 共享基础规则。 |
+| `AGENTS.md` 已经过时 | 只把准确规则迁移进 `CLAUDE.md`，旧文件后续再清理。 |
+
+```md
+@AGENTS.md
+
+## Claude Code
+- 大范围改 billing、auth、deploy 前先使用 plan mode。
+```
+
+如果不需要 Claude Code 专属说明，类 Unix 系统也可以用 symlink；但 import 更容易 review，也更跨平台。
+
+目标是形成一套可信规则，而不是维护两份互相打架的说明。
+
+## 维护流程
+
+可以用这个轻量规则：
+
+1. 只纠正 Claude 一次，先继续工作。
+2. 同类问题纠正两次，就补一条清晰规则。
+3. 规则不再真实，立刻删除。
+4. 文件太长，就拆到 scoped rules 或参考文档。
+5. 框架、部署、路由发生大变更后，重新检查一次。
+
+最好的 `CLAUDE.md` 不是最长的，而是 assistant 真的能执行的。
+
+## 常见问题
+
+### Claude 没有遵守 CLAUDE.md，先查什么？
+
+先确认你是在正确工作目录运行 Claude Code。再检查文件名是否正好是 `CLAUDE.md`，规则是否太模糊，以及是否有其他 memory 层给了相反说明。
+
+### CLAUDE.md 应该放根目录还是 `.claude/`？
+
+简单仓库用根目录 `CLAUDE.md` 最直观。团队要做更复杂的本地配置、rules 或分层组织时，再使用 `.claude/` 结构。
+
+### CLAUDE.md 能强制 Claude 永远不改某个文件吗？
+
+不能。它是指导，不是强制权限。真正要限制，需要 permission settings、tool allowlist、managed settings、仓库保护和人工 review。
+
+### 可以把 CLAUDE.md 当模板库吗？
+
+可以放少量示例，但大模板应拆到单独文件，再通过 import 或链接引用。这样项目 memory 才不会失控。
+
+### 多久更新一次？
+
+当规则变稳定，或者重复错误暴露出缺少指令时再更新。不要因为每个临时任务都修改它。
+
+## 相关页面
+
+- [CLAUDE.md 教程](/zh/tutorial/configuration/claude-md)
+- [CLAUDE.md 机制页](/zh/mechanics/claude-md)
+- [Plan Mode](/zh/faqs/what-is-plan-mode)
+- [自定义命令](/zh/faqs/claude-code-custom-commands)
+- [用量限制](/zh/faqs/claude-code-usage-limits)
+
+## 官方来源
+
+- [Claude Code memory](https://code.claude.com/docs/en/memory)
+- [Claude Code settings](https://code.claude.com/docs/en/settings)
+- [Use Claude Code features in the SDK](https://code.claude.com/docs/en/agent-sdk/claude-code-features)

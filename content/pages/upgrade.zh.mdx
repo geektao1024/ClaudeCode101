@@ -1,0 +1,345 @@
+---
+title: 'Claude Code 最新版本、更新命令和更新日志'
+description: '查看 Claude Code 当前最新版本、stable 与 latest 区别、各安装方式升级命令、版本不一致排查、更新前检查清单和官方 changelog 入口。'
+---
+
+# Claude Code 最新版本、更新命令和更新日志
+
+这个页面不是复制一长串很快过时的 changelog，而是帮你解决三个更常见的问题：**当前最新版本是多少、我该怎么更新、更新后行为变了该怎么排查**。
+
+<Callout type="info">
+  最后核查时间：2026 年 5 月 24 日。npm 显示 `@anthropic-ai/claude-code`
+  的 `latest` 和 `next` dist-tag 为 `2.1.150`，`stable` 为 `2.1.142`。官方
+  changelog 最新条目是 `2.1.150`，发布日期为 2026 年 5 月 23 日。
+  Claude Code 发布很快，升级生产开发环境前请重新运行本文命令确认。
+</Callout>
+
+## 30 秒答案
+
+如果你只是想快速确认当前版本，按这三步走：
+
+```bash
+claude --version
+npm view @anthropic-ai/claude-code dist-tags --json
+```
+
+然后根据安装方式更新：
+
+| 安装方式 | 推荐更新命令 | 说明 |
+| -------- | ------------ | ---- |
+| Native installer | `claude update` | 原生安装会后台自动更新，也可以手动触发。 |
+| npm 全局安装 | `npm install -g @anthropic-ai/claude-code@latest` | 不建议用 `npm update -g` 追最新。 |
+| Homebrew stable | `brew upgrade claude-code` | 跟随 stable 通道，通常更保守。 |
+| Homebrew latest | `brew upgrade claude-code@latest` | 更快拿到最新版本。 |
+| WinGet | `winget upgrade Anthropic.ClaudeCode` | Windows 正在运行 Claude Code 时可能锁定可执行文件。 |
+| apt | `sudo apt update && sudo apt upgrade claude-code` | 跟随系统包管理器。 |
+| dnf | `sudo dnf upgrade claude-code` | 跟随系统包管理器。 |
+| apk | `apk update && apk upgrade claude-code` | Alpine 场景使用。 |
+
+不要只看别人截图里的版本号。Claude Code 有 latest、stable、不同安装器和自动更新机制，同一天不同机器看到不同版本很正常。
+
+## 当前最新版本怎么查
+
+### 查本地版本
+
+```bash
+claude --version
+```
+
+如果命令不存在，先回到[安装与配置](/zh/tutorial/getting-started/installation)检查 PATH 和安装方式。
+
+### 查 npm 发布标签
+
+```bash
+npm view @anthropic-ai/claude-code dist-tags --json
+```
+
+你会看到类似：
+
+```json
+{
+  "latest": "2.1.150",
+  "next": "2.1.150",
+  "stable": "2.1.142"
+}
+```
+
+其中：
+
+| 标签 | 含义 | 适合谁 |
+| ---- | ---- | ------ |
+| `latest` | 最新发布通道，最快拿到新功能和修复。 | 个人开发、愿意快速跟进的人。 |
+| `next` | 当前与 latest 一致时，代表下一发行标签也指向同版本。 | 关注预发布/滚动标签的人。 |
+| `stable` | 更保守通道，通常落后最新版本一段时间。 | 团队、生产项目、客户交付环境。 |
+
+### 查官方 changelog
+
+官方 changelog 页面会列出版本、日期、功能改进和 bug 修复：
+
+- [Claude Code Changelog](https://code.claude.com/docs/en/changelog)
+- [Claude Code npm 包](https://www.npmjs.com/package/@anthropic-ai/claude-code)
+
+截至本页核查时，官方 changelog 顶部为 `2.1.150`，说明这次主要是内部基础设施改进；前一版 `2.1.149` 包含 `/usage` 分类展示、diff 键盘滚动、Markdown task list 渲染和多项权限/PowerShell/工作树相关修复。
+
+## latest 和 stable 应该选哪个
+
+很多用户搜索“Claude Code 最新版本”，其实真正该问的是：**我应该追 latest，还是用 stable？**
+
+| 场景 | 建议通道 | 原因 |
+| ---- | -------- | ---- |
+| 个人学习和实验 | `latest` | 可以更快体验新能力。 |
+| 日常项目开发 | `latest` 或 `stable` | 如果你能接受小波动，用 latest；如果项目敏感，用 stable。 |
+| 团队统一工作流 | `stable` 起步 | 先降低因版本差异导致的协作成本。 |
+| 客户交付、生产仓库 | `stable` 或固定版本 | 发布前不应该突然引入未知变化。 |
+| 排查已知 bug | 先看 changelog，再决定 | 如果新版本明确修复你的问题，再升级。 |
+
+如果你是内容站、SaaS 模板、支付流程、数据库迁移或生产部署场景，建议把升级当成一个小变更：先在本地或测试仓库验证，再推广到主工作流。
+
+## 如何更新 Claude Code
+
+### Native installer
+
+原生安装通常会后台自动更新。如果你想立刻更新：
+
+```bash
+claude update
+claude --version
+```
+
+如果团队希望更保守，可以把自动更新通道设置为 stable。官方支持在设置中配置：
+
+```json
+{
+  "autoUpdatesChannel": "stable"
+}
+```
+
+也可以设置最低版本，避免团队机器低于指定版本：
+
+```json
+{
+  "autoUpdatesChannel": "stable",
+  "minimumVersion": "2.1.100"
+}
+```
+
+### npm 安装
+
+如果你是 npm 全局安装：
+
+```bash
+npm install -g @anthropic-ai/claude-code@latest
+claude --version
+```
+
+官方文档特别提醒：不要依赖 `npm update -g` 来追最新版本，因为它可能受原始安装时的 semver 范围影响，无法移动到真正最新版本。
+
+也不要用：
+
+```bash
+sudo npm install -g @anthropic-ai/claude-code
+```
+
+这容易引发权限和安全问题。遇到权限错误时，应该修 npm 全局目录或改用官方推荐的 native installer。
+
+### Homebrew
+
+如果你安装的是 stable cask：
+
+```bash
+brew upgrade claude-code
+claude --version
+```
+
+如果你安装的是 latest cask：
+
+```bash
+brew upgrade claude-code@latest
+claude --version
+```
+
+Homebrew 不会像 native installer 那样自动更新。旧版本可能留在磁盘上，可以定期运行：
+
+```bash
+brew cleanup
+```
+
+### WinGet
+
+```powershell
+winget upgrade Anthropic.ClaudeCode
+claude --version
+```
+
+如果升级失败，先关闭所有 Claude Code 会话，再重新运行升级命令。Windows 可能因为正在运行的可执行文件被锁定而无法覆盖。
+
+### apt / dnf / apk
+
+Debian 或 Ubuntu：
+
+```bash
+sudo apt update && sudo apt upgrade claude-code
+```
+
+Fedora 或 RHEL：
+
+```bash
+sudo dnf upgrade claude-code
+```
+
+Alpine：
+
+```bash
+apk update && apk upgrade claude-code
+```
+
+这些包管理器安装方式通常不会由 Claude Code 自己后台升级，而是跟随系统包管理器。
+
+## 更新前检查清单
+
+升级前先问这几个问题：
+
+| 检查项 | 为什么重要 |
+| ------ | ---------- |
+| 现在是哪个安装方式？ | native、npm、Homebrew、WinGet、apt/dnf/apk 的更新命令不同。 |
+| 当前版本是多少？ | 先运行 `claude --version`，不要凭感觉升级。 |
+| 需要最新功能，还是只想修 bug？ | 如果没有明确收益，可以等 stable。 |
+| 项目是否在发布前夕？ | 发布前临时升级容易引入不可控变量。 |
+| 团队是否统一版本？ | 不同版本可能导致 permission、快捷键、输出行为不同。 |
+| 是否涉及生产仓库？ | 先用小仓库或分支验证。 |
+
+如果你正在做数据库迁移、支付改造、Cloudflare 部署、SEO 旧站迁移，建议先用 [Plan Mode](/zh/tutorial/workflows/plan-mode) 做升级影响分析。
+
+## 更新后怎么验证
+
+升级成功不代表工作流就一定没问题。建议至少做这几步：
+
+```bash
+claude --version
+claude doctor
+```
+
+然后在一个小项目中验证：
+
+1. 能否正常启动 `claude`；
+2. 能否登录或读取当前账号状态；
+3. 能否读取项目文件；
+4. 常用 slash command 是否还在；
+5. permission mode 是否和预期一致；
+6. MCP server 是否能连接；
+7. IDE 或终端集成是否正常；
+8. 如果团队依赖 hooks、skills、plugins，确认它们没有报错。
+
+对团队来说，升级后最好记录：
+
+| 记录项 | 示例 |
+| ------ | ---- |
+| 升级前版本 | `2.1.142` |
+| 升级后版本 | `2.1.150` |
+| 安装方式 | Homebrew stable / npm / native |
+| 变更原因 | 需要某个 bug fix 或新功能 |
+| 验证结果 | `claude doctor` 正常，MCP 正常 |
+| 回滚方案 | 固定到上一版本或切回 stable |
+
+## 版本不一致排查
+
+### `claude --version` 还是旧版本
+
+先确认当前 shell 实际执行的是哪个二进制：
+
+```bash
+which claude
+npm list -g @anthropic-ai/claude-code --depth=0
+```
+
+macOS/Linux 如果多个路径都有 `claude`，可能是 PATH 顺序导致旧版本优先。Windows 则要分别检查 PowerShell、CMD、Git Bash、WSL 和 IDE 终端。
+
+### npm 显示最新，但本地不是最新
+
+常见原因：
+
+- 你不是用 npm 安装的；
+- 你用了 Homebrew stable cask；
+- native installer 还没重启生效；
+- 当前终端 PATH 指向旧二进制；
+- npm 全局目录权限导致安装没有真正覆盖。
+
+先确认安装方式，再用对应命令升级。
+
+### Windows 或 WSL 版本不一致
+
+PowerShell、CMD、Git Bash、WSL 是不同环境。你在 PowerShell 更新，不代表 WSL 里的 `claude` 也更新。原则是：**项目在哪个终端跑，就在哪个终端检查和更新。**
+
+### 更新后某个功能消失或行为变化
+
+先看官方 changelog，再检查：
+
+- 是否切换了 latest/stable；
+- 是否换了 permission mode；
+- 是否开启/关闭了 auto mode；
+- 是否有新的 settings 或 managed settings；
+- 是否是 CLI、Desktop、Web、IDE 插件入口差异；
+- 是否需要重启终端或 IDE。
+
+如果升级影响生产工作流，先退回上一个可用版本或切回 stable，再排查。
+
+## 如何固定版本
+
+如果你不想所有机器都自动追最新，可以用三种策略：
+
+| 策略 | 做法 | 适合场景 |
+| ---- | ---- | -------- |
+| 使用 stable 通道 | `autoUpdatesChannel: "stable"` 或 Homebrew stable cask | 团队默认策略。 |
+| 固定最低版本 | `minimumVersion` | 防止机器落后太多。 |
+| 安装具体版本 | native installer 支持传入版本号 | 客户交付、复现问题、临时回滚。 |
+
+安装具体版本示例：
+
+```bash
+curl -fsSL https://claude.ai/install.sh | bash -s 2.1.89
+```
+
+如果你需要验证二进制完整性，官方发布包提供 manifest、签名和校验流程；这类操作更适合企业或受控环境。
+
+## 常见问题
+
+### Claude Code 最新版本是多少？
+
+截至 2026 年 5 月 24 日核查，npm 的 `latest` 和 `next` 为 `2.1.150`，`stable` 为 `2.1.142`。但版本变化很快，实际升级前请重新运行：
+
+```bash
+npm view @anthropic-ai/claude-code dist-tags --json
+```
+
+### 为什么官方 changelog 和 npm 版本看起来不一致？
+
+发布、文档生成、包管理器同步可能存在时间差。先以你安装方式对应的源为准，再用官方 changelog 判断这次更新是否值得升级。
+
+### 我应该每次都升级到最新吗？
+
+不一定。个人实验可以追 latest；生产仓库、团队协作和客户项目更适合 stable 或固定版本。
+
+### Claude Code 会自动更新吗？
+
+native installer 会后台自动更新。Homebrew、WinGet、apt、dnf、apk 通常需要手动升级。npm 安装也需要手动运行安装命令。
+
+### `claude update` 和 `npm install -g` 应该用哪个？
+
+看你最初怎么安装。native installer 用 `claude update`；npm 安装用 `npm install -g @anthropic-ai/claude-code@latest`。不要混用多个安装器，否则容易出现版本不一致。
+
+## 相关页面
+
+- [如何安装 Claude Code](/zh/faqs/how-to-install-claude-code)
+- [如何在 Windows 上安装 Claude Code](/zh/faqs/how-to-install-claude-code-on-windows)
+- [Claude Code 用量限制](/zh/faqs/claude-code-usage-limits)
+- [Plan Mode 使用教程](/zh/tutorial/workflows/plan-mode)
+- [工具权限配置](/zh/tutorial/configuration/tools-allowlist)
+- [Claude Code API 文档在哪里](/zh/faqs/claude-code-api-documentation)
+- [故障排查入口](/zh/troubleshooting)
+
+## 官方来源
+
+- [Claude Code Changelog](https://code.claude.com/docs/en/changelog)
+- [Claude Code Advanced setup](https://code.claude.com/docs/en/installation)
+- [Claude Code npm package](https://www.npmjs.com/package/@anthropic-ai/claude-code)
+- [Troubleshoot installation and login](https://code.claude.com/docs/en/troubleshoot-install)

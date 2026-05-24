@@ -1,0 +1,91 @@
+---
+title: 'How Much Is Claude Code?'
+description: 'Current Claude Code pricing guide for Free, Pro, Max, Team, Enterprise, API billing, usage credits, and cost-control habits.'
+schema_question: 'How much is Claude Code?'
+schema_answer: 'Claude Code is included with eligible Claude subscriptions such as Pro, Max, Team, and Enterprise, and can also be used through Console or cloud-provider API billing. Free Claude accounts do not include Claude Code access. Pricing and usage limits change, so verify the official Claude pricing page and your account before buying.'
+---
+
+Claude Code does not have one universal price. The cost depends on how you sign in: an eligible Claude subscription, a Team or Enterprise seat, a Claude Console API account, or a cloud provider such as Bedrock, Vertex AI, or Microsoft Foundry.
+
+> Last checked on May 24, 2026. Use this page as a decision guide, not a frozen price table. Always verify final prices, tax, regional availability, usage credits, and plan limits in your own Claude account.
+
+## Short Answer
+
+- The free Claude plan does not include Claude Code access.
+- Claude Pro includes Claude Code and is the entry plan for most individual learners.
+- Claude Max adds much higher usage than Pro and is the better fit for daily coding.
+- Team and Enterprise are for shared billing, admin controls, security, and organization use.
+- API or cloud-provider usage is pay-as-you-go and can scale beyond subscription limits, but you must monitor spend.
+
+## Current Plan Comparison
+
+| Path | Public price signal | Claude Code fit | Watch out for |
+| --- | --- | --- | --- |
+| Free | $0 | Not a Claude Code plan. Useful only for general Claude testing. | Claude Code requires an eligible paid plan or Console/provider access. |
+| Pro | $17/month with annual billing, or $20 monthly, on the public pricing page. | Best starting point for learning, small repositories, and occasional coding. | Usage is shared across Claude surfaces and may run out during long sessions. |
+| Max 5x | $100/month on Claude Max. | Better for frequent Claude Code sessions and larger repositories. | Still finite; use `/model`, `/clear`, and Plan Mode to avoid burning quota. |
+| Max 20x | $200/month on Claude Max. | Best individual subscription path for heavy daily coding. | Do not treat it as unlimited. Long context and Opus can still drain usage. |
+| Team | Standard seats are listed from $20/seat/month annually, with higher-usage premium seats listed separately. | Useful when several developers need centralized billing, connectors, admin controls, and more predictable adoption. | Seat type matters. Check annual vs monthly billing and org controls. |
+| Enterprise | Seat price plus usage at API rates is shown on the public pricing page for self-serve Enterprise. | Fit for governed rollout, SSO, audit logs, compliance, spend controls, and organization-wide usage. | Requires a billing and governance decision, not just a developer preference. |
+| API / Console / cloud | Pay per token and feature usage. | Best for automation, CI, Agent SDK, custom workflows, or intensive sprints after subscription limits. | Costs can grow quickly if a script loops, reads huge context, or runs unattended. |
+
+## API Prices That Matter for Claude Code Users
+
+API pricing matters when you authenticate with `ANTHROPIC_API_KEY`, use the Agent SDK, run automation, or choose pay-as-you-go credits after subscription limits.
+
+| Model family | Public input price | Public output price | Practical use |
+| --- | --- | --- | --- |
+| Opus 4.7 | $5 / million tokens | $25 / million tokens | Hard architecture, cross-repo reasoning, difficult debugging. |
+| Sonnet 4.6 | $3 / million tokens | $15 / million tokens | Default daily coding balance of quality, speed, and cost. |
+| Haiku 4.5 | $1 / million tokens | $5 / million tokens | Fast checks, simple edits, summaries, high-volume mechanical work. |
+
+Other billable features can matter too. Public pricing lists web search separately from token costs, and code execution includes free daily organization hours before additional hourly charges. If your workflow uses these features through the API, monitor them separately from model tokens.
+
+## Subscription vs API Billing
+
+The most common pricing mistake is assuming every Claude Code session uses the same billing path.
+
+If you log in with a Pro, Max, Team, or Enterprise subscription, Claude Code uses the included usage for that account. If an API key is set and accepted, API billing can take precedence in terminal sessions. That means a developer may think they are using subscription quota while actually charging a Console or provider account.
+
+Run these checks before a long session:
+
+1. Run `/status` to confirm the active account and credential path.
+2. Run `/model` to confirm the model you are about to use.
+3. Check whether `ANTHROPIC_API_KEY`, `ANTHROPIC_AUTH_TOKEN`, Bedrock, Vertex, or Foundry environment variables are set.
+4. For API usage, monitor the Console or cloud-provider billing dashboard.
+5. For subscription usage, watch the reset message and consider usage credits if available for your plan.
+
+## Which Plan Should You Choose?
+
+| Your workflow | Start here | Upgrade when |
+| --- | --- | --- |
+| Learning Claude Code, small side projects | Pro | You regularly hit limits before finishing normal tasks. |
+| Daily development in one or two repositories | Max 5x | You need longer sessions, larger context, or more Opus planning. |
+| Heavy coding, large refactors, repeated long sessions | Max 20x | You still need team controls, auditability, or shared billing. |
+| Team rollout | Team | You need SSO, audit logs, custom data retention, or spend controls. |
+| CI, productized agents, internal tools | API or Agent SDK | You need predictable automation boundaries and programmatic control. |
+
+## Cost Control Habits
+
+- Use Sonnet for most implementation work. Switch to Opus for hard planning or stuck debugging, then switch back.
+- Use Plan Mode before multi-file changes. A short plan is cheaper than reverting a large wrong diff.
+- Run `/clear` between unrelated tasks so old conversation history is not resent every turn.
+- Run `/compact` when you are mid-task and need to preserve context without carrying the whole transcript.
+- Reference file paths instead of pasting large files into the prompt.
+- Keep `CLAUDE.md` useful but short. Stale project memory wastes context.
+- For API automation, set workspace spend limits and alerting before running loops.
+
+## Related Guides
+
+- [Claude Code usage limits](/en/faqs/claude-code-usage-limits)
+- [Plan Mode](/en/faqs/what-is-plan-mode)
+- [Claude Code API documentation](/en/faqs/claude-code-api-documentation)
+- [Pricing and limits hub](/en/pricing)
+
+## Official Sources
+
+- [Claude pricing](https://claude.com/pricing)
+- [Claude Code installation and access requirements](https://code.claude.com/docs/en/installation)
+- [Use Claude Code with Pro or Max](https://support.claude.com/en/articles/11145838-use-claude-code-with-your-pro-or-max-plan)
+- [Models, usage, and limits in Claude Code](https://support.claude.com/en/articles/14552983-models-usage-and-limits-in-claude-code)
+- [Claude Code cost management](https://code.claude.com/docs/en/costs)

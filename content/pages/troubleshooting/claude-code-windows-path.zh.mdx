@@ -1,0 +1,29 @@
+---
+title: 'Claude Code Windows PATH 配置'
+description: '排查 Claude Code 在 Windows 上因为 PATH、PowerShell、CMD、Git Bash、WSL 或安装命令不匹配导致的问题。'
+---
+
+Windows 上的 Claude Code 安装问题，很多来自 PowerShell、CMD、Git Bash、WSL 和 PATH 变更混在一起。先确定你使用哪一个 Shell，再确认这个 Shell 能找到 `claude` 命令。
+
+## 先修 PATH
+
+1. 安装后先重启终端。
+2. 运行 `claude --version`。
+3. 如果失败，运行 `where.exe claude`。
+4. 确认用户级 Claude Code 安装目录已经进入 PATH。
+5. 确认安装命令和当前 Shell 匹配。
+
+## Shell 不匹配的信号
+
+如果 `irm` 无法识别，你可能在 CMD 而不是 PowerShell。如果 `bash` 无法识别，你可能在 Windows Shell 中运行了 macOS/Linux 命令。如果某个 Shell 能运行 `claude`，另一个不能，说明 PATH 没有在不同环境中一致生效。
+
+## 相关页面
+
+- [claude command not found](/zh/troubleshooting/claude-command-not-found)
+- [如何在 Windows 上安装 Claude Code](/zh/faqs/how-to-install-claude-code-on-windows)
+- [安装教程](/zh/tutorial/getting-started/installation)
+
+## 官方来源
+
+- [Claude Code 安装和登录排查](https://code.claude.com/docs/en/troubleshoot-install)
+- [Claude Code Getting Started](https://code.claude.com/docs/en/getting-started)

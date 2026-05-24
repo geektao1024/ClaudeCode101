@@ -1,0 +1,174 @@
+---
+title: 'What Is Claude Code Headless Mode?'
+description: 'Claude Code headless mode explained: claude -p, print mode, JSON output, stream-json, CI checks, tool permissions, credentials, Agent SDK boundaries, and safe automation.'
+schema_question: 'What is Claude Code headless mode?'
+schema_answer: 'Claude Code headless mode usually means running Claude Code non-interactively with claude -p or --print. It is useful for one-shot scripts, CI summaries, JSON output, and read-only audits when credentials, tool permissions, output format, turn limits, budget limits, and failure handling are explicit.'
+---
+
+Claude Code Headless Mode means running Claude Code without staying in the normal interactive terminal chat. In official CLI terms, the common version is **print mode** with `claude -p` or `claude --print`: Claude receives a prompt, produces an answer, and exits.
+
+```bash
+claude -p "Summarize the current diff and list release risks"
+```
+
+> Last checked on May 24, 2026. Claude Code CLI flags and automation behavior change quickly. Verify the current [CLI reference](https://code.claude.com/docs/en/cli-reference) before depending on a CI or production workflow.
+
+## Short Answer
+
+Use `claude -p` for one-shot automation. Before putting it in CI, make the output format, credentials, tool permissions, turn limits, budget limits, and failure behavior explicit.
+
+| Use headless mode when... | Avoid headless mode when... |
+| --- | --- |
+| The task has clear input and expected output. | The task needs product discussion or clarification. |
+| You want a PR summary, changelog draft, or read-only audit. | The task touches auth, billing, database migrations, or deploys without review. |
+| A script can parse JSON or text output. | The script would need broad write, shell, network, or MCP access. |
+| The workflow is already proven interactively. | You are still discovering the workflow. |
+
+For unclear or risky work, start in [Plan Mode](/en/faqs/what-is-plan-mode) or the full [Headless Mode guide](/en/tutorial/advanced/headless-mode) before automating.
+
+## Common Commands
+
+### One-shot answer
+
+```bash
+claude -p "Explain what changed in this repository"
+```
+
+### Pipe input
+
+```bash
+git diff --stat | claude -p "Summarize this diff stat for release notes"
+```
+
+### JSON output
+
+```bash
+claude -p "Review this diff and return the top risks" \
+  --output-format json
+```
+
+### Stream JSON output
+
+```bash
+claude -p "Audit this pull request for release risk" \
+  --output-format stream-json \
+  --verbose
+```
+
+### Bounded read-only review
+
+```bash
+claude -p "Review this diff for risky changes. Do not edit files." \
+  --permission-mode plan \
+  --tools "Read,Grep,Glob,Bash" \
+  --allowedTools "Bash(git diff *)" "Bash(git status *)" \
+  --max-turns 3 \
+  --output-format json
+```
+
+This is closer to a CI-safe pattern because it restricts available tools, pre-approves only narrow shell commands, and limits agentic turns.
+
+## Useful Flags
+
+| Flag | Use |
+| --- | --- |
+| `-p`, `--print` | Run a prompt and exit without the interactive UI. |
+| `--output-format text` | Human-readable output. |
+| `--output-format json` | One final machine-readable response. |
+| `--output-format stream-json` | Streaming events for long-running jobs or logs. |
+| `--json-schema` | Validate print-mode output against a JSON schema. |
+| `--permission-mode plan` | Analyze without approving edits. |
+| `--tools` | Restrict which tools are available to the run. |
+| `--allowedTools` | Pre-approve narrow tools or command patterns. |
+| `--disallowedTools` | Deny risky tools or command patterns. |
+| `--max-turns` | Stop runaway agent loops. |
+| `--max-budget-usd` | Cap API spend in print mode. |
+| `--fallback-model` | Use a fallback model when the default is overloaded in print/background runs. |
+| `--bare` | Start with minimal auto-discovery; useful for faster scripts, but understand what context it skips. |
+
+Prompt wording is not a security boundary. Use permissions and tool restrictions for the real boundary.
+
+## Good Headless Use Cases
+
+- Summarize a pull request diff.
+- Generate release notes from recent commits.
+- Check docs for outdated commands.
+- Produce a JSON risk report for an internal review pipeline.
+- Run a read-only repository audit.
+- Inspect whether a migration plan touches forbidden directories.
+
+## Risky Use Cases
+
+- Giving CI broad write tools without review.
+- Running on untrusted pull requests with powerful tools.
+- Combining production credentials, MCP servers, and broad shell access.
+- Retrying indefinitely after failures.
+- Treating subscription login, API key billing, and cloud-provider credentials as interchangeable.
+- Letting a script push, deploy, delete, or publish after a model response.
+
+## Credentials and Billing
+
+Headless runs need deliberate authentication. Depending on setup, `ANTHROPIC_API_KEY`, `ANTHROPIC_AUTH_TOKEN`, cloud-provider variables, OAuth tokens, or Claude subscription login can change how the run is authorized and billed.
+
+Before CI:
+
+| Check | Why |
+| --- | --- |
+| Auth source | Prevents local login from hiding missing CI credentials. |
+| Spend limit | Stops repeated jobs from creating surprise cost. |
+| Tool policy | Prevents scripts from editing, deleting, pushing, or deploying unexpectedly. |
+| Log policy | Keeps API keys, tokens, and private code out of CI logs. |
+| Failure behavior | Defines whether the job warns, blocks, or opens a review ticket. |
+
+## Headless Mode vs Agent SDK
+
+Use `claude -p` when a shell command is enough. Use the [Agent SDK](/en/faqs/claude-code-api-documentation) when you are building a real program around Claude Code.
+
+| Need | Prefer |
+| --- | --- |
+| One prompt, one answer | `claude -p` |
+| PR summary in CI | `claude -p` |
+| Changelog draft | `claude -p` |
+| Long-running service | Agent SDK |
+| Custom approval flow | Agent SDK |
+| Programmatic sessions and observability | Agent SDK |
+| Embedded product workflow | Agent SDK |
+
+Do not start with the SDK if a simple `claude -p` command solves the problem. Do not keep stretching shell scripts if you need sessions, approvals, custom tools, and production boundaries.
+
+## FAQ
+
+### Is headless mode the same as the Claude API?
+
+No. Headless mode runs Claude Code non-interactively. The Claude API is the platform API for calling models from your own application.
+
+### Is `claude -p` safe for CI?
+
+It can be, if the prompt is narrow and tools, credentials, output format, limits, and failure behavior are explicit. A vague headless job with broad tools is not safe.
+
+### Can headless mode edit files?
+
+It depends on permissions and available tools. If you want read-only behavior, use `--permission-mode plan`, restrict `--tools`, and deny `Edit` or `Write` where appropriate.
+
+### Should I use JSON or stream-json?
+
+Use JSON when your script needs one final response. Use stream-json when you need progress events or long-running job logs.
+
+### Should I use `--bare`?
+
+Use `--bare` only when you understand what it skips, such as auto-discovery of project context. It can make scripted calls simpler and faster, but it may also omit important project rules.
+
+## Related Guides
+
+- [Full Headless Mode guide](/en/tutorial/advanced/headless-mode)
+- [Claude Code API documentation](/en/faqs/claude-code-api-documentation)
+- [Tools allowlist](/en/tutorial/configuration/tools-allowlist)
+- [Usage limits](/en/faqs/claude-code-usage-limits)
+- [Plan Mode](/en/faqs/what-is-plan-mode)
+- [MCP servers](/en/faqs/claude-code-mcp-servers)
+
+## Official Sources
+
+- [Claude Code CLI reference](https://code.claude.com/docs/en/cli-reference)
+- [Claude Code permissions](https://code.claude.com/docs/en/permissions)
+- [Claude Agent SDK](https://code.claude.com/docs/en/agent-sdk)

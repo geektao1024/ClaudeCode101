@@ -1,0 +1,369 @@
+---
+title: 'Claude Code Slash Commands 指南'
+description: '系统讲解 Claude Code slash commands、内置命令、自定义命令、skills、参数、frontmatter、动态上下文、MCP prompts 和团队工作流。'
+---
+
+Slash commands 是 Claude Code 会话里的控制入口。它们以 `/` 开头，可以切换模式、管理记忆、检查上下文、运行工作流快捷方式、调用 MCP prompts，也可以调用自定义命令或 skills。当前需要注意的变化是：旧的 custom commands 仍然可用，但新的可复用工作流更推荐用 skills 来封装。
+
+> 最后核查：2026 年 5 月 24 日。Claude Code 仍支持 `.claude/commands/` 和 `~/.claude/commands/` 下的 legacy custom commands，但当前官方文档更推荐新工作流使用 skills。Skills 也可以用 `/name` 手动调用，同时支持更好的文件组织、参考资料、脚本和自动触发。
+
+## 快速结论
+
+会话控制用内置 slash commands：`/help`、`/commands`、`/context`、`/compact`、`/clear`、`/memory`、`/mcp`、`/agents`、`/permissions`、`/model`、`/usage`。团队重复执行同一类提示词时，用 project command 或 skill。MCP server 暴露 prompt 时，用 MCP slash command。如果一个流程需要示例、脚本、参考文件或多步骤说明，优先做成 skill，而不是继续塞进 legacy command。
+
+判断规则：
+
+- **控制会话：** 用内置命令；
+- **短提示词快捷方式：** legacy command 可以接受；
+- **可复用工作流：** 优先创建 skill；
+- **外部系统 prompt：** 用 MCP prompt commands；
+- **强安全规则：** 用 permissions、hooks 或 CI，不要靠 slash command。
+
+## Slash Commands 是什么
+
+Claude Code 只会在消息开头识别 slash command。命令名后面的文本会作为参数传入。
+
+```text
+/compact focus on changed files, remaining risks, and verification commands
+/context
+/model
+/review
+/my-command issue-123 high-priority
+```
+
+它的价值是把常用动作变短、变稳定。但命令本身不是魔法，背后的流程设计才决定它是否好用。
+
+## 常用内置命令
+
+具体可用列表取决于 Claude Code 版本、账号、启用功能、插件和运行环境。输入 `/` 可以查看当前环境可用命令。
+
+| 命令 | 用途 | 实战提示 |
+| --- | --- | --- |
+| `/help` 或 `/commands` | 查看可用命令。 | 找不到命令时先看这里。 |
+| `/init` | 生成初始 `CLAUDE.md`。 | 生成后立刻精简，不要放任变长。 |
+| `/memory` | 查看或编辑 memory files。 | 适合同类纠正反复出现后使用。 |
+| `/context` | 检查 context window 占用。 | 长会话中途很有用。 |
+| `/compact [instructions]` | 压缩长对话。 | 一定要加聚焦指令。 |
+| `/clear [name]` | 清空对话上下文。 | 切换任务时使用。 |
+| `/resume` | 恢复已保存会话。 | 适合继续旧任务。 |
+| `/model` | 切换模型。 | 只有任务需要时才换更重模型。 |
+| `/usage` | 查看用量、成本或活动统计。 | 适合控制配额。 |
+| `/mcp` | 管理 MCP 连接。 | 查看工具和 prompts。 |
+| `/agents` | 管理 subagents。 | 适合专家角色和并行调研。 |
+| `/permissions` | 查看或修改工具权限。 | 不要把危险操作藏进命令。 |
+| `/review` | 请求代码审查。 | 适合实现后检查，不能代替测试。 |
+
+内置命令是工作流快捷入口，不替代理解项目、规划风险修改和验证结果。
+
+## Legacy Custom Commands 和 Skills 的区别
+
+旧版 Claude Code custom commands 是 Markdown 文件。它们仍然可用，很多团队也已经沉淀了这类文件。
+
+| 格式 | 位置 | 范围 | 当前建议 |
+| --- | --- | --- | --- |
+| 项目 legacy command | `.claude/commands/<name>.md` | 当前仓库 | 仍支持，适合短快捷方式。 |
+| 个人 legacy command | `~/.claude/commands/<name>.md` | 所有项目 | 仍支持，适合个人习惯。 |
+| 项目 skill | `.claude/skills/<name>/SKILL.md` | 当前仓库 | 新可复用工作流优先。 |
+| 个人 skill | `~/.claude/skills/<name>/SKILL.md` | 所有项目 | 个人复杂流程优先。 |
+| Plugin skill | 插件提供的 skill 路径 | 插件启用处 | 通常带插件命名空间。 |
+
+legacy command 和 skill 都可以产生 `/name` 调用。如果 skill 和 command 同名，当前文档说明 skill 优先。
+
+短提示词可以继续用 legacy command：
+
+```text
+Review the current diff for readability, missing tests, and risky assumptions.
+Return findings first, then a short summary.
+```
+
+但如果流程包含这些内容，就应该做成 skill：
+
+- 多步骤；
+- 示例输出；
+- supporting files；
+- scripts 或 dynamic context；
+- 需要 description 帮 Claude 自动触发；
+- 命令文件已经越来越像小手册。
+
+## 文件位置和命名
+
+legacy command 的文件名就是命令名：
+
+```text
+.claude/commands/review-diff.md  ->  /review-diff
+~/.claude/commands/security.md   ->  /security
+```
+
+skill 用目录名作为命令名：
+
+```text
+.claude/skills/review-diff/SKILL.md  ->  /review-diff
+~/.claude/skills/security/SKILL.md   ->  /security
+```
+
+命名要短、明确、动作化：
+
+- `/review-diff`
+- `/fix-issue`
+- `/write-tests`
+- `/release-notes`
+- `/security-check`
+- `/seo-audit`
+
+不要用 `/do-it`、`/help-me`、`/magic` 这种看不出行为的名字。
+
+## 参数和占位符
+
+slash command 名称后的内容会作为参数传入。
+
+```text
+/fix-issue 123 high-priority
+/review-pr 456 security alice
+/release-notes v1.4.0
+```
+
+legacy command 常用占位符包括：
+
+| 占位符 | 用途 |
+| --- | --- |
+| `$ARGUMENTS` | 捕获全部参数。 |
+| `$1`、`$2`、`$3` | 捕获位置参数。 |
+| `@file` 引用 | 把文件内容拉入 prompt。 |
+| `!` 命令注入 | Claude 看到 prompt 前先运行 shell 命令。 |
+
+示例 legacy command：
+
+```md
+---
+argument-hint: [issue-number] [priority]
+description: Plan a fix for a GitHub issue
+allowed-tools: Read, Grep, Glob
+---
+
+Plan a fix for issue #$1 with priority $2.
+
+Before proposing changes:
+- inspect the relevant files;
+- identify risks;
+- list verification commands;
+- do not edit files yet.
+```
+
+skills 也支持类似的 slash 调用和参数传递。如果 skill 收到参数但没有显式占位符，Claude Code 可以把参数附加到加载后的 skill 内容末尾。结构化工作流建议明确写出占位符和 `argument-hint`。
+
+## 重要 Frontmatter
+
+Frontmatter 能让命令或 skill 更可发现、更安全。
+
+| 字段 | 价值 |
+| --- | --- |
+| `description` | 帮用户理解命令，也帮助 Claude 判断是否自动使用 skill。 |
+| `argument-hint` | 自动补全时提示参数格式。 |
+| `allowed-tools` | 限制命令或 skill 可用工具。 |
+| `model` | 必要时指定模型，谨慎使用。 |
+
+推荐写法：
+
+```yaml
+---
+description: Review the current diff for correctness, missing tests, and risky assumptions.
+argument-hint: [optional-focus]
+allowed-tools: Read, Grep, Glob, Bash(git diff:*), Bash(git status:*)
+---
+```
+
+不要为了省事给命令开放大范围 Bash 权限。如果只需要 `git diff`，就只允许相关命令。
+
+## 动态上下文注入
+
+Claude Code 可以在 command 或 skill 加载前用 `!` 语法运行 shell 片段，并把输出插入 prompt。
+
+```md
+---
+description: Summarize the current Git diff
+allowed-tools: Bash(git diff:*), Bash(git status:*)
+---
+
+## Current status
+
+!`git status --short`
+
+## Current diff
+
+!`git diff HEAD`
+
+## Task
+
+Summarize the changes, list risks, and recommend verification.
+```
+
+这个能力很强，因为 Claude 能看到真实当前数据。但也有风险：命令太宽、太慢、输出 secrets，都会带来问题。除非有强理由，否则动态命令保持只读。
+
+## 文件引用
+
+如果命令应该检查固定文件，可以用 `@` 引用：
+
+```md
+Compare @src/auth/session.ts with @src/auth/middleware.ts.
+List behavior differences, risks, and tests to run.
+```
+
+好命令会缩小上下文。坏命令每次都要求“检查整个仓库”。如果一个命令经常需要很多文件，应该改成 skill，并写清楚探索流程。
+
+## MCP Slash Commands
+
+MCP servers 可以把 prompts 暴露成 slash commands。它们会从已连接的 MCP server 动态发现，通常长这样：
+
+```text
+/mcp__<server-name>__<prompt-name> [arguments]
+```
+
+示例：
+
+```text
+/mcp__github__list_prs
+/mcp__github__pr_review 456
+/mcp__jira__create_issue "Bug title" high
+```
+
+用 `/mcp` 查看已连接服务器、认证状态、可用 prompts 和 tools。权限要收窄。MCP prompts 有价值，但它们的可信度取决于 server 和数据源本身。
+
+## 什么时候值得创建命令
+
+当流程反复出现，并且结构稳定时，才值得沉淀。
+
+适合创建：
+
+- review 当前 diff；
+- 为 issue 规划修复方案；
+- 根据 commits 生成 release notes；
+- 给某个模块生成测试计划；
+- 审查 SEO 页面；
+- 总结失败测试日志；
+- 准备迁移检查清单；
+- 执行安全 review checklist；
+- 起草 PR description。
+
+不适合创建：
+
+- 一次性 prompt；
+- 隐藏写操作的高风险部署；
+- 模糊的“帮我优化一下”；
+- 应该放在 docs 里的长项目手册；
+- 每次都该生效的规则，这应该放进 `CLAUDE.md` 或 rules；
+- 硬控制，这应该交给 permissions、hooks 或 CI。
+
+## Command、CLAUDE.md、Skill、Hook、Subagent 怎么选
+
+| 需求 | 最适合机制 |
+| --- | --- |
+| 每次会话都要知道的稳定项目事实 | `CLAUDE.md` |
+| 简短可复用提示词 | legacy command 或小 skill |
+| 带示例、脚本、参考资料的可复用流程 | Skill |
+| 生命周期节点必须自动执行的检查 | Hook |
+| 独立上下文里的专家角色 | Subagent |
+| 外部 server prompt 或工具流程 | MCP prompt 或 MCP tool |
+| 强制 allow/deny 策略 | Permissions/settings/CI |
+
+分工清楚，命令才会好用。如果命令开始变长、常驻、或承担安全策略，它通常已经用错位置。
+
+## 团队命名和维护
+
+共享仓库可以这样约定：
+
+1. `.claude/commands/` 只保留真正简单的项目命令；
+2. 新可复用流程优先放到 `.claude/skills/<name>/SKILL.md`；
+3. 命名使用 lowercase kebab-case；
+4. 每个命令写一句 description；
+5. 需要输入的命令加 `argument-hint`；
+6. `allowed-tools` 保持最小；
+7. 写明期望输出格式；
+8. 写明哪些内容不能未经确认就改；
+9. 架构大改后审查命令；
+10. 删除没人使用的命令。
+
+命令应该降低认知负担。如果队友需要开会才能理解一个命令，它就太黑箱了。
+
+## 实用模板
+
+### Diff Review
+
+```md
+---
+description: Review the current diff for correctness and risk.
+allowed-tools: Bash(git diff:*), Bash(git status:*), Read, Grep, Glob
+---
+
+## Current status
+
+!`git status --short`
+
+## Current diff
+
+!`git diff HEAD`
+
+## Task
+
+Review the diff. Return findings first, ordered by severity.
+Focus on behavior regressions, missing tests, route or metadata risk, and unintended edits.
+Then provide a short summary and verification suggestions.
+```
+
+### Issue Fix Plan
+
+```md
+---
+description: Plan a safe fix for an issue before editing.
+argument-hint: [issue-or-url]
+allowed-tools: Read, Grep, Glob
+---
+
+Plan a fix for: $ARGUMENTS
+
+Do not edit files yet.
+Identify likely files, assumptions, risks, and verification steps.
+If the issue is unclear, ask for the missing information.
+```
+
+### Release Notes
+
+```md
+---
+description: Draft release notes from recent commits.
+argument-hint: [range]
+allowed-tools: Bash(git log:*), Bash(git diff:*)
+---
+
+Use this range: $ARGUMENTS
+
+Summarize user-facing changes, fixes, breaking changes, and verification notes.
+Keep internal refactors separate from public release notes.
+```
+
+## 常见错误
+
+| 错误 | 为什么有问题 | 更好的做法 |
+| --- | --- | --- |
+| 每个 prompt 都做成命令 | 命令列表会变乱。 | 只沉淀重复流程。 |
+| 长流程还塞在 legacy command | 难维护，也难发现。 | 转成 skill。 |
+| Bash 权限开太宽 | 风险变高。 | 收窄 `allowed-tools`。 |
+| 把写操作藏在命令里 | 用户会被突袭。 | 写操作显式说明并要求确认。 |
+| 没有 argument hint | 用户记不住输入格式。 | 添加 `argument-hint`。 |
+| 重复 `CLAUDE.md` 内容 | 浪费上下文，还容易冲突。 | 链接长期规则即可。 |
+| 把命令当成策略 | 命令是可选的。 | 用 permissions、hooks 或 CI。 |
+| 仓库变化后不更新命令 | 自动化会变过时。 | 大改后审查命令。 |
+
+## 相关页面
+
+- [自定义命令 FAQ](/zh/faqs/claude-code-custom-commands)
+- [自定义命令教程](/zh/tutorial/tools-integration/custom-commands)
+- [CLAUDE.md 指南](/zh/mechanics/claude-md)
+- [上下文管理](/zh/mechanics/context-management)
+- [Hooks](/zh/mechanics/hooks)
+- [Subagents](/zh/mechanics/subagents)
+
+## 官方来源
+
+- [Claude Code commands reference](https://code.claude.com/docs/en/commands)
+- [Extend Claude with skills](https://code.claude.com/docs/en/slash-commands)
+- [Slash commands in the Claude Agent SDK](https://code.claude.com/docs/en/agent-sdk/slash-commands)

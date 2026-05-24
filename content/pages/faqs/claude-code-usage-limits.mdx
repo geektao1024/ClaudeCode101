@@ -1,0 +1,169 @@
+---
+title: 'Claude Code Usage Limits'
+description: 'Claude Code usage limits explained: subscription vs API metering, session and weekly limits, context length, /usage, /cost, /clear, /compact, extra usage, and cost-control habits.'
+schema_question: 'What are Claude Code usage limits?'
+schema_answer: 'Claude Code usage limits depend on how you authenticate, which plan or provider you use, the active model, conversation length, project context, tool output, and account state. Subscription users may see session or weekly reset windows, while API-key users are billed by token usage and provider rules.'
+---
+
+Claude Code usage limits are the account, plan, context, or billing boundaries that determine how long you can keep working before you need to wait, clear context, change model, buy extra usage, upgrade, or switch to API billing.
+
+They are not simple message counts. A short prompt in a huge session can cost more than a long prompt in a clean session because Claude Code carries conversation history, `CLAUDE.md`, files it has read, tool output, and model reasoning into later turns.
+
+> Last checked on May 24, 2026. Exact allowances, reset windows, model names, usage-credit rules, and subscription handling can change. Trust the reset message inside Claude Code and your account dashboard over any third-party table.
+
+## Short Answer
+
+If you use Claude Code through a Claude subscription, usage is tied to your plan and can be shared with other Claude surfaces. If you use an API key or cloud provider, usage is metered by tokens and provider billing rules.
+
+| Question | Practical answer |
+| --- | --- |
+| Are limits message counts? | No. Context size, model, tools, files, and session length matter. |
+| Does Claude Code share Claude app limits? | For paid subscription plans, official support says Claude product surfaces share usage limits. |
+| What if I use an API key? | You are billed by token/provider usage rather than a subscription reset window. |
+| Is context full the same as usage limit? | No. Context length is about how much the model can hold in one session. |
+| Fastest way to save usage? | Use `/clear` between unrelated tasks and `/compact` during long tasks. |
+
+## The Four Different "Limits"
+
+Users often mix these up:
+
+| Limit type | What it means | What to do |
+| --- | --- | --- |
+| Usage limit | Your subscription, seat, or org allowance has been used for the current window. | Wait for reset, use `/usage`, switch model, enable extra usage if available, or upgrade. |
+| Context or length limit | The session is carrying too much conversation, file content, tool output, or MCP output. | Use `/compact`, `/clear`, trim logs, and split the task. |
+| Rate limit | Requests or tokens are arriving faster than your account/provider allows. | Reduce parallel runs, slow scripts, retry later, or request appropriate limits. |
+| Credit or spend limit | API credits, auto-reload, cloud quota, or workspace spend cap stops the run. | Check the Console or cloud billing dashboard before retrying. |
+
+When someone says "Claude Code limit", first identify which of the four it is. The fix is different.
+
+## Subscription vs API Metering
+
+| Login path | How usage works | What "running out" looks like | Where to check |
+| --- | --- | --- | --- |
+| Pro / Max via `/login` | Included subscription usage, shared across Claude surfaces. | Session, weekly, or model-specific reset message. | Claude Code usage message, Claude account settings, `/usage`. |
+| Team / Enterprise via `/login` | Organization seat, pool, or policy rules. | Team/org limit message or admin-managed restriction. | Admin console, org analytics, policy settings, `/usage`. |
+| `ANTHROPIC_API_KEY` | Pay-as-you-go token billing through Console. | Usually no subscription-style reset; spend continues until credit/spend/rate limit. | Claude Console usage, billing, spend limits, `/cost`. |
+| Bedrock / Vertex / Microsoft Foundry | Provider-side token billing and quotas. | Provider quota, rate, or billing behavior. | Cloud console, quota page, provider billing. |
+
+Important: if an `ANTHROPIC_API_KEY` environment variable is active, a terminal session may use API billing instead of your subscription path. Check authentication before assuming which bucket you are spending.
+
+## What Consumes Usage
+
+Every turn can include:
+
+1. Conversation history from the current session.
+2. `CLAUDE.md`, local memory, settings, rules, and loaded skills.
+3. Files Claude Code has read.
+4. Tool results, command output, search output, MCP output, and diffs.
+5. Your new prompt.
+6. The selected model and reasoning effort.
+
+The multiplier is accumulated context. A session that already explored twenty files, printed large logs, and generated several diffs gets heavier on later turns.
+
+## Commands That Help
+
+| Command | Use it for |
+| --- | --- |
+| `/usage` | See plan limits and reset information when available. |
+| `/cost` | See token and dollar usage for API-billed sessions. |
+| `/model` | Inspect available models and switch to a lighter model when appropriate. |
+| `/clear` | Start a fresh conversation; best when switching tasks. |
+| `/compact` | Summarize history and keep going on the same task. |
+| `/context` | Inspect what is loaded and find bloated context. |
+| `/status` | Confirm the active account, project, and authentication path when available. |
+
+If a command is not visible in your build or plan, use the UI message, account dashboard, or provider dashboard as the source of truth.
+
+## What To Do When You Hit A Limit
+
+| Situation | Best next step |
+| --- | --- |
+| "Session limit" or "weekly limit" with reset time | Wait for the reset, switch model, enable extra usage if your plan supports it, or pause high-intensity work. |
+| "Opus limit" | Switch to Sonnet for execution, keep Opus for planning only, or wait for reset. |
+| Context window is full | Run `/compact` if continuing the same task; run `/clear` if starting a different task. |
+| API spend is rising quickly | Stop the script, check active credentials, inspect Console/provider usage, then add spend limits. |
+| Rate limit error | Reduce concurrency, pause automation, retry later, or use provider/admin limit controls. |
+| Wrong account or billing path | Use `/status`, `/login`, environment checks, and provider dashboards before continuing. |
+
+Do not blindly retry after a limit. Repeated retries can waste more quota or create duplicate API spend.
+
+## Five Habits That Stretch Usage
+
+### 1. Clear between unrelated tasks
+
+Use `/clear` when the next task would make sense in a new terminal. Project memory remains available, but old conversation history stops riding along.
+
+### 2. Compact long single-task sessions
+
+Use `/compact` when you are mid-task and still need the important context. It preserves a summary instead of carrying the full transcript.
+
+### 3. Match model to difficulty
+
+Use Sonnet as the default for most coding. Use Opus for hard planning, architecture decisions, and difficult debugging. Use Haiku for simple lookups or mechanical high-volume work when available.
+
+### 4. Point to files instead of pasting files
+
+Large pasted files stay in context. Refer to paths and let Claude Code read only what matters. For logs, paste the relevant 20-30 lines instead of the whole output.
+
+### 5. Ask for a plan before big edits
+
+A plan is cheaper than a wrong multi-file diff. Use [Plan Mode](/en/faqs/what-is-plan-mode) before migrations, pricing pages, auth, database, redirects, and MCP permission work.
+
+## Cost-Saving Workflow
+
+For a large task, use this pattern:
+
+1. Start clean with `/clear`.
+2. Ask for an exploration-only plan.
+3. Use Opus only if the planning problem is hard.
+4. Execute with Sonnet after the plan is clear.
+5. Run build/tests at checkpoints instead of asking Claude to inspect everything repeatedly.
+6. Use `/compact` only when the same task must continue.
+7. Clear before switching to the next task.
+
+This preserves quality while avoiding the most common usage drain: one long session doing several unrelated jobs.
+
+## Upcoming Billing Note
+
+Official Claude Code legal materials currently note that starting **June 15, 2026**, Agent SDK and `claude -p` usage on subscription plans will draw from a monthly Agent SDK credit separate from interactive usage limits. Because that date is after this page's May 24, 2026 check, treat it as an upcoming policy detail and re-check official docs before planning automation-heavy usage.
+
+## FAQ
+
+### Why did I hit a limit so fast?
+
+Usually one of four reasons: a long conversation was never cleared, Opus was used for routine work, a large file/log/tool output entered context, or the session was actually API-billed through an active key.
+
+### Is Claude Code unlimited on Max?
+
+No. Max has higher usage than Pro, but it is still finite. Heavy Opus, huge context, long sessions, parallel terminals, and automation can still drain it.
+
+### Do Claude web chats and Claude Code share limits?
+
+For paid subscription plans, official support states that Claude product surfaces can count toward the same usage limit. API-billed workflows are different and should be checked in Console or provider billing.
+
+### Should I use API billing after subscription limits?
+
+Only if you understand the spend risk. API billing is useful for automation and bursts, but set spend limits, alerts, and script safeguards first.
+
+### Is rate limit the same as usage limit?
+
+No. Usage limits are about allowance over a time window. Rate limits are about request or token throughput. Context limits are about session size. They need different fixes.
+
+## Related Guides
+
+- [How much is Claude Code?](/en/faqs/how-much-is-claude-code)
+- [Pricing and limits hub](/en/pricing)
+- [Plan Mode](/en/faqs/what-is-plan-mode)
+- [CLAUDE.md](/en/faqs/what-is-claude-md)
+- [Context management](/en/tutorial/optimization/context-management)
+- [Rate limit troubleshooting](/en/troubleshooting/claude-code-rate-limit-error)
+
+## Official Sources
+
+- [Models, usage, and limits in Claude Code](https://support.claude.com/en/articles/14552983-models-usage-limits-in-claude-code)
+- [How usage and length limits work](https://support.claude.com/en/articles/11647753-understanding-usage-and-length-)
+- [Claude Code error reference](https://code.claude.com/docs/en/errors)
+- [Claude Code cost management](https://code.claude.com/docs/en/costs)
+- [Use Claude Code with Pro or Max](https://support.claude.com/en/articles/11145838-using-claude-code-with-your-pro-or-max-plan)
+- [Extra Usage for Paid Claude Plans](https://support.claude.com/en/articles/12429409-extra-usage-for-max-20x-plans)
+- [Claude Code legal and compliance](https://code.claude.com/docs/en/legal-and-compliance)

@@ -1,0 +1,156 @@
+---
+title: 'Claude Code 故障排查'
+description: 'Claude Code 故障排查入口：command not found、Windows PATH、安装权限、登录错误、Invalid API Key、Rate limit、网络连接、MCP 连接和工具权限。'
+---
+
+排查 Claude Code 时，先从具体错误现象开始，不要一上来反复重装。大多数问题来自六个地方：PATH、Shell 启动文件、本地权限、登录状态、网络/代理访问、MCP 或工具配置。
+
+> 最后核查：2026 年 5 月 24 日。Claude Code 同时有应用内检查和终端检查。如果 Claude Code 能打开，先运行 `/doctor`、`/status`、`/mcp` 以及对应出错功能的命令。如果完全无法启动，在终端运行 `claude doctor`，再按下面的错误现象进入对应页面。
+
+## 快速定位
+
+先走最短路径：
+
+| 错误现象 | 第一检查项 | 对应页面 |
+| --- | --- | --- |
+| `claude: command not found` 或无法识别命令 | 当前 Shell 的 PATH 是否包含 Claude Code 安装目录？ | [claude command not found](/zh/troubleshooting/claude-command-not-found) |
+| 某个 Windows Shell 能用，另一个不能 | PowerShell、CMD、Git Bash、WSL 是否使用不同 PATH？ | [Windows PATH 配置](/zh/troubleshooting/claude-code-windows-path) |
+| 安装时 EACCES 或 permission denied | 包管理器是否写入了系统保护目录？ | [安装权限错误](/zh/troubleshooting/claude-code-permission-errors) |
+| 登录循环、OAuth 失败、403、session 过期 | Claude Code 是否使用了正确账号或组织？ | [登录或认证错误](/zh/troubleshooting/claude-code-login-or-authentication-error) |
+| `Invalid API key`、token 过期、组织不匹配 | API key 是否覆盖了订阅登录？ | [Invalid API Key](/zh/troubleshooting/claude-code-invalid-api-key) |
+| timeout、SSL、proxy、VPN、连接 API 失败 | 终端网络路径是否和浏览器不同？ | [Unable to connect to API](/zh/troubleshooting/claude-code-unable-to-connect-to-api) |
+| 429、session limit、weekly limit、余额不足 | 这是订阅用量、API 账单，还是 provider 限流？ | [Rate limit 错误](/zh/troubleshooting/claude-code-rate-limit-error) |
+| MCP server 不出现或无法认证 | `/mcp` 显示的是配置、启动、认证还是权限问题？ | [MCP server 连接失败](/zh/troubleshooting/claude-code-mcp-not-connecting) |
+
+不要跳过第一检查项。重装通常解决不了代理网络、旧 API key、或当前 Shell 没加载新 PATH 这类问题。
+
+## 五分钟排查流程
+
+1. **先记录完整错误文本。** 暂时不要转述。
+2. **确认故障发生在哪一层：** 安装、Shell 启动、登录、模型调用、MCP 启动，还是工具权限。
+3. **运行对应健康检查：** CLI 启动不了用 `claude doctor`；Claude Code 能打开就用 `/doctor`。
+4. **确认当前身份：** 可用时运行 `/status`，看当前是订阅登录、API key、Bedrock、Vertex、Foundry 还是其它 provider。
+5. **检查工具和配置表面：** MCP 用 `/mcp`；权限看 settings；`.env` 和 shell 变量只在本地检查，不要粘贴给模型。
+6. **一次只改一个变量：** 重启终端、换网络、移除旧环境变量、或禁用一个 MCP server。
+7. **记录结果后再试下一步。**
+
+好的排障是枯燥但有序的。一次只改一个变量。
+
+## 安装和 PATH 问题
+
+安装类问题通常发生在 Claude Code 本身能帮你之前，所以先看 Shell 和包管理器。
+
+| 问题模式 | 常见原因 | 下一步 |
+| --- | --- | --- |
+| 安装后找不到 `claude` | 终端没有把安装目录加载进 PATH。 | 重启终端并查看 [command not found](/zh/troubleshooting/claude-command-not-found)。 |
+| zsh 能用 bash 不能用，或 PowerShell 能用 CMD 不能用 | 不同 Shell 加载不同 PATH 文件。 | Windows 看 [Windows PATH 配置](/zh/troubleshooting/claude-code-windows-path)。 |
+| 安装时报 permission denied | 包管理器写入了受保护目录。 | 避免粗暴 `sudo`，查看 [安装权限错误](/zh/troubleshooting/claude-code-permission-errors)。 |
+| 安装成功但首次运行失败 | CLI 已安装，但登录或网络未准备好。 | 转到认证或网络排查。 |
+
+辅助页面：
+
+- [如何安装 Claude Code](/zh/faqs/how-to-install-claude-code)
+- [Windows 安装指南](/zh/faqs/how-to-install-claude-code-on-windows)
+- [安装教程](/zh/tutorial/getting-started/installation)
+
+## 登录、账号和凭证问题
+
+认证问题常见原因是把订阅登录和 API 类型凭证混在一起。
+
+| 错误或行为 | 通常意味着什么 | 下一步 |
+| --- | --- | --- |
+| 浏览器登录循环 | OAuth session、浏览器 profile 或组织权限没有完成。 | [登录或认证错误](/zh/troubleshooting/claude-code-login-or-authentication-error) |
+| `Invalid API key` | key 缺失、过期、被撤销，或来自错误组织/provider。 | [Invalid API Key](/zh/troubleshooting/claude-code-invalid-api-key) |
+| 403 或 access denied | 账号、组织、席位或 provider 权限不匹配。 | [登录或认证错误](/zh/troubleshooting/claude-code-login-or-authentication-error) |
+| 本地能用，CI 不能用 | 环境变量、provider 凭证或 secrets 不一致。 | [Headless mode FAQ](/zh/faqs/claude-code-headless-mode) |
+
+不要把 API key 粘贴进 Claude、文档、工单、截图或 prompt。记录凭证来源，不记录 secret 值。
+
+## 网络、API 和 Provider 错误
+
+Claude Code 无法连接时，先把它当成网络路径问题，而不是项目代码问题。
+
+按顺序检查：
+
+1. 浏览器能访问 Claude，但终端失败吗？
+2. 换网络、热点或 VPN 状态后结果是否变化？
+3. 公司代理是否拦截 TLS 或要求自定义证书？
+4. 是否设置了 `HTTP_PROXY`、`HTTPS_PROXY`、自定义 base URL 或 provider 环境变量？
+5. 当前走的是 Anthropic 直连、Bedrock、Vertex、Foundry，还是自定义 gateway？
+6. 官方状态页或 provider 控制台是否有事故、账单拦截或限速？
+
+错误里出现 timeout、SSL certificate、proxy、VPN、DNS 或 connection failure 时，优先看 [Unable to connect to API](/zh/troubleshooting/claude-code-unable-to-connect-to-api)。
+
+## Rate Limit、上下文和成本
+
+限流错误不一定是同一种问题。
+
+| 提示 | 可能表面 | 先做什么 |
+| --- | --- | --- |
+| `Request rejected (429)` | 临时限流或 provider rate limit。 | 等待、降低并发、用更小任务重试。 |
+| `session limit` 或 `weekly limit` | 订阅用量窗口。 | 查看 plan usage 和 reset 时间。 |
+| `Credit balance is too low` | API 账单或 provider workspace 余额。 | 查看对应控制台和 spend caps。 |
+| 长会话变慢或变贵 | 上下文膨胀和重复工具调用。 | 用 `/clear`、`/compact`、聚焦 prompt 和 [上下文管理](/zh/mechanics/context-management)。 |
+
+先看 [Rate limit 错误](/zh/troubleshooting/claude-code-rate-limit-error)，再看 [Claude Code 用量限制](/zh/faqs/claude-code-usage-limits) 和 [价格与限制](/zh/pricing)。
+
+## MCP 和工具配置
+
+MCP 失败通常来自配置、启动命令、凭证或权限范围。
+
+| 错误现象 | 检查点 |
+| --- | --- |
+| server 不出现在 `/mcp` | 配置位置错误、JSON 格式错误、server 被禁用，或会话未重启。 |
+| server 出现但连不上 | 启动命令、环境变量、transport、URL 或认证流程。 |
+| 远程 MCP 认证失败 | OAuth callback、token、client registration 或 provider 侧权限。 |
+| 工具出现但无法操作 | tool allowlist、permission mode、server scopes 或账号权限缺失。 |
+| Claude 使用过多 MCP 上下文 | 一次暴露了太多 servers 或 tools。 |
+
+先看 [MCP server 连接失败](/zh/troubleshooting/claude-code-mcp-not-connecting)，再看 [MCP 目录](/zh/mcp)、[MCP 安全清单](/zh/mcp/mcp-security-checklist) 和 [工具权限管理](/zh/tutorial/configuration/tools-allowlist)。
+
+## 权限和安全问题
+
+如果 Claude Code 拒绝工具调用、反复询问权限，或 hook 拦截动作，要先区分这是策略还是故障。
+
+| 表面 | 检查内容 |
+| --- | --- |
+| Permission rules | 工具在 settings 里是 allow、ask 还是 deny。 |
+| Plan Mode | 当前会话是否故意只读。 |
+| Hooks | 是否有 `PreToolUse` 或其它 hook 拒绝操作。 |
+| MCP scopes | 外部工具账号是否有目标资源的读写权限。 |
+| OS permissions | 本地用户是否能访问文件、二进制或目录。 |
+
+下一步页面：[工具权限管理](/zh/tutorial/configuration/tools-allowlist)、[Hooks](/zh/mechanics/hooks)、[Plan Mode](/zh/mechanics/plan-mode)、[安装权限错误](/zh/troubleshooting/claude-code-permission-errors)。
+
+## 求助前应该准备什么
+
+在团队群或支持工单里求助前，准备一份不泄露凭证的小报告：
+
+- 操作系统和 Shell。
+- Claude Code 版本和安装方式。
+- 完整错误文本。
+- 是否运行过 `claude doctor` 或 `/doctor`。
+- 问题是否只出现在某个 Shell、某个网络或某个项目。
+- 当前是订阅登录、API key，还是云 provider 凭证。
+- 相关 settings 文件名，但不要提供 secrets。
+- 如果是 MCP 问题，提供 server 名称和 transport。
+
+这样别人能复现问题，同时不会暴露凭证。
+
+## 相关入口
+
+- [Claude Code FAQ](/zh/faqs)
+- [Claude Code 教程中心](/zh/tutorial)
+- [Claude Code 机制专题](/zh/mechanics)
+- [MCP 目录](/zh/mcp)
+- [价格与限制](/zh/pricing)
+- [资源和工具](/zh/resources)
+
+## 官方来源
+
+- [Troubleshoot installation and login](https://code.claude.com/docs/en/troubleshoot-install)
+- [Claude Code troubleshooting](https://code.claude.com/docs/en/troubleshooting)
+- [Debug your configuration](https://code.claude.com/docs/en/debug-your-config)
+- [Claude Code error reference](https://code.claude.com/docs/en/errors)
+- [Claude Code MCP documentation](https://code.claude.com/docs/en/mcp)
+- [Manage Claude Code costs effectively](https://code.claude.com/docs/en/costs)

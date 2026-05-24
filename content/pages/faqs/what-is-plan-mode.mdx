@@ -1,0 +1,189 @@
+---
+title: 'What Is Plan Mode in Claude Code?'
+description: 'Claude Code Plan Mode explained: how to enter and exit it, what it can do, approval options, settings, prompts, ultrathink differences, and when to use it.'
+schema_question: 'What is Plan Mode in Claude Code?'
+schema_answer: 'Plan Mode is a Claude Code permission mode that lets Claude explore a codebase and propose a plan before editing. Enter it with Shift+Tab, /plan, or claude --permission-mode plan. Approving a plan exits plan mode and moves the session into the edit mode you choose.'
+---
+
+Plan Mode is Claude Code's "look first, edit later" workflow. Claude can inspect the repository, reason about the task, and propose an implementation plan, but it should not modify source files until you approve how to proceed.
+
+> Last checked on May 24, 2026. Claude Code permission modes, UI labels, and approval flows change over time, so verify the official permission mode docs before writing team policy.
+
+## Short Answer
+
+Use Plan Mode when the downside of a wrong edit is higher than the cost of planning. It is especially useful for migrations, SEO URL changes, auth, billing, database work, MCP permissions, and multi-file refactors.
+
+| Question | Practical answer |
+| --- | --- |
+| What is it? | A permission mode for read-first planning before implementation. |
+| Does it edit files? | Not until you approve a plan and choose an edit mode. |
+| How do I enter it? | `Shift+Tab`, `/plan`, or `claude --permission-mode plan`. |
+| How do I leave it? | Approve a plan, cycle modes again, or continue planning with feedback. |
+| Is it the same as ultrathink? | No. Plan Mode controls permissions; `ultrathink` asks for deeper reasoning on a turn. |
+
+## How To Enter Plan Mode
+
+| Interface | How |
+| --- | --- |
+| CLI during a session | Press `Shift+Tab` until the status shows Plan Mode. |
+| One prompt | Prefix the prompt with `/plan`. |
+| CLI startup | `claude --permission-mode plan` |
+| Non-interactive run | Use `claude -p --permission-mode plan "..."` when a script should stay read-first. |
+| Project default | Set `"defaultMode": "plan"` under `permissions` in `.claude/settings.json`. |
+| VS Code / Desktop / Web | Use the mode selector when the surface exposes it. |
+
+Example:
+
+```bash
+claude --permission-mode plan
+```
+
+Project default:
+
+```json
+{
+  "permissions": {
+    "defaultMode": "plan"
+  }
+}
+```
+
+## What Plan Mode Can Do
+
+Plan Mode is not "do nothing" mode. It is meant to gather enough context for a safer plan.
+
+| Action | Behavior in Plan Mode |
+| --- | --- |
+| Read files | Allowed, subject to normal context and permission behavior. |
+| Search the repository | Useful for mapping ownership and finding related files. |
+| Run exploratory commands | Possible, but command permissions still apply. |
+| Draft a plan | Expected output. |
+| Ask clarifying questions | Useful when requirements are ambiguous. |
+| Edit files | Waits until you approve a plan and choose an edit mode. |
+| Skip protected paths | No. Protected paths and permission rules still matter. |
+
+The important part is not the label alone. A good Plan Mode session produces a plan you can review: affected files, implementation order, risks, verification steps, and open questions.
+
+## What Happens When You Approve A Plan
+
+When Claude presents a plan, approving it exits Plan Mode. You then choose how much autonomy Claude gets for implementation.
+
+| Approval choice | What it means |
+| --- | --- |
+| Keep planning | You give feedback and ask Claude to revise the plan. |
+| Approve with manual review | Claude proceeds, but you keep tighter approval on edits and commands. |
+| Approve with accept edits | Claude can make file edits more fluidly, while still following permission rules. |
+| Approve with auto mode | Claude works with more autonomy where available and allowed. |
+
+If the plan is too broad, do not approve it just because it looks polished. Ask for a smaller version with fewer files, clearer checkpoints, and explicit rollback steps.
+
+## Plan Mode vs Other Permission Modes
+
+| Mode | Practical meaning | When to use |
+| --- | --- | --- |
+| `default` | Claude asks before edits and commands. | Normal work, new projects, sensitive repos. |
+| `acceptEdits` | File edits and common filesystem actions can flow faster. | You trust the direction and will review the diff. |
+| `plan` | Claude explores and proposes before editing. | Risky or unclear tasks. |
+| `auto` | Longer autonomous work with safety checks where available. | Long tasks after the plan is clear. |
+| `dontAsk` | Only pre-approved tools run. | Locked-down scripts or CI-like use. |
+| `bypassPermissions` | Skips permission prompts. | Isolated containers or VMs only. |
+
+For production repositories, Plan Mode is often the safest first step. After the plan is clear, switch to a faster mode only for the implementation phase.
+
+## Plan Mode vs Ultrathink
+
+Searches often mix these two ideas, but they solve different problems.
+
+| Feature | What it controls | Good use |
+| --- | --- | --- |
+| Plan Mode | Tool and edit flow. | "Do not edit yet; inspect and propose." |
+| `ultrathink` | One-turn reasoning depth. | "Think more deeply about this tradeoff." |
+| `/effort` or model effort settings | Session/model reasoning effort. | Longer or harder engineering tasks. |
+| Ultraplan | A plan review flow surfaced in Claude Code web workflows when available. | Reviewing or refining a plan in a richer interface. |
+
+Useful prompt:
+
+```text
+/plan ultrathink
+Analyze this migration before editing. Separate safe mechanical changes from risky behavior changes.
+List affected files, verification steps, and rollback options.
+```
+
+That combines deeper reasoning with a read-first permission mode, but they are still separate mechanisms.
+
+## When To Use Plan Mode
+
+Use it for work that has real blast radius:
+
+| Task | Why Plan Mode helps |
+| --- | --- |
+| SEO route migration | Prevents accidental URL, metadata, or redirect loss. |
+| Pricing or billing content | Forces official source checks before publishing claims. |
+| Auth or payment code | Reduces hidden side effects. |
+| Database schema changes | Separates migration design from execution. |
+| MCP permissions | Makes tool access and trust boundaries explicit. |
+| Large refactors | Keeps the first implementation smaller and reviewable. |
+| Debugging unclear failures | Builds a hypothesis before changing code. |
+
+Skip it for tiny edits such as a typo, a single broken link, or a simple copy tweak.
+
+## Good Plan Mode Prompts
+
+For code changes:
+
+```text
+/plan Inspect the current implementation first.
+Return a plan with affected files, smallest safe implementation order, tests, and rollback steps.
+Do not edit files until I approve the plan.
+```
+
+For SEO/content:
+
+```text
+/plan Update this FAQ for search intent.
+Preserve the existing URL, title intent, schema fields, and internal links.
+List official sources that need checking before writing.
+```
+
+For migrations:
+
+```text
+/plan Map the old and new route structures.
+Identify redirects, canonical risks, sitemap changes, and pages that should not be moved.
+Wait for approval before editing.
+```
+
+## Review Checklist Before Approving
+
+- Are the files scoped tightly?
+- Does the plan preserve URLs, metadata, canonical tags, schema, and internal links?
+- Does it say which facts require official source checks?
+- Are tests or build commands included?
+- Is there a rollback or checkpoint strategy?
+- Are risky commands, deploys, and database actions separated from content edits?
+- Are open questions clearly marked instead of hidden?
+
+## Common Mistakes
+
+| Mistake | Better approach |
+| --- | --- |
+| Asking for a plan, then approving a huge rewrite. | Ask for a smaller phase with a clear first checkpoint. |
+| Treating Plan Mode as a guarantee. | Still review the plan and keep permission rules in place. |
+| Mixing planning with deployment. | Plan, implement, build, then deploy as a separate decision. |
+| Using vague prompts. | Ask for affected files, risks, verification, and rollback. |
+| Forgetting to exit Plan Mode. | Approve a plan or cycle modes when you are ready to edit. |
+
+## Related Guides
+
+- [Explore-Plan-Code workflow](/en/tutorial/workflows/explore-plan-code)
+- [Plan Mode tutorial](/en/tutorial/workflows/plan-mode)
+- [CLAUDE.md](/en/faqs/what-is-claude-md)
+- [Tools allowlist](/en/tutorial/configuration/tools-allowlist)
+- [Usage limits](/en/faqs/claude-code-usage-limits)
+
+## Official Sources
+
+- [Claude Code permission modes](https://code.claude.com/docs/en/permission-modes)
+- [Claude Code commands](https://code.claude.com/docs/en/commands)
+- [Claude Code model configuration](https://code.claude.com/docs/en/model-config)
+- [Claude Code settings](https://code.claude.com/docs/en/configuration)

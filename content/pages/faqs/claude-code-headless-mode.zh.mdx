@@ -1,0 +1,174 @@
+---
+title: 'Claude Code Headless Mode 是什么？'
+description: '解释 Claude Code headless mode：claude -p、print mode、JSON 输出、stream-json、CI 检查、工具权限、凭据、Agent SDK 边界和安全自动化。'
+schema_question: 'Claude Code Headless Mode 是什么？'
+schema_answer: 'Claude Code headless mode 通常指用 claude -p 或 --print 非交互运行 Claude Code。它适合一次性脚本、CI 摘要、JSON 输出和只读审计，但必须明确凭据、工具权限、输出格式、turn limit、预算限制和失败处理。'
+---
+
+Claude Code Headless Mode 指不进入普通交互式终端聊天，而是用命令、脚本或 CI 运行 Claude Code。在官方 CLI 语境里，最常见形式是 **print mode**：使用 `claude -p` 或 `claude --print`，让 Claude 接收一个 prompt，输出结果后退出。
+
+```bash
+claude -p "Summarize the current diff and list release risks"
+```
+
+> 最后核查：2026 年 5 月 24 日。Claude Code CLI flags 和自动化行为变化很快。把它放进 CI 或生产自动化前，请重新核对当前 [CLI reference](https://code.claude.com/docs/en/cli-reference)。
+
+## 短答案
+
+一次性自动化用 `claude -p`。进入 CI 前，一定要明确输出格式、凭据、工具权限、turn limit、预算限制和失败处理。
+
+| 适合 headless mode 的情况 | 不适合 headless mode 的情况 |
+| --- | --- |
+| 输入和期望输出都很清楚。 | 任务需要产品讨论或继续澄清。 |
+| 需要 PR 摘要、changelog 草稿或只读审计。 | 任务涉及认证、计费、数据库迁移或部署，但没有人工 review。 |
+| 脚本可以解析 JSON 或文本输出。 | 脚本需要宽泛写权限、shell、网络或 MCP 访问。 |
+| 工作流已经在交互模式里验证过。 | 你还在探索工作流本身。 |
+
+需求不清或风险高时，先用 [Plan Mode](/zh/faqs/what-is-plan-mode)，或看完整的 [Headless Mode 教程](/zh/tutorial/advanced/headless-mode)，再考虑自动化。
+
+## 常用命令
+
+### 一次性回答
+
+```bash
+claude -p "Explain what changed in this repository"
+```
+
+### 处理管道输入
+
+```bash
+git diff --stat | claude -p "Summarize this diff stat for release notes"
+```
+
+### JSON 输出
+
+```bash
+claude -p "Review this diff and return the top risks" \
+  --output-format json
+```
+
+### Stream JSON 输出
+
+```bash
+claude -p "Audit this pull request for release risk" \
+  --output-format stream-json \
+  --verbose
+```
+
+### 有边界的只读审查
+
+```bash
+claude -p "Review this diff for risky changes. Do not edit files." \
+  --permission-mode plan \
+  --tools "Read,Grep,Glob,Bash" \
+  --allowedTools "Bash(git diff *)" "Bash(git status *)" \
+  --max-turns 3 \
+  --output-format json
+```
+
+这个写法更接近 CI 里的安全形态：限制可用工具，只预批准很窄的 shell 命令，并限制 agentic turns。
+
+## 常用参数
+
+| 参数 | 用途 |
+| --- | --- |
+| `-p`, `--print` | 非交互运行一个 prompt，然后退出。 |
+| `--output-format text` | 人类可读输出。 |
+| `--output-format json` | 单次机器可读响应。 |
+| `--output-format stream-json` | 长任务或日志场景的流式事件。 |
+| `--json-schema` | 让 print-mode 输出匹配 JSON Schema。 |
+| `--permission-mode plan` | 分析但不批准编辑。 |
+| `--tools` | 限制这次运行可用的工具。 |
+| `--allowedTools` | 预批准窄范围工具或命令模式。 |
+| `--disallowedTools` | 拒绝危险工具或命令模式。 |
+| `--max-turns` | 避免 agent 循环失控。 |
+| `--max-budget-usd` | 限制 print mode 的 API 花费。 |
+| `--fallback-model` | print/background 运行中默认模型过载时使用备用模型。 |
+| `--bare` | 最小自动发现模式；脚本更快，但要清楚它会跳过哪些上下文。 |
+
+只在 prompt 里写“不要改文件”不够。真正的边界应该由权限和工具限制来控制。
+
+## 适合场景
+
+- 总结 pull request diff。
+- 根据近期提交生成 release notes。
+- 检查文档是否有过时命令。
+- 给内部 review pipeline 输出 JSON 风险报告。
+- 运行只读仓库审计。
+- 检查迁移计划是否触碰禁区目录。
+
+## 风险场景
+
+- 在 CI 里给宽泛写权限但没有 review。
+- 对不可信 PR 运行强权限工具。
+- 同时开放生产凭据、MCP servers 和宽 shell 权限。
+- 失败后无限 retry。
+- 混淆订阅登录、API key 计费和云厂商凭据。
+- 让脚本在模型输出后自动 push、deploy、delete 或 publish。
+
+## 凭据和计费
+
+Headless 运行必须明确认证方式。不同配置下，`ANTHROPIC_API_KEY`、`ANTHROPIC_AUTH_TOKEN`、云厂商变量、OAuth token 或 Claude 订阅登录，都可能改变授权和计费方式。
+
+进入 CI 前检查：
+
+| 检查项 | 为什么重要 |
+| --- | --- |
+| 认证来源 | 避免本地登录掩盖 CI 缺凭据问题。 |
+| 花费限制 | 避免重复 job 造成意外成本。 |
+| 工具策略 | 防止脚本意外编辑、删除、推送或部署。 |
+| 日志策略 | 避免 API key、token、私有代码进入 CI 日志。 |
+| 失败行为 | 明确失败时是提醒、阻断，还是创建 review ticket。 |
+
+## Headless Mode 和 Agent SDK 的区别
+
+一个 shell 命令够用时，用 `claude -p`。如果你要围绕 Claude Code 做真正的程序化产品或服务，看 [Agent SDK](/zh/faqs/claude-code-api-documentation)。
+
+| 需求 | 更适合 |
+| --- | --- |
+| 一个 prompt，一个答案 | `claude -p` |
+| CI 里的 PR 摘要 | `claude -p` |
+| changelog 草稿 | `claude -p` |
+| 长生命周期服务 | Agent SDK |
+| 自定义审批流 | Agent SDK |
+| 程序化 sessions 和可观测性 | Agent SDK |
+| 嵌入产品里的 agent 工作流 | Agent SDK |
+
+简单任务不要一上来就用 SDK；但如果你需要 session、审批、自定义工具和生产边界，也不要一直把 shell 脚本越写越复杂。
+
+## FAQ
+
+### Headless mode 和 Claude API 是一回事吗？
+
+不是。Headless mode 是非交互运行 Claude Code。Claude API 是在你自己的应用里调用模型的平台 API。
+
+### `claude -p` 适合 CI 吗？
+
+可以，但前提是 prompt 足够窄，并且工具、凭据、输出格式、限制和失败行为都明确。模糊任务加宽权限不安全。
+
+### Headless mode 会改文件吗？
+
+取决于权限和可用工具。如果你要只读，使用 `--permission-mode plan`，限制 `--tools`，并在合适时拒绝 `Edit` 或 `Write`。
+
+### JSON 和 stream-json 怎么选？
+
+脚本只需要最终结果时用 JSON。需要进度事件或长任务日志时用 stream-json。
+
+### 要不要用 `--bare`？
+
+只有在你清楚它会跳过哪些自动发现内容时再用。它能让脚本更简单、更快，但也可能跳过重要项目规则。
+
+## 相关页面
+
+- [完整 Headless Mode 教程](/zh/tutorial/advanced/headless-mode)
+- [Claude Code API 文档](/zh/faqs/claude-code-api-documentation)
+- [工具权限配置](/zh/tutorial/configuration/tools-allowlist)
+- [用量限制](/zh/faqs/claude-code-usage-limits)
+- [Plan Mode](/zh/faqs/what-is-plan-mode)
+- [MCP servers](/zh/faqs/claude-code-mcp-servers)
+
+## 官方来源
+
+- [Claude Code CLI reference](https://code.claude.com/docs/en/cli-reference)
+- [Claude Code permissions](https://code.claude.com/docs/en/permissions)
+- [Claude Agent SDK](https://code.claude.com/docs/en/agent-sdk)

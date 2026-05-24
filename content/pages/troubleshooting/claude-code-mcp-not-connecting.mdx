@@ -1,0 +1,31 @@
+---
+title: 'Claude Code MCP Server Not Connecting'
+description: 'How to troubleshoot Claude Code MCP servers that fail to load, authenticate, start, or appear in /mcp.'
+---
+
+If an MCP server does not connect, first decide whether the failure is configuration, startup, authentication, or permissions. Use `/mcp` to inspect connection state before changing the server definition.
+
+## Quick Checklist
+
+1. Run `/mcp` inside Claude Code and check server status.
+2. Confirm the MCP server name, transport, command, URL, headers, and environment variables.
+3. For remote MCP servers, complete OAuth or token setup.
+4. For local stdio servers, verify the command runs outside Claude Code.
+5. On Windows, check whether the local server needs a shell wrapper.
+6. Review project-scoped `.mcp.json` approval choices if the server is shared with a team.
+
+## Common Causes
+
+Remote servers often fail because authentication has not completed, the callback URL cannot return to Claude Code, or the server requires a preconfigured OAuth client. Local servers usually fail because the executable path, package manager, environment variable, or shell wrapper is wrong.
+
+## Related Pages
+
+- [MCP directory](/en/mcp)
+- [MCP security checklist](/en/mcp/mcp-security-checklist)
+- [MCP server tutorial](/en/tutorial/tools-integration/mcp-servers)
+- [Tools allowlist](/en/tutorial/configuration/tools-allowlist)
+
+## Official Sources
+
+- [Claude Code MCP documentation](https://code.claude.com/docs/en/mcp)
+- [Debug your configuration](https://code.claude.com/docs/en/debug-your-config)

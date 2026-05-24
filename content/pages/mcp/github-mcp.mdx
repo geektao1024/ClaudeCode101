@@ -1,0 +1,93 @@
+---
+title: 'GitHub MCP for Claude Code'
+description: 'A practical GitHub MCP guide for Claude Code: hosted vs local setup, token scopes, issue and pull request workflows, and safety rules.'
+---
+
+GitHub MCP is useful when Claude Code needs structured access to repository collaboration context: issues, pull requests, discussions, repository metadata, and review signals. It is not a replacement for code review; it is a way to make implementation decisions less detached from the work item.
+
+> Last checked on May 24, 2026. GitHub MCP endpoints, toolsets, authentication methods, and token requirements can change. Verify the current GitHub and Claude Code docs before adding write-capable tools.
+
+## When GitHub MCP Is Worth Adding
+
+Add GitHub MCP when Claude Code needs repository context that is hard to keep in the local checkout:
+
+- Summarize an issue before implementation.
+- Inspect pull request discussion before review.
+- Connect a code change back to the original GitHub issue.
+- Draft release notes from merged pull requests.
+- Search repository metadata without copying links into the chat.
+- Let a team use the same repeatable GitHub workflow from Claude Code.
+
+If the task only needs local files, GitHub MCP is unnecessary. Use `rg`, `git log`, `gh pr view`, or the local repository first.
+
+## Hosted GitHub MCP vs Local GitHub MCP
+
+| Setup path | Best for | Tradeoff |
+| --- | --- | --- |
+| Hosted GitHub MCP endpoint | Quick setup, fewer local moving parts, standard remote connection | Requires network trust and token/header handling |
+| Local or Docker GitHub MCP server | More control, local environment, self-hosted policy, narrower rollout | More maintenance, Docker/process reliability, local secrets |
+| GitHub CLI without MCP | Simple one-off queries and scripts | Less structured tool discovery inside Claude Code |
+
+For most individual users, start with the hosted or official recommended path. For teams, choose based on logging, token rotation, repository scope, and whether write actions are allowed.
+
+## Example Setup Shapes
+
+Claude Code's MCP command format depends on transport and server docs. For a remote HTTP server, the shape is:
+
+```bash
+claude mcp add --transport http github <github-mcp-url> --header "Authorization: Bearer <token>"
+```
+
+For a local or Docker-based stdio server, the shape is:
+
+```bash
+export GITHUB_PERSONAL_ACCESS_TOKEN=<token>
+claude mcp add --transport stdio github -- docker run -i --rm \
+  -e GITHUB_PERSONAL_ACCESS_TOKEN \
+  ghcr.io/github/github-mcp-server
+```
+
+Do not paste long-lived tokens into shared shell history. Prefer fine-grained personal access tokens, short lifetimes, limited repositories, and a credential manager where possible.
+
+## Recommended First Workflows
+
+| Workflow | Prompt pattern | Permission needed |
+| --- | --- | --- |
+| Issue intake | "Read issue #123 and summarize the problem, constraints, and likely files to inspect." | Read issues and repository metadata |
+| PR review prep | "Inspect PR #456 and list the changed areas, reviewer concerns, and test gaps." | Read pull requests and files |
+| Release notes | "Summarize merged PRs since the last tag into user-facing release notes." | Read pull requests and releases |
+| Implementation trace | "After the local diff is ready, map the change back to the issue acceptance criteria." | Read issues and local repository |
+
+Avoid enabling write actions until the read workflows are stable. Writing comments, creating issues, or editing pull requests should usually stay behind explicit human approval.
+
+## Token and Scope Rules
+
+- Use a token dedicated to MCP rather than a personal all-purpose token.
+- Restrict repositories whenever possible.
+- Start read-only and add write scopes only for a named workflow.
+- Rotate tokens after experiments, demos, or contractor access.
+- Document the token owner and expiration plan in your internal setup notes, not in public docs.
+
+## Failure Modes
+
+| Symptom | Likely cause | Fix |
+| --- | --- | --- |
+| Claude Code cannot see GitHub tools | Server not added, wrong transport, or process failed | Run the MCP list/status command and restart Claude Code |
+| Authentication fails | Token missing, expired, or sent to the wrong endpoint | Recreate a narrow token and verify the header/env var |
+| Repository not found | Token lacks repository access or org policy blocks it | Test with a known public repo, then check org access |
+| Tool results are too broad | Prompt asks for all issues/PRs instead of one target | Ask for a specific issue, PR, label, branch, or date range |
+| Unexpected write capability | Server exposes write tools by default | Switch to read-only mode or remove write scopes |
+
+## Related Pages
+
+- [MCP directory](/en/mcp)
+- [MCP security checklist](/en/mcp/mcp-security-checklist)
+- [GitHub CLI integration](/en/tutorial/configuration/github-cli)
+- [MCP not connecting](/en/troubleshooting/claude-code-mcp-not-connecting)
+
+## Official Sources
+
+- [Claude Code MCP documentation](https://code.claude.com/docs/en/mcp)
+- [GitHub MCP server](https://github.com/github/github-mcp-server)
+- [GitHub personal access tokens](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
+- [Model Context Protocol documentation](https://modelcontextprotocol.io/)

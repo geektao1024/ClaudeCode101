@@ -1,0 +1,22 @@
+{
+  "metadata": {
+    "title": "ClaudeCode101 Articles",
+    "description": "Updates about Claude Code tutorials, configuration, and practical workflows."
+  },
+  "page": {
+    "title": "ClaudeCode101 Articles",
+    "sections": {
+      "blog": {
+        "id": "blog",
+        "title": "Articles",
+        "description": "Claude Code tutorials, configuration notes, and practical workflows."
+      }
+    }
+  },
+  "messages": {
+    "all": "All",
+    "no_content": "No content yet",
+    "crumb": "Articles",
+    "toc": "Table of Contents"
+  }
+}

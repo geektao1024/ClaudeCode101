@@ -1,0 +1,31 @@
+{
+  "metadata": {
+    "title": "ClaudeCode101 实战案例",
+    "description": "Claude Code 使用场景、配置案例和工作流案例。"
+  },
+  "page": {
+    "title": "ClaudeCode101 实战案例",
+    "sections": {
+      "showcases": {
+        "id": "showcases",
+        "title": "Claude Code 实战案例",
+        "description": "这里会逐步整理 Claude Code 在配置、工具集成和团队协作中的实战用法。",
+        "groups": [
+          {
+            "name": "all",
+            "title": "全部案例"
+          },
+          {
+            "name": "workflow",
+            "title": "工作流"
+          },
+          {
+            "name": "configuration",
+            "title": "配置"
+          }
+        ],
+        "items": []
+      }
+    }
+  }
+}

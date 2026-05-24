@@ -1,0 +1,29 @@
+---
+title: 'Claude Code Permission Errors'
+description: 'How to fix Claude Code install permission errors without using unsafe sudo npm install patterns.'
+---
+
+Permission errors usually mean the installer cannot write to the expected user-owned directories, npm global permissions are misconfigured, or an older install was created with elevated privileges.
+
+## Safer Fix Path
+
+1. Avoid reinstalling with `sudo npm install -g`.
+2. Check whether the install directories are writable by your user.
+3. Fix ownership on user-owned install directories only.
+4. Remove stale global npm or legacy local installs if they conflict.
+5. Reinstall using the official method for your operating system.
+
+## What To Avoid
+
+Do not change ownership of broad system directories just to make the install pass. Keep the fix scoped to the Claude Code install path and your own user-level directories.
+
+## Related Pages
+
+- [Claude Code troubleshooting hub](/en/troubleshooting)
+- [Claude command not found](/en/troubleshooting/claude-command-not-found)
+- [Installation tutorial](/en/tutorial/getting-started/installation)
+
+## Official Sources
+
+- [Troubleshoot installation and login](https://code.claude.com/docs/en/troubleshoot-install)
+- [Claude Code getting started](https://code.claude.com/docs/en/getting-started)

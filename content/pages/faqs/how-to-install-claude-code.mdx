@@ -1,0 +1,80 @@
+---
+title: 'How to Install Claude Code'
+description: 'Install Claude Code with the current official setup paths, verify the CLI, authenticate safely, and avoid common first-day mistakes.'
+schema_question: 'How do I install Claude Code?'
+schema_answer: 'Install Claude Code with the official native installer, Homebrew, WinGet, Linux package managers, or npm. Verify with claude --version or claude doctor, then authenticate with a Pro, Max, Team, Enterprise, Console, or supported provider account. The free Claude plan does not include Claude Code access.'
+---
+
+Install Claude Code from an official setup path, verify the `claude` command, then authenticate from the terminal where you will work. Do not rely on old npm-only tutorials without checking the current setup page.
+
+> Last checked on May 24, 2026. Claude Code has native installers, package manager options, and npm support. The official setup page is the source of truth for exact commands and supported platforms.
+
+## Short Answer
+
+For most users, use the native installer recommended by the Claude Code docs. Homebrew, WinGet, apt, dnf, apk, and npm are also documented paths, but update behavior differs by method.
+
+## System Requirements
+
+| Area | Current practical requirement |
+| --- | --- |
+| OS | macOS 13+, Windows 10 1809+ or Windows Server 2019+, Ubuntu 20.04+, Debian 10+, Alpine 3.19+. |
+| Hardware | 4 GB+ RAM, x64 or ARM64 processor. |
+| Shell | Bash, Zsh, PowerShell, or CMD. |
+| Network | Internet access and supported country availability. |
+| Account | Pro, Max, Team, Enterprise, Console, or supported cloud-provider access. Free Claude does not include Claude Code. |
+
+## Install Paths
+
+| Platform or preference | Command or path | Notes |
+| --- | --- | --- |
+| macOS, Linux, WSL native installer | `curl -fsSL https://claude.ai/install.sh | bash` | Recommended path; native installs auto-update in the background. |
+| Windows PowerShell | `irm https://claude.ai/install.ps1 | iex` | Use this in PowerShell, not CMD. |
+| Windows CMD | `curl -fsSL https://claude.ai/install.cmd -o install.cmd && install.cmd && del install.cmd` | Use this in CMD, not PowerShell. |
+| Homebrew | `brew install --cask claude-code` | Stable cask; manual upgrade with `brew upgrade claude-code`. |
+| Homebrew latest | `brew install --cask claude-code@latest` | Receives new versions faster; manual upgrade required. |
+| WinGet | `winget install Anthropic.ClaudeCode` | Manual upgrade with `winget upgrade Anthropic.ClaudeCode`. |
+| npm | `npm install -g @anthropic-ai/claude-code` | Requires Node.js 18+. Do not use `sudo npm install -g`. |
+
+## Verify Installation
+
+Run:
+
+```bash
+claude --version
+claude doctor
+```
+
+If the command is not found, check your PATH, terminal restart, package manager install location, or conflicting old installations.
+
+## Authenticate
+
+After installation, run:
+
+```bash
+claude
+```
+
+Follow the browser login flow. For terminal CLI sessions, credential precedence matters. Cloud provider settings, `ANTHROPIC_AUTH_TOKEN`, `ANTHROPIC_API_KEY`, helper scripts, OAuth tokens, and subscription OAuth can all change how the session is billed. If you expect to use a subscription but have `ANTHROPIC_API_KEY` set, confirm `/status` before a long session.
+
+## First Project Checklist
+
+1. Open a small project directory, not your largest monorepo.
+2. Run `claude`.
+3. Ask for a read-only overview first.
+4. Add a concise `CLAUDE.md` with build, test, lint, and safety rules.
+5. Use Plan Mode before the first multi-file change.
+6. Review the diff before committing.
+
+## Related Guides
+
+- [Windows install guide](/en/faqs/how-to-install-claude-code-on-windows)
+- [Installation tutorial](/en/tutorial/getting-started/installation)
+- [CLAUDE.md](/en/faqs/what-is-claude-md)
+- [Tools allowlist](/en/tutorial/configuration/tools-allowlist)
+- [Command not found fix](/en/troubleshooting/claude-command-not-found)
+
+## Official Sources
+
+- [Claude Code installation](https://code.claude.com/docs/en/installation)
+- [Claude Code authentication](https://code.claude.com/docs/en/authentication)
+- [Troubleshoot installation and login](https://code.claude.com/docs/en/troubleshooting)

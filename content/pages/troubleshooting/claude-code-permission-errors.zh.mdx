@@ -1,0 +1,29 @@
+---
+title: 'Claude Code 安装权限错误'
+description: '排查 Claude Code 安装时的权限错误，避免使用不安全的 sudo npm install 方式。'
+---
+
+权限错误通常说明安装器无法写入预期的用户目录、npm 全局权限配置不合适，或者旧版本安装曾经用管理员权限写入过文件。
+
+## 更安全的处理路径
+
+1. 不要直接用 `sudo npm install -g` 反复安装。
+2. 检查 Claude Code 相关安装目录是否属于当前用户并可写。
+3. 只修复用户级安装目录的权限。
+4. 如果全局 npm 或旧本地安装冲突，先清理冲突项。
+5. 按当前系统的官方方式重新安装。
+
+## 不建议这样做
+
+不要为了让安装通过而扩大修改系统目录权限。权限修复应该限制在 Claude Code 安装路径和当前用户目录内。
+
+## 相关页面
+
+- [Claude Code 故障排查](/zh/troubleshooting)
+- [claude command not found](/zh/troubleshooting/claude-command-not-found)
+- [安装教程](/zh/tutorial/getting-started/installation)
+
+## 官方来源
+
+- [Claude Code 安装和登录排查](https://code.claude.com/docs/en/troubleshoot-install)
+- [Claude Code Getting Started](https://code.claude.com/docs/en/getting-started)

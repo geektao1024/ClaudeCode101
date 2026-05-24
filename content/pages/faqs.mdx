@@ -1,0 +1,131 @@
+---
+title: 'Claude Code FAQ'
+description: 'High-intent Claude Code FAQ hub for installation, Windows setup, pricing, usage limits, CLAUDE.md, Plan Mode, MCP servers, custom commands, headless mode, and API documentation.'
+---
+
+This FAQ hub is the short-answer layer of ClaudeCode101. Use it when you have a specific Claude Code question and need a fast answer before opening the full tutorial, mechanics guide, MCP page, pricing note, or troubleshooting entry.
+
+> Last checked on May 24, 2026. Claude Code installation methods, plan access, model availability, and usage limits change often. Treat this page as a routing map, then verify account-specific pricing, usage, and model access in the official Claude surfaces before changing a production workflow.
+
+## Quick Answer
+
+Start with the question that matches your intent:
+
+- **Installing Claude Code:** use the install FAQ first, then the full installation tutorial if setup fails.
+- **Windows setup:** decide between native Windows and WSL before changing PATH or shell configuration.
+- **Pricing and limits:** check pricing, usage limits, `/model`, `/usage`, `/clear`, and `/compact` together.
+- **Project memory:** read the CLAUDE.md FAQ before creating a large project instruction file.
+- **Plan Mode:** use it before risky multi-file edits, migrations, pricing pages, redirects, auth, or payments.
+- **MCP servers:** connect one server at a time, with narrow permissions.
+- **Automation:** use custom commands for repeatable prompts, headless mode for scripts, and Agent SDK/API docs for programmatic boundaries.
+
+The FAQ page should answer the first question. The linked page should help you act.
+
+## Start Here
+
+| Question | Short answer | Open next |
+| --- | --- | --- |
+| [How do I install Claude Code?](/en/faqs/how-to-install-claude-code) | Install with the current official path, verify the `claude` command, then authenticate. | [Installation tutorial](/en/tutorial/getting-started/installation) |
+| [How do I install Claude Code on Windows?](/en/faqs/how-to-install-claude-code-on-windows) | Use native Windows for Windows projects; use WSL 2 when your toolchain is Linux-oriented. | [Windows PATH troubleshooting](/en/troubleshooting/claude-code-windows-path) |
+| [How much is Claude Code?](/en/faqs/how-much-is-claude-code) | Subscription users should compare Free, Pro, Max, Team, and Enterprise; API users should think in token cost. | [Pricing and limits hub](/en/pricing) |
+| [What are Claude Code usage limits?](/en/faqs/claude-code-usage-limits) | Limits depend on how you sign in, model choice, context size, and plan/API billing surface. | [Rate limit troubleshooting](/en/troubleshooting/claude-code-rate-limit-error) |
+| [What is CLAUDE.md?](/en/faqs/what-is-claude-md) | It is durable project memory for commands, conventions, architecture boundaries, and review rules. | [CLAUDE.md mechanics](/en/mechanics/claude-md) |
+| [What is Plan Mode?](/en/faqs/what-is-plan-mode) | It tells Claude Code to inspect and propose a plan before editing source files. | [Plan Mode mechanics](/en/mechanics/plan-mode) |
+| [What are Claude Code MCP servers?](/en/faqs/claude-code-mcp-servers) | MCP servers add external tools such as GitHub, browser automation, docs, databases, and internal systems. | [MCP directory](/en/mcp) |
+| [What are Claude Code custom commands?](/en/faqs/claude-code-custom-commands) | Custom commands and slash commands turn repeatable prompt patterns into named workflows. | [Slash commands mechanics](/en/mechanics/slash-commands) |
+| [What is Claude Code headless mode?](/en/faqs/claude-code-headless-mode) | Headless mode runs Claude Code non-interactively for scripts, JSON output, checks, and CI-style flows. | [API documentation FAQ](/en/faqs/claude-code-api-documentation) |
+| [Where is the Claude Code API documentation?](/en/faqs/claude-code-api-documentation) | Use CLI docs for terminal workflows, Agent SDK docs for agent automation, and Claude API docs for model calls. | [Headless mode FAQ](/en/faqs/claude-code-headless-mode) |
+
+## Installation And First Run Questions
+
+Installation questions usually split into two decisions: operating system and authentication path.
+
+| If you are asking... | Read this first | What to verify |
+| --- | --- | --- |
+| "How do I install Claude Code today?" | [How to install Claude Code](/en/faqs/how-to-install-claude-code) | `claude --version`, shell PATH, and sign-in method. |
+| "Why does Windows behave differently?" | [Windows install guide](/en/faqs/how-to-install-claude-code-on-windows) | Native terminal vs WSL, package manager, and PATH. |
+| "Why does `claude` not run?" | [Command not found fix](/en/troubleshooting/claude-command-not-found) | The binary location and the shell that loads your PATH. |
+| "Why can I not log in?" | [Login troubleshooting](/en/troubleshooting/claude-code-login-or-authentication-error) | Browser auth, API key, organization seat, and local credential state. |
+
+Do not troubleshoot pricing, MCP, or Plan Mode until the CLI is installed, visible in PATH, and authenticated.
+
+## Pricing, Usage, And Cost Questions
+
+Claude Code pricing questions can be confusing because subscription usage and API billing are different surfaces.
+
+| Question | Practical answer |
+| --- | --- |
+| "Is Claude Code free?" | Claude plan availability can change; check the official pricing page and your account. Some workflows may require paid access or API billing. |
+| "Should I use Pro, Max, Team, or Enterprise?" | Choose based on coding frequency, team needs, admin/security requirements, and whether you need organization-level controls. |
+| "Why did I hit a limit?" | Check sign-in method, active model, context size, long sessions, and whether you are on subscription usage or API-style metering. |
+| "How do I stretch usage?" | Use `/clear` between unrelated tasks, `/compact` for long sessions, `/model` for model choice, and smaller file-focused prompts. |
+| "How do I track cost?" | Subscription users should inspect plan usage surfaces; API users should use `/usage`, `/cost`, and the Console or cloud-provider billing page. |
+
+For production budgeting, start from [How much is Claude Code?](/en/faqs/how-much-is-claude-code), then read [Claude Code usage limits](/en/faqs/claude-code-usage-limits).
+
+## Workflow And Mechanics Questions
+
+Mechanics pages explain why a workflow works and what to avoid.
+
+| Workflow need | Start with | Then read |
+| --- | --- | --- |
+| Keep project rules stable | [What is CLAUDE.md?](/en/faqs/what-is-claude-md) | [CLAUDE.md mechanics](/en/mechanics/claude-md) |
+| Make Claude plan before edits | [What is Plan Mode?](/en/faqs/what-is-plan-mode) | [Plan Mode mechanics](/en/mechanics/plan-mode) |
+| Reduce context bloat and quota waste | [Usage limits](/en/faqs/claude-code-usage-limits) | [Context management](/en/mechanics/context-management) |
+| Reuse a repeated prompt | [Custom commands](/en/faqs/claude-code-custom-commands) | [Slash commands](/en/mechanics/slash-commands) |
+| Add automatic guardrails | [Custom commands](/en/faqs/claude-code-custom-commands) | [Hooks](/en/mechanics/hooks) |
+| Delegate noisy side work | [API documentation](/en/faqs/claude-code-api-documentation) | [Subagents](/en/mechanics/subagents) |
+
+If the question is "what should I configure first," the usual order is `CLAUDE.md`, permissions, one reusable command, Plan Mode habits, then hooks or subagents only after the pattern repeats.
+
+## MCP, API, And Automation Questions
+
+Use these questions when Claude Code needs to leave the basic terminal workflow.
+
+| Need | Best entry point | Watch out for |
+| --- | --- | --- |
+| Connect GitHub, browser, docs, or databases | [MCP servers FAQ](/en/faqs/claude-code-mcp-servers) | Start with one server and narrow tool permissions. |
+| Choose an MCP server | [MCP directory](/en/mcp) | Prefer trusted sources and explicit scopes. |
+| Run scripted prompts | [Headless mode FAQ](/en/faqs/claude-code-headless-mode) | Make permissions, credentials, and output format explicit. |
+| Build custom automation | [API documentation FAQ](/en/faqs/claude-code-api-documentation) | Do not mix CLI, Agent SDK, and Claude API docs without a clear boundary. |
+| Keep MCP safe | [MCP security checklist](/en/mcp/mcp-security-checklist) | External tools can read or write real systems. |
+
+MCP and automation are where mistakes become more expensive. Treat tool access as a production decision, not a convenience toggle.
+
+## How To Use This FAQ
+
+Use a FAQ page for the first answer, not as the final manual. A strong question page should do five things:
+
+1. Answer the question in the first few lines.
+2. State what changes often and must be verified.
+3. Give the practical next action.
+4. Link to the deeper tutorial or mechanics page.
+5. Link to official sources where account-specific details live.
+
+Before making a production decision, verify:
+
+- Current plan availability and billing rules.
+- Which account, organization, or API key Claude Code is using.
+- Which model is active in `/model`.
+- Whether the task should run interactively, in Plan Mode, headless mode, or the Agent SDK.
+- Whether tool permissions and MCP servers are narrow enough for the repository.
+- Whether the page you read has a recent "Last checked" date.
+
+## Related Hubs
+
+- [Claude Code tutorial center](/en/tutorial)
+- [Claude Code mechanics](/en/mechanics)
+- [MCP directory](/en/mcp)
+- [Troubleshooting](/en/troubleshooting)
+- [Pricing and limits](/en/pricing)
+- [Resources and tools](/en/resources)
+
+## Official Sources
+
+- [Claude Code docs](https://code.claude.com/docs)
+- [Claude pricing](https://claude.com/pricing)
+- [Claude Code setup](https://code.claude.com/docs/en/installation)
+- [Claude Code commands](https://code.claude.com/docs/en/commands)
+- [Claude Code usage and limits](https://support.claude.com/en/articles/14552983-models-usage-limits-in-claude-code)
+- [Manage costs effectively](https://code.claude.com/docs/en/costs)
+- [Claude Code Agent SDK](https://code.claude.com/docs/en/agent-sdk/overview)

@@ -1,0 +1,34 @@
+---
+title: 'Claude Code rate limit 错误'
+description: '排查 Claude Code 429、server temporarily limiting requests、session limit、weekly limit 和 credit balance 不足。'
+---
+
+如果 Claude Code 提示 `Request rejected (429)`、`Server is temporarily limiting requests`、`session limit`、`weekly limit` 或 `Credit balance is too low`，先判断这是临时限流、订阅用量、API 账单，还是云服务商限制。
+
+## 先检查这些
+
+1. Claude Code 能启动时，先运行 `/usage` 查看当前用量。
+2. 运行 `/status`，确认当前走的是订阅登录、API key、Bedrock、Vertex、Foundry，还是其他 provider。
+3. 不要只看“限流”两个字，要读完整错误。临时 429 和 weekly limit 不是同一类问题。
+4. 如果任务调用很多工具、subagents 或 MCP，先降低并发。
+5. API 配置下，去对应控制台检查余额、工作区限速和花费上限。
+
+## 这类提示通常意味着什么
+
+`Request rejected (429)` 通常表示服务端短时间限制请求。`session limit` 或 `weekly limit` 更像订阅或账号额度问题，需要等待重置或调整计划/账号策略。`Credit balance is too low` 通常指向账单或工作区余额，而不是项目代码本身。
+
+## 如何继续工作
+
+把任务拆成更小的检查点，适合时切换到更轻的模型，减少无关上下文，并在重试前停止大范围仓库扫描。团队长会话开始前，最好先记录当前凭证和预期用量口径。
+
+## 相关页面
+
+- [Claude Code 价格和用量说明](/zh/pricing)
+- [Claude Code 用量限制 FAQ](/zh/faqs/claude-code-usage-limits)
+- [上下文管理](/zh/mechanics/context-management)
+- [Claude Code 故障排查](/zh/troubleshooting)
+
+## 官方来源
+
+- [Claude Code 错误参考](https://code.claude.com/docs/en/errors)
+- [Claude Code 成本管理](https://code.claude.com/docs/en/costs)

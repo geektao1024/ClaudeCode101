@@ -1,0 +1,91 @@
+---
+title: 'Claude Code 多少钱？'
+description: 'Claude Code 最新价格判断指南：Free、Pro、Max、Team、Enterprise、API 计费、usage credits 与成本控制。'
+schema_question: 'Claude Code 多少钱？'
+schema_answer: 'Claude Code 包含在符合条件的 Claude Pro、Max、Team、Enterprise 等订阅中，也可以通过 Claude Console 或云厂商 API 计费使用。免费 Claude 账号不包含 Claude Code。价格、税费、地区、限制和 usage credits 会变化，购买前应以官方价格页和账号内信息为准。'
+---
+
+Claude Code 没有一个固定统一价格。实际成本取决于你的登录方式：Claude 订阅、Team/Enterprise 席位、Claude Console API、或 Bedrock、Vertex AI、Microsoft Foundry 等云厂商。
+
+> 最后核查：2026 年 5 月 24 日。本文是选型指南，不是冻结价格表。最终价格、税费、地区可用性、用量限制和 usage credits，请以你自己的 Claude 账号为准。
+
+## 短答案
+
+- 免费 Claude 计划不包含 Claude Code。
+- Pro 是个人学习和轻量开发的入门方案。
+- Max 提供比 Pro 更高的用量，更适合日常写代码。
+- Team 和 Enterprise 解决的是团队账单、管理、安全和治理问题。
+- API 或云厂商计费适合自动化、CI、Agent SDK 和高强度任务，但必须监控成本。
+
+## 当前计划怎么理解
+
+| 路径 | 官方公开价格信号 | 适合谁 | 注意点 |
+| --- | --- | --- | --- |
+| Free | $0 | 只能用于普通 Claude 体验，不是 Claude Code 方案。 | Claude Code 需要符合条件的付费计划或 Console / 云厂商访问。 |
+| Pro | 年付折算 $17/月，或月付 $20/月。 | 学习、小项目、偶尔开发。 | 用量会和其他 Claude 使用共享，长会话可能很快用完。 |
+| Max 5x | Max 公开价格为 $100/月档。 | 经常使用 Claude Code、处理较大仓库。 | 不是无限用量，仍要管理模型和上下文。 |
+| Max 20x | Max 公开价格为 $200/月档。 | 高频个人开发、长时间编码、更多 Opus 规划。 | 大上下文和 Opus 仍会消耗大量额度。 |
+| Team | 标准席位公开为年付 $20/席/月，另有更高用量席位。 | 多人使用、集中账单、连接器、管理控制。 | 席位类型、年付/月付、组织权限都要看清。 |
+| Enterprise | 自助 Enterprise 页面显示席位价格加 API usage。 | 需要 SSO、审计、合规、用量分析、花费控制的组织。 | 这是治理方案，不只是开发者个人升级。 |
+| API / Console / 云厂商 | 按 token 和功能计费。 | 自动化、CI、产品化 agent、超过订阅限制的开发冲刺。 | 脚本循环、大上下文、无人值守任务可能快速放大成本。 |
+
+## API 价格中最该关注的部分
+
+如果你用 `ANTHROPIC_API_KEY`、Agent SDK、自动化脚本或 pay-as-you-go credits，API 价格会直接影响成本。
+
+| 模型 | 公开输入价 | 公开输出价 | 实战用途 |
+| --- | --- | --- | --- |
+| Opus 4.7 | $5 / 百万 tokens | $25 / 百万 tokens | 架构判断、跨仓库推理、困难调试。 |
+| Sonnet 4.6 | $3 / 百万 tokens | $15 / 百万 tokens | 日常开发的默认平衡点。 |
+| Haiku 4.5 | $1 / 百万 tokens | $5 / 百万 tokens | 快速检查、简单修改、批量机械任务。 |
+
+Web search、code execution 等能力也可能单独计费或有免费额度。只要进入 API 或自动化路径，就不要只看模型 token 单价。
+
+## 订阅和 API 计费不要混淆
+
+常见误区是以为所有 Claude Code 会话都按同一种方式计费。实际不是。
+
+如果你通过 Pro、Max、Team 或 Enterprise 登录，Claude Code 使用的是该账号包含的用量。如果终端里设置并启用了 API key，Claude Code 可能走 Console 或云厂商计费。你以为在用订阅额度，实际可能在消耗 API 账单。
+
+长任务前先检查：
+
+1. 用 `/status` 确认当前账号和凭据路径。
+2. 用 `/model` 确认当前模型。
+3. 检查是否设置了 `ANTHROPIC_API_KEY`、`ANTHROPIC_AUTH_TOKEN` 或云厂商环境变量。
+4. API 路径要看 Console 或云厂商账单。
+5. 订阅路径要看 reset 提示、usage credits 和官方计划说明。
+
+## 怎么选计划
+
+| 使用方式 | 建议起点 | 何时升级 |
+| --- | --- | --- |
+| 学习 Claude Code、小项目 | Pro | 正常任务经常没做完就触顶。 |
+| 每天开发 1-2 个仓库 | Max 5x | 需要更长会话、更大上下文或更多 Opus 规划。 |
+| 高频编码、大重构、长会话 | Max 20x | 仍然需要团队治理、审计或统一账单时。 |
+| 团队落地 | Team | 需要 SSO、审计、自定义保留策略或花费控制时。 |
+| CI、内部工具、产品化 agent | API / Agent SDK | 需要程序化边界、监控和稳定自动化时。 |
+
+## 控制成本的做法
+
+- 日常实现用 Sonnet，困难规划或卡住时再切 Opus。
+- 多文件修改前先用 Plan Mode。
+- 不同任务之间用 `/clear`，不要让旧上下文继续消耗用量。
+- 长任务中用 `/compact` 保留摘要。
+- 引用文件路径，不要直接粘贴大文件。
+- `CLAUDE.md` 保持短、准、常更新。
+- API 自动化先设置 spend limits 和告警。
+
+## 相关页面
+
+- [Claude Code 用量限制](/zh/faqs/claude-code-usage-limits)
+- [Plan Mode](/zh/faqs/what-is-plan-mode)
+- [Claude Code API 文档](/zh/faqs/claude-code-api-documentation)
+- [价格与限制中心](/zh/pricing)
+
+## 官方来源
+
+- [Claude pricing](https://claude.com/pricing)
+- [Claude Code installation and access requirements](https://code.claude.com/docs/en/installation)
+- [Use Claude Code with Pro or Max](https://support.claude.com/en/articles/11145838-use-claude-code-with-your-pro-or-max-plan)
+- [Models, usage, and limits in Claude Code](https://support.claude.com/en/articles/14552983-models-usage-and-limits-in-claude-code)
+- [Claude Code cost management](https://code.claude.com/docs/en/costs)

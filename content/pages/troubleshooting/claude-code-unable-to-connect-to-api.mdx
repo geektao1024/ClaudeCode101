@@ -1,0 +1,34 @@
+---
+title: 'Claude Code Unable to Connect to API'
+description: 'How to troubleshoot Claude Code unable to connect to API, request timeout, SSL certificate, proxy, VPN, and network errors.'
+---
+
+If Claude Code cannot connect to the API, times out, or reports SSL certificate problems, treat it as a network path issue first. The cause may be local connectivity, corporate proxy inspection, VPN routing, certificate trust, provider status, or an incorrect base URL.
+
+## Quick Checks
+
+1. Check whether Claude service status or your provider status page shows an incident.
+2. Try a simple network request from the same terminal environment.
+3. If you use a proxy, confirm `HTTP_PROXY`, `HTTPS_PROXY`, and certificate settings.
+4. If you use a custom gateway or provider, verify `ANTHROPIC_BASE_URL` and related credentials.
+5. Retry from a different network before reinstalling Claude Code.
+
+## Common Causes
+
+Corporate networks may intercept TLS, block download or API hosts, or require a custom CA certificate. VPNs can also route browser traffic differently from terminal traffic. In cloud-provider setups, the error may come from Bedrock, Vertex, Foundry, or a custom gateway rather than Anthropic directly.
+
+## When To Escalate
+
+Record the exact error text, operating system, shell, proxy or VPN state, active credential path, and whether the same request works from another network. If Claude Code starts, run `/doctor`; if it cannot start, run `claude doctor` from the shell.
+
+## Related Pages
+
+- [Login or authentication error](/en/troubleshooting/claude-code-login-or-authentication-error)
+- [Claude command not found](/en/troubleshooting/claude-command-not-found)
+- [Claude Code troubleshooting hub](/en/troubleshooting)
+- [Claude Code API reference hub](/en/api-reference)
+
+## Official Sources
+
+- [Claude Code error reference](https://code.claude.com/docs/en/errors)
+- [Troubleshoot installation and login](https://code.claude.com/docs/en/troubleshoot-install)

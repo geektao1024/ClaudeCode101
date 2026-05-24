@@ -1,0 +1,246 @@
+---
+title: 'Claude Code Plan Mode 指南'
+description: '系统讲解 Claude Code Plan Mode 的只读分析、权限行为、提示词写法、审批清单、迁移规划、headless 用法和团队默认配置。'
+---
+
+Plan Mode 是 Claude Code 的安全分析工作流。它让 Claude 先检查代码库并输出计划，再进入编辑。只要错误改动的成本比较高，就应该先用 Plan Mode：迁移、重构、登录、支付、数据库、MCP 权限、SEO 页面、生产配置、多文件功能，都属于这类场景。
+
+> 最后核查：2026 年 5 月 24 日。官方 Claude Code 文档把 Plan Mode 描述为用于只读分析的 permission mode。它可以分析和制定计划，但在 plan mode 下不应该修改文件或执行命令。界面标签和快捷键可能变化，实际使用前建议以你安装版本的状态栏为准。
+
+## 快速结论
+
+当任务需要判断，而不是直接动手时，用 Plan Mode。Claude 应该先理解仓库、找出相关文件、比较实现方案、说明风险，并提出验证步骤。你审查并确认计划后，再允许进入实现。
+
+最短可用流程是：
+
+1. 先进入 Plan Mode。
+2. 说明目标、限制和风险区域。
+3. 让 Claude 检查相关代码并输出计划。
+4. 审查计划里是否缺文件、缺假设、缺验证。
+5. 确认后再允许编辑。
+
+如果只是改一个错别字，Plan Mode 可能太重。但如果涉及共享逻辑、公开 SEO 路由、计费、认证、迁移或陌生代码，它就是非常便宜的保险。
+
+## 如何进入 Plan Mode
+
+Claude Code 官方支持几种 Plan Mode 用法：
+
+| 场景 | 推荐方式 |
+| --- | --- |
+| 已经在交互式 Claude Code 会话中 | 按 `Shift+Tab` 循环 permission modes，直到状态栏显示 plan mode。 |
+| 新开交互式会话就进入 Plan Mode | 运行 `claude --permission-mode plan`。 |
+| 想做一次只读分析，不进入编辑 | 运行 `claude --permission-mode plan -p "Analyze this project and propose a migration plan"`。 |
+| 想让项目默认进入 Plan Mode | 在 `.claude/settings.json` 的 `permissions` 下设置 `"defaultMode": "plan"`。 |
+
+官方 common workflows 提到，`Shift+Tab` 会在 permission modes 之间循环。从 normal mode 开始时，可能先进入 auto-accept edits，再进入 plan mode。所以不要只凭按键次数判断，要看状态栏。
+
+有些团队会创建和 planning 相关的自定义 slash command 或提示词，这很有用，但它不等于官方 Plan Mode。只有当前会话真的处在 plan permission mode，才有对应的只读约束。
+
+## Plan Mode 能做什么，不能做什么
+
+| 动作 | Plan Mode 行为 | 实际含义 |
+| --- | --- | --- |
+| 读文件、列目录、搜索代码 | 允许用于只读分析。 | 适合做架构理解和风险定位。 |
+| 修改文件 | plan mode 下不允许。 | 需要你批准并切换模式后才能实现。 |
+| 执行命令 | 官方 IAM 文档描述 plan mode 不能执行命令。 | 可以让 Claude 推荐命令，之后在实现或 normal mode 中执行。 |
+| 提出编辑顺序 | 允许。 | 这是 Plan Mode 最核心的输出。 |
+| 比较多个方案 | 允许。 | 适合迁移、重构和根因不明的 bug。 |
+| 保证后续不会出错 | 不能保证。 | 仍然需要 permissions、hooks、CI 和人工 review。 |
+
+Plan Mode 的价值不是让 Claude 完美，而是让高风险部分在改文件之前先暴露出来。
+
+## 什么时候应该使用 Plan Mode
+
+当错误修改的成本高于一次短分析时，就应该使用：
+
+- 触及 routes、components、services、content 的多文件功能；
+- 跨 package 或跨模块的重构；
+- 登录、支付、数据库、存储、部署、权限相关修改；
+- 公开 SEO 页面，尤其是标题、slug、canonical、sitemap、redirect；
+- MCP server、tools allowlist、hooks 或 workspace permission 修改；
+- 根因不明显的 bug；
+- 你还不熟悉的代码库；
+- 需要用户或 reviewer 先确认方向的任务。
+
+可以跳过的场景也很清楚：错别字、一个坏链接、明显 import 路径错误、单行文案修正。Plan Mode 不是仪式感，它是为了避免盲改。
+
+## 好的 Plan Mode 提示词
+
+好提示词要给 Claude 目标、边界和完成标准。
+
+```text
+Start in Plan Mode.
+
+Goal: improve the Plan Mode guide page so it is useful for developers searching for Claude Code planning workflows.
+
+Constraints:
+- Do not change the route structure.
+- Do not edit shared Fumadocs layout components.
+- Preserve English and Chinese parity.
+- Use official Claude Code sources for current behavior.
+
+Please inspect the relevant content files, identify gaps, propose the exact sections to add, list affected files, and include verification steps. Do not edit files yet.
+```
+
+如果是代码修改，可以补一句：
+
+```text
+Before planning, inspect the route, the component that renders it, the data model, and the tests that protect it. If there are multiple implementation options, compare them and recommend the lowest-risk path.
+```
+
+如果是排查 bug，可以这样约束：
+
+```text
+Do not jump to a fix. First identify the reproduction path, the likely failing layer, the files to inspect, and the smallest verification command that would prove the fix.
+```
+
+## 一个好计划应该包含什么
+
+Plan Mode 的输出要具体到 reviewer 能批准或驳回。
+
+| 计划元素 | 应该说明什么 |
+| --- | --- |
+| 目标复述 | 用一两句话确认任务范围。 |
+| 文件和路由 | 可能涉及的文件、目录、路由、配置面。 |
+| 当前行为 | Claude 检查仓库后看到的真实情况。 |
+| 实施顺序 | 分步骤说明先改什么、后改什么。 |
+| 替代方案 | 如果有多条路径，要说明取舍。 |
+| 风险区域 | auth、billing、SEO、data、permissions、performance、layout 等。 |
+| 需要用户决策 | 哪些选择必须由人确认。 |
+| 验证方式 | build、test、browser、curl、截图或人工 review。 |
+| 回滚思路 | 失败时如何限制影响或回退。 |
+
+如果计划只是“更新页面”或“重构代码”，那就不是计划。继续要求它列文件、假设和验证方式。
+
+## 批准前检查清单
+
+允许 Claude 编辑前，先检查：
+
+- 是否列出所有受影响文件和路由；
+- 是否真的检查了当前实现，而不是凭经验猜；
+- 是否区分了事实和假设；
+- 实施顺序是否足够小，方便 review；
+- 是否保留了现有 service、helper、layout 或 content model；
+- 是否避免了不必要的抽象；
+- 高风险区域是否明确；
+- 验证方式是否符合本地项目；
+- 是否涉及 title、description、canonical、sitemap 等 SEO 字段；
+- 失败时是否有清晰停止点。
+
+Plan Mode 的收益就在这里：审查一个计划通常比清理一大片错误 diff 快得多。
+
+## 示例：安全重构计划
+
+一个比较好的重构计划可以长这样：
+
+```md
+## Proposed Plan
+
+1. Inspect `src/app/[locale]/(knowledge)` to confirm the current rendering boundary.
+2. Read the shared MDX page component before changing content.
+3. Update only `content/pages/mechanics/plan-mode.mdx` and `.zh.mdx`.
+4. Keep the route and metadata fields intact.
+5. Run `pnpm build`.
+6. Open `/en/mechanics/plan-mode` and `/zh/mechanics/plan-mode` to verify headings, tables, JSON-LD, and console output.
+
+Risk: Fumadocs pages already render the H1 from frontmatter, so the MDX body should not add a top-level `#`.
+```
+
+这个计划的关键是具体。它列了文件，解释了渲染风险，也写了验证步骤。
+
+## 示例：Headless Plan Mode
+
+Headless Plan Mode 适合在脚本或类似 CI 的流程里做只读分析：
+
+```bash
+claude --permission-mode plan -p "Analyze the authentication flow and list risks before we refactor it."
+```
+
+适合用来做：
+
+- 迁移前的架构 review；
+- 高风险区域的安全审查；
+- 测试策略规划；
+- 分配 ticket 前先总结影响面；
+- 检查某个变更是否会触碰禁止目录。
+
+但不要把 headless 输出当成最终批准。它只是分析结果，仍然需要人或后续实现会话决定怎么做。
+
+## 把 Plan Mode 配成团队默认
+
+如果仓库出错成本很高，可以把 Plan Mode 配成默认 permission mode：
+
+```json
+{
+  "permissions": {
+    "defaultMode": "plan"
+  }
+}
+```
+
+团队共享默认值可以放在 `.claude/settings.json`。个人实验放在 `.claude/settings.local.json`。企业环境里，组织级 managed settings 可能有更高优先级。
+
+适合默认开启的项目：
+
+- 生产基础设施仓库；
+- 登录、支付很重的应用；
+- 受监管环境；
+- 有很多新 Claude Code 用户的仓库；
+- URL 和 metadata 变更必须审查的 SEO 站点。
+
+但它不适合所有项目。小修小补也默认 plan，会让流程变慢。
+
+## Plan Mode 和成本控制
+
+Plan Mode 可以减少用量浪费，因为它能提前发现错误方向。但 plan 本身也会消耗上下文。一次没有边界的“把整个仓库都看一遍”，同样浪费。
+
+让它更高效：
+
+- 能说清目标 route、feature、module 就先说清；
+- 交互式会话里可以用 `@file` 指定相关文件；
+- 要求“最小充分检查”，不要让它无边界阅读；
+- 把稳定项目规则写进 `CLAUDE.md`，不要每次重复；
+- 长会话变乱时用 `/clear` 或 `/compact`；
+- 计划被接受后再进入实现。
+
+最好的 Plan Mode 会话不是最长的，而是在改文件前找到正确文件和正确风险。
+
+## 常见错误
+
+| 错误 | 为什么有问题 | 更好的做法 |
+| --- | --- | --- |
+| Claude 已经改完了才要求计划 | 风险 diff 已经产生。 | 先进入 Plan Mode，再实现。 |
+| 批准一个很模糊的计划 | 后续实现仍然会漂移。 | 要求列文件、顺序、风险和验证。 |
+| 没有限制条件就让它计划 | Claude 可能优化错目标。 | 明确哪些东西不能改。 |
+| 所有小改都用 Plan Mode | 简单工作会变慢。 | 只用于不确定或高风险任务。 |
+| 把 Plan Mode 当安全强制机制 | 它是 permission mode，不是完整策略系统。 | 用 permissions、hooks、CI 做硬约束。 |
+| 实现后不验证 | 好计划不等于代码正确。 | 执行计划里的验证步骤。 |
+
+## 实战工作流
+
+严肃任务可以按这个节奏走：
+
+1. **Explore：** 只检查相关文件，总结当前行为；
+2. **Plan：** 输出具体计划，包含文件、风险、验证；
+3. **Approve：** 修改计划，直到符合真实目标；
+4. **Implement：** 退出 Plan Mode，做最小完整改动；
+5. **Verify：** 跑 build、test、route check 或 browser check；
+6. **Summarize：** 说明改了什么、还剩什么。
+
+这就是“Explore, Plan, Code”的核心习惯：先理解，再计划，最后编码。
+
+## 相关页面
+
+- [Plan Mode 是什么](/zh/faqs/what-is-plan-mode)
+- [Plan Mode 工作流教程](/zh/tutorial/workflows/plan-mode)
+- [探索-计划-编码](/zh/tutorial/workflows/explore-plan-code)
+- [CLAUDE.md 指南](/zh/mechanics/claude-md)
+- [工具权限管理](/zh/tutorial/configuration/tools-allowlist)
+- [Claude Code headless mode](/zh/faqs/claude-code-headless-mode)
+
+## 官方来源
+
+- [Claude Code common workflows](https://code.claude.com/docs/en/common-workflows)
+- [Claude Code IAM and permission modes](https://code.claude.com/docs/en/iam)
+- [Claude Code settings](https://code.claude.com/docs/en/settings)
+- [Claude Code CLI reference](https://code.claude.com/docs/en/cli-usage)

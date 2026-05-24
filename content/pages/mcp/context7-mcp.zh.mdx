@@ -1,0 +1,85 @@
+---
+title: 'Claude Code Context7 MCP 指南'
+description: '如何在 Claude Code 中使用 Context7 MCP 获取当前库和框架文档，减少过时 API 假设，并验证实现决策。'
+---
+
+Context7 MCP 可以让 Claude Code 在编码会话里拉取当前库和框架文档。它最有价值的场景，是避免模型沿用过时示例、猜错配置项或使用旧 API 形态。
+
+> 最后核查：2026 年 5 月 24 日。Context7 针对 Claude Code 的接入方式可能变化。安装或沉淀团队配置前，请确认当前 Context7 client 文档。
+
+## 什么时候应该用 Context7
+
+当任务依赖“当前文档”而不是通用编程知识时，再使用 Context7 MCP：
+
+- 框架最近改过路由、配置、认证或部署 API。
+- Claude Code 总是给出旧语法。
+- 你需要确认某个库的精确 option 名称。
+- 使用的包不够常见，模型记忆不可靠。
+- 修改生产关键路径前，需要先拿到文档上下文。
+
+如果答案已经在仓库、lockfile、本地类型定义或测试里，优先看本地事实。Context7 应该减少不确定性，而不是替代验证。
+
+## 配置方式
+
+Context7 直接提供 Claude Code 接入文档。根据当前 client 路径，安装可能通过 setup 命令、集成市场或手动 MCP 配置完成。
+
+当前常见形态类似：
+
+```bash
+npx ctx7 setup --claude
+```
+
+配置后，先确认 Claude Code 能看到 Context7 tools，再用于真实实现。如果团队要统一使用，把准确安装命令和预期行为写进 `CLAUDE.md`。
+
+## 实用工作流
+
+1. 先让 Claude Code 识别涉及的库、框架和版本。
+2. 用 Context7 拉取这个目标的聚焦文档。
+3. 让 Claude Code 对比文档和当前仓库代码。
+4. 进入 Plan Mode，先给实现方案。
+5. 修改后运行类型检查、测试或本地预览。
+
+这样可以避免把 Context7 用成泛搜索。它应该服务一个具体实现问题。
+
+## 好用的提示词
+
+| 需求 | 提示词形态 |
+| --- | --- |
+| API 语法 | “用 Context7 查 `<library>` 当前文档，确认 `<feature>` 的正确 options。” |
+| 迁移 | “对比我们现在的 `<library>` 用法和最新文档，只列出与这个文件相关的 breaking changes。” |
+| Debug | “拉取这个错误路径相关文档，然后判断代码里哪个假设可能过时。” |
+| 实现 | “先用文档上下文，再给一个小计划，确认后再编辑。” |
+
+避免“把全部文档都读一下”这种提示。它会浪费上下文，也会让答案变散。
+
+## 使用文档后还要验证什么
+
+| 检查 | 原因 |
+| --- | --- |
+| 包版本 | 文档可能对应比 lockfile 更新的版本 |
+| 运行时行为 | 文档未必覆盖框架组合下的边界情况 |
+| TypeScript 类型 | 本地类型往往是最快的事实来源 |
+| 测试或预览 | 文档指导修改，运行结果确认修改 |
+| Changelog | Breaking changes 可能不在 API 页面里 |
+
+## 常见错误
+
+- 一次拉太多文档。
+- 把文档当成代码一定正确的证明。
+- 忘了检查已安装包版本。
+- 混用不同 major version 的文档。
+- 用“查文档”掩盖缺少测试计划的问题。
+
+## 相关页面
+
+- [MCP 目录](/zh/mcp)
+- [上下文管理](/zh/mechanics/context-management)
+- [Plan Mode](/zh/mechanics/plan-mode)
+- [Claude Code API 文档](/zh/faqs/claude-code-api-documentation)
+
+## 官方来源
+
+- [Context7 Claude Code setup](https://context7.com/docs/clients/claude-code)
+- [Context7](https://context7.com/)
+- [Model Context Protocol documentation](https://modelcontextprotocol.io/)
+- [Claude Code MCP documentation](https://code.claude.com/docs/en/mcp)

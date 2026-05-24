@@ -1,0 +1,280 @@
+---
+title: 'Claude Code API Documentation: API Reference, Agent SDK, CLI, and MCP'
+description: 'Find the right official Claude Code API documentation: Anthropic Messages API, Claude Code CLI, Agent SDK, MCP servers, headless mode, authentication, and automation examples.'
+---
+
+# Claude Code API Documentation
+
+This page is a routing guide for developers searching “Claude Code API reference” or “Claude Code API documentation.” The important distinction is that **Claude Code is primarily a CLI and agentic coding tool**, while **Claude API** is the platform surface for model calls from your own application.
+
+<Callout type="info">
+  Last checked on May 24, 2026. ClaudeCode101 is an independent tutorial site,
+  not Anthropic documentation. Use this page to choose the right official
+  reference, then verify endpoint names, SDK syntax, pricing, rate limits, and
+  authentication in Anthropic or Claude Code docs before shipping production code.
+</Callout>
+
+## 30-Second Answer
+
+There is no single “Claude Code REST API” that replaces the official Claude API docs. Choose the documentation surface by what you are building:
+
+| What you want to do | Use this official surface | Start here |
+| ------------------- | ------------------------- | ---------- |
+| Call Claude from your app | Anthropic Messages API and client SDKs | [Anthropic API docs](https://platform.claude.com/docs/en/home) |
+| Run Claude Code from a terminal or script | Claude Code CLI | [Claude Code CLI reference](https://code.claude.com/docs/en/cli-reference) |
+| Build an agent that reads files, runs commands, and edits code | Claude Agent SDK | [Agent SDK overview](https://code.claude.com/docs/en/agent-sdk) |
+| Connect Claude Code to GitHub, docs, browsers, databases, or internal tools | MCP servers | [Claude Code MCP docs](https://code.claude.com/docs/en/mcp) |
+| Run one-off non-interactive prompts | `claude -p` / Headless Mode | [Headless Mode guide](/en/tutorial/advanced/headless-mode) |
+| Deploy managed autonomous agents | Managed Agents | [Claude Platform docs](https://platform.claude.com/docs/en/home) |
+
+If you are asking “where is the Claude Code API documentation,” the most likely answer is: **CLI reference for terminal automation, Agent SDK for programmable agents, Anthropic API docs for model calls, and MCP docs for tool integrations.**
+
+## Official References
+
+Use these as source of truth:
+
+| Reference | What it covers | When to use it |
+| --------- | -------------- | -------------- |
+| [Anthropic API documentation](https://platform.claude.com/docs/en/home) | Messages API, models, streaming, tool use, structured outputs, prompt caching, rate limits, billing, SDKs. | You are building your own app with Claude model calls. |
+| [Anthropic API reference](https://platform.claude.com/docs/api) | Exact HTTP endpoints, request fields, response fields, errors. | You need endpoint-level details. |
+| [Claude Code docs](https://code.claude.com/docs) | CLI setup, workflows, permissions, MCP, hooks, commands, subagents. | You use Claude Code as a coding assistant. |
+| [Claude Code CLI reference](https://code.claude.com/docs/en/cli-reference) | `claude`, `claude -p`, auth, update, flags, output formats. | You need terminal commands or automation flags. |
+| [Agent SDK overview](https://code.claude.com/docs/en/agent-sdk) | Python and TypeScript SDKs for Claude Code-style agents. | You want programmable agents with tool execution. |
+| [Claude Code MCP docs](https://code.claude.com/docs/en/mcp) | Connecting external tools and data sources through MCP. | You need GitHub, docs, browser, database, or internal tool access. |
+
+## Which API Surface Should You Use?
+
+The word “API” is overloaded. Use this decision table before copying code:
+
+| Requirement | Best fit | Why |
+| ----------- | -------- | --- |
+| Generate text in a web app | Messages API | You manage prompts, state, tools, and UX. |
+| Add Claude to a backend service | Anthropic client SDK | Official SDKs handle request syntax and auth. |
+| Ask Claude Code to inspect a repo once | `claude -p` | Lightweight one-off automation. |
+| Build an internal code review bot | Agent SDK | It can run a Claude Code-style agent loop in your process. |
+| Connect Claude Code to GitHub issues | GitHub CLI or GitHub MCP | Use CLI for simple audited commands; MCP for repeated structured workflows. |
+| Let Claude Code read internal docs | MCP or pasted context | Use MCP only when repeated access is worth the permission surface. |
+| Deploy a hosted autonomous agent | Managed Agents | Anthropic-managed sessions and infrastructure. |
+
+If you only need a model response, do not use Claude Code as an API wrapper. Use the Anthropic Messages API. If you need file reading, command execution, code edits, permissions, and session behavior, look at Claude Code CLI or Agent SDK.
+
+## Authentication and API Keys
+
+For Anthropic API workflows, start with an API key from Console:
+
+```bash
+export ANTHROPIC_API_KEY="your-api-key"
+```
+
+Then use an official client SDK or HTTP request. The Claude Platform docs show examples in Python, TypeScript, Go, Java, Ruby, PHP, C#, cURL, and CLI.
+
+For Claude Code CLI, authentication can be through supported Claude Code sign-in flows or Console/API usage billing depending on how you start the CLI. For application code and production agents, prefer API key authentication through the official platform docs rather than relying on a personal interactive login.
+
+Security baseline:
+
+| Do | Avoid |
+| -- | ----- |
+| Store keys in environment variables or a secrets manager. | Commit API keys to Git. |
+| Use separate keys for dev, staging, and production. | Reuse a personal local token in CI. |
+| Set spend limits and monitor usage. | Run headless loops without a budget guard. |
+| Rotate keys after exposure. | Paste secrets into prompts, logs, or docs. |
+
+## Claude API vs Claude Code CLI
+
+The Anthropic API and Claude Code CLI solve different problems:
+
+| Surface | You control | Claude controls |
+| ------- | ----------- | --------------- |
+| Anthropic Messages API | Conversation state, tool loop, UI, persistence, safety checks, deployment. | Model response generation. |
+| Claude Code CLI | Prompt, repo, permissions, tool access, approval flow. | Agentic coding loop inside the CLI. |
+| Agent SDK | Your app process, auth, hosting, approval logic, custom tools, observability. | Claude Code-style tool use and agent loop. |
+
+Use the Messages API when the product is your own app. Use Claude Code when the task is development work in a repository. Use Agent SDK when you want Claude Code-style behavior inside a programmable workflow.
+
+## CLI Automation API: `claude -p`
+
+For non-interactive CLI automation, use print mode:
+
+```bash
+claude -p "Summarize the last 20 commits and list release risks"
+```
+
+Process piped input:
+
+```bash
+git diff --stat | claude -p "Write a release note summary"
+```
+
+Return structured output:
+
+```bash
+claude -p "Review this diff and return the top risks" \
+  --output-format json
+```
+
+Use permissions for safer automation:
+
+```bash
+claude -p "Review this repository without editing files" \
+  --permission-mode plan \
+  --tools "Read,Grep,Glob,Bash" \
+  --allowedTools "Bash(git diff *)" "Bash(git status *)" \
+  --max-turns 3 \
+  --output-format json
+```
+
+For deeper examples, see the [Claude Code Headless Mode guide](/en/tutorial/advanced/headless-mode).
+
+## Agent SDK API
+
+Use the Claude Agent SDK when you need a programmable agent rather than a one-off CLI command. Official docs describe the Agent SDK as giving Python and TypeScript programs the same tools, agent loop, and context management that power Claude Code.
+
+Install:
+
+```bash
+npm install @anthropic-ai/claude-agent-sdk
+```
+
+or:
+
+```bash
+pip install claude-agent-sdk
+```
+
+The Agent SDK is a better fit when you need:
+
+| Need | Why Agent SDK fits |
+| ---- | ------------------ |
+| Custom app integration | You can call the agent from your own service. |
+| Programmatic sessions | Your code owns the workflow and persistence. |
+| Custom approval logic | You can intercept and control tool use. |
+| Observability | The SDK has docs for cost, usage, hooks, and OpenTelemetry. |
+| Production automation | You can run the agent in your infrastructure with explicit auth and limits. |
+
+Important distinction: Anthropic’s client SDK gives you direct model API access; you implement the tool loop yourself. The Agent SDK gives you Claude Code-style tool execution and agent behavior.
+
+## MCP API and Tool Integrations
+
+MCP is not the same as the Anthropic Messages API. MCP is the protocol Claude Code uses to connect to tools, APIs, databases, docs, and external systems.
+
+Use MCP when:
+
+- Claude Code repeatedly needs GitHub issue, PR, or release context;
+- Claude needs current library documentation before editing code;
+- a browser, database, monitoring system, or internal API is part of the workflow;
+- copy-pasting context from another tool is becoming the bottleneck.
+
+Start narrow:
+
+```bash
+claude mcp add --transport http docs https://api.example.com/mcp
+```
+
+Review:
+
+```text
+/mcp
+```
+
+For many GitHub tasks, [GitHub CLI integration](/en/tutorial/configuration/github-cli) is simpler and easier to audit than adding a full MCP server. Move to MCP when the workflow becomes repetitive enough to justify the extra permission surface.
+
+## Common API Tasks
+
+### Code Generation
+
+If you want Claude to generate code inside your own product, use the Anthropic Messages API or client SDKs. You send the prompt, choose the model, manage project context, and decide where generated code appears.
+
+If you want Claude Code to generate code inside a local repository, use the CLI or Agent SDK. Add project rules with [CLAUDE.md](/en/tutorial/configuration/claude-md), then use [Plan Mode](/en/tutorial/workflows/plan-mode) before approving edits.
+
+### Code Explanation
+
+For app-level explanations, send the relevant snippet to the Messages API. Keep the snippet small and avoid sending secrets.
+
+For repository-level explanation, Claude Code is usually better because it can inspect nearby files and project structure:
+
+```bash
+claude -p "Explain how authentication flows through this repository. Do not edit files." \
+  --permission-mode plan
+```
+
+### Code Review
+
+For a simple PR summary, use `claude -p` with `git diff`. For a production review bot, use the Agent SDK with explicit tools, permissions, cost limits, and observability.
+
+Do not let an automated review agent push changes until its read-only review output is reliable.
+
+### Code Refactoring
+
+For small local refactors, use interactive Claude Code with Plan Mode. For repeatable migration workflows across many repositories, consider Agent SDK only after you have a proven manual workflow.
+
+Refactoring is rarely a pure API problem. It usually needs repository context, tests, rollback strategy, and human approval.
+
+## API Errors, Limits, and Cost
+
+When API or automation fails, identify which surface is failing:
+
+| Symptom | Likely surface | Start here |
+| ------- | -------------- | ---------- |
+| `ANTHROPIC_API_KEY` rejected | Anthropic API auth | Official API auth docs and Console key settings. |
+| `claude -p` works locally but not CI | CLI auth, PATH, CI env, permission mode | [Headless Mode troubleshooting](/en/tutorial/advanced/headless-mode) |
+| MCP server does not appear | MCP config, transport, auth, scope | [MCP not connecting](/en/troubleshooting/claude-code-mcp-not-connecting) |
+| Usage or spend rises suddenly | Model choice, loops, long context, MCP output, CI repetition | [Claude Code pricing and limits](/en/pricing) |
+| Endpoint field is rejected | Anthropic API version or request schema | Official API reference. |
+
+Before putting a script into CI, add:
+
+- explicit auth source;
+- narrow tool permissions;
+- `--max-turns` or budget controls where supported;
+- logging that avoids secrets;
+- a failure mode that does not deploy, delete, or push.
+
+## Recommended Learning Path
+
+1. Use the [installation guide](/en/tutorial/getting-started/installation) to make the CLI work locally.
+2. Read [Basic Usage](/en/tutorial/getting-started/basic-usage) for interactive sessions, `claude -p`, and common commands.
+3. Add [CLAUDE.md](/en/tutorial/configuration/claude-md) so Claude understands project rules.
+4. Learn [Tools allowlist](/en/tutorial/configuration/tools-allowlist) before granting automation access.
+5. Use [Headless Mode](/en/tutorial/advanced/headless-mode) for one-off scripts.
+6. Move to [Agent SDK](https://code.claude.com/docs/en/agent-sdk) only when you are building a real program around Claude Code.
+7. Add [MCP servers](/en/tutorial/tools-integration/mcp-servers) only when a repeated workflow needs external tool access.
+
+## FAQ
+
+### Is there a Claude Code API?
+
+There is Claude Code CLI, `claude -p` for print/headless usage, and the Claude Agent SDK for programmable agents. For direct model calls, use the Anthropic Messages API.
+
+### Should I use Claude API or Claude Code?
+
+Use Claude API for your own product or backend. Use Claude Code for repository work. Use Agent SDK when you want Claude Code-style agent behavior inside a Python or TypeScript program.
+
+### Can I use my Claude subscription login in an app?
+
+For products and production agents, use official API key authentication. Do not design customer-facing products around a personal Claude.ai interactive login.
+
+### Is MCP an API?
+
+MCP is a protocol for tool and data-source integration. It can connect Claude Code to APIs, but it is not the same as the Anthropic model API.
+
+### Where are exact endpoints and request fields?
+
+Use the official [Anthropic API reference](https://platform.claude.com/docs/api). ClaudeCode101 should not be treated as an endpoint reference.
+
+## Related ClaudeCode101 Guides
+
+- [Claude Code Headless Mode](/en/tutorial/advanced/headless-mode)
+- [Claude Code Agent-style automation FAQ](/en/faqs/claude-code-api-documentation)
+- [Tools allowlist](/en/tutorial/configuration/tools-allowlist)
+- [MCP servers](/en/tutorial/tools-integration/mcp-servers)
+- [GitHub CLI integration](/en/tutorial/configuration/github-cli)
+- [Pricing and limits](/en/pricing)
+- [Latest version and changelog](/en/upgrade)
+
+## Official Sources
+
+- [Anthropic API documentation](https://platform.claude.com/docs/en/home)
+- [Anthropic API reference](https://platform.claude.com/docs/api)
+- [Claude Code CLI reference](https://code.claude.com/docs/en/cli-reference)
+- [Claude Code Agent SDK](https://code.claude.com/docs/en/agent-sdk)
+- [Claude Code MCP documentation](https://code.claude.com/docs/en/mcp)

@@ -1,0 +1,138 @@
+---
+title: 'Claude Code Mechanics'
+description: 'A practical map of Claude Code mechanics: CLAUDE.md, Plan Mode, context management, slash commands, hooks, subagents, permissions, and workflow design.'
+---
+
+Claude Code mechanics are the features that decide how a session behaves after the basic install is done. This hub explains when to use `CLAUDE.md`, Plan Mode, context management, slash commands, hooks, subagents, permissions, and related workflow patterns in real projects.
+
+> Last checked on May 24, 2026. Claude Code changes quickly, so this page is written as a decision map: start with the workflow problem, then open the deep guide for the mechanism that solves it.
+
+## Quick Answer
+
+If Claude Code feels unreliable, expensive, noisy, or hard to repeat, the answer is usually not "write a longer prompt." Use the right mechanism for the workflow:
+
+- Use `CLAUDE.md` when Claude needs durable project rules.
+- Use Plan Mode when the task is risky enough to deserve a plan before edits.
+- Use context management when the session is getting long or unfocused.
+- Use slash commands when a prompt pattern repeats.
+- Use hooks when something should happen automatically around a Claude Code event.
+- Use subagents when a side task should run in its own context and return a summary.
+- Use permissions and tool allowlists when tool access needs policy, not habit.
+
+The mechanics work best together. A stable project usually has a concise `CLAUDE.md`, a few reusable commands, narrow permissions, focused context habits, and one or two specialized agents or hooks only after the workflow is proven.
+
+## Choose The Right Mechanic
+
+| Workflow problem | Start with | Why it fits |
+| --- | --- | --- |
+| Claude forgets project conventions | [CLAUDE.md](/en/mechanics/claude-md) | Persistent instructions load into sessions and keep team rules visible. |
+| The change is large or risky | [Plan Mode](/en/mechanics/plan-mode) | Read-only planning reduces surprise edits and clarifies implementation order. |
+| The session is full of old logs and unrelated files | [Context management](/en/mechanics/context-management) | Context budgeting keeps the model focused on the current decision. |
+| You repeat the same prompt every week | [Slash commands](/en/mechanics/slash-commands) | Commands turn repeatable workflows into named entry points. |
+| A risky command should be blocked before it runs | [Hooks](/en/mechanics/hooks) | `PreToolUse` hooks and permissions can enforce safety at execution time. |
+| Tests or research produce too much output | [Subagents](/en/mechanics/subagents) | Subagents isolate noisy work and return only the useful summary. |
+| MCP tools can write to external systems | [MCP security checklist](/en/mcp/mcp-security-checklist) | External tool access needs explicit boundaries and verification. |
+| Teammates need the same operating model | [Tools allowlist](/en/tutorial/configuration/tools-allowlist) | Shared permissions make behavior predictable across sessions. |
+
+Do not add every mechanism at once. Start with the smallest feature that solves the current failure mode.
+
+## Core Guides
+
+### CLAUDE.md
+
+[CLAUDE.md](/en/mechanics/claude-md) is the project memory file. It is where you put durable project instructions: architecture boundaries, test commands, branch rules, naming patterns, writing style, forbidden directories, and delivery expectations.
+
+Use it when a rule should survive across sessions. Avoid turning it into a giant manual. Claude reads better when the file is specific, current, and organized around decisions the agent actually makes.
+
+### Plan Mode
+
+[Plan Mode](/en/mechanics/plan-mode) is for slowing the workflow down before edits. It is useful for migrations, refactors, production fixes, ambiguous user requests, or anything where the cost of a wrong edit is high.
+
+The best Plan Mode flow is simple: explore the code, explain the intended changes, confirm assumptions, then implement. It is not a substitute for tests, but it prevents many bad first edits.
+
+### Context Management
+
+[Context management](/en/mechanics/context-management) is how you keep Claude focused when the conversation grows. The goal is not to maximize context usage; the goal is to keep only the information that affects the next decision.
+
+Good context habits include starting fresh for unrelated tasks, summarizing handoff notes before compaction, passing exact files and errors to subagents, and avoiding huge pasted logs unless the log is the task.
+
+### Slash Commands
+
+[Slash commands](/en/mechanics/slash-commands) turn repeated instructions into named workflows. Use them for review checklists, release checks, documentation updates, SEO page audits, migration passes, or any task where the prompt shape matters.
+
+Commands are best when they are narrow and predictable. If a command grows into a multi-step operating procedure with domain rules, consider moving the logic into a skill or project documentation.
+
+### Hooks
+
+[Hooks](/en/mechanics/hooks) run around Claude Code lifecycle events. They can block risky Bash commands, validate file writes, run checks after edits, send notifications, or log activity.
+
+Hooks are powerful because they are automatic. Start with observe or warn behavior before blocking. Keep hook scripts small, auditable, and documented in `CLAUDE.md`.
+
+### Subagents
+
+[Subagents](/en/mechanics/subagents) are specialized workers with their own context and role. Use them for noisy side tasks: code review, test triage, security inspection, official-source checking, or independent research.
+
+Subagents are not shared memory. A normal subagent does not automatically know the full parent conversation. Delegation prompts should include paths, errors, decisions, and output expectations.
+
+## A Practical Setup Path
+
+For a new or newly migrated project, configure mechanics in this order:
+
+1. **Write a small `CLAUDE.md`:** include project purpose, commands, directories, and quality rules.
+2. **Set conservative permissions:** allow common read and edit tools, ask before broad Bash or external writes.
+3. **Create one or two slash commands:** start with review, content audit, or release checklist.
+4. **Use Plan Mode on risky work:** migrations, redirects, pricing pages, auth, payment, deployment, or broad content changes.
+5. **Add context habits:** reset sessions by topic, compact with handoff notes, and avoid mixing unrelated tasks.
+6. **Add subagents only for repeated noisy tasks:** test triage, source checking, code review, or security review.
+7. **Add hooks only after the rule is proven:** block `.env` writes, warn on deploy, or log MCP write tools.
+
+This order keeps the system understandable. The mistake is usually adding automation before the workflow is clear.
+
+## Mechanics By Team Maturity
+
+| Stage | What to configure | What to avoid |
+| --- | --- | --- |
+| Solo exploration | `CLAUDE.md`, Plan Mode, context discipline | Team-wide hooks and complex agents |
+| Active project work | Slash commands, tools allowlist, focused context rules | Large memory files and broad permissions |
+| Team adoption | Project `CLAUDE.md`, shared commands, documented review flow | Hidden automation that teammates cannot explain |
+| High-risk repository | Permission rules, hooks, read-only reviewers, release checklist | Auto-accepting destructive tools |
+| Content or documentation site | Source-check command, content-review subagent, dated official sources | Publishing thin pages without links or verification |
+
+## How Mechanics Connect To SEO Content
+
+For this site, mechanics pages are not just documentation. They are search entrances for practical Claude Code questions:
+
+| Search intent | Page type |
+| --- | --- |
+| "what is claude.md" | Deep mechanics guide plus examples |
+| "claude code plan mode" | Workflow decision guide |
+| "claude code hooks" | Automation and safety guide |
+| "claude code subagents" | Role, context, and delegation guide |
+| "claude code slash commands" | Command setup and workflow guide |
+| "claude code context management" | Cost, focus, and compaction guide |
+
+Each mechanics page should answer the query quickly, explain when to use the feature, show a practical configuration or workflow, warn about common mistakes, and link to the relevant tutorial, FAQ, MCP, or troubleshooting page.
+
+## Related Learning Paths
+
+Use these paths when you are not sure where to start:
+
+- **New user path:** [Installation](/en/tutorial/getting-started/installation) -> [Basic usage](/en/tutorial/getting-started/basic-usage) -> [CLAUDE.md](/en/mechanics/claude-md) -> [Plan Mode](/en/mechanics/plan-mode)
+- **Team setup path:** [Tools allowlist](/en/tutorial/configuration/tools-allowlist) -> [CLAUDE.md](/en/mechanics/claude-md) -> [Slash commands](/en/mechanics/slash-commands) -> [Hooks](/en/mechanics/hooks)
+- **Advanced workflow path:** [Context management](/en/mechanics/context-management) -> [Subagents](/en/mechanics/subagents) -> [MCP security checklist](/en/mcp/mcp-security-checklist)
+- **Troubleshooting path:** [Troubleshooting hub](/en/troubleshooting) -> [Context management](/en/mechanics/context-management) -> [Hooks](/en/mechanics/hooks)
+
+## Related Hubs
+
+- [Claude Code FAQ](/en/faqs)
+- [Claude Code tutorial center](/en/tutorial)
+- [MCP directory](/en/mcp)
+- [Troubleshooting](/en/troubleshooting)
+- [Resources and tools](/en/resources)
+
+## Official Sources
+
+- [Commands](https://code.claude.com/docs/en/commands)
+- [Create custom subagents](https://code.claude.com/docs/en/sub-agents)
+- [Hooks reference](https://code.claude.com/docs/en/hooks)
+- [Extend Claude Code](https://code.claude.com/docs/en/features-overview)

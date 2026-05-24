@@ -1,0 +1,29 @@
+---
+title: 'Claude Command Not Found'
+description: 'How to fix command not found: claude by checking PATH, install location, terminal restart, and conflicting Claude Code installations.'
+---
+
+If `claude` returns `command not found` or is not recognized, the install directory is probably not in your shell PATH, the terminal session has not picked up the new PATH, or a conflicting old install is being resolved first.
+
+## Quick Fix
+
+1. Restart the terminal and run `claude --version`.
+2. Check whether `claude` is visible with `which -a claude` on macOS/Linux or `where.exe claude` on Windows.
+3. Confirm the install directory is in PATH.
+4. Remove old conflicting installs if multiple `claude` binaries appear.
+5. Use the official troubleshooting page for the exact shell-specific PATH command.
+
+## What To Check
+
+On macOS and Linux, focus on `~/.local/bin`. On Windows, focus on the user-level `.local\bin` location and confirm you are using PowerShell, CMD, Git Bash, or WSL consistently.
+
+## Related Pages
+
+- [Claude Code troubleshooting hub](/en/troubleshooting)
+- [Windows PATH setup](/en/troubleshooting/claude-code-windows-path)
+- [Installation tutorial](/en/tutorial/getting-started/installation)
+
+## Official Sources
+
+- [Troubleshoot installation and login](https://code.claude.com/docs/en/troubleshoot-install)
+- [Claude Code getting started](https://code.claude.com/docs/en/getting-started)

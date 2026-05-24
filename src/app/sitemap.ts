@@ -1,68 +1,93 @@
-import type { MetadataRoute } from 'next'
-import process from 'node:process'
+import type { MetadataRoute } from 'next';
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.claudecode101.com'
+import { pagesSource, tutorialSource } from '@/core/docs/source';
+import { envConfigs } from '@/config';
+import { locales } from '@/config/locale';
 
-  // 基础页面
-  const routes = [
-    '',
-    '/quick-start',
-    '/api-reference',
-    '/resources',
-    '/upgrade',
-    '/tutorial',
-    '/tutorial/getting-started/installation',
-    '/tutorial/getting-started/basic-usage',
-    '/tutorial/configuration/claude-md',
-    '/tutorial/configuration/tools-allowlist',
-    '/tutorial/configuration/github-cli',
-    '/tutorial/tools-integration/bash-tools',
-    '/tutorial/tools-integration/mcp-servers',
-    '/tutorial/tools-integration/custom-commands',
-    '/tutorial/workflows/explore-plan-code',
-    '/tutorial/workflows/test-driven',
-    '/tutorial/workflows/visual-iteration',
-    '/tutorial/workflows/demo-assets',
-    '/tutorial/workflows/codebase-qa',
-    '/tutorial/workflows/git-management',
-    '/tutorial/workflows/plan-mode',
-    '/tutorial/workflows/v0-components',
-    '/tutorial/optimization/specific-instructions',
-    '/tutorial/optimization/context-management',
-    '/tutorial/optimization/direction-correction',
-    '/tutorial/advanced/headless-mode',
-    '/tutorial/advanced/multi-claude',
-  ]
+const excludedPagePaths = new Set(['/privacy-policy', '/terms-of-service']);
 
-  // 为每个路由创建中英文版本
-  const sitemap: MetadataRoute.Sitemap = []
+function normalizeUrl(locale: string, url: string) {
+  const path = url.startsWith(`/${locale}/`)
+    ? url.slice(locale.length + 1)
+    : url.startsWith(`/${locale}`)
+      ? url.slice(locale.length + 1) || '/'
+      : url;
 
-  routes.forEach(route => {
-    // 中文版本
-    sitemap.push({
-      url: `${baseUrl}/zh${route}`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: route === '' ? 1 : route.includes('/tutorial/') ? 0.8 : 0.6,
-    })
+  if (path === '/') {
+    return `${envConfigs.app_url}/${locale}`;
+  }
 
-    // 英文版本
-    sitemap.push({
-      url: `${baseUrl}/en${route}`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: route === '' ? 1 : route.includes('/tutorial/') ? 0.8 : 0.6,
-    })
-  })
+  return `${envConfigs.app_url}/${locale}${path.startsWith('/') ? path : `/${path}`}`;
+}
 
-  // 添加根路径（默认重定向到中文）
-  sitemap.push({
-    url: baseUrl,
+function shouldIndex(data: any) {
+  if (data?.noindex === true) return false;
+  if (data?.status && data.status !== 'published') return false;
+  return true;
+}
+
+function pagePriority(path: string) {
+  if (path === '/pricing') return 0.86;
+  if (path === '/faqs') return 0.85;
+  if (path === '/mechanics' || path === '/mcp' || path === '/troubleshooting') {
+    return 0.84;
+  }
+  if (path.startsWith('/faqs/')) return 0.72;
+  if (
+    path.startsWith('/mechanics/') ||
+    path.startsWith('/mcp/') ||
+    path.startsWith('/troubleshooting/')
+  ) {
+    return 0.7;
+  }
+  if (path === '/resources' || path === '/upgrade') return 0.75;
+  return 0.5;
+}
+
+function entry({
+  url,
+  priority,
+}: {
+  url: string;
+  priority: number;
+}): MetadataRoute.Sitemap[number] {
+  return {
+    url,
     lastModified: new Date(),
     changeFrequency: 'weekly',
-    priority: 1,
-  })
+    priority,
+  };
+}
 
-  return sitemap
+export default function sitemap(): MetadataRoute.Sitemap {
+  const items: MetadataRoute.Sitemap = [];
+
+  for (const locale of locales) {
+    items.push(entry({ url: `${envConfigs.app_url}/${locale}`, priority: 1 }));
+
+    for (const page of tutorialSource.getPages(locale)) {
+      if (!shouldIndex(page.data)) continue;
+      const normalized = page.url.replace(new RegExp(`^/${locale}`), '');
+      items.push(
+        entry({
+          url: normalizeUrl(locale, page.url),
+          priority: normalized === '/tutorial' ? 0.95 : 0.8,
+        })
+      );
+    }
+
+    for (const page of pagesSource.getPages(locale)) {
+      if (!shouldIndex(page.data)) continue;
+      const normalized = page.url.replace(new RegExp(`^/${locale}`), '');
+      if (excludedPagePaths.has(normalized)) continue;
+      items.push(
+        entry({
+          url: normalizeUrl(locale, page.url),
+          priority: pagePriority(normalized),
+        })
+      );
+    }
+  }
+
+  return items;
 }

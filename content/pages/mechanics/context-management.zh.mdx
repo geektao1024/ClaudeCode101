@@ -1,0 +1,282 @@
+---
+title: 'Claude Code 上下文管理'
+description: '系统讲解 Claude Code context window、/context、/compact、/clear、CLAUDE.md、rules、skills、MCP、subagents 和成本控制。'
+---
+
+上下文管理决定 Claude Code 会话是清晰推进，还是越聊越乱。Claude 的 context window 里不只有你看见的聊天内容，还包括读过的文件、命令输出、`CLAUDE.md`、auto memory、rules、skills、系统指令，以及一些不会直接显示在终端里的会话材料。窗口里如果塞满过时信息和无关内容，Claude 就会变慢、变贵，也更容易跑偏。
+
+> 最后核查：2026 年 5 月 24 日。Claude Code 当前提供 `/context`、`/compact`、`/clear`、session resume、auto memory、rules、skills、MCP 和 subagents 等机制。界面可能变化，但原则不变：长期项目事实放进长期记忆，任务上下文保持小而准，发现会话变脏就及时 compact 或 clear。
+
+## 快速结论
+
+用 `/context` 查看当前窗口被什么占用。想继续同一个任务但压缩历史，用 `/compact`。要切换到新任务，用 `/clear`，之前会话仍然可以 resume。稳定规则放进 `CLAUDE.md` 或不带路径限制的 rules，不要只放在聊天里。大型调研交给 subagent，避免污染主会话。大改前先用 Plan Mode，让 Claude 只读真正需要的文件。
+
+实用规则可以概括为：
+
+- **开始要聚焦：** 给小目标、相关文件和限制条件；
+- **检查要克制：** 先读最小必要文件，不要一上来扫全仓库；
+- **中途看窗口：** 会话变长或变怪时运行 `/context`；
+- **压缩要带指令：** 说明保留什么、丢掉什么；
+- **切任务就清空：** 不要把昨天的迁移上下文带进今天的 bug；
+- **只沉淀稳定事实：** 重复规则写进 `CLAUDE.md`，不要依赖聊天历史。
+
+## 哪些内容会进入上下文
+
+Claude Code 的 context window 比可见聊天更大。有些内容显示在终端，有些是静默加载。
+
+| 来源 | 什么时候进入 | 为什么重要 |
+| --- | --- | --- |
+| 对话历史 | 聊天过程中持续进入 | 长对话会挤占当前任务空间。 |
+| Claude 读取的文件 | 工具打开文件时 | 大文件和大范围搜索很快占满窗口。 |
+| 命令输出 | 命令执行后 | 日志、构建输出、测试失败信息可能非常大。 |
+| `CLAUDE.md` | 会话启动时 | 每次请求都会带上，必须短而准。 |
+| Auto memory | 会话启动时 | 有帮助，但过时记忆会制造噪声。 |
+| `.claude/rules/` | 启动时或匹配路径时 | 路径规则可以减少常驻上下文。 |
+| Skills | 描述较早加载，正文按需加载 | 适合重复流程，不必塞进聊天。 |
+| MCP servers | 工具名较早加载，schema 可按需加载 | server 太多会增加工具面。 |
+| Subagents | 独立上下文窗口 | 适合做大范围调研，结果摘要再回主会话。 |
+| Hooks | 作为代码在外部运行 | hook 本身不是普通聊天上下文，但输出可能影响会话。 |
+
+上下文管理不是从中途才开始。一个过长的 `CLAUDE.md`、太多常驻 rules、过多 MCP servers，再加上模糊任务，会让一次会话从一开始就变重。
+
+## 把 /context 当诊断工具
+
+当 Claude Code 开始跑偏，先运行 `/context`。它会显示当前 context window 被什么占用，并给出优化建议。
+
+适合使用 `/context` 的情况：
+
+- Claude 开始忘记前面给过的限制；
+- 会话已经读了很多文件或长命令输出；
+- 回答开始重复；
+- Claude 提出的修改不符合当前范围；
+- 你在犹豫应该 compact 还是 clear；
+- 你刚启用新 skill、MCP、rule 或 memory，想看成本。
+
+不要等到会话失败才看。复杂任务中途看一次 `/context`，往往能提前发现问题。
+
+## /compact、/clear、/resume 怎么选
+
+这几个命令解决的是不同问题。
+
+| 命令 | 什么时候用 | 会发生什么 |
+| --- | --- | --- |
+| `/compact [instructions]` | 还要继续同一个任务，但历史太长。 | Claude 把当前会话摘要化，可以按你的指令聚焦。 |
+| `/clear [name]` | 要切换到新任务，需要空上下文。 | 之前会话仍会保存，可继续 resume。 |
+| `/resume` 或 `claude --resume` | 想回到之前保存的会话。 | 重新打开保存的对话。 |
+| `/branch` | 想尝试另一条路线，又不想破坏当前会话。 | 复制当前会话，进入新的分支会话。 |
+
+同任务延续用 `/compact`，不同任务切换用 `/clear`，恢复旧会话用 `/resume`，探索替代方案用 `/branch`。
+
+## 如何正确 compact
+
+压缩不是简单“变短”，而是保留正确状态、丢掉无关内容。
+
+不推荐：
+
+```text
+/compact
+```
+
+更推荐：
+
+```text
+/compact focus on the current implementation plan, files changed, decisions made, remaining risks, and verification commands. Drop unrelated exploration and failed approaches.
+```
+
+排查 bug 时：
+
+```text
+/compact keep the reproduction steps, confirmed failing layer, inspected files, current hypothesis, and the smallest verification command.
+```
+
+写内容页时：
+
+```text
+/compact preserve the target keyword, current page structure, sources already checked, decisions about tone, and remaining sections to write.
+```
+
+指令越聚焦，摘要越不容易保留无关历史。
+
+## compact 后什么会保留
+
+官方 context window 文档说明，不同机制在 compact 后表现不同。
+
+| 机制 | compact 后 | 实战建议 |
+| --- | --- | --- |
+| System prompt 和 output style | 保持不变。 | 普通 compact 不用管。 |
+| 项目根目录 `CLAUDE.md` | 从磁盘重新注入。 | 必须长期保留的规则放这里。 |
+| 不带路径限制的 rules | 从磁盘重新注入。 | 适合全局项目规则。 |
+| Auto memory | 从磁盘重新注入。 | 如果造成跑偏，要审查记忆。 |
+| 带 `paths:` 的 rules | 直到再次读取匹配文件才恢复。 | compact 后需要重新打开相关文件。 |
+| 子目录 `CLAUDE.md` | 直到读取该子目录文件才恢复。 | 不要把全局规则放在子目录文件里。 |
+| 已调用 skills | 会重新注入，但有 token 上限。 | 重要说明放在 skill 文件前面。 |
+| Hooks | 不是聊天上下文。 | hook 逻辑外部运行，但输出可能进入会话。 |
+
+这就是为什么长期规则应该写进 `CLAUDE.md`，而不是只在对话开头说一遍。聊天里的长指令可能在压缩时被摘要掉。
+
+## 什么时候 clear，而不是 compact
+
+任务边界变了，就 clear；任务没变，只是历史太长，就 compact。
+
+适合 `/clear` 的情况：
+
+- 一个功能完成，准备做另一个功能；
+- 当前对话有太多错误方向；
+- 切换了分支或 worktree，旧上下文会误导；
+- 想问一个和当前 diff 无关的概念问题；
+- 需要阻止 Claude 继续沿用早期假设。
+
+clear 前如果有必要，可以先让 Claude 输出交接摘要：
+
+```text
+Summarize only the durable facts, files touched, decisions made, and verification status. Do not include failed approaches unless they prevent future mistakes.
+```
+
+然后再 `/clear`，必要时把这段摘要带入新会话。
+
+## 让 CLAUDE.md 有用但不要臃肿
+
+`CLAUDE.md` 是最重要的上下文管理工具之一，因为它每次会话启动都会加载。它强大，但也意味着过时内容每次都在消耗窗口。
+
+适合写进 `CLAUDE.md`：
+
+- 项目结构说明；
+- 真实 build、test、lint、deploy 命令；
+- 高风险文件、服务或业务流程；
+- 公开内容的文案口径和 SEO 约束；
+- 什么时候必须用 Plan Mode；
+- 深层文档链接，而不是全文粘贴。
+
+不适合写进 `CLAUDE.md`：
+
+- 过时迁移记录；
+- 完整新手手册；
+- 大段 API 参考；
+- 单次任务说明；
+- 互相冲突的本地和项目规则；
+- 应放在 `CLAUDE.local.md` 的个人机器信息。
+
+只对某个路径生效的规则，放进 `.claude/rules/` 并加路径限制。长而可复用的流程，做成 skill 或 slash command。
+
+## 减少文件和命令噪声
+
+大多数上下文浪费来自过宽探索：
+
+- 读取生成文件；
+- 把巨大日志塞进对话；
+- 运行输出几千行的命令；
+- 明知道 route 或模块，却搜索整个仓库；
+- 打开很多资料页但不沉淀结论；
+- 把长时间 bug 排查和无关实现混在同一会话里。
+
+更好的做法：
+
+| 问题 | 更好的模式 |
+| --- | --- |
+| Claude 想读太多文件 | 先让它列最小必要文件集。 |
+| 测试输出太长 | 只跑聚焦测试，或只保留第一个失败块。 |
+| 日志太长 | 存成文件，让 Claude 读取相关范围。 |
+| 搜索范围太大 | 先从 route、component、service、test 名称开始。 |
+| 会话开始漂移 | 停下来要求列当前事实、假设和下一步。 |
+| compact 后很快又满 | 找出反复进入窗口的大文件或大输出。 |
+
+大仓库里，文件纪律和提示词质量一样重要。
+
+## 用 subagents 做大型调研
+
+Subagents 对上下文管理很有价值，因为它们有独立 context window。它们可以阅读大量文件、比较方案或调研一个窄主题，最后只把摘要带回主会话。
+
+适合用 subagent 的场景：
+
+- 调研可能需要大量文件读取；
+- 需要一个独立 review 角色；
+- 后台调查不应该污染主实现会话；
+- 你只想要结论、风险和建议，不想要原始过程。
+
+但 subagent 不是目标不清晰时的万能解法。给它窄任务，并要求输出：检查过的文件、结论、置信度、风险和下一步。
+
+## 上下文管理和用量限制
+
+上下文管理直接影响成本和用量。一个脏会话会因为重复读文件、长命令输出、模型重试和反复纠正而消耗更多。干净会话通常更快结束，因为 Claude 能看到正确的信息。
+
+控制成本的习惯：
+
+- 普通实现优先用 Sonnet，把更高推理留给规划和卡住的调试；
+- 大改前先用 Plan Mode；
+- 控制 `CLAUDE.md` 长度；
+- 会话满之前先运行 `/context`；
+- compact 时给明确焦点；
+- 无关任务之间用 `/clear`；
+- MCP servers 和 skills 只保留当前任务需要的；
+- 运行高成本或高噪声命令前，先要验证计划。
+
+这不只是省 token，也能提升回答质量，因为 Claude 不会被无关上下文干扰。
+
+## 团队工作流
+
+团队长期使用 Claude Code，可以把上下文习惯标准化：
+
+1. 稳定项目规则写进 `CLAUDE.md`；
+2. 路径规则放进 `.claude/rules/`；
+3. 个人说明放进 `CLAUDE.local.md`；
+4. 高风险任务先用 Plan Mode；
+5. 长会话中途运行 `/context`；
+6. 大实现继续前先 `/compact`；
+7. 切换任务时 `/clear`；
+8. 大型调研交给 subagents；
+9. 架构变化后审查 memory 和 rules；
+10. 结束时说明哪些验证命令跑过、失败或跳过。
+
+这样会话更容易恢复、评审和交接。
+
+## 常见错误
+
+| 错误 | 为什么有问题 | 更好的做法 |
+| --- | --- | --- |
+| 把聊天历史当长期记忆 | 它可能被压缩或遗忘。 | 稳定规则写进 `CLAUDE.md`。 |
+| compact 不加指令 | 摘要可能保留错误细节。 | 明确告诉 `/compact` 保留什么、丢掉什么。 |
+| 换任务还接着聊 | 旧假设会污染新工作。 | 用 `/clear` 或新会话。 |
+| 计划前先读全仓库 | 决策前窗口已经被占满。 | 先要求最小检查计划。 |
+| 让过时 memory 留着 | Claude 会沿用旧事实。 | 定期审查 `/memory` 和项目 rules。 |
+| 所有 MCP 和 skills 都常开 | 工具面和描述会增加噪声。 | 只启用当前任务需要的。 |
+| 忽略命令输出大小 | 日志可能占满窗口。 | 只保留聚焦输出或读取指定范围。 |
+
+## 实战检查清单
+
+开始严肃任务前：
+
+- 任务是否足够窄；
+- 是否知道相关文件或路由；
+- `CLAUDE.md` 是否当前有效；
+- 不必要 MCP、skills、rules 是否关闭；
+- 是否应该从 Plan Mode 开始。
+
+会话过程中：
+
+- 回答质量下降就运行 `/context`；
+- 长任务继续前带焦点 `/compact`；
+- 切换任务用 `/clear`；
+- 验证输出保持聚焦。
+
+结束前：
+
+- 需要后续继续时，让 Claude 生成交接摘要；
+- 重复项目事实沉淀到长期记忆；
+- 删除造成误导的过时规则；
+- 记录通过、失败或跳过的命令。
+
+## 相关页面
+
+- [Claude Code 用量限制](/zh/faqs/claude-code-usage-limits)
+- [CLAUDE.md 指南](/zh/mechanics/claude-md)
+- [Plan Mode](/zh/mechanics/plan-mode)
+- [Subagents](/zh/mechanics/subagents)
+- [上下文管理教程](/zh/tutorial/optimization/context-management)
+
+## 官方来源
+
+- [Explore the context window](https://code.claude.com/docs/en/context-window)
+- [Manage sessions](https://code.claude.com/docs/en/sessions)
+- [How Claude Code works](https://code.claude.com/docs/en/how-claude-code-works)
+- [Extend Claude Code](https://code.claude.com/docs/en/features-overview)
+- [Commands](https://code.claude.com/docs/en/commands)

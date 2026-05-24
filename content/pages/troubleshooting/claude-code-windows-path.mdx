@@ -1,0 +1,29 @@
+---
+title: 'Claude Code Windows PATH Setup'
+description: 'How to troubleshoot Claude Code on Windows when PATH, PowerShell, CMD, Git Bash, WSL, or installer commands do not match.'
+---
+
+On Windows, most Claude Code install problems come from mixing PowerShell, CMD, Git Bash, WSL, and PATH changes. Use one shell intentionally, then verify that the shell can find the installed `claude` binary.
+
+## Fix Path First
+
+1. Restart the terminal after installation.
+2. Run `claude --version`.
+3. If it fails, run `where.exe claude`.
+4. Confirm the user-level Claude Code install directory is in PATH.
+5. Make sure the install command matches the shell you are using.
+
+## Shell Mismatch Signs
+
+If `irm` is not recognized, you are probably in CMD rather than PowerShell. If `bash` is not recognized, you may be running a macOS/Linux command in a Windows shell. If `claude` works in one shell but not another, the PATH has not been applied consistently.
+
+## Related Pages
+
+- [Claude command not found](/en/troubleshooting/claude-command-not-found)
+- [How to install Claude Code on Windows](/en/faqs/how-to-install-claude-code-on-windows)
+- [Installation tutorial](/en/tutorial/getting-started/installation)
+
+## Official Sources
+
+- [Troubleshoot installation and login](https://code.claude.com/docs/en/troubleshoot-install)
+- [Claude Code getting started](https://code.claude.com/docs/en/getting-started)

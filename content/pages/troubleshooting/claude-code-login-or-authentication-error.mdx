@@ -1,0 +1,31 @@
+---
+title: 'Claude Code Login or Authentication Error'
+description: 'How to troubleshoot Claude Code login loops, OAuth errors, expired sessions, 403 Forbidden, and provider credential problems.'
+---
+
+Claude Code login errors usually come from an expired local session, account or organization access, browser OAuth callback issues, unsupported region, or cloud-provider credentials when using Bedrock, Vertex, or Foundry.
+
+## First Checks
+
+1. Run `/login` again if Claude Code starts.
+2. If you see OAuth or `403 Forbidden`, confirm the account, organization, and region are allowed.
+3. If browser login fails in SSH, WSL, or a container, copy the callback URL manually when prompted.
+4. For API, Bedrock, Vertex, or Foundry setups, verify environment variables and provider credentials.
+5. Use `/doctor` or `claude doctor` to separate login problems from install problems.
+
+## When To Escalate
+
+If the same account works in the browser but fails in the CLI, capture the exact error message, your install method, shell, operating system, and whether a proxy or VPN is involved.
+
+## Related Pages
+
+- [Claude Code troubleshooting hub](/en/troubleshooting)
+- [Invalid API key](/en/troubleshooting/claude-code-invalid-api-key)
+- [Unable to connect to API](/en/troubleshooting/claude-code-unable-to-connect-to-api)
+- [Claude Code API reference hub](/en/api-reference)
+- [Usage limits FAQ](/en/faqs/claude-code-usage-limits)
+
+## Official Sources
+
+- [Troubleshoot installation and login](https://code.claude.com/docs/en/troubleshoot-install)
+- [Claude Code authentication](https://code.claude.com/docs/en/iam)

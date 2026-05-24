@@ -1,0 +1,101 @@
+---
+title: 'Claude Code 资源和工具'
+description: '聚焦 Claude Code 官方文档、FAQ、MCP 服务器、CLI 工作流、IDE 配置和 ClaudeCode101 实战教程的资源索引。'
+---
+
+# Claude Code 资源和工具
+
+这个页面是 Claude Code 学习、安装、工具配置和问题排查的集中入口。它只保留和 Claude Code 实战相关的官方来源与 ClaudeCode101 指南，避免把主题扩散到无关 AI 工具。
+
+<Callout type="info">
+  ClaudeCode101 是独立资源站。涉及价格、安全、用量限制和 API 行为时，请以
+  Anthropic 官方文档为准。
+</Callout>
+
+## 从这里开始
+
+- [Claude Code 常见问题](/zh/faqs) - 安装、价格、限制、MCP、Plan Mode、`CLAUDE.md` 的短答案。
+- [Claude Code 价格和用量](/zh/pricing) - 官方价格信号、订阅与 API 用量区别、成本控制工作流。
+- [Claude Code 机制专题](/zh/mechanics) - 深入解释 CLAUDE.md、Plan Mode、命令、Hooks、Subagents 和上下文。
+- [MCP 目录](/zh/mcp) - 实用 MCP 工具页和安全检查。
+- [故障排查](/zh/troubleshooting) - 处理安装、PATH、登录、权限和 MCP 连接问题。
+- [完整教程中心](/zh/tutorial) - 按步骤学习 Claude Code 实战用法。
+- [安装与配置](/zh/tutorial/getting-started/installation) - 安装 Claude Code 并开启第一次项目会话。
+- [基础使用](/zh/tutorial/getting-started/basic-usage) - 学会核心命令行工作流。
+- [最新版本与更新日志](/zh/upgrade) - 查看当前版本和更新方式。
+
+## 官方来源
+
+- [Claude Code 官方文档](https://code.claude.com/docs)
+- [Claude Code 故障排查](https://code.claude.com/docs/en/troubleshooting)
+- [Claude Code 最佳实践](https://code.claude.com/docs/en/best-practices)
+- [Anthropic API 文档](https://docs.anthropic.com/)
+- [Claude plans and pricing](https://claude.com/pricing)
+- [Claude Code npm 包](https://www.npmjs.com/package/@anthropic-ai/claude-code)
+
+## 高意图问题
+
+- [如何安装 Claude Code？](/zh/faqs/how-to-install-claude-code)
+- [如何在 Windows 上安装 Claude Code？](/zh/faqs/how-to-install-claude-code-on-windows)
+- [claude command not found 怎么办？](/zh/troubleshooting/claude-command-not-found)
+- [Claude Code 价格和用量说明](/zh/pricing)
+- [Claude Code 多少钱？](/zh/faqs/how-much-is-claude-code)
+- [Claude Code 有哪些用量限制？](/zh/faqs/claude-code-usage-limits)
+- [Claude Code API 文档在哪里？](/zh/faqs/claude-code-api-documentation)
+
+## 故障排查
+
+- [故障排查入口](/zh/troubleshooting)
+- [claude command not found](/zh/troubleshooting/claude-command-not-found)
+- [Windows PATH 配置](/zh/troubleshooting/claude-code-windows-path)
+- [登录或认证错误](/zh/troubleshooting/claude-code-login-or-authentication-error)
+- [安装权限错误](/zh/troubleshooting/claude-code-permission-errors)
+- [MCP server 连接失败](/zh/troubleshooting/claude-code-mcp-not-connecting)
+
+## 核心机制
+
+- [CLAUDE.md](/zh/mechanics/claude-md) - 项目上下文、常用命令、编码规范和交付规则。
+- [Plan Mode](/zh/mechanics/plan-mode) - 改代码前先审查实现方案。
+- [Headless Mode](/zh/faqs/claude-code-headless-mode) - 用于自动化和 CI 的可重复提示词执行。
+- [Slash Commands](/zh/mechanics/slash-commands) - 把重复提示词变成可复用命令。
+- [Hooks](/zh/mechanics/hooks) - 添加工作流自动化和护栏。
+- [Subagents](/zh/mechanics/subagents) - 为重复的专业角色配置专门代理。
+- [上下文管理](/zh/mechanics/context-management) - 减少噪声上下文和无效消耗。
+
+## MCP 和工具
+
+- [MCP 目录](/zh/mcp)
+- [GitHub MCP](/zh/mcp/github-mcp)
+- [Context7 MCP](/zh/mcp/context7-mcp)
+- [Playwright MCP](/zh/mcp/playwright-mcp)
+- [MCP 安全检查清单](/zh/mcp/mcp-security-checklist)
+- [MCP 服务器教程](/zh/tutorial/tools-integration/mcp-servers)
+- [工具权限管理](/zh/tutorial/configuration/tools-allowlist)
+- [GitHub CLI 集成](/zh/tutorial/configuration/github-cli)
+- [Bash 工具集成](/zh/tutorial/tools-integration/bash-tools)
+
+## 工作流指南
+
+- [探索-计划-编码](/zh/tutorial/workflows/explore-plan-code)
+- [Plan Mode 工作流](/zh/tutorial/workflows/plan-mode)
+- [测试驱动开发](/zh/tutorial/workflows/test-driven)
+- [视觉迭代开发](/zh/tutorial/workflows/visual-iteration)
+- [Git 管理](/zh/tutorial/workflows/git-management)
+- [代码库问答](/zh/tutorial/workflows/codebase-qa)
+
+## 进阶使用
+
+- [Ultrathink Mode](/zh/tutorial/optimization/ultrathink-mode)
+- [Headless Mode 教程](/zh/tutorial/advanced/headless-mode)
+- [多 Claude 协作](/zh/tutorial/advanced/multi-claude)
+- [架构分析](/zh/tutorial/optimization/architecture-analysis)
+- [代码质量](/zh/tutorial/optimization/code-quality)
+
+## 推荐阅读路径
+
+1. 先安装 Claude Code，并用小项目跑通第一次会话。
+2. 补一个聚焦的 `CLAUDE.md`。
+3. 配置工具权限和 GitHub CLI。
+4. 大改动前学会 Plan Mode。
+5. 只有服务真实工作流时再添加 MCP server。
+6. 基础稳定后，再学习上下文管理和 Headless Mode。

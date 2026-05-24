@@ -1,0 +1,349 @@
+---
+title: 'Claude Code Hooks 指南'
+description: '系统讲解 Claude Code hooks 的生命周期事件、PreToolUse 护栏、PostToolUse 检查、matchers、settings 配置、权限、安全和团队落地方式。'
+---
+
+Hooks 可以让 Claude Code 在会话的特定生命周期节点自动运行你的逻辑。它们可以在危险工具调用前阻止操作、在编辑后运行检查、在 Claude 等待输入时通知你、记录工具调用、注入上下文，或把 Claude Code 接进团队流程。只有当触发点来自 Claude Code 事件时，才适合用 hooks；如果只是重复提示词，应该用 slash command 或 skill。
+
+> 最后核查：2026 年 5 月 24 日。Claude Code hooks 现在支持更多生命周期事件和多种 handler 类型，包括 shell command、HTTP endpoint、MCP tool、prompt 和 agent。最安全的起步方式仍然是：在 settings 里配置一个范围很窄的 command hook，只匹配必要事件，用 `/hooks` 和 debug log 验证后再团队推广。
+
+## 快速结论
+
+当某件事应该因为 Claude Code 的事件自动发生时，用 hook。用 `PreToolUse` 在工具执行前阻止或升级高风险调用；用 `PostToolUse` 在工具成功后检查结果；用 `UserPromptSubmit` 在 Claude 处理用户提示词前校验或补充上下文；用 `Notification` 发提醒；用 `SessionStart` 做启动上下文；用 `PreCompact` 或 `PostCompact` 处理压缩前后工作；用 `SessionEnd` 做清理和日志。
+
+不要把 hooks 做成看不见的魔法。一个 hook 应该让流程更安全、更清楚或更可观察。如果团队成员不知道为什么 Claude 被拦截、为什么某个命令运行、或什么内容被注入上下文，这个 hook 就太黑箱了。
+
+## Hooks 和 Commands、Skills、Permissions、CI 的区别
+
+只有触发条件是生命周期事件时，才优先考虑 hook。
+
+| 需求 | 更适合机制 |
+| --- | --- |
+| 重复提示词快捷方式 | Slash command 或 skill |
+| 可复用多步骤工作流 | Skill |
+| 长期项目指令 | `CLAUDE.md` 或 `.claude/rules/` |
+| 工具执行前阻止调用 | `PreToolUse` hook 或 permission rule |
+| Claude 改文件后运行检查 | `PostToolUse` hook |
+| 所有流程都必须通过的质量控制 | CI、pre-commit 或测试流水线 |
+| Claude 等待输入时提醒人 | `Notification` hook |
+| 审计工具调用或会话生命周期 | Hooks 加日志 |
+
+Hooks 的强大之处在于自动触发，风险也在这里。所以一开始要收窄范围。
+
+## 一个 Hook 如何生效
+
+Claude Code hook 有三层：
+
+1. **Hook event：** 生命周期节点，例如 `PreToolUse`、`PostToolUse`、`UserPromptSubmit`、`SessionEnd`；
+2. **Matcher group：** 过滤条件，例如只匹配 `Bash` 或 `Edit`；
+3. **Hook handler：** 真正执行的内容，例如 shell command、HTTP endpoint、MCP tool、prompt 或 agent。
+
+对 command hooks 来说，Claude Code 会通过 stdin 把 JSON 事件数据传给进程。hook 读取数据，做判断，再通过 exit code 或结构化 JSON 输出告诉 Claude Code 下一步怎么处理。
+
+## Hooks 应该放在哪里
+
+配置位置决定作用范围。
+
+| 位置 | 范围 | 是否提交 | 适用场景 |
+| --- | --- | --- | --- |
+| `~/.claude/settings.json` | 你的所有项目 | 不提交 | 个人通知、本机习惯。 |
+| `.claude/settings.json` | 当前项目 | 通常提交 | 团队共享护栏和检查。 |
+| `.claude/settings.local.json` | 当前项目 | 不提交 | 本机路径、私有脚本、实验。 |
+| Managed policy settings | 组织级 | 管理员控制 | 企业策略和强制控制。 |
+| Plugin hooks | 插件启用处 | 插件打包 | 可分发集成。 |
+| Skill 或 agent frontmatter | 激活期间 | 可以提交 | 工作流专属 hook 行为。 |
+
+对网站或 SaaS 项目来说，团队共享 hooks 应该在大家确认后再放进 `.claude/settings.json`。本地路径和个人提醒放进 local 或 user settings。
+
+## 最小配置示例
+
+`.claude/settings.json` 里的基础 hook 可以这样写：
+
+```json
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/check-style.sh",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+这个配置会在 Claude 成功编辑或写入文件后运行项目脚本。`CLAUDE_PROJECT_DIR` 指向 Claude Code 启动时的项目根目录，即使当前目录变化，脚本路径也更稳定。
+
+真实逻辑建议放到版本化脚本里：
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+
+INPUT="$(cat)"
+FILE_PATH="$(printf '%s' "$INPUT" | jq -r '.tool_input.file_path // empty')"
+
+case "$FILE_PATH" in
+  *.ts|*.tsx|*.mdx)
+    pnpm lint --file "$FILE_PATH"
+    ;;
+esac
+```
+
+一开始先做非阻塞检查或日志 hook。阻塞型 hook 等 matcher 验证准确后再加。
+
+## 关键 Hook Events
+
+官方 reference 里的事件很多，日常最常用的是这些：
+
+| Event | 触发时机 | 常见用途 |
+| --- | --- | --- |
+| `SessionStart` | 会话开始或恢复。 | 加载上下文、显示分支、提醒环境。 |
+| `InstructionsLoaded` | `CLAUDE.md` 或 rules 加载。 | 记录指令加载、发现过时规则。 |
+| `UserPromptSubmit` | 用户提交 prompt 后、Claude 处理前。 | 补充上下文、校验 prompt、阻止危险请求。 |
+| `UserPromptExpansion` | slash command 或 skill 展开成 prompt 时。 | 审计或阻止特定命令展开。 |
+| `PreToolUse` | 工具调用执行前。 | 阻止危险 Bash、保护 secrets、要求审批。 |
+| `PermissionRequest` | Claude 准备请求权限时。 | 对极窄可信场景自动审批。 |
+| `PostToolUse` | 工具成功执行后。 | 格式化、检查改动文件、记录工具输出。 |
+| `PostToolUseFailure` | 工具失败后。 | 补充调试上下文或记录失败。 |
+| `PostToolBatch` | 一批并行工具完成后。 | 做批量级检查。 |
+| `Notification` | Claude Code 发通知时。 | 桌面提醒、聊天通知、空闲提醒。 |
+| `SubagentStart` / `SubagentStop` | subagent 启动或结束。 | 监控专家代理和捕获摘要。 |
+| `PreCompact` / `PostCompact` | 上下文压缩前后。 | 保存交接记录或重新注入上下文。 |
+| `Stop` | Claude 完成一轮回复。 | 要求最终检查或添加提醒。 |
+| `SessionEnd` | 会话结束。 | 清理、保存指标、写审计日志。 |
+
+不要每个事件都挂 hook。先找到最匹配工作流的那个生命周期点。
+
+## Matchers 和 If Filters
+
+Matchers 决定一个 hook group 什么时候触发。`PreToolUse`、`PostToolUse`、`PostToolUseFailure`、`PermissionRequest`、`PermissionDenied` 这类工具事件可以匹配工具名。
+
+示例：
+
+```json
+{ "matcher": "Bash" }
+{ "matcher": "Edit|Write" }
+{ "matcher": "mcp__github__.*" }
+```
+
+对工具事件来说，handler 上的 `if` 还能按工具名和参数进一步过滤：
+
+```json
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "Bash(git *)",
+            "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/check-git-policy.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+用 `matcher` 避免每个工具都运行 hook；用 `if` 避免在实际命令或文件模式不匹配时启动进程。
+
+## PreToolUse 护栏
+
+`PreToolUse` 最适合在危险动作发生前拦截。它可以通过结构化 JSON deny、allow 或 ask。
+
+示例：阻止危险 shell 命令。
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+
+INPUT="$(cat)"
+COMMAND="$(printf '%s' "$INPUT" | jq -r '.tool_input.command // empty')"
+
+if printf '%s' "$COMMAND" | grep -Eq 'rm -rf|mkfs|dd if='; then
+  jq -n '{
+    hookSpecificOutput: {
+      hookEventName: "PreToolUse",
+      permissionDecision: "deny",
+      permissionDecisionReason: "Destructive shell command blocked by project hook"
+    }
+  }'
+else
+  exit 0
+fi
+```
+
+适合用来：
+
+- 阻止修改 `.env`、secrets、credentials 或生成文件；
+- 数据库迁移前要求 review；
+- 禁止非 release 分支 deploy；
+- 限制 MCP 写工具；
+- 大范围文件系统操作前要求确认。
+
+注意：官方当前口径是 hooks 可以收紧限制，但 hook 返回 allow 不会覆盖 settings 里的 deny rules。Baseline policy 用 permissions，场景化检查用 hooks。
+
+## PostToolUse 检查
+
+`PostToolUse` 在工具成功执行后触发，适合反馈、格式化、日志和轻量验证。
+
+常见用途：
+
+- 在 `Edit` 或 `Write` 后运行 formatter；
+- 扫描编辑文件是否包含禁止的内部口径；
+- 记录 MCP 写操作；
+- 检查生成内容是否仍有 metadata；
+- 在工具完成后补充上下文。
+
+但要记住：工具已经执行完了。`PostToolUse` 不能撤销操作。如果某个写入绝不能发生，要用 `PreToolUse`。
+
+## UserPromptSubmit Hooks
+
+`UserPromptSubmit` 在 Claude 处理用户 prompt 前触发。它适合校验或补充 prompt。
+
+适合场景：
+
+- 注入当前分支、ticket ID、项目元信息；
+- 阻止要求暴露 secrets 的 prompt；
+- 生产仓库要求必须带任务编号；
+- 发现高风险 wording 时提醒使用 Plan Mode；
+- 把用户 prompt 路由到团队流程。
+
+注入上下文要谨慎。hook 加进去的内容会进入 Claude 上下文，必须短、相关、无 secrets。
+
+## Notification 和 Session Hooks
+
+`Notification` hooks 适合提醒：
+
+- Claude 需要权限；
+- prompt input 空闲；
+- 长任务需要人处理；
+- teammate 或 background task 需要响应。
+
+`SessionStart` 和 `SessionEnd` 适合生命周期自动化：
+
+- 启动时显示当前分支和 dirty status；
+- 加载短项目状态；
+- 创建日志记录；
+- 清理临时文件；
+- 保存 session 指标。
+
+Session hooks 要快。慢启动 hook 会让 Claude Code 看起来像坏了，即使真正的问题是 hook。
+
+## Hooks 和 Permissions 怎么配合
+
+| 控制层 | 最适合用途 |
+| --- | --- |
+| Permission rules | 基础 allow、ask、deny 策略。 |
+| `PreToolUse` hooks | 工具执行前的场景化检查。 |
+| `PermissionRequest` hooks | 极窄可信场景下自动审批或自定义审批行为。 |
+| `PostToolUse` hooks | 工具成功后的反馈和检查。 |
+| CI / tests | Claude Code 外部的最终强制验证。 |
+
+不要只依赖一层。例如用 permissions 禁止宽泛危险工具，用 `PreToolUse` 拦截危险模式，再用 CI 证明仓库仍然可用。
+
+## 安全规则
+
+Hooks 会运行代码，所以要像对待 build script 或 CI step 一样对待它。
+
+- 提交前 review hook scripts；
+- 项目 hooks 进版本控制；
+- 本机路径不要写进共享 settings；
+- 不要把 secrets 打印到 stdout 或 stderr；
+- hook 相关命令不要开大范围 Bash 权限；
+- 设置 timeout；
+- 日志足够调试即可，不要泄露数据；
+- 优先只读检查，再考虑写自动化；
+- 不要静默改文件，除非团队明确接受；
+- 在 `CLAUDE.md` 里说明团队 hooks。
+
+如果 hook 会修改文件，必须让行为显式可见。静默修改最容易破坏信任。
+
+## 调试 Hooks
+
+hook 不生效时，按这个顺序排查：
+
+1. 运行 `/hooks`，确认 Claude Code 看到了配置；
+2. 确认 JSON 在 settings 文件里，不是独立 hooks 文件；
+3. 确认 event name 正确；
+4. 确认 matcher 是字符串，不是数组；
+5. 多个精确工具名用 `Edit|Write` 这种写法；
+6. 确认这个 event 是否支持 matcher；
+7. 加短 timeout；
+8. 用样例 JSON 手动运行 hook 脚本；
+9. 启动 Claude Code 时写 debug log；
+10. 检查 stdout、stderr、exit code 是否按预期解释。
+
+常用调试命令：
+
+```bash
+claude --debug-file /tmp/claude-hooks.log
+tail -f /tmp/claude-hooks.log
+```
+
+Transcript view 可以看简短摘要，但完整执行细节还是 debug log 更可靠。
+
+## 团队落地节奏
+
+团队 hooks 建议分阶段：
+
+1. **Observe：** 先记录事件，不阻止；
+2. **Warn：** 给反馈，但允许继续；
+3. **Ask：** 对窄范围高风险场景要求确认；
+4. **Deny：** 模式确认后再阻止；
+5. **Document：** 写进 `CLAUDE.md`；
+6. **Review：** 仓库或流程变化后重新审查。
+
+先做一个高价值 hook，比如阻止 `.env` 修改或记录 MCP 写工具。一个小而可靠的 hook，比一套没人信任的大自动化更有价值。
+
+## 常见错误
+
+| 错误 | 为什么有问题 | 更好的做法 |
+| --- | --- | --- |
+| 每个事件都挂 hook | 开销和噪声都变高。 | 只匹配一个生命周期点。 |
+| 做成隐藏自动化 | 队友无法预测行为。 | 记录 hooks，输出要清楚。 |
+| 一上来就阻止 | 误报会拖慢工作。 | 先 observe 或 warn。 |
+| 运行慢脚本 | Claude Code 看起来卡住。 | 加 timeout，收窄 matcher。 |
+| 输出 secrets | 可能进入日志或上下文。 | 清洗输出。 |
+| 用 PostToolUse 防止写入 | 写入已经发生。 | 防止动作要用 PreToolUse。 |
+| 本机路径写进项目 settings | 队友机器会坏。 | 用 `CLAUDE_PROJECT_DIR` 或 local settings。 |
+| 忘记 permissions 和 CI | hooks 只是其中一层。 | 结合策略和验证。 |
+
+## 推荐起步 Hooks
+
+可以从这些开始：
+
+- 阻止写入 `.env`、`.pem`、`.key` 和凭证文件；
+- Bash 命令包含 deploy、migrate 或危险文件操作时提醒；
+- 编辑 TypeScript 或 MDX 后运行聚焦 formatter；
+- 记录 MCP 写工具到本地审计日志；
+- Claude 需要权限时发通知；
+- 启动时注入当前分支和 issue context；
+- compact 前保存简短交接记录。
+
+每个 hook 都应该回答：什么事件触发、检查什么、能阻止什么、输出什么、如何禁用。
+
+## 相关页面
+
+- [CLAUDE.md 指南](/zh/mechanics/claude-md)
+- [工具权限管理](/zh/tutorial/configuration/tools-allowlist)
+- [上下文管理](/zh/mechanics/context-management)
+- [Slash Commands](/zh/mechanics/slash-commands)
+- [Subagents](/zh/mechanics/subagents)
+- [MCP 安全清单](/zh/mcp/mcp-security-checklist)
+
+## 官方来源
+
+- [Hooks reference](https://code.claude.com/docs/en/hooks)
+- [Automate workflows with hooks](https://code.claude.com/docs/en/hooks-guide)
+- [Debug your configuration](https://code.claude.com/docs/en/debug-your-config)
+- [Claude Code settings](https://code.claude.com/docs/en/settings)

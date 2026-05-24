@@ -1,0 +1,96 @@
+---
+title: 'Claude Code Playwright MCP 指南'
+description: '如何用 Playwright MCP 支撑 Claude Code 前端开发：浏览器检查、截图、交互验证和本地安全测试。'
+---
+
+Playwright MCP 适合在 Claude Code 需要真实浏览器时使用：打开页面、点击交互、截图、检查控制台，证明一个前端改动真的渲染正常。它把“看起来没问题”变成可重复验证的流程。
+
+> 最后核查：2026 年 5 月 24 日。Playwright MCP server 参数、浏览器依赖和命令选项可能变化。把它沉淀为团队流程前，请确认当前 Playwright MCP 文档。
+
+## 什么时候值得添加 Playwright MCP
+
+Playwright MCP 最适合前端和浏览器相关任务：
+
+- UI 修改后打开本地页面。
+- 截取桌面和移动端截图。
+- 点击导航、表单、弹窗、菜单和登录流程。
+- 复现视觉或交互 bug。
+- 检查关键 viewport 下文字是否溢出。
+- 确认 canvas、动画、图片或图表是否正常渲染。
+
+如果只是后端改动、简单静态文案，或单元测试已经能证明行为，就不需要 Playwright MCP。
+
+## 配置形态
+
+Playwright 提供 MCP 接入文档。Claude Code 里常见的 stdio 形态类似：
+
+```bash
+claude mcp add --transport stdio playwright -- npx @playwright/mcp@latest
+```
+
+某些环境还需要安装浏览器、指定浏览器路径或增加项目启动参数。团队使用时，把这些细节写进内部 setup 说明，不要散落在每次提示词里。
+
+## 推荐的视觉验证流程
+
+1. 构建或启动本地应用。
+2. 用 Playwright MCP 打开目标 URL。
+3. 检查 console 是否有运行时错误。
+4. 截取桌面截图。
+5. 截取移动端截图。
+6. 点击关键控件。
+7. 总结已经验证的内容和仍未覆盖的风险。
+
+这对 Claude Code 前端改动尤其重要，因为代码能编译通过，不代表页面一定好看或可用。
+
+## 应该检查什么
+
+| 检查项 | 原因 |
+| --- | --- |
+| 页面状态 | 确认路由和静态资源正常加载 |
+| Console errors | 捕获 hydration、运行时和资源错误 |
+| 文案换行 | 避免移动端溢出和按钮文字截断 |
+| 主要交互 | 确认按钮、菜单、表单和链接可用 |
+| 响应式布局 | 避免桌面好看但移动端破版 |
+| 截图证据 | 给用户一个可直接审查的结果 |
+
+## 安全使用规则
+
+- 优先用于本地或 staging URL。
+- 未明确批准前，不要操作生产后台页面。
+- 不要在真实客户数据上执行破坏性动作。
+- 不同项目的登录状态要隔离。
+- 截图中如果有用户或内部数据，要当作敏感信息处理。
+- 会创建数据的流程，测试后要清理。
+
+## 好用的提示词
+
+| 需求 | 提示词形态 |
+| --- | --- |
+| UI 检查 | “打开 `/en/faqs`，检查 console errors，并截取桌面和移动端截图。” |
+| 交互检查 | “点击菜单、搜索框和主按钮，然后报告是否有异常状态。” |
+| 回归检查 | “按预期结构检查页面：左侧列表、正文、右侧目录。” |
+| 移动端打磨 | “使用 390px viewport，检查文字溢出、点击区域和 sticky header。” |
+
+## 常见故障
+
+| 现象 | 可能原因 | 处理 |
+| --- | --- | --- |
+| 浏览器无法启动 | 缺少浏览器依赖或 executable path 错误 | 安装浏览器或配置路径 |
+| 页面空白 | 应用服务没启动、端口错、静态资源不同步 | 重启应用并用 curl 验证路由 |
+| Hydration error | 服务端和客户端首屏 markup 不一致 | 用 dev 模式复现，移除首屏动态差异 |
+| 截图每次不同 | 动画、加载状态或数据不稳定 | 等待 network idle 和稳定 selector |
+| 测试误操作生产 | base URL 或登录态错误 | 使用 staging / local 和独立测试账号 |
+
+## 相关页面
+
+- [MCP 目录](/zh/mcp)
+- [视觉迭代](/zh/tutorial/workflows/visual-iteration)
+- [Headless Mode](/zh/faqs/claude-code-headless-mode)
+- [MCP 安全检查清单](/zh/mcp/mcp-security-checklist)
+
+## 官方来源
+
+- [Playwright MCP documentation](https://playwright.dev/docs/getting-started-mcp)
+- [Playwright MCP repository](https://github.com/microsoft/playwright-mcp)
+- [Playwright documentation](https://playwright.dev/)
+- [Claude Code MCP documentation](https://code.claude.com/docs/en/mcp)

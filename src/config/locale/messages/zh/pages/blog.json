@@ -1,0 +1,22 @@
+{
+  "metadata": {
+    "title": "ClaudeCode101 文章",
+    "description": "围绕 Claude Code 教程、配置方法和实战工作流的更新内容。"
+  },
+  "page": {
+    "title": "ClaudeCode101 文章",
+    "sections": {
+      "blog": {
+        "id": "blog",
+        "title": "文章",
+        "description": "记录 Claude Code 教程、配置方法和实战工作流。"
+      }
+    }
+  },
+  "messages": {
+    "all": "全部",
+    "no_content": "暂无内容",
+    "crumb": "文章",
+    "toc": "目录"
+  }
+}

@@ -1,0 +1,192 @@
+{
+  "header": {
+    "id": "header",
+    "brand": {
+      "title": "ClaudeCode101",
+      "logo": {
+        "src": "/logo.png",
+        "alt": "ClaudeCode101",
+        "width": 100,
+        "height": 100
+      },
+      "url": "/"
+    },
+    "nav": {
+      "items": [
+        {
+          "title": "FAQ",
+          "url": "/faqs",
+          "icon": "Search"
+        },
+        {
+          "title": "教程",
+          "url": "/tutorial",
+          "icon": "BookOpenText"
+        },
+        {
+          "title": "安装",
+          "url": "/tutorial/getting-started/installation",
+          "icon": "Download"
+        },
+        {
+          "title": "CLAUDE.md",
+          "url": "/tutorial/configuration/claude-md",
+          "icon": "FileText"
+        },
+        {
+          "title": "MCP",
+          "url": "/mcp",
+          "icon": "Network"
+        },
+        {
+          "title": "资源",
+          "url": "/resources",
+          "icon": "Boxes"
+        },
+        {
+          "title": "排障",
+          "url": "/troubleshooting",
+          "icon": "Wrench"
+        }
+      ]
+    },
+    "buttons": [],
+    "user_nav": {
+      "show_name": true,
+      "show_credits": false,
+      "show_sign_out": true,
+      "items": []
+    },
+    "show_sign": false,
+    "show_theme": true,
+    "show_locale": true,
+    "topbanner": {
+      "text": ""
+    }
+  },
+  "footer": {
+    "id": "footer",
+    "show_built_with": false,
+    "brand": {
+      "title": "ClaudeCode101",
+      "description": "面向开发者的 Claude Code 中文教程与实战工作流知识库。",
+      "logo": {
+        "src": "/logo.png",
+        "alt": "ClaudeCode101",
+        "width": 100,
+        "height": 100
+      },
+      "url": "/"
+    },
+    "nav": {
+      "items": [
+        {
+          "title": "学习路径",
+          "children": [
+            {
+              "title": "常见问题",
+              "url": "/faqs",
+              "target": "_self"
+            },
+            {
+              "title": "教程中心",
+              "url": "/tutorial",
+              "target": "_self"
+            },
+            {
+              "title": "安装与配置",
+              "url": "/tutorial/getting-started/installation",
+              "target": "_self"
+            },
+            {
+              "title": "基础使用",
+              "url": "/tutorial/getting-started/basic-usage",
+              "target": "_self"
+            },
+            {
+              "title": "故障排查",
+              "url": "/troubleshooting",
+              "target": "_self"
+            }
+          ]
+        },
+        {
+          "title": "核心主题",
+          "children": [
+            {
+              "title": "CLAUDE.md",
+              "url": "/mechanics/claude-md",
+              "target": "_self"
+            },
+            {
+              "title": "MCP 服务器",
+              "url": "/mcp",
+              "target": "_self"
+            },
+            {
+              "title": "Plan Mode",
+              "url": "/mechanics/plan-mode",
+              "target": "_self"
+            }
+          ]
+        },
+        {
+          "title": "站点",
+          "children": [
+            {
+              "title": "价格和限制",
+              "url": "/pricing",
+              "target": "_self"
+            },
+            {
+              "title": "资源",
+              "url": "/resources",
+              "target": "_self"
+            },
+            {
+              "title": "更新",
+              "url": "/upgrade",
+              "target": "_self"
+            },
+            {
+              "title": "隐私政策",
+              "url": "/privacy-policy",
+              "target": "_self"
+            }
+          ]
+        }
+      ]
+    },
+    "social": {
+      "items": [
+        {
+          "title": "GitHub",
+          "icon": "Github",
+          "url": "https://github.com/anthropics/claude-code",
+          "target": "_blank"
+        },
+        {
+          "title": "Email",
+          "icon": "Mail",
+          "url": "mailto:support@claudecode101.com",
+          "target": "_self"
+        }
+      ]
+    },
+    "agreement": {
+      "items": [
+        {
+          "title": "隐私政策",
+          "url": "/privacy-policy",
+          "target": "_self"
+        },
+        {
+          "title": "服务条款",
+          "url": "/terms-of-service",
+          "target": "_self"
+        }
+      ]
+    },
+    "copyright": "© 2026 ClaudeCode101. All rights reserved."
+  }
+}

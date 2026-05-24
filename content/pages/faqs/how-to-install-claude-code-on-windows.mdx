@@ -1,0 +1,81 @@
+---
+title: 'How to Install Claude Code on Windows'
+description: 'Choose native Windows or WSL, install Claude Code with PowerShell, CMD, or WinGet, and fix the first Windows setup issues.'
+schema_question: 'How do I install Claude Code on Windows?'
+schema_answer: 'On Windows, install Claude Code natively with PowerShell, CMD, or WinGet, or install it inside WSL 2 for Linux toolchains and sandboxed command execution. Native Windows is best for Windows-native projects; WSL 2 is better for Linux projects and sandboxing.'
+---
+
+Windows has two good paths: native Windows or WSL. Choose based on where your project actually runs. Do not install in PowerShell and then expect WSL projects to share the same `claude` binary automatically.
+
+> Last checked on May 24, 2026. Windows support changes quickly, especially around shell behavior and sandboxing. Verify the official setup page before rolling this out to a team.
+
+## Short Answer
+
+- Use native Windows for Windows-native repositories, PowerShell workflows, or tools that already run on Windows.
+- Use WSL 2 for Linux toolchains, shell-heavy projects, or sandboxed command execution.
+- Git for Windows is optional but useful because it enables Git Bash for the Bash tool on native Windows.
+
+## Native Windows Install
+
+PowerShell:
+
+```powershell
+irm https://claude.ai/install.ps1 | iex
+```
+
+CMD:
+
+```bat
+curl -fsSL https://claude.ai/install.cmd -o install.cmd && install.cmd && del install.cmd
+```
+
+WinGet:
+
+```powershell
+winget install Anthropic.ClaudeCode
+```
+
+Then verify:
+
+```powershell
+claude --version
+claude doctor
+```
+
+## Native Windows vs WSL
+
+| Option | Best for | Sandboxing | Notes |
+| --- | --- | --- | --- |
+| Native Windows | Windows projects, PowerShell, CMD, Git Bash, Windows toolchains. | Not supported in the same way as WSL 2. | Git for Windows is optional, but recommended for Bash-style commands. |
+| WSL 2 | Linux projects, Node/Ruby/Python toolchains, sandboxed command execution. | Supported. | Install and launch `claude` inside WSL, not from Windows PowerShell. |
+| WSL 1 | Older environments where WSL 2 is unavailable. | Not supported. | Prefer WSL 2 when possible. |
+
+## Common Windows Mistakes
+
+| Symptom | Likely cause | Fix |
+| --- | --- | --- |
+| `The token '&&' is not a valid statement separator` | You pasted the CMD command into PowerShell. | Use the PowerShell `irm` command instead. |
+| `'irm' is not recognized` | You pasted the PowerShell command into CMD. | Use the CMD `curl ... install.cmd` command instead. |
+| `claude` works in Windows but not WSL | It was installed on the Windows side only. | Open WSL and run the Linux installer there. |
+| Bash-related tools fail | Git Bash is missing or Claude cannot find it. | Install Git for Windows or set `CLAUDE_CODE_GIT_BASH_PATH`. |
+| WinGet upgrade fails | Windows may lock the running executable. | Close Claude Code sessions, then run `winget upgrade Anthropic.ClaudeCode`. |
+
+## Recommended First Run
+
+1. Open the terminal that matches your project location.
+2. Run `claude --version`.
+3. Run `claude doctor`.
+4. Start in a small repository.
+5. Ask Claude to inspect only, then use Plan Mode before edits.
+
+## Related Guides
+
+- [How to install Claude Code](/en/faqs/how-to-install-claude-code)
+- [Command not found fix](/en/troubleshooting/claude-command-not-found)
+- [Windows PATH troubleshooting](/en/troubleshooting/claude-code-windows-path)
+- [Plan Mode](/en/faqs/what-is-plan-mode)
+
+## Official Sources
+
+- [Claude Code installation](https://code.claude.com/docs/en/installation)
+- [Claude Code authentication](https://code.claude.com/docs/en/authentication)

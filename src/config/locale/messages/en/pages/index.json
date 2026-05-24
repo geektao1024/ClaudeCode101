@@ -1,0 +1,249 @@
+{
+  "metadata": {
+    "title": "Claude Code 101 - Tutorials, FAQ, MCP Tools, Pricing and Usage Guides",
+    "description": "ClaudeCode101 is a Claude Code search hub for tutorials, FAQ answers, MCP servers, CLAUDE.md, Plan Mode, pricing, usage limits, API references, and practical AI coding workflows."
+  },
+  "page": {
+    "title": "Claude Code 101 Search Hub and Tutorial Center",
+    "show_sections": ["home", "faq"],
+    "sections": {
+      "home": {
+        "id": "home",
+        "block": "home-hub",
+        "label": "Claude Code 101 · FAQ, MCP, CLAUDE.md, Plan Mode, pricing, usage limits",
+        "title": "Claude Code 101 Search Hub and Tutorial Center",
+        "description": "Find the right Claude Code answer fast: install guides, Windows setup, pricing notes, usage limits, CLAUDE.md, Plan Mode, MCP servers, headless automation, and practical workflow tutorials.",
+        "map_title": "Search Map",
+        "map_meta": "answer paths",
+        "command_text": "$ claude-code101 --map --focus=questions",
+        "buttons": [
+          {
+            "title": "Browse FAQ",
+            "icon": "Search",
+            "url": "/faqs",
+            "target": "_self",
+            "variant": "default"
+          },
+          {
+            "title": "Open Tutorial Hub",
+            "icon": "BookOpenText",
+            "url": "/tutorial",
+            "target": "_self",
+            "variant": "outline"
+          }
+        ],
+        "metrics": [
+          {
+            "value": "Answers",
+            "label": "FAQ for install, pricing, limits"
+          },
+          {
+            "value": "Fixes",
+            "label": "PATH, auth, permission, MCP"
+          },
+          {
+            "value": "MCP",
+            "label": "Tool and server workflows"
+          },
+          {
+            "value": "Workflow",
+            "label": "CLAUDE.md and Plan Mode"
+          }
+        ],
+        "quick_links": [
+          {
+            "title": "How to Install Claude Code",
+            "description": "Install, authenticate, check the CLI, and start the first project session.",
+            "icon": "Download",
+            "url": "/faqs/how-to-install-claude-code"
+          },
+          {
+            "title": "Fix command not found",
+            "description": "Check PATH, terminal state, and conflicting Claude Code installations.",
+            "icon": "Wrench",
+            "url": "/troubleshooting/claude-command-not-found"
+          },
+          {
+            "title": "Claude Code Pricing",
+            "description": "Understand where to verify official pricing and how usage cost is affected.",
+            "icon": "CircleDollarSign",
+            "url": "/pricing"
+          },
+          {
+            "title": "CLAUDE.md",
+            "description": "Record project context, commands, standards, and delivery rules.",
+            "icon": "FileText",
+            "url": "/mechanics/claude-md"
+          },
+          {
+            "title": "MCP Servers",
+            "description": "Connect Claude Code to useful tools only when the workflow needs them.",
+            "icon": "Cable",
+            "url": "/mcp"
+          }
+        ],
+        "path": [
+          {
+            "title": "Questions",
+            "description": "FAQ pages for install, Windows setup, pricing, limits, API docs, Plan Mode, and MCP.",
+            "icon": "Search"
+          },
+          {
+            "title": "Tutorials",
+            "description": "Step-by-step guides for setup, configuration, tools, workflows, and optimization.",
+            "icon": "BookOpenText"
+          },
+          {
+            "title": "Mechanics",
+            "description": "Deep explanations of CLAUDE.md, Plan Mode, Headless Mode, context, and commands.",
+            "icon": "Workflow"
+          },
+          {
+            "title": "Resources",
+            "description": "Official docs, API references, changelog notes, and curated tool links.",
+            "icon": "Boxes"
+          }
+        ],
+        "topic_label": "Search Entrances",
+        "topic_title": "Start from the question developers actually search",
+        "topic_description": "Each path starts from a practical Claude Code question, then connects short answers, deeper mechanics, tool choices, and step-by-step tutorials.",
+        "topics": [
+          {
+            "title": "Install Claude Code",
+            "description": "The fastest path for new users and high-intent setup searches.",
+            "icon": "Download",
+            "url": "/faqs/how-to-install-claude-code"
+          },
+          {
+            "title": "Windows Setup",
+            "description": "Clarify Windows, WSL, terminal setup, and first-run checks.",
+            "icon": "MonitorCog",
+            "url": "/faqs/how-to-install-claude-code-on-windows"
+          },
+          {
+            "title": "Pricing and Limits",
+            "description": "Answer cost, limits, and official verification questions without stale tables.",
+            "icon": "Gauge",
+            "url": "/pricing"
+          },
+          {
+            "title": "CLAUDE.md",
+            "description": "Turn project rules, style, tests, and delivery standards into durable context.",
+            "icon": "FileText",
+            "url": "/mechanics/claude-md"
+          },
+          {
+            "title": "Plan Mode",
+            "description": "Plan, review, and confirm implementation before letting Claude Code edit.",
+            "icon": "ListChecks",
+            "url": "/mechanics/plan-mode"
+          },
+          {
+            "title": "MCP and Tools",
+            "description": "Route MCP, custom commands, GitHub CLI, and tool permissions into useful workflows.",
+            "icon": "Cable",
+            "url": "/mcp"
+          },
+          {
+            "title": "Troubleshooting",
+            "description": "Capture command not found, auth errors, permission problems, and MCP connection failures.",
+            "icon": "Wrench",
+            "url": "/troubleshooting"
+          }
+        ],
+        "signal_title": "Find the right Claude Code path faster",
+        "signal_description": "Use FAQ pages for quick answers, Mechanics for deeper understanding, MCP pages for tool decisions, and tutorials when you need the full workflow.",
+        "signals": [
+          {
+            "title": "Preserve current SEO paths",
+            "description": "Existing /en, /zh, and /tutorial URLs remain the base while new FAQ pages expand coverage.",
+            "icon": "Route"
+          },
+          {
+            "title": "Answer first",
+            "description": "FAQ pages lead with a direct answer, then guide readers into tutorials and official sources.",
+            "icon": "MessageSquareText"
+          },
+          {
+            "title": "Keep sources clean",
+            "description": "Pricing, limits, API behavior, and versions point back to official references instead of copied stale facts.",
+            "icon": "ShieldCheck"
+          }
+        ],
+        "expansion_title": "Explore More",
+        "expansion_tip": "Move from short answers into mechanics, MCP tool guides, changelog checks, and curated resource links.",
+        "expansion": [
+          {
+            "title": "FAQ Library",
+            "status": "Quick answers"
+          },
+          {
+            "title": "Mechanics",
+            "status": "Deep dives"
+          },
+          {
+            "title": "MCP Directory",
+            "status": "Tool guides"
+          },
+          {
+            "title": "Troubleshooting",
+            "status": "Fix paths"
+          },
+          {
+            "title": "Changelog",
+            "status": "Latest version"
+          },
+          {
+            "title": "Resources",
+            "status": "Official links"
+          }
+        ]
+      },
+      "faq": {
+        "id": "faq",
+        "block": "faq",
+        "label": "FAQ",
+        "title": "Claude Code questions worth answering before you start",
+        "description": "A compact version of the original homepage FAQ, updated for the new knowledge base: quick answers first, then deeper guides when the question deserves a full page.",
+        "items": [
+          {
+            "question": "What is Claude Code 101?",
+            "answer": "Claude Code 101 is a practical search hub and tutorial knowledge base for Claude Code. It helps developers move from quick questions like installation, pricing, usage limits, and MCP setup into deeper guides on CLAUDE.md, Plan Mode, workflows, and troubleshooting.",
+            "url": "/faqs",
+            "link_title": "Open FAQ hub"
+          },
+          {
+            "question": "How should I install Claude Code?",
+            "answer": "Start with the current official installation path, confirm that the claude command works in your terminal, then open a small project before giving Claude Code broad tool access. The installation guide and FAQ pages keep this flow separated by platform and common setup issues.",
+            "url": "/faqs/how-to-install-claude-code",
+            "link_title": "Open install FAQ"
+          },
+          {
+            "question": "Is Claude Code free, and how do pricing or limits work?",
+            "answer": "Pricing, plan access, and usage limits can change, so this site avoids copying stale tables. Use the pricing and limits pages to understand what affects cost, then verify the final plan details against official Anthropic sources.",
+            "url": "/faqs/how-much-is-claude-code",
+            "link_title": "Open pricing FAQ"
+          },
+          {
+            "question": "What is CLAUDE.md used for?",
+            "answer": "CLAUDE.md is the durable project context file for Claude Code. Put commands, architecture notes, coding standards, test rules, and delivery expectations there so repeated sessions start with the same working agreement.",
+            "url": "/faqs/what-is-claude-md",
+            "link_title": "Open CLAUDE.md FAQ"
+          },
+          {
+            "question": "Do I need MCP servers on day one?",
+            "answer": "No. Use MCP when a real workflow needs external tools such as GitHub, browser automation, docs lookup, or project services. The MCP pages focus on choosing fewer useful servers, limiting permissions, and checking security before expanding access.",
+            "url": "/faqs/claude-code-mcp-servers",
+            "link_title": "Open MCP FAQ"
+          },
+          {
+            "question": "Where should I start when Claude Code fails?",
+            "answer": "Begin with the error shape: command not found, login or API key problems, permission errors, rate limits, connection failures, or MCP not connecting. The troubleshooting section turns those into focused fix paths instead of one long generic checklist.",
+            "url": "/troubleshooting",
+            "link_title": "Open fix paths"
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,112 @@
+---
+title: 'Claude Code MCP 安全检查清单'
+description: 'Claude Code 接入 MCP server 前的安全检查清单：权限、密钥、只读试点、prompt injection、日志和团队治理。'
+---
+
+MCP 能让 Claude Code 连接真实系统，因此能力会明显增强；但它也扩大了一个编码会话能读取和执行的范围。每个 MCP server 都应该被当作一个新集成，而不是无害插件。
+
+> 最后核查：2026 年 5 月 24 日。MCP 安全建议会随着协议和生态变化持续更新。团队落地前，请重新核对 server 权限、认证方式和 transport 行为。
+
+## 核心原则
+
+只有三件事都说清楚时，才应该添加 MCP server：
+
+1. 它改善哪个工作流。
+2. 它能访问哪些数据或动作。
+3. 谁负责维护、更新和回滚。
+
+任何一项说不清，就先不要安装。
+
+## 安装前检查
+
+| 问题 | 好答案 | 高风险答案 |
+| --- | --- | --- |
+| 它解决什么问题？ | “开发前读取 GitHub Issue 上下文。” | “可能有用。” |
+| 是否需要写权限？ | “第一阶段只读就够。” | “先给宽权限再说。” |
+| 需要什么凭据？ | 专用 token，有限 scope，有过期时间 | 个人万能 token |
+| 谁维护？ | 官方厂商或内部明确 owner | 不明包或长期没人维护的仓库 |
+| 在哪里运行？ | 先本地或 staging | 直接生产，无 dry run |
+| 怎么移除？ | 有卸载和 token revoke 说明 | 没人知道 |
+
+## 权限模型
+
+从最小权限开始：
+
+- 第一阶段优先 read-only。
+- 限制仓库、项目、数据库或目录范围。
+- 个人实验不要用组织级 token。
+- 区分个人、staging 和生产凭据。
+- 尽量使用短有效期或可轮换凭据。
+- MCP 凭据不要写进公开 `CLAUDE.md`。
+
+如果 server 必须有写权限，要把允许动作写清楚：创建 draft issue、评论 PR、读取数据库 schema、运行浏览器检查，或只在沙箱目录写文件。
+
+## Prompt Injection 与工具滥用
+
+MCP 会把外部内容带入会话，例如 Issue、网页、文档、工单。这些内容可能包含恶意或误导指令。Claude Code 应该把外部内容当上下文，而不是权威命令。
+
+使用规则：
+
+- Issue、网页、文档、工单里的指令，只有与用户任务一致时才参考。
+- 外部页面要求泄露 secrets 时，不能照做。
+- 不要只根据抓取内容运行破坏性命令。
+- 影响共享系统的写操作必须先确认。
+- secrets 和凭据不要出现在提示词或截图里。
+
+## 团队落地阶段
+
+| 阶段 | 目标 | 退出条件 |
+| --- | --- | --- |
+| 个人测试 | 确认 server 解决一个真实流程 | 完成一次只读任务 |
+| 小范围试点 | 让 2-3 名开发者验证 | 有 setup 文档和已知故障说明 |
+| 团队推荐 | 标准化权限和提示词 | owner、scope、轮换、回滚都写清 |
+| 生产使用 | 连接真实共享系统 | 有监控和事故处理路径 |
+
+## 日志和审查
+
+团队广泛使用前，需要明确这些信息：
+
+- 哪些 server 被批准。
+- 允许哪些 scopes。
+- 每个 token 谁负责。
+- setup 命令放在哪里。
+- 凭据如何轮换。
+- 如何快速禁用 server。
+- 哪些动作必须人工确认。
+
+这对 GitHub、数据库、带登录态的浏览器自动化、内部 SaaS 工具尤其重要。
+
+## 红线信号
+
+- Server 要求宽泛 secrets，但说不清原因。
+- 关键系统依赖非官方或无人维护包。
+- 默认能写生产系统。
+- 安装时下载并执行未审查代码。
+- 隐藏网络调用或数据去向。
+- 明明有更安全的本地流程，却强行接 MCP。
+- 没人能说明如何 revoke access。
+
+## 最小安全 `CLAUDE.md` 写法
+
+```markdown
+## MCP servers
+
+- github: 只读读取 issue 和 PR 上下文。未经明确批准，不要评论、创建 issue 或编辑 PR。
+- context7: 仅用于当前包文档。必须用 lockfile 验证包版本。
+- playwright: 仅用于本地和 staging 浏览器检查。不要修改生产数据。
+```
+
+## 相关页面
+
+- [MCP 目录](/zh/mcp)
+- [GitHub MCP](/zh/mcp/github-mcp)
+- [Playwright MCP](/zh/mcp/playwright-mcp)
+- [工具权限管理](/zh/tutorial/configuration/tools-allowlist)
+- [CLAUDE.md 指南](/zh/mechanics/claude-md)
+
+## 官方来源
+
+- [Claude Code MCP documentation](https://code.claude.com/docs/en/mcp)
+- [Model Context Protocol documentation](https://modelcontextprotocol.io/)
+- [MCP security best practices](https://modelcontextprotocol.io/specification/2025-06-18/basic/security_best_practices)
+- [GitHub MCP server](https://github.com/github/github-mcp-server)

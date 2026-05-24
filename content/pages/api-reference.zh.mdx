@@ -1,0 +1,277 @@
+---
+title: 'Claude Code API 文档：API Reference、Agent SDK、CLI 和 MCP 怎么选'
+description: '整理 Claude Code API 文档入口，区分 Anthropic Messages API、Claude Code CLI、Agent SDK、MCP、Headless Mode、认证方式和自动化场景。'
+---
+
+# Claude Code API 文档
+
+很多人搜索 “Claude Code API reference” 或 “Claude Code API documentation” 时，其实想找的不是同一个东西。**Claude Code 主要是命令行和 agentic coding 工具**；而 **Claude API** 才是你在自己应用里调用模型的接口。
+
+<Callout type="info">
+  最后核查时间：2026 年 5 月 24 日。ClaudeCode101 是独立教程站，不是 Anthropic
+  官方文档。这个页面用于帮你判断该看哪份官方资料；生产接入前，请再次核对官方 endpoint、SDK
+  写法、价格、速率限制和认证方式。
+</Callout>
+
+## 30 秒答案
+
+不存在一个可以替代官方 API 文档的“Claude Code REST API”。你应该按目标选择文档：
+
+| 你要做什么 | 应该看什么官方文档 | 入口 |
+| ---------- | ------------------ | ---- |
+| 在自己的应用里调用 Claude | Anthropic Messages API 和 client SDK | [Anthropic API docs](https://platform.claude.com/docs/en/home) |
+| 在终端或脚本里运行 Claude Code | Claude Code CLI | [Claude Code CLI reference](https://code.claude.com/docs/en/cli-reference) |
+| 写一个能读文件、跑命令、改代码的 agent | Claude Agent SDK | [Agent SDK overview](https://code.claude.com/docs/en/agent-sdk) |
+| 让 Claude Code 接入 GitHub、文档、浏览器、数据库或内部工具 | MCP servers | [Claude Code MCP docs](https://code.claude.com/docs/en/mcp) |
+| 执行一次非交互式 prompt | `claude -p` / Headless Mode | [Headless Mode 教程](/zh/tutorial/advanced/headless-mode) |
+| 托管长期运行的 autonomous agent | Managed Agents | [Claude Platform docs](https://platform.claude.com/docs/en/home) |
+
+如果你的问题是“Claude Code API 文档在哪里”，最常见答案是：**终端自动化看 CLI reference，程序化 agent 看 Agent SDK，模型调用看 Anthropic API docs，工具集成看 MCP docs。**
+
+## 官方文档入口
+
+下面这些才是生产接入的 source of truth：
+
+| 文档 | 覆盖内容 | 适合场景 |
+| ---- | -------- | -------- |
+| [Anthropic API documentation](https://platform.claude.com/docs/en/home) | Messages API、模型、streaming、tool use、structured outputs、prompt caching、rate limits、billing、SDK。 | 你在自己的产品或后端里调用 Claude。 |
+| [Anthropic API reference](https://platform.claude.com/docs/api) | HTTP endpoint、请求字段、响应字段、错误格式。 | 需要精确接口字段时。 |
+| [Claude Code docs](https://code.claude.com/docs) | CLI 安装、工作流、权限、MCP、hooks、commands、subagents。 | 你把 Claude Code 当开发工具用。 |
+| [Claude Code CLI reference](https://code.claude.com/docs/en/cli-reference) | `claude`、`claude -p`、auth、update、flags、output formats。 | 写终端命令或自动化脚本。 |
+| [Agent SDK overview](https://code.claude.com/docs/en/agent-sdk) | Python / TypeScript 的 Claude Code-style agent SDK。 | 想做可编程 agent。 |
+| [Claude Code MCP docs](https://code.claude.com/docs/en/mcp) | 通过 MCP 接入外部工具和数据源。 | 需要 GitHub、文档、浏览器、数据库或内部工具。 |
+
+## 你到底该选哪个 API
+
+“API”这个词很容易混用。先用这张表判断：
+
+| 需求 | 更适合 | 原因 |
+| ---- | ------ | ---- |
+| 在网页应用里生成文本 | Messages API | 你自己管理 prompt、状态、工具循环和产品界面。 |
+| 后端服务接入 Claude | Anthropic client SDK | 官方 SDK 处理请求结构和认证。 |
+| 让 Claude Code 检查一次仓库 | `claude -p` | 轻量、适合一次性自动化。 |
+| 做内部代码审查 bot | Agent SDK | 可以在你的进程里运行 Claude Code-style agent loop。 |
+| 读取 GitHub issue 或 PR | GitHub CLI 或 GitHub MCP | 简单任务优先 CLI；重复团队流程再上 MCP。 |
+| 读取内部文档或工具 | MCP 或粘贴上下文 | 只有重复需要外部能力时才加 MCP。 |
+| 托管 autonomous agent | Managed Agents | Anthropic 托管会话和基础设施。 |
+
+如果你只是要模型返回内容，不要把 Claude Code 当 API wrapper。用 Anthropic Messages API。如果你需要读文件、运行命令、改代码、权限和会话行为，再看 Claude Code CLI 或 Agent SDK。
+
+## API Key 和认证
+
+Anthropic API 工作流通常从 Console API key 开始：
+
+```bash
+export ANTHROPIC_API_KEY="your-api-key"
+```
+
+然后使用官方 client SDK 或 HTTP 请求。Claude Platform 文档提供 Python、TypeScript、Go、Java、Ruby、PHP、C#、cURL 和 CLI 示例。
+
+Claude Code CLI 可以通过官方支持的登录流程或 Console/API billing 使用。做应用代码和生产 agent 时，优先使用官方 API key 认证，不要把个人交互式登录当成产品认证方案。
+
+安全基线：
+
+| 应该做 | 不要做 |
+| ------ | ------ |
+| 把 key 放在环境变量或 secrets manager。 | 把 API key 提交到 Git。 |
+| dev、staging、production 使用不同 key。 | 在 CI 里复用个人本地 token。 |
+| 设置 spend limit 并监控用量。 | 让 headless 脚本无限循环。 |
+| 暴露后立即轮换 key。 | 把 secret 粘到 prompt、日志或文档里。 |
+
+## Claude API 和 Claude Code CLI 的区别
+
+| 入口 | 你控制什么 | Claude 控制什么 |
+| ---- | ---------- | --------------- |
+| Anthropic Messages API | 会话状态、工具循环、UI、持久化、安全校验、部署。 | 模型响应。 |
+| Claude Code CLI | prompt、仓库、权限、工具范围、审批流程。 | CLI 内部的 agentic coding loop。 |
+| Agent SDK | 应用进程、认证、托管、审批逻辑、自定义工具、可观测性。 | Claude Code-style 工具调用和 agent loop。 |
+
+产品里调用模型，用 Messages API。仓库里做开发，用 Claude Code。要把 Claude Code-style 能力嵌进自己的程序，用 Agent SDK。
+
+## CLI 自动化：`claude -p`
+
+非交互式 CLI 自动化使用 print mode：
+
+```bash
+claude -p "Summarize the last 20 commits and list release risks"
+```
+
+处理管道输入：
+
+```bash
+git diff --stat | claude -p "Write a release note summary"
+```
+
+返回结构化输出：
+
+```bash
+claude -p "Review this diff and return the top risks" \
+  --output-format json
+```
+
+自动化场景建议收紧权限：
+
+```bash
+claude -p "Review this repository without editing files" \
+  --permission-mode plan \
+  --tools "Read,Grep,Glob,Bash" \
+  --allowedTools "Bash(git diff *)" "Bash(git status *)" \
+  --max-turns 3 \
+  --output-format json
+```
+
+更完整示例看 [Claude Code Headless Mode 教程](/zh/tutorial/advanced/headless-mode)。
+
+## Agent SDK API
+
+如果你要做的不是一次命令，而是一个可编程 agent，就看 Claude Agent SDK。官方文档把 Agent SDK 描述为让 Python 和 TypeScript 程序获得 Claude Code 的工具、agent loop 和上下文管理能力。
+
+安装：
+
+```bash
+npm install @anthropic-ai/claude-agent-sdk
+```
+
+或：
+
+```bash
+pip install claude-agent-sdk
+```
+
+适合 Agent SDK 的情况：
+
+| 需求 | 为什么适合 Agent SDK |
+| ---- | -------------------- |
+| 集成到自有应用 | 可以从自己的服务调用 agent。 |
+| 程序化会话 | 工作流和持久化由你的代码控制。 |
+| 自定义审批逻辑 | 可以拦截和控制工具调用。 |
+| 可观测性 | 官方有 cost、usage、hooks、OpenTelemetry 等文档。 |
+| 生产自动化 | 可以在自有基础设施中运行，并配置明确认证和限制。 |
+
+区别要清楚：Anthropic client SDK 是直接调用模型 API；Agent SDK 是运行 Claude Code-style agent。
+
+## MCP API 和工具集成
+
+MCP 不是 Anthropic Messages API。MCP 是 Claude Code 用来连接外部工具、API、数据库、文档和系统的协议。
+
+适合 MCP 的情况：
+
+- Claude Code 经常需要 GitHub issue、PR 或 release 上下文；
+- 写代码前需要当前库和框架文档；
+- 工作流涉及浏览器、数据库、监控系统或内部 API；
+- 反复从另一个工具复制上下文已经变成瓶颈。
+
+先从窄配置开始：
+
+```bash
+claude mcp add --transport http docs https://api.example.com/mcp
+```
+
+在 Claude Code 中检查：
+
+```text
+/mcp
+```
+
+很多 GitHub 场景下，[GitHub CLI 集成](/zh/tutorial/configuration/github-cli) 比完整 MCP server 更容易审计。只有流程足够重复、确实需要结构化工具访问时，再迁移到 MCP。
+
+## 常见 API 任务
+
+### Code Generation
+
+如果你要在自己的产品里生成代码，用 Anthropic Messages API 或 client SDK。你负责传 prompt、选择模型、管理上下文和决定生成结果放在哪里。
+
+如果你要在本地仓库里让 Claude Code 生成代码，用 CLI 或 Agent SDK。先写好 [CLAUDE.md](/zh/tutorial/configuration/claude-md)，大改动前用 [Plan Mode](/zh/tutorial/workflows/plan-mode)。
+
+### Code Explanation
+
+应用里的代码解释，可以把相关片段传给 Messages API。片段要小，不要包含 secret。
+
+仓库级解释通常更适合 Claude Code，因为它能查看相邻文件和项目结构：
+
+```bash
+claude -p "Explain how authentication flows through this repository. Do not edit files." \
+  --permission-mode plan
+```
+
+### Code Review
+
+简单 PR 摘要可以用 `claude -p` 加 `git diff`。生产级 review bot 更适合 Agent SDK，并且要配置明确工具、权限、成本限制和可观测性。
+
+自动 review agent 在只读输出稳定前，不应该自动 push 修复。
+
+### Code Refactoring
+
+小范围重构适合交互式 Claude Code 加 Plan Mode。跨多个仓库的重复迁移，只有在人工流程稳定后，才考虑 Agent SDK。
+
+重构通常不是单纯 API 问题，而是需要仓库上下文、测试、回滚方案和人工批准。
+
+## API 错误、限制和成本
+
+出错时先判断是哪一层：
+
+| 现象 | 可能问题 | 先看哪里 |
+| ---- | -------- | -------- |
+| `ANTHROPIC_API_KEY` 被拒绝 | Anthropic API auth | 官方 API auth 文档和 Console key 设置。 |
+| `claude -p` 本地能跑，CI 失败 | CLI auth、PATH、CI env、permission mode | [Headless Mode 排查](/zh/tutorial/advanced/headless-mode) |
+| MCP server 不出现 | MCP config、transport、auth、scope | [MCP not connecting](/zh/troubleshooting/claude-code-mcp-not-connecting) |
+| 用量或账单突然升高 | 模型、循环、长上下文、MCP 输出、CI 重复运行 | [Claude Code 价格和限制](/zh/pricing) |
+| endpoint 字段被拒绝 | API 版本或请求 schema | 官方 API reference。 |
+
+脚本上 CI 前，至少要有：
+
+- 明确认证来源；
+- 收窄工具权限；
+- 支持的情况下设置 `--max-turns` 或预算限制；
+- 日志不输出 secret；
+- 失败时不会自动 deploy、delete 或 push。
+
+## 推荐学习路径
+
+1. 先按[安装指南](/zh/tutorial/getting-started/installation)让 CLI 在本地跑通。
+2. 看[基础使用](/zh/tutorial/getting-started/basic-usage)，理解交互会话、`claude -p` 和常用命令。
+3. 写 [CLAUDE.md](/zh/tutorial/configuration/claude-md)，让 Claude 理解项目规则。
+4. 学 [Tools allowlist](/zh/tutorial/configuration/tools-allowlist)，再授予自动化权限。
+5. 用 [Headless Mode](/zh/tutorial/advanced/headless-mode) 做一次性脚本。
+6. 真正要做可编程 agent 时，再看 [Agent SDK](https://code.claude.com/docs/en/agent-sdk)。
+7. 只有重复流程需要外部工具时，再加 [MCP servers](/zh/tutorial/tools-integration/mcp-servers)。
+
+## FAQ
+
+### Claude Code 有 API 吗？
+
+有 Claude Code CLI、用于 print/headless 的 `claude -p`，以及用于可编程 agent 的 Claude Agent SDK。直接调用模型请看 Anthropic Messages API。
+
+### 应该用 Claude API 还是 Claude Code？
+
+自己的产品或后端用 Claude API；仓库开发用 Claude Code；想把 Claude Code-style agent 嵌到 Python 或 TypeScript 程序里，用 Agent SDK。
+
+### 可以在产品里用 Claude 订阅登录吗？
+
+生产产品和 agent 应该使用官方 API key 认证，不要围绕个人 Claude.ai 交互式登录设计客户产品。
+
+### MCP 是 API 吗？
+
+MCP 是工具和数据源集成协议。它可以把 Claude Code 连接到 API，但不等于 Anthropic 模型 API。
+
+### 精确 endpoint 和请求字段在哪里？
+
+看官方 [Anthropic API reference](https://platform.claude.com/docs/api)。ClaudeCode101 不应该被当成 endpoint reference。
+
+## 相关 ClaudeCode101 指南
+
+- [Claude Code Headless Mode](/zh/tutorial/advanced/headless-mode)
+- [Claude Code API 文档 FAQ](/zh/faqs/claude-code-api-documentation)
+- [工具权限配置](/zh/tutorial/configuration/tools-allowlist)
+- [MCP servers](/zh/tutorial/tools-integration/mcp-servers)
+- [GitHub CLI 集成](/zh/tutorial/configuration/github-cli)
+- [价格和限制](/zh/pricing)
+- [最新版本和更新日志](/zh/upgrade)
+
+## 官方来源
+
+- [Anthropic API documentation](https://platform.claude.com/docs/en/home)
+- [Anthropic API reference](https://platform.claude.com/docs/api)
+- [Claude Code CLI reference](https://code.claude.com/docs/en/cli-reference)
+- [Claude Code Agent SDK](https://code.claude.com/docs/en/agent-sdk)
+- [Claude Code MCP documentation](https://code.claude.com/docs/en/mcp)

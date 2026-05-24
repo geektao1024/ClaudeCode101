@@ -1,0 +1,34 @@
+---
+title: 'Claude Code Invalid API Key'
+description: 'How to fix Claude Code invalid API key, expired token, wrong organization, and subscription vs API credential confusion.'
+---
+
+If Claude Code shows `Invalid API key`, `Not logged in`, token expired, or access errors after switching credentials, the problem is usually the active authentication path rather than the project files. Start by confirming whether Claude Code is using a Claude subscription login or an API-style credential.
+
+## Quick Checks
+
+1. Run `/status` to see the active credential path.
+2. If you intended to use subscription access, check whether `ANTHROPIC_API_KEY` is set in the shell or project environment.
+3. If you intended to use API access, verify the key in the Claude Console or provider console.
+4. Confirm the key belongs to the expected organization, workspace, and billing account.
+5. Restart the terminal after changing environment variables.
+
+## Common Causes
+
+The most common cause is credential mismatch: a shell has an old API key, a project loads an unexpected `.env`, or a team environment points to a different organization. OAuth tokens can also expire or be revoked, which requires logging in again.
+
+## Safe Fix Pattern
+
+Do not paste API keys into prompts or documentation. Check the environment locally, rotate questionable keys in the provider console, and record only the credential source in `CLAUDE.md`, such as "uses subscription login" or "uses team API workspace".
+
+## Related Pages
+
+- [Login or authentication error](/en/troubleshooting/claude-code-login-or-authentication-error)
+- [Claude Code API reference hub](/en/api-reference)
+- [Claude Code pricing and usage guide](/en/pricing)
+- [Claude Code troubleshooting hub](/en/troubleshooting)
+
+## Official Sources
+
+- [Claude Code error reference](https://code.claude.com/docs/en/errors)
+- [Troubleshoot installation and login](https://code.claude.com/docs/en/troubleshoot-install)

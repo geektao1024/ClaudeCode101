@@ -1,0 +1,34 @@
+---
+title: 'Claude Code Unable to Connect to API'
+description: '排查 Claude Code unable to connect to API、request timeout、SSL certificate、代理、VPN 和网络连接错误。'
+---
+
+如果 Claude Code 无法连接 API、请求超时，或提示 SSL certificate 问题，先把它当成网络链路问题排查。原因可能是本地网络、公司代理、VPN 路由、证书信任、服务状态，或错误的 base URL。
+
+## 先检查这些
+
+1. 查看 Claude 服务状态，或你正在使用的 provider 状态页是否有故障。
+2. 在同一个终端环境里发起一个简单网络请求，确认终端能访问外部服务。
+3. 如果使用代理，检查 `HTTP_PROXY`、`HTTPS_PROXY` 和证书设置。
+4. 如果使用自定义网关或 provider，确认 `ANTHROPIC_BASE_URL` 和相关凭证。
+5. 重装前，先换一个网络环境测试一次。
+
+## 常见原因
+
+公司网络可能会做 TLS 检查、拦截下载或 API 域名，或者要求使用自定义 CA 证书。VPN 也可能让浏览器和终端走不同线路。云服务商配置下，错误可能来自 Bedrock、Vertex、Foundry 或自定义 gateway，而不一定是 Anthropic 本身。
+
+## 什么时候需要进一步处理
+
+记录完整错误、操作系统、Shell、代理或 VPN 状态、当前凭证路径，以及换网络后是否恢复。如果 Claude Code 能启动，运行 `/doctor`；如果完全启动不了，在终端运行 `claude doctor`。
+
+## 相关页面
+
+- [登录或认证错误](/zh/troubleshooting/claude-code-login-or-authentication-error)
+- [claude command not found](/zh/troubleshooting/claude-command-not-found)
+- [Claude Code 故障排查](/zh/troubleshooting)
+- [Claude Code API 参考入口](/zh/api-reference)
+
+## 官方来源
+
+- [Claude Code 错误参考](https://code.claude.com/docs/en/errors)
+- [Claude Code 安装和登录排查](https://code.claude.com/docs/en/troubleshoot-install)

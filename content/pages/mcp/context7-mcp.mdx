@@ -1,0 +1,85 @@
+---
+title: 'Context7 MCP for Claude Code'
+description: 'How to use Context7 MCP with Claude Code to retrieve current library documentation, reduce stale API assumptions, and verify implementation decisions.'
+---
+
+Context7 MCP helps Claude Code pull current library and framework documentation into a coding session. It is most valuable when the model would otherwise rely on stale examples, guessed options, or outdated API shapes.
+
+> Last checked on May 24, 2026. Context7 setup options include Claude Code integration paths that may change. Confirm the current Context7 client docs before installing or sharing a team setup.
+
+## When Context7 Helps
+
+Use Context7 MCP when the task depends on current docs rather than general programming knowledge:
+
+- A framework recently changed routing, config, auth, or deployment APIs.
+- Claude Code keeps proposing old syntax.
+- You need exact option names for a library.
+- You are integrating a package that is not common enough for reliable model memory.
+- You want docs context before editing a production path.
+
+Skip it when the answer is already in your repository, lockfile, local type definitions, or test suite. Good context retrieval should reduce uncertainty, not replace verification.
+
+## Setup Options
+
+Context7 documents Claude Code setup directly. Depending on the current client path, installation may be done through its setup command, a marketplace-style integration, or a manual MCP configuration.
+
+A current setup flow may look like:
+
+```bash
+npx ctx7 setup --claude
+```
+
+After setup, verify that Claude Code can see the Context7 tools before using it for implementation work. If your team standardizes this integration, document the exact setup path and expected behavior in `CLAUDE.md`.
+
+## Practical Workflow
+
+1. Ask Claude Code to identify the library, framework, and version involved.
+2. Use Context7 to fetch focused documentation for that target.
+3. Ask Claude Code to compare the docs against the current repository code.
+4. Use Plan Mode for the implementation.
+5. Run type checks, tests, or a local preview after the edit.
+
+This keeps Context7 from becoming a generic search habit. It should answer a concrete implementation question.
+
+## Prompt Patterns That Work
+
+| Need | Prompt pattern |
+| --- | --- |
+| API syntax | "Use Context7 to check the current docs for `<library>` and confirm the correct options for `<feature>`." |
+| Migration | "Compare our current usage of `<library>` with the latest docs and list only breaking changes relevant to this file." |
+| Debugging | "Fetch docs for this error path, then tell me which assumption in the code is likely stale." |
+| Implementation | "Use docs context first, then propose a small plan before editing." |
+
+Avoid prompts like "read all docs." That wastes context and makes the answer less precise.
+
+## What to Verify After Using Docs
+
+| Check | Why it matters |
+| --- | --- |
+| Package version | Docs may describe a newer version than your lockfile |
+| Runtime behavior | Some docs omit framework-specific edge cases |
+| TypeScript types | Local types are often the fastest truth source |
+| Tests or preview | Documentation can guide the edit, but runtime confirms it |
+| Changelog | Breaking changes may be documented outside the API page |
+
+## Common Mistakes
+
+- Pulling too much documentation into the session.
+- Treating docs as proof that code works.
+- Forgetting to check the installed package version.
+- Mixing docs from different major versions.
+- Letting documentation retrieval hide a weak test plan.
+
+## Related Pages
+
+- [MCP directory](/en/mcp)
+- [Context management](/en/mechanics/context-management)
+- [Plan Mode](/en/mechanics/plan-mode)
+- [Claude Code API documentation](/en/faqs/claude-code-api-documentation)
+
+## Official Sources
+
+- [Context7 Claude Code setup](https://context7.com/docs/clients/claude-code)
+- [Context7](https://context7.com/)
+- [Model Context Protocol documentation](https://modelcontextprotocol.io/)
+- [Claude Code MCP documentation](https://code.claude.com/docs/en/mcp)

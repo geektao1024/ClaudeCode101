@@ -1,0 +1,31 @@
+{
+  "metadata": {
+    "title": "ClaudeCode101 Use Cases",
+    "description": "Claude Code use cases, setup examples, and workflow examples."
+  },
+  "page": {
+    "title": "ClaudeCode101 Use Cases",
+    "sections": {
+      "showcases": {
+        "id": "showcases",
+        "title": "Claude Code Use Cases",
+        "description": "Use cases will collect practical Claude Code examples for configuration, tool integration, and team workflows.",
+        "groups": [
+          {
+            "name": "all",
+            "title": "All Cases"
+          },
+          {
+            "name": "workflow",
+            "title": "Workflow"
+          },
+          {
+            "name": "configuration",
+            "title": "Configuration"
+          }
+        ],
+        "items": []
+      }
+    }
+  }
+}

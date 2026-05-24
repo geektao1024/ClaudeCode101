@@ -1,0 +1,93 @@
+---
+title: 'Claude Code GitHub MCP 指南'
+description: 'Claude Code 使用 GitHub MCP 的实战指南：托管与本地方案、token 权限、Issue / PR 工作流和安全边界。'
+---
+
+GitHub MCP 适合让 Claude Code 结构化读取仓库协作上下文：Issue、Pull Request、讨论、仓库元数据和评审线索。它不是代码审查的替代品，而是让实现过程更贴近真实工作项。
+
+> 最后核查：2026 年 5 月 24 日。GitHub MCP endpoint、toolsets、认证方式和 token 要求可能变化。给 Claude Code 增加写能力前，请重新核对 GitHub 与 Claude Code 官方文档。
+
+## 什么时候值得添加 GitHub MCP
+
+当 Claude Code 需要读取本地仓库以外的协作信息时，GitHub MCP 才值得接入：
+
+- 实现前总结某个 Issue。
+- 评审前查看 PR 讨论和变更背景。
+- 把代码改动映射回原始 GitHub Issue。
+- 根据已合并 PR 生成发布说明。
+- 不再把 GitHub 链接反复复制进对话。
+- 团队希望在 Claude Code 里复用统一的 GitHub 工作流。
+
+如果任务只需要本地文件，就先用 `rg`、`git log`、`gh pr view` 或本地仓库，不要为了“高级感”而接 MCP。
+
+## 托管 GitHub MCP 与本地 GitHub MCP
+
+| 方案 | 适合 | 取舍 |
+| --- | --- | --- |
+| 托管 GitHub MCP endpoint | 快速接入、本地依赖少、标准远程连接 | 需要信任远程 endpoint，并处理 token / header |
+| 本地或 Docker GitHub MCP server | 更强控制、自托管策略、局部试点 | 需要维护 Docker / 进程 / 本地密钥 |
+| GitHub CLI，不接 MCP | 简单查询和脚本 | Claude Code 内部没有结构化工具发现 |
+
+个人用户通常从官方推荐的托管或最简方案开始。团队要根据日志、token 轮换、仓库范围和是否允许写操作来选。
+
+## 常见配置形态
+
+Claude Code 的 MCP 命令取决于 transport 和 server 文档。远程 HTTP server 的形态类似：
+
+```bash
+claude mcp add --transport http github <github-mcp-url> --header "Authorization: Bearer <token>"
+```
+
+本地或 Docker stdio server 的形态类似：
+
+```bash
+export GITHUB_PERSONAL_ACCESS_TOKEN=<token>
+claude mcp add --transport stdio github -- docker run -i --rm \
+  -e GITHUB_PERSONAL_ACCESS_TOKEN \
+  ghcr.io/github/github-mcp-server
+```
+
+不要把长期有效 token 粘贴到共享 shell 历史中。优先使用 fine-grained token、短有效期、有限仓库范围，并尽量使用凭据管理工具。
+
+## 推荐的第一个工作流
+
+| 工作流 | 提示词形态 | 所需权限 |
+| --- | --- | --- |
+| Issue intake | “读取 issue #123，总结问题、限制和需要检查的文件。” | 读取 issue 和仓库元数据 |
+| PR review prep | “查看 PR #456，列出变更范围、评审关注点和测试缺口。” | 读取 PR 和文件 |
+| Release notes | “根据上个 tag 之后合并的 PR 生成用户可读发布说明。” | 读取 PR 和 release |
+| 实现追踪 | “本地 diff 完成后，把改动映射回 issue 验收标准。” | 读取 issue 和本地仓库 |
+
+读流程稳定前，不要急着开启写操作。评论 PR、创建 issue、编辑 PR 这类动作最好都保留明确的人类确认。
+
+## Token 和权限规则
+
+- 给 MCP 单独建 token，不要使用个人万能 token。
+- 尽量限制可访问仓库。
+- 第一阶段只读，只有明确工作流后才加写权限。
+- 实验、演示、外包协作结束后轮换 token。
+- 在内部配置说明里记录 token 责任人和过期计划，不要写进公开文档。
+
+## 常见故障
+
+| 现象 | 可能原因 | 处理 |
+| --- | --- | --- |
+| Claude Code 看不到 GitHub tools | server 没加成功、transport 错、进程失败 | 查看 MCP list/status，并重启 Claude Code |
+| 认证失败 | token 缺失、过期或发到了错误 endpoint | 重建窄权限 token，检查 header / env var |
+| 找不到仓库 | token 没有仓库权限或组织策略阻止 | 先用公开仓库测试，再查组织访问 |
+| 返回结果太散 | 提示词要求“全部 issues / PRs” | 限定 issue、PR、label、branch 或日期范围 |
+| 出现意外写能力 | server 默认暴露写工具 | 切换 read-only，或移除写 scope |
+
+## 相关页面
+
+- [MCP 目录](/zh/mcp)
+- [MCP 安全检查清单](/zh/mcp/mcp-security-checklist)
+- [GitHub CLI 集成](/zh/tutorial/configuration/github-cli)
+- [MCP 无法连接](/zh/troubleshooting/claude-code-mcp-not-connecting)
+
+## 官方来源
+
+- [Claude Code MCP documentation](https://code.claude.com/docs/en/mcp)
+- [GitHub MCP server](https://github.com/github/github-mcp-server)
+- [GitHub personal access tokens](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
+- [Model Context Protocol documentation](https://modelcontextprotocol.io/)

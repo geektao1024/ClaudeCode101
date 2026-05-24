@@ -1,0 +1,78 @@
+---
+title: '如何安装 Claude Code'
+description: '按当前官方路径安装 Claude Code，验证 CLI，完成认证，并避开首次使用常见问题。'
+schema_question: '如何安装 Claude Code？'
+schema_answer: 'Claude Code 可以通过官方 native installer、Homebrew、WinGet、Linux 包管理器或 npm 安装。安装后用 claude --version 或 claude doctor 验证，再用 Pro、Max、Team、Enterprise、Console 或受支持云厂商账号登录。免费 Claude 计划不包含 Claude Code。'
+---
+
+安装 Claude Code 的正确顺序是：先选择官方安装路径，再验证 `claude` 命令，最后在你真正工作的终端环境里完成登录。不要只照搬旧的 npm-only 教程。
+
+> 最后核查：2026 年 5 月 24 日。Claude Code 现在有 native installer、包管理器和 npm 等多种路径，具体命令以官方 setup 页面为准。
+
+## 短答案
+
+大多数用户优先使用官方推荐的 native installer。Homebrew、WinGet、apt、dnf、apk 和 npm 也是官方文档覆盖的路径，但更新机制不同。
+
+## 基本要求
+
+| 项目 | 当前实用要求 |
+| --- | --- |
+| 系统 | macOS 13+、Windows 10 1809+ / Windows Server 2019+、Ubuntu 20.04+、Debian 10+、Alpine 3.19+。 |
+| 硬件 | 4 GB+ RAM，x64 或 ARM64。 |
+| Shell | Bash、Zsh、PowerShell 或 CMD。 |
+| 网络 | 需要联网，并处于 Anthropic 支持地区。 |
+| 账号 | Pro、Max、Team、Enterprise、Console 或受支持云厂商账号。Free 不包含 Claude Code。 |
+
+## 安装路径
+
+| 平台或偏好 | 命令 | 说明 |
+| --- | --- | --- |
+| macOS、Linux、WSL native installer | `curl -fsSL https://claude.ai/install.sh | bash` | 推荐路径，native 安装会后台自动更新。 |
+| Windows PowerShell | `irm https://claude.ai/install.ps1 | iex` | 只在 PowerShell 里用。 |
+| Windows CMD | `curl -fsSL https://claude.ai/install.cmd -o install.cmd && install.cmd && del install.cmd` | 只在 CMD 里用。 |
+| Homebrew | `brew install --cask claude-code` | 稳定通道，手动 `brew upgrade claude-code`。 |
+| Homebrew latest | `brew install --cask claude-code@latest` | 更快拿到新版本，仍需手动升级。 |
+| WinGet | `winget install Anthropic.ClaudeCode` | 手动 `winget upgrade Anthropic.ClaudeCode`。 |
+| npm | `npm install -g @anthropic-ai/claude-code` | 需要 Node.js 18+，不要用 `sudo npm install -g`。 |
+
+## 验证安装
+
+```bash
+claude --version
+claude doctor
+```
+
+如果提示 command not found，优先检查 PATH、终端是否重启、包管理器安装位置，以及是否有旧安装冲突。
+
+## 登录认证
+
+安装后运行：
+
+```bash
+claude
+```
+
+按照浏览器登录流程完成认证。终端 CLI 里，凭据优先级很关键：云厂商变量、`ANTHROPIC_AUTH_TOKEN`、`ANTHROPIC_API_KEY`、helper、OAuth token 和订阅登录都可能改变计费路径。长任务前用 `/status` 确认。
+
+## 第一次项目使用建议
+
+1. 先打开一个小项目，不要一上来进最大 monorepo。
+2. 运行 `claude`。
+3. 先让 Claude 只读分析。
+4. 准备简短 `CLAUDE.md`，写清 build、test、lint 和安全规则。
+5. 多文件修改前用 Plan Mode。
+6. 提交前审查 diff。
+
+## 相关页面
+
+- [Windows 安装指南](/zh/faqs/how-to-install-claude-code-on-windows)
+- [安装教程](/zh/tutorial/getting-started/installation)
+- [CLAUDE.md](/zh/faqs/what-is-claude-md)
+- [Tools allowlist](/zh/tutorial/configuration/tools-allowlist)
+- [command not found 修复](/zh/troubleshooting/claude-command-not-found)
+
+## 官方来源
+
+- [Claude Code installation](https://code.claude.com/docs/en/installation)
+- [Claude Code authentication](https://code.claude.com/docs/en/authentication)
+- [Troubleshoot installation and login](https://code.claude.com/docs/en/troubleshooting)

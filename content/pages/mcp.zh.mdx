@@ -1,0 +1,199 @@
+---
+title: 'Claude Code MCP 目录'
+description: 'Claude Code MCP 实战目录：GitHub MCP、Context7 MCP、Playwright MCP、transport、scope、认证、安全和团队落地。'
+---
+
+MCP 可以让 Claude Code 连接外部工具、文档、浏览器、代码仓库、数据库、监控系统和内部 API。真正有价值的问题不是“能装多少 MCP server”，而是：哪个 server 能减少重复工作，同时不会暴露超过任务所需的数据和写权限？
+
+> 最后核查：2026 年 5 月 24 日。Claude Code MCP 支持本地 stdio server、远程 HTTP server、旧版 SSE server、OAuth 流程、local/project/user scope、Claude.ai connectors，以及企业托管 MCP 策略。当前 Claude Code 官方文档中，远程场景优先推荐 HTTP；SSE 已标记为 deprecated。
+
+## 快速结论
+
+只有当工作流反复需要仓库外部上下文时，才从一个 MCP server 开始。
+
+- Claude 需要 Issue、PR、Review、Release 或仓库上下文时，用 **GitHub MCP**。
+- Claude 修改代码前需要当前库和框架文档时，用 **Context7 MCP**。
+- Claude 需要检查本地页面、交互 UI 或截图证据时，用 **Playwright MCP**。
+- 准备增加写权限、token、登录浏览器、数据库或内部系统前，先看 **MCP 安全清单**。
+- 只有当你清楚谁负责凭据、更新、日志和事故处理时，才把配置沉淀到 local 或 project scope。
+
+如果 Shell 命令、复制 URL 或静态 `CLAUDE.md` 说明已经能解决问题，就暂时不要加 MCP。
+
+## 按工作流选择 MCP
+
+| 工作流需求 | 最佳入口 | 第一个安全任务 | 主要风险 |
+| --- | --- | --- | --- |
+| 读取 Issue 或 PR 上下文 | [GitHub MCP](/zh/mcp/github-mcp) | 实现前总结 Issue 或检查 PR。 | 写权限、仓库可见性、误评论或误改。 |
+| 修改代码前查当前文档 | [Context7 MCP](/zh/mcp/context7-mcp) | 为一个库拉取文档，验证一个 API 决策。 | 未核查来源就相信过时或无关文档。 |
+| 在浏览器验证 UI | [Playwright MCP](/zh/mcp/playwright-mcp) | 打开本地路由、走一个流程、截图。 | 登录态、生产动作、环境不稳定。 |
+| 安装前审查 MCP 权限 | [MCP 安全清单](/zh/mcp/mcp-security-checklist) | 安装前梳理读写工具、密钥、日志和 owner。 | 没有团队治理就给宽权限。 |
+| server 无法加载 | [MCP 无法连接](/zh/troubleshooting/claude-code-mcp-not-connecting) | 用 `/mcp` 检查配置、启动、认证和 scopes。 | 一次改太多变量。 |
+| 学基础配置流程 | [MCP server 教程](/zh/tutorial/tools-integration/mcp-servers) | 添加一个只读 server，跑一个聚焦 prompt。 | 因为“看起来有用”而不是工作流需要去安装。 |
+
+好的 MCP 落地通常很朴素：一个 server，一个任务，先只读，并且能看到真实改进。
+
+## MCP 给 Claude Code 带来什么
+
+Model Context Protocol 给 Claude Code 提供了一种结构化调用外部工具的方式。Server 可以暴露 tools、resources 和 prompts，Claude Code 作为 client 按需请求上下文或动作。
+
+MCP 适合这些情况：
+
+- 所需上下文在其它系统里，例如 Issue、PR、浏览器状态、文档、监控、工单或内部 API；
+- 任务反复出现，工具调用比复制粘贴更安全；
+- 数据源变化快，不适合写进静态项目记忆；
+- 团队能明确读写边界；
+- 它在真实工作流里有价值，而不只是 demo 好看。
+
+如果工作流模糊、server 需要宽凭据、或安装后没人维护，MCP 反而会增加风险。
+
+## 谨慎选择 Transport
+
+Claude Code 可以连接本地 stdio server，也可以连接远程 server。不要选“看起来最新”的 transport，要看谁维护、怎么认证、日志在哪里、出问题怎么回滚。
+
+| Transport | 适合场景 | 注意点 |
+| --- | --- | --- |
+| HTTP / Streamable HTTP | 托管服务、云工具、组织统一管理服务或 OAuth server。 | 网络信任、认证 scopes、端点治理、日志和 token。 |
+| stdio | 本地工具、CLI 包装、Docker server、需要本机或项目访问的脚本。 | 会继承本地环境，可能触碰本地文件，依赖机器路径。 |
+| SSE | 仅当 server 仍只支持旧远程 MCP 部署。 | Claude Code 当前文档已标记 SSE deprecated；能用 HTTP 就优先 HTTP。 |
+
+远程生产系统通常更适合 HTTP 加 OAuth 或受控 headers。本地开发工具可以用 stdio，但要确保凭据和路径不会被团队误用。
+
+## 谨慎选择 Scope
+
+MCP 配置 scope 决定 server 在哪里加载、配置保存在哪里、是否会被团队共享。
+
+| Scope | 加载范围 | 是否团队共享 | 适合场景 |
+| --- | --- | --- | --- |
+| Local | 当前项目 | 否 | 个人实验、私有凭据、首次试点。 |
+| Project | 当前项目 | 是，通过 `.mcp.json` | 团队批准的 server 和可复用仓库流程。 |
+| User | 所有项目 | 否 | 个人跨项目工具，不属于某一个仓库。 |
+| Managed / enterprise | 管理员控制的机器 | 管理员定义 | 组织策略、allowlist、denylist、强制 server。 |
+
+不要把 secret 写进版本化 project config。Project scope 适合共享 server 定义和意图，不适合保存原始凭据。
+
+## 认证和 OAuth
+
+很多远程 MCP server 需要认证。Claude Code 里，`/mcp` 是查看状态和完成认证流程的主要入口。
+
+实用规则：
+
+- 添加 server 后运行 `/mcp`，按提示完成浏览器认证。
+- Claude.ai connectors 没出现时运行 `/status`，确认当前是否被 API key 或第三方 provider 覆盖。
+- 只有当 server 要求预注册 redirect URI 时，才固定 OAuth callback port。
+- 当 server 要求的 scope 太宽时，用 pinned OAuth scopes 收窄。
+- dynamic headers 或 helper scripts 只有在团队能审计和维护时才用。
+- 不要提交 token、client secret 或个人凭据。
+
+远程 server 认证失败时，不要反复重装。先检查 scopes、callback URL、账号身份，以及 server 是否要求 dynamic client registration 或预配置凭据。
+
+## Claude.ai Connectors 和 Claude Code
+
+Claude.ai connectors 使用同一套 MCP 基础设施。如果 Claude Code 使用 Claude.ai 订阅账号登录，Claude.ai 里添加的 connectors 可以出现在 Claude Code 中。
+
+这很方便，但团队要注意：
+
+- 如果当前启用了 API key、auth token helper、Bedrock、Vertex 或其它 provider，connectors 可能不会加载；
+- Claude Code 里直接添加的 server 可能优先于指向同一 URL 的 connector；
+- Team 和 Enterprise 环境可能限制谁能添加 connectors；
+- `/mcp` 和 `/status` 是查看真实加载情况最快的方法。
+
+生产工作流要写清：依赖的是 Claude.ai connectors、Claude Code 本地配置、项目 `.mcp.json`，还是企业 managed config。
+
+## 安全接入流程
+
+新增 MCP server 建议按这个顺序：
+
+1. **一句话定义工作流：** “用 GitHub MCP 在开发前读取 Issue 上下文。”
+2. **只选一个 server 和一个任务：** 不要一次装一组。
+3. **先只读：** 用最小权限或最小 OAuth scopes 验证价值。
+4. **先放 local：** 流程没验证前不要共享给团队。
+5. **跑真实任务：** 记录它到底让什么更快、更安全或更准确。
+6. **写进 `CLAUDE.md`：** purpose、允许动作、owner、禁止事项。
+7. **评审后再升到 project scope：** 团队批准后用 `.mcp.json`。
+8. **风险增加时加 hooks 或 allowlists：** 尤其是写工具和内部系统。
+
+第一次成功的 MCP 配置应该很窄。宽权限应该很晚才出现，甚至永远不出现。
+
+## 配置形态
+
+具体命令取决于 server，但远程 HTTP server 常见形态是：
+
+```bash
+claude mcp add --transport http <server-name> <server-url>
+```
+
+远程 bearer token 示例：
+
+```bash
+claude mcp add --transport http secure-api https://api.example.com/mcp \
+  --header "Authorization: Bearer <token>"
+```
+
+本地 stdio server 常见形态：
+
+```bash
+claude mcp add --transport stdio <server-name> -- <command> [args...]
+```
+
+添加后先检查：
+
+```bash
+claude mcp list
+claude mcp get <server-name>
+```
+
+然后在 Claude Code 里运行：
+
+```text
+/mcp
+```
+
+第一条 prompt 应该是只读的，例如“列出这个 server 暴露了哪些 tools”或“读取一个 Issue 标题”，不要一开始就允许编辑、评论、写入、浏览器操作或数据库访问。
+
+## 暂时不要添加 MCP 的情况
+
+遇到这些情况，先不要装：
+
+- 一个简单 CLI 命令已经能解决；
+- server 需要宽凭据，但使用场景很模糊；
+- 没有人负责更新、token 轮换、事故处理或日志；
+- server 会读取生产数据，但任务可以在本地或测试环境完成；
+- 团队说不清 server 能读什么、写什么；
+- 这些信息更适合写进 `CLAUDE.md`、教程或一次性 prompt；
+- 第一个理由只是“以后可能有用”。
+
+MCP 应该减少重复摩擦，而不是变成没人理解的隐藏权限层。
+
+## 团队和企业治理
+
+团队应该把 MCP 当成正式集成来管。
+
+| 治理问题 | 为什么重要 |
+| --- | --- |
+| 谁负责 server？ | 需要有人更新配置、轮换凭据、处理事故。 |
+| 只读还是可写？ | 写工具需要评审、hooks 或明确审批习惯。 |
+| 配置在哪里？ | Local、project、user、Claude.ai connector、managed config 行为不同。 |
+| secret 怎么处理？ | secret 应该在 keychain、provider auth、env var 或可审计 helper 里，不在文档里。 |
+| 用户能否添加未批准 server？ | 企业环境可能需要 allowlist 和 denylist。 |
+| 记录了什么日志？ | Tool calls 可能触碰敏感项目、浏览器或客户数据。 |
+
+高风险环境中，给 Claude Code MCP 写权限前，先看 [MCP 安全清单](/zh/mcp/mcp-security-checklist)、[工具权限管理](/zh/tutorial/configuration/tools-allowlist) 和 [Hooks](/zh/mechanics/hooks)。
+
+## 相关页面
+
+- [Claude Code MCP servers 是什么？](/zh/faqs/claude-code-mcp-servers)
+- [MCP server 教程](/zh/tutorial/tools-integration/mcp-servers)
+- [MCP 无法连接](/zh/troubleshooting/claude-code-mcp-not-connecting)
+- [MCP 安全清单](/zh/mcp/mcp-security-checklist)
+- [工具权限管理](/zh/tutorial/configuration/tools-allowlist)
+- [Hooks](/zh/mechanics/hooks)
+- [上下文管理](/zh/mechanics/context-management)
+
+## 官方来源
+
+- [Claude Code MCP documentation](https://code.claude.com/docs/en/mcp)
+- [Managed MCP in Claude Code](https://code.claude.com/docs/en/managed-mcp)
+- [Model Context Protocol documentation](https://modelcontextprotocol.io/)
+- [GitHub MCP server](https://github.com/github/github-mcp-server)
+- [Context7 Claude Code setup](https://context7.com/docs/clients/claude-code)
+- [Playwright MCP documentation](https://playwright.dev/docs/getting-started-mcp)

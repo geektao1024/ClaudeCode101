@@ -1,0 +1,39 @@
+name = "claudecode101-prod"
+main = ".open-next/worker.js"
+compatibility_date = "2026-05-24"
+compatibility_flags = ["nodejs_compat"]
+workers_dev = true
+routes = [
+  { pattern = "www.claudecode101.com/*", zone_name = "claudecode101.com" },
+  { pattern = "claudecode101.com/*", zone_name = "claudecode101.com" },
+]
+
+[assets]
+binding = "ASSETS"
+directory = ".open-next/assets"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "claudecode101-prod"
+database_id = "4ad183d6-c99e-4b24-90f3-e31989c5f298"
+migrations_dir = "src/config/db/migrations_d1"
+
+[observability]
+enabled = true
+
+[vars]
+NEXT_PUBLIC_APP_URL = "https://claudecode101.com"
+NEXT_PUBLIC_APP_NAME = "ClaudeCode101"
+NEXT_PUBLIC_APP_DESCRIPTION = "ClaudeCode101 is a practical Claude Code tutorial and workflow knowledge base for developers."
+NEXT_PUBLIC_APP_LOGO = "/logo.png"
+NEXT_PUBLIC_APP_FAVICON = "/favicon.svg"
+NEXT_PUBLIC_APP_PREVIEW_IMAGE = "/preview.png"
+NEXT_PUBLIC_DEFAULT_LOCALE = "en"
+NEXT_PUBLIC_LOCALE_DETECT_ENABLED = "false"
+NEXT_PUBLIC_THEME = "default"
+NEXT_PUBLIC_APPEARANCE = "system"
+DATABASE_PROVIDER = "d1"
+DB_SCHEMA_FILE = "./src/config/db/schema.sqlite.ts"
+DB_MIGRATIONS_OUT = "./src/config/db/migrations_d1"
+DB_SINGLETON_ENABLED = "true"
+DB_MAX_CONNECTIONS = "1"

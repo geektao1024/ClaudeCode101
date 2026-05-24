@@ -1,0 +1,96 @@
+---
+title: 'Playwright MCP for Claude Code'
+description: 'How Playwright MCP supports Claude Code frontend work with browser inspection, screenshots, UI verification, and safe local testing.'
+---
+
+Playwright MCP is useful when Claude Code needs to inspect a real browser, click through UI states, capture screenshots, or prove that a frontend change actually renders. It turns visual verification into a repeatable workflow instead of a vague "looks fine" step.
+
+> Last checked on May 24, 2026. Playwright MCP server options, browser requirements, and command flags may change. Verify the current Playwright MCP docs before standardizing a team workflow.
+
+## When Playwright MCP Is Worth Adding
+
+Use Playwright MCP for frontend and browser-facing work:
+
+- Open a local page after changing UI.
+- Capture desktop and mobile screenshots.
+- Click through navigation, forms, modals, menus, and authenticated flows.
+- Reproduce a visual or interaction bug.
+- Check that text does not overflow in key viewports.
+- Confirm canvas, animation, image, or chart rendering.
+
+Skip it for backend-only edits, simple static copy changes, or situations where a plain unit test already proves the behavior.
+
+## Setup Shape
+
+Playwright documents MCP setup directly. The common stdio shape for Claude Code is:
+
+```bash
+claude mcp add --transport stdio playwright -- npx @playwright/mcp@latest
+```
+
+Some environments may need browser installation, custom executable paths, or project-specific launch flags. Keep those details in team setup notes rather than scattering them across prompts.
+
+## A Good Visual Verification Flow
+
+1. Build or run the local app.
+2. Open the target URL through Playwright MCP.
+3. Check the console for runtime errors.
+4. Capture a desktop screenshot.
+5. Capture a mobile screenshot.
+6. Interact with the key controls.
+7. Summarize what was verified and what remains untested.
+
+This is especially important for Claude Code UI work because code can compile while the page is visually broken.
+
+## What to Check
+
+| Check | Why it matters |
+| --- | --- |
+| Page status | Confirms the route and assets load |
+| Console errors | Catches hydration, runtime, and asset problems |
+| Text wrapping | Prevents mobile overflow and clipped labels |
+| Primary interaction | Confirms buttons, menus, forms, and links work |
+| Responsive layout | Ensures desktop polish did not break mobile |
+| Screenshot evidence | Gives the user something concrete to review |
+
+## Safe Usage Rules
+
+- Prefer local or staging URLs.
+- Avoid production admin pages unless the test is explicitly approved.
+- Do not run destructive actions against real customer data.
+- Keep authentication state separate from unrelated projects.
+- Treat screenshots as potentially sensitive if they contain user or internal data.
+- Reset test data after flows that create records.
+
+## Prompt Patterns
+
+| Need | Prompt pattern |
+| --- | --- |
+| UI check | "Open `/en/faqs`, check console errors, and capture desktop plus mobile screenshots." |
+| Interaction | "Click the menu, search box, and primary CTA, then report any broken state." |
+| Regression | "Compare the current page against the expected layout: left nav, article body, right TOC." |
+| Mobile polish | "Use a 390px viewport and check text overflow, tap targets, and sticky headers." |
+
+## Common Failure Modes
+
+| Symptom | Likely cause | Fix |
+| --- | --- | --- |
+| Browser does not launch | Missing browser dependency or wrong executable path | Install browsers or configure the executable path |
+| Page is blank | App server not running, wrong port, or asset copy mismatch | Restart the app and verify the route with curl |
+| Hydration error | Server and client render different markup | Reproduce in dev mode and remove dynamic first-render differences |
+| Screenshot differs by run | Animations, loading states, or unstable data | Wait for network idle and stable selectors |
+| Test mutates production | Wrong base URL or authenticated state | Use staging/local and separate test credentials |
+
+## Related Pages
+
+- [MCP directory](/en/mcp)
+- [Visual iteration](/en/tutorial/workflows/visual-iteration)
+- [Headless Mode](/en/faqs/claude-code-headless-mode)
+- [MCP security checklist](/en/mcp/mcp-security-checklist)
+
+## Official Sources
+
+- [Playwright MCP documentation](https://playwright.dev/docs/getting-started-mcp)
+- [Playwright MCP repository](https://github.com/microsoft/playwright-mcp)
+- [Playwright documentation](https://playwright.dev/)
+- [Claude Code MCP documentation](https://code.claude.com/docs/en/mcp)

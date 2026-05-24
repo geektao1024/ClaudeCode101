@@ -1,0 +1,31 @@
+---
+title: 'Claude Code 登录或认证错误'
+description: '排查 Claude Code 登录循环、OAuth 错误、会话过期、403 Forbidden 和云服务凭证问题。'
+---
+
+Claude Code 登录问题通常来自本地会话过期、账号或组织权限、浏览器 OAuth 回调失败、不支持的地区，或者使用 Bedrock、Vertex、Foundry 时云服务凭证没有正确加载。
+
+## 先检查这些
+
+1. 如果 Claude Code 能启动，先运行 `/login` 重新登录。
+2. 如果看到 OAuth 错误或 `403 Forbidden`，确认账号、组织和地区是否可用。
+3. 如果在 SSH、WSL 或容器里登录失败，按提示手动复制浏览器回调 URL。
+4. 如果使用 API、Bedrock、Vertex 或 Foundry，检查环境变量和云服务凭证。
+5. 用 `/doctor` 或 `claude doctor` 区分登录问题和安装问题。
+
+## 什么时候需要进一步处理
+
+如果同一个账号在浏览器可用，但 CLI 里一直失败，记录完整错误、安装方式、Shell、操作系统，以及是否使用代理或 VPN。
+
+## 相关页面
+
+- [Claude Code 故障排查](/zh/troubleshooting)
+- [Invalid API Key](/zh/troubleshooting/claude-code-invalid-api-key)
+- [Unable to connect to API](/zh/troubleshooting/claude-code-unable-to-connect-to-api)
+- [Claude Code API 参考入口](/zh/api-reference)
+- [用量限制 FAQ](/zh/faqs/claude-code-usage-limits)
+
+## 官方来源
+
+- [Claude Code 安装和登录排查](https://code.claude.com/docs/en/troubleshoot-install)
+- [Claude Code 认证文档](https://code.claude.com/docs/en/iam)

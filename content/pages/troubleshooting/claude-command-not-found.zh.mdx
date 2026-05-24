@@ -1,0 +1,29 @@
+---
+title: 'claude command not found 怎么办'
+description: '排查 claude command not found、PATH 未生效、终端未重启和多个 Claude Code 安装冲突。'
+---
+
+如果运行 `claude` 提示 `command not found` 或 Windows 中提示无法识别命令，通常不是 Claude Code 本身坏了，而是安装目录没有进入 PATH、当前终端还没刷新 PATH，或者系统里存在多个旧版本安装。
+
+## 快速处理
+
+1. 先重启终端，再运行 `claude --version`。
+2. macOS/Linux 用 `which -a claude`，Windows 用 `where.exe claude` 看系统实际找到的是哪个命令。
+3. 检查安装目录是否在 PATH 中。
+4. 如果出现多个 `claude`，优先清理旧安装，保留当前官方安装方式。
+5. 不同 Shell 的 PATH 写法不同，请按官方排查文档执行。
+
+## 重点检查
+
+macOS 和 Linux 重点看 `~/.local/bin`。Windows 重点看用户目录下的 `.local\bin`，并确认你当前用的是 PowerShell、CMD、Git Bash 还是 WSL。
+
+## 相关页面
+
+- [Claude Code 故障排查](/zh/troubleshooting)
+- [Windows PATH 配置](/zh/troubleshooting/claude-code-windows-path)
+- [安装教程](/zh/tutorial/getting-started/installation)
+
+## 官方来源
+
+- [Claude Code 安装和登录排查](https://code.claude.com/docs/en/troubleshoot-install)
+- [Claude Code Getting Started](https://code.claude.com/docs/en/getting-started)
