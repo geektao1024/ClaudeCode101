@@ -41,6 +41,8 @@ export const envConfigs: ConfigMap = {
     '',
   clarity_id:
     process.env.CLARITY_ID ?? process.env.NEXT_PUBLIC_CLARITY_ID ?? '',
+  adsense_code:
+    process.env.ADSENSE_CODE ?? process.env.NEXT_PUBLIC_ADSENSE_CODE ?? '',
   version: packageJson.version,
   locale_detect_enabled:
     process.env.NEXT_PUBLIC_LOCALE_DETECT_ENABLED ?? 'false',
