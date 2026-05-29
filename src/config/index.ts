@@ -35,6 +35,12 @@ export const envConfigs: ConfigMap = {
   db_max_connections: process.env.DB_MAX_CONNECTIONS || '1',
   auth_url: process.env.AUTH_URL || process.env.NEXT_PUBLIC_APP_URL || '',
   auth_secret: process.env.AUTH_SECRET ?? '', // openssl rand -base64 32
+  google_analytics_id:
+    process.env.GOOGLE_ANALYTICS_ID ??
+    process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID ??
+    '',
+  clarity_id:
+    process.env.CLARITY_ID ?? process.env.NEXT_PUBLIC_CLARITY_ID ?? '',
   version: packageJson.version,
   locale_detect_enabled:
     process.env.NEXT_PUBLIC_LOCALE_DETECT_ENABLED ?? 'false',
