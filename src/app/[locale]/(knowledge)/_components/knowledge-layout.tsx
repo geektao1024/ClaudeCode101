@@ -55,6 +55,7 @@ export async function KnowledgeLayout({
         nav={{ ...baseOptions().nav, mode: 'top' }}
         sidebar={{
           tabs: [],
+          defaultOpenLevel: 1,
         }}
         tabMode="sidebar"
       >
