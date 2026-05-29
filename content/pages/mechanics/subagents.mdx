@@ -5,7 +5,7 @@ description: 'A practical guide to Claude Code subagents: when to use them, how 
 
 Claude Code subagents are specialized workers that handle a focused task in their own context and return a summary to the main conversation. They are useful when a side task would flood your main session with search results, logs, test output, or file exploration that you do not need to keep in the main thread.
 
-> Last checked on May 24, 2026. Claude Code supports built-in subagents, custom user and project subagents, plugin-provided agents, CLI-defined agents, foreground/background execution, session-wide `--agent`, subagent memory, tool restrictions, hooks, and experimental forked subagents. Treat subagents as a workflow primitive, not as a reason to split every task.
+> Last checked on May 29, 2026. Claude Code supports built-in subagents, custom user and project subagents, plugin-provided agents, CLI-defined agents, foreground/background execution, session-wide `--agent`, subagent memory, tool restrictions, hooks, dynamic workflows, and experimental forked subagents. Treat subagents as a workflow primitive, not as a reason to split every task.
 
 ## Quick Answer
 
@@ -17,16 +17,17 @@ The most important rule: a normal subagent starts with a fresh context. It does 
 
 Subagents solve context isolation and role specialization. They are not a replacement for every customization surface.
 
-| Need | Better mechanism |
-| --- | --- |
-| Keep long research output out of the main thread | Subagent |
-| Reuse a role with its own prompt and tool limits | Custom subagent |
-| Run several independent investigations in parallel | Subagents or agent view |
-| Create a reusable prompt that runs in the main context | Skill or slash command |
-| Store project-wide instructions | `CLAUDE.md` or project rules |
-| Enforce permissions before tool calls | Permission rules and hooks |
-| Coordinate many workers with shared task state | Agent teams |
-| Avoid file conflicts between parallel coding sessions | Worktrees |
+| Need                                                    | Better mechanism                                     |
+| ------------------------------------------------------- | ---------------------------------------------------- |
+| Keep long research output out of the main thread        | Subagent                                             |
+| Reuse a role with its own prompt and tool limits        | Custom subagent                                      |
+| Run several independent investigations in parallel      | Subagents or agent view                              |
+| Create a reusable prompt that runs in the main context  | Skill or slash command                               |
+| Store project-wide instructions                         | `CLAUDE.md` or project rules                         |
+| Enforce permissions before tool calls                   | Permission rules and hooks                           |
+| Coordinate many workers with shared task state          | Agent teams                                          |
+| Orchestrate dozens or hundreds of workers from a script | [Dynamic workflows](/en/mechanics/dynamic-workflows) |
+| Avoid file conflicts between parallel coding sessions   | Worktrees                                            |
 
 If you only need a short reusable instruction, create a skill or slash command. If you need a worker with its own role, context, tools, and model choice, create a subagent.
 
@@ -34,14 +35,14 @@ If you only need a short reusable instruction, create a skill or slash command. 
 
 Claude Code can use multiple kinds of subagents:
 
-| Agent type | Where it comes from | Best use |
-| --- | --- | --- |
-| Built-in agents | Claude Code itself | Explore, plan, or general-purpose delegation without extra setup. |
-| User subagents | `~/.claude/agents/` | Personal agents you want across projects. |
-| Project subagents | `.claude/agents/` | Team-shared agents for one repository. |
-| Plugin agents | Installed plugin `agents/` folders | Distributed workflow integrations. |
-| CLI-defined agents | `claude --agents ...` | Temporary agents for tests, scripts, or automation. |
-| Managed agents | Organization managed settings | Enterprise-controlled agents and policy. |
+| Agent type         | Where it comes from                | Best use                                                          |
+| ------------------ | ---------------------------------- | ----------------------------------------------------------------- |
+| Built-in agents    | Claude Code itself                 | Explore, plan, or general-purpose delegation without extra setup. |
+| User subagents     | `~/.claude/agents/`                | Personal agents you want across projects.                         |
+| Project subagents  | `.claude/agents/`                  | Team-shared agents for one repository.                            |
+| Plugin agents      | Installed plugin `agents/` folders | Distributed workflow integrations.                                |
+| CLI-defined agents | `claude --agents ...`              | Temporary agents for tests, scripts, or automation.               |
+| Managed agents     | Organization managed settings      | Enterprise-controlled agents and policy.                          |
 
 For a team repository, prefer `.claude/agents/` after the workflow is stable enough to share. For personal experimentation, start in `~/.claude/agents/` or use `/agents`.
 
@@ -76,21 +77,21 @@ Subagent files are loaded at session start. If you add or edit files directly on
 
 Every subagent needs a clear identity and delegation description. Treat the `description` field as search intent for Claude. Claude uses it to decide when the agent should run.
 
-| Field | Required | Practical guidance |
-| --- | --- | --- |
-| `name` | Yes | Use lowercase letters and hyphens, such as `code-reviewer`. |
-| `description` | Yes | Explain when to delegate. Include "use proactively" only when the agent really should run without being asked. |
-| Markdown body or `prompt` | Yes | The agent system prompt. Be explicit about workflow, output format, and limits. |
-| `tools` | No | Omit to inherit tools, or list a narrow set such as `Read, Grep, Glob`. |
-| `disallowedTools` | No | Remove risky tools from an inherited set. |
-| `model` | No | Use when the role needs a different model from the main session. |
-| `permissionMode` | No | Useful for narrow local workflows, but do not rely on it to bypass parent policy. |
-| `mcpServers` | No | Give the agent specific MCP access when needed. |
-| `hooks` | No | Run hooks only while that subagent is active. |
-| `skills` | No | Preload skill content into the agent context at startup. |
-| `memory` | No | Give the agent persistent memory with `user`, `project`, or `local` scope. |
-| `background` | No | Hint whether the agent can run concurrently. |
-| `color` | No | UI identification. Helpful when several agents run at once. |
+| Field                     | Required | Practical guidance                                                                                             |
+| ------------------------- | -------- | -------------------------------------------------------------------------------------------------------------- |
+| `name`                    | Yes      | Use lowercase letters and hyphens, such as `code-reviewer`.                                                    |
+| `description`             | Yes      | Explain when to delegate. Include "use proactively" only when the agent really should run without being asked. |
+| Markdown body or `prompt` | Yes      | The agent system prompt. Be explicit about workflow, output format, and limits.                                |
+| `tools`                   | No       | Omit to inherit tools, or list a narrow set such as `Read, Grep, Glob`.                                        |
+| `disallowedTools`         | No       | Remove risky tools from an inherited set.                                                                      |
+| `model`                   | No       | Use when the role needs a different model from the main session.                                               |
+| `permissionMode`          | No       | Useful for narrow local workflows, but do not rely on it to bypass parent policy.                              |
+| `mcpServers`              | No       | Give the agent specific MCP access when needed.                                                                |
+| `hooks`                   | No       | Run hooks only while that subagent is active.                                                                  |
+| `skills`                  | No       | Preload skill content into the agent context at startup.                                                       |
+| `memory`                  | No       | Give the agent persistent memory with `user`, `project`, or `local` scope.                                     |
+| `background`              | No       | Hint whether the agent can run concurrently.                                                                   |
+| `color`                   | No       | UI identification. Helpful when several agents run at once.                                                    |
 
 Keep names unique. If two files within one scope declare the same `name`, Claude Code may keep one and discard another without a useful warning.
 
@@ -140,9 +141,9 @@ Be careful with session-wide agents. The subagent system prompt replaces the def
 
 Subagents can run in the foreground or background.
 
-| Mode | Behavior | Best use |
-| --- | --- | --- |
-| Foreground | Blocks the main conversation until complete. Permission prompts surface to you. | Reviews or fixes that need interactive approvals. |
+| Mode       | Behavior                                                                                       | Best use                                                               |
+| ---------- | ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| Foreground | Blocks the main conversation until complete. Permission prompts surface to you.                | Reviews or fixes that need interactive approvals.                      |
 | Background | Runs while you continue working. Tool calls that would require new permission are auto-denied. | Long read-only research, logs, documentation lookup, or test analysis. |
 
 You can ask Claude to run a task in the background, or press `Ctrl+B` to background a running task. If background behavior is not desired, set `CLAUDE_CODE_DISABLE_BACKGROUND_TASKS=1`.
@@ -153,16 +154,16 @@ Background is not a magic speed boost. Running several agents multiplies token u
 
 A normal subagent starts fresh. Its context contains the agent prompt, the task message Claude writes when delegating, basic environment details, and configured project memory sources. It does not inherit the full parent conversation history or previous tool results.
 
-| Context item | Normal subagent behavior |
-| --- | --- |
-| Parent conversation history | Not included. |
-| Files already read by the main session | Not included. |
-| Agent system prompt | Included from the agent definition. |
-| Delegation task message | Included, written by Claude from your request. |
-| `CLAUDE.md` and memory | Loaded for most custom agents. Built-in Explore and Plan skip some memory and git context. |
-| Git status | Included when available unless disabled. |
-| Preloaded skills | Included only when listed in the `skills` field. |
-| Tool results | Only from the subagent's own work. |
+| Context item                           | Normal subagent behavior                                                                   |
+| -------------------------------------- | ------------------------------------------------------------------------------------------ |
+| Parent conversation history            | Not included.                                                                              |
+| Files already read by the main session | Not included.                                                                              |
+| Agent system prompt                    | Included from the agent definition.                                                        |
+| Delegation task message                | Included, written by Claude from your request.                                             |
+| `CLAUDE.md` and memory                 | Loaded for most custom agents. Built-in Explore and Plan skip some memory and git context. |
+| Git status                             | Included when available unless disabled.                                                   |
+| Preloaded skills                       | Included only when listed in the `skills` field.                                           |
+| Tool results                           | Only from the subagent's own work.                                                         |
 
 This is why delegation prompts must be concrete. Bad: "review the thing we discussed earlier." Better: "review the current diff for `src/auth/session.ts` and `src/auth/callback.ts`; focus on token refresh, redirect handling, and missing tests."
 
@@ -170,14 +171,14 @@ This is why delegation prompts must be concrete. Bad: "review the thing we discu
 
 Limit tool access by default. A code reviewer usually needs `Read`, `Grep`, `Glob`, and maybe `Bash` for `git diff` or tests. It usually does not need `Edit` or `Write`. A debugger may need `Edit`, but only if its job includes fixing the bug.
 
-| Role | Suggested tools | Avoid at first |
-| --- | --- | --- |
-| Code reviewer | `Read, Grep, Glob, Bash` | `Edit`, `Write` |
-| Test runner | `Read, Bash, Grep, Glob` | Broad write access |
-| Documentation researcher | `Read, Grep, Glob, WebFetch` if available | Repo write tools |
-| Security reviewer | `Read, Grep, Glob, Bash` | Automatic fixes |
-| Migration implementer | `Read, Edit, Bash, Grep, Glob` | Deploy tools |
-| Database analyst | `Bash` with hook guardrails | Write SQL |
+| Role                     | Suggested tools                           | Avoid at first     |
+| ------------------------ | ----------------------------------------- | ------------------ |
+| Code reviewer            | `Read, Grep, Glob, Bash`                  | `Edit`, `Write`    |
+| Test runner              | `Read, Bash, Grep, Glob`                  | Broad write access |
+| Documentation researcher | `Read, Grep, Glob, WebFetch` if available | Repo write tools   |
+| Security reviewer        | `Read, Grep, Glob, Bash`                  | Automatic fixes    |
+| Migration implementer    | `Read, Edit, Bash, Grep, Glob`            | Deploy tools       |
+| Database analyst         | `Bash` with hook guardrails               | Write SQL          |
 
 For sensitive workflows, combine subagent tools with permission rules and hooks. Tool lists narrow what an agent can do; permissions and hooks enforce policy around what should happen.
 
@@ -185,12 +186,12 @@ For sensitive workflows, combine subagent tools with permission rules and hooks.
 
 Subagents can become more capable when they load the right supporting context.
 
-| Feature | Use it when | Caution |
-| --- | --- | --- |
-| `skills` | The agent should start with domain instructions or reusable workflow knowledge. | Preloaded skills add context cost. |
-| `memory` | The agent should remember recurring project patterns across sessions. | Keep memory curated and avoid secrets. |
-| `hooks` | The agent needs lifecycle checks while active. | Hooks run code, so keep them auditable. |
-| `mcpServers` | The agent needs specialized external tools. | Grant the smallest MCP surface needed. |
+| Feature      | Use it when                                                                     | Caution                                 |
+| ------------ | ------------------------------------------------------------------------------- | --------------------------------------- |
+| `skills`     | The agent should start with domain instructions or reusable workflow knowledge. | Preloaded skills add context cost.      |
+| `memory`     | The agent should remember recurring project patterns across sessions.           | Keep memory curated and avoid secrets.  |
+| `hooks`      | The agent needs lifecycle checks while active.                                  | Hooks run code, so keep them auditable. |
+| `mcpServers` | The agent needs specialized external tools.                                     | Grant the smallest MCP surface needed.  |
 
 Project-scoped memory is often the best default for team agents because it can be versioned and improved with the repository. Use local memory for private machine-specific learning. Use user memory for patterns that apply across many repositories.
 
@@ -242,27 +243,27 @@ This keeps subagents useful instead of turning them into a confusing automation 
 
 ## Common Mistakes
 
-| Mistake | Why it hurts | Better approach |
-| --- | --- | --- |
-| Creating agents before the workflow is proven | You freeze the wrong process. | Run manually first, then promote repeated roles. |
-| Vague descriptions | Claude cannot delegate reliably. | Say exactly when to use the agent. |
-| Giving every agent all tools | More risk and less focus. | Grant the narrowest useful tools. |
-| Expecting the parent context to be visible | Normal subagents start fresh. | Pass paths, errors, and decisions explicitly. |
-| Returning huge reports | The main thread gets polluted anyway. | Require concise summaries and evidence. |
-| Letting multiple agents edit the same files | Merge conflicts and duplicated work. | Use read-only agents or worktrees. |
-| Using background agents for permission-heavy work | Background agents auto-deny prompts. | Use foreground for interactive approvals. |
-| Not restarting after manual file edits | Claude may not load new agent definitions. | Restart the session or create through `/agents`. |
+| Mistake                                           | Why it hurts                               | Better approach                                  |
+| ------------------------------------------------- | ------------------------------------------ | ------------------------------------------------ |
+| Creating agents before the workflow is proven     | You freeze the wrong process.              | Run manually first, then promote repeated roles. |
+| Vague descriptions                                | Claude cannot delegate reliably.           | Say exactly when to use the agent.               |
+| Giving every agent all tools                      | More risk and less focus.                  | Grant the narrowest useful tools.                |
+| Expecting the parent context to be visible        | Normal subagents start fresh.              | Pass paths, errors, and decisions explicitly.    |
+| Returning huge reports                            | The main thread gets polluted anyway.      | Require concise summaries and evidence.          |
+| Letting multiple agents edit the same files       | Merge conflicts and duplicated work.       | Use read-only agents or worktrees.               |
+| Using background agents for permission-heavy work | Background agents auto-deny prompts.       | Use foreground for interactive approvals.        |
+| Not restarting after manual file edits            | Claude may not load new agent definitions. | Restart the session or create through `/agents`. |
 
 ## A Starter Project Agent Set
 
 For a Claude Code knowledge-base project, a small useful set is:
 
-| Agent | Purpose | Tools |
-| --- | --- | --- |
-| `content-reviewer` | Check pages for thin content, unclear claims, missing internal links, and outdated sources. | `Read, Grep, Glob` |
-| `source-checker` | Verify whether Claude Code claims still match official docs. | `Read, Grep, Glob, WebFetch` if available |
-| `frontend-qa` | Inspect rendered pages, layout regressions, dark mode, and mobile overflow. | `Read, Bash` |
-| `seo-structure-reviewer` | Check title, description, H2 flow, FAQ intent, and related-page links. | `Read, Grep, Glob` |
+| Agent                    | Purpose                                                                                     | Tools                                     |
+| ------------------------ | ------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| `content-reviewer`       | Check pages for thin content, unclear claims, missing internal links, and outdated sources. | `Read, Grep, Glob`                        |
+| `source-checker`         | Verify whether Claude Code claims still match official docs.                                | `Read, Grep, Glob, WebFetch` if available |
+| `frontend-qa`            | Inspect rendered pages, layout regressions, dark mode, and mobile overflow.                 | `Read, Bash`                              |
+| `seo-structure-reviewer` | Check title, description, H2 flow, FAQ intent, and related-page links.                      | `Read, Grep, Glob`                        |
 
 Do not enable all of them at once. Start with `content-reviewer` or `source-checker`, because those directly support search traffic quality.
 
@@ -271,6 +272,8 @@ Do not enable all of them at once. Start with `content-reviewer` or `source-chec
 - [Plan Mode](/en/mechanics/plan-mode)
 - [Slash commands](/en/mechanics/slash-commands)
 - [Context management](/en/mechanics/context-management)
+- [Dynamic workflows](/en/mechanics/dynamic-workflows)
+- [Ultracode](/en/mechanics/ultracode)
 - [Hooks](/en/mechanics/hooks)
 - [CLAUDE.md guide](/en/mechanics/claude-md)
 - [Tools allowlist](/en/tutorial/configuration/tools-allowlist)

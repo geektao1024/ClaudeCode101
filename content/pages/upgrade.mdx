@@ -8,10 +8,10 @@ description: 'Check the latest Claude Code version, latest vs stable channels, u
 This page helps with the practical version questions people actually search for: **what is the current Claude Code version, how do I update it, and what should I check if behavior changes after an update**.
 
 <Callout type="info">
-  Last checked on May 24, 2026. npm reports `@anthropic-ai/claude-code`
-  `latest` and `next` as `2.1.150`, and `stable` as `2.1.142`. The official
-  changelog currently starts with `2.1.150`, dated May 23, 2026. Claude Code
-  ships quickly, so verify again before upgrading production developer machines.
+  Last checked on May 29, 2026. npm reports `@anthropic-ai/claude-code` `latest`
+  and `next` as `2.1.156`, and `stable` as `2.1.145`. The official changelog
+  currently starts with `2.1.156`, dated May 29, 2026. Claude Code ships
+  quickly, so verify again before upgrading production developer machines.
 </Callout>
 
 ## 30-Second Answer
@@ -25,16 +25,16 @@ npm view @anthropic-ai/claude-code dist-tags --json
 
 Then update with the command that matches your install method:
 
-| Install method | Update command | Notes |
-| -------------- | -------------- | ----- |
-| Native installer | `claude update` | Native installs also update in the background. |
-| npm global package | `npm install -g @anthropic-ai/claude-code@latest` | Do not rely on `npm update -g` for latest. |
-| Homebrew stable | `brew upgrade claude-code` | Tracks the more conservative stable channel. |
-| Homebrew latest | `brew upgrade claude-code@latest` | Receives new versions sooner. |
-| WinGet | `winget upgrade Anthropic.ClaudeCode` | Close running Claude Code sessions if Windows locks the executable. |
-| apt | `sudo apt update && sudo apt upgrade claude-code` | Uses the system package manager. |
-| dnf | `sudo dnf upgrade claude-code` | Uses the system package manager. |
-| apk | `apk update && apk upgrade claude-code` | Used for Alpine. |
+| Install method     | Update command                                    | Notes                                                               |
+| ------------------ | ------------------------------------------------- | ------------------------------------------------------------------- |
+| Native installer   | `claude update`                                   | Native installs also update in the background.                      |
+| npm global package | `npm install -g @anthropic-ai/claude-code@latest` | Do not rely on `npm update -g` for latest.                          |
+| Homebrew stable    | `brew upgrade claude-code`                        | Tracks the more conservative stable channel.                        |
+| Homebrew latest    | `brew upgrade claude-code@latest`                 | Receives new versions sooner.                                       |
+| WinGet             | `winget upgrade Anthropic.ClaudeCode`             | Close running Claude Code sessions if Windows locks the executable. |
+| apt                | `sudo apt update && sudo apt upgrade claude-code` | Uses the system package manager.                                    |
+| dnf                | `sudo dnf upgrade claude-code`                    | Uses the system package manager.                                    |
+| apk                | `apk update && apk upgrade claude-code`           | Used for Alpine.                                                    |
 
 Do not trust a random screenshot as the source of truth. Claude Code has latest and stable channels, several installers, and background auto-updates, so different machines can show different versions on the same day.
 
@@ -58,19 +58,19 @@ You may see output like:
 
 ```json
 {
-  "latest": "2.1.150",
-  "next": "2.1.150",
-  "stable": "2.1.142"
+  "latest": "2.1.156",
+  "next": "2.1.156",
+  "stable": "2.1.145"
 }
 ```
 
 Use the tags this way:
 
-| Tag | Meaning | Best for |
-| --- | ------- | -------- |
-| `latest` | Fastest public release channel. | Personal development and early feature access. |
-| `next` | A moving release tag; currently the same as latest when both point to the same version. | People watching rolling releases. |
-| `stable` | More conservative channel, typically behind latest. | Teams, production repositories, and client delivery work. |
+| Tag      | Meaning                                                                                 | Best for                                                  |
+| -------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| `latest` | Fastest public release channel.                                                         | Personal development and early feature access.            |
+| `next`   | A moving release tag; currently the same as latest when both point to the same version. | People watching rolling releases.                         |
+| `stable` | More conservative channel, typically behind latest.                                     | Teams, production repositories, and client delivery work. |
 
 ### Read the Official Changelog
 
@@ -79,19 +79,34 @@ Use official sources for release notes:
 - [Claude Code Changelog](https://code.claude.com/docs/en/changelog)
 - [Claude Code npm package](https://www.npmjs.com/package/@anthropic-ai/claude-code)
 
-At the time this page was checked, `2.1.150` was the newest changelog entry and contained internal infrastructure improvements. The previous `2.1.149` release included user-facing changes such as a more detailed `/usage` view, keyboard scrolling in diff detail view, GitHub-Flavored Markdown task list rendering, and several permission, PowerShell, and git worktree fixes.
+At the time this page was checked, `2.1.156` was the newest changelog entry and fixed an Opus 4.8 issue where thinking blocks could be modified and cause API errors. The important user-facing release is `2.1.154`, which added Opus 4.8 support, dynamic workflows, cheaper Opus 4.8 fast mode, high effort defaults, and several agent, plugin, MCP, safety, and background-session fixes.
+
+## What Changed With Opus 4.8 And Claude Code 2.1.154
+
+The May 28-29, 2026 update is worth separating into two layers:
+
+| Layer             | What changed                                                                                    | Why it matters                                                                                                                     |
+| ----------------- | ----------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Claude model      | Claude Opus 4.8 is available as `claude-opus-4-8`.                                              | It targets stronger long-horizon agentic coding, better tool triggering, better compaction behavior, and fewer unsupported claims. |
+| Claude Code CLI   | `2.1.154` added Opus 4.8 support and `2.1.156` fixed a same-week Opus 4.8 thinking-block error. | Update to at least `2.1.156` if you hit Opus 4.8 API errors after the rollout.                                                     |
+| Effort            | Opus 4.8 defaults to `high` effort. Claude Code points difficult work toward `/effort xhigh`.   | Better quality can cost more tokens, so do not treat a model upgrade as free.                                                      |
+| Dynamic workflows | Claude Code can orchestrate many subagents in the background through workflow scripts.          | Useful for large audits, migrations, and cross-checked research, but it can consume far more usage than a normal session.          |
+| Ultracode         | Claude Code exposes an `ultracode` effort setting that combines `xhigh` with workflow choice.   | Use it for serious scoped sessions, not as a permanent default.                                                                    |
+| Fast mode         | Opus 4.8 fast mode is available at 2x standard pricing for up to 2.5x output speed.             | Good for latency-sensitive work; poor default for long unattended runs.                                                            |
+
+For the new workflow feature, read [Claude Code Dynamic Workflows](/en/mechanics/dynamic-workflows) and [Claude Code Ultracode](/en/mechanics/ultracode) before turning either into a team default. If Opus 4.8 feels slow or expensive after the update, use [Opus 4.8 slow or expensive troubleshooting](/en/troubleshooting/claude-code-opus-4-8-slow-or-expensive).
 
 ## latest vs stable: Which One Should You Use?
 
 Many searches for “Claude Code latest version” are really asking: **should I chase latest or stay on stable?**
 
-| Scenario | Recommended channel | Why |
-| -------- | ------------------- | --- |
-| Personal learning | `latest` | You can try new capabilities early. |
-| Everyday solo development | `latest` or `stable` | Use latest if small changes are acceptable; stable if the repo is sensitive. |
-| Shared team workflow | Start with `stable` | Reduces version-related collaboration drift. |
-| Client or production repository | `stable` or a pinned version | Avoid surprise behavior changes during delivery. |
-| Known bug fix | Check changelog first | Upgrade when a newer version actually fixes your issue. |
+| Scenario                        | Recommended channel          | Why                                                                          |
+| ------------------------------- | ---------------------------- | ---------------------------------------------------------------------------- |
+| Personal learning               | `latest`                     | You can try new capabilities early.                                          |
+| Everyday solo development       | `latest` or `stable`         | Use latest if small changes are acceptable; stable if the repo is sensitive. |
+| Shared team workflow            | Start with `stable`          | Reduces version-related collaboration drift.                                 |
+| Client or production repository | `stable` or a pinned version | Avoid surprise behavior changes during delivery.                             |
+| Known bug fix                   | Check changelog first        | Upgrade when a newer version actually fixes your issue.                      |
 
 If you are working on a SaaS template, payments, database migrations, Cloudflare deployment, or SEO URL migration, treat an upgrade like a small engineering change: verify it locally before making it part of the main workflow.
 
@@ -199,14 +214,14 @@ These package-manager installs generally update through the system package manag
 
 Before upgrading, check:
 
-| Check | Why it matters |
-| ----- | -------------- |
-| Which install method is active? | native, npm, Homebrew, WinGet, apt, dnf, and apk use different update paths. |
-| What version is installed now? | Run `claude --version` before changing anything. |
-| Do you need a new feature or a bug fix? | If not, stable may be the better choice. |
-| Is a release or migration in progress? | Avoid adding version drift during sensitive work. |
-| Does the team need one version? | Different versions can change permission modes, UI labels, and command behavior. |
-| Is this a production repository? | Test in a small repo or branch first. |
+| Check                                   | Why it matters                                                                   |
+| --------------------------------------- | -------------------------------------------------------------------------------- |
+| Which install method is active?         | native, npm, Homebrew, WinGet, apt, dnf, and apk use different update paths.     |
+| What version is installed now?          | Run `claude --version` before changing anything.                                 |
+| Do you need a new feature or a bug fix? | If not, stable may be the better choice.                                         |
+| Is a release or migration in progress?  | Avoid adding version drift during sensitive work.                                |
+| Does the team need one version?         | Different versions can change permission modes, UI labels, and command behavior. |
+| Is this a production repository?        | Test in a small repo or branch first.                                            |
 
 For database, auth, payment, Cloudflare, MCP permissions, or SEO URL work, start with [Plan Mode](/en/tutorial/workflows/plan-mode) and make the upgrade a reviewed step.
 
@@ -232,14 +247,14 @@ Then check a small project:
 
 For teams, record:
 
-| Record | Example |
-| ------ | ------- |
-| Previous version | `2.1.142` |
-| New version | `2.1.150` |
-| Install method | Homebrew stable / npm / native |
-| Reason | Required bug fix or feature |
-| Verification result | `claude doctor` OK, MCP OK |
-| Rollback path | Reinstall previous version or switch back to stable |
+| Record              | Example                                             |
+| ------------------- | --------------------------------------------------- |
+| Previous version    | `2.1.145`                                           |
+| New version         | `2.1.156`                                           |
+| Install method      | Homebrew stable / npm / native                      |
+| Reason              | Required bug fix or feature                         |
+| Verification result | `claude doctor` OK, MCP OK                          |
+| Rollback path       | Reinstall previous version or switch back to stable |
 
 ## Version Mismatch Troubleshooting
 
@@ -287,11 +302,11 @@ If the update disrupts production work, move back to the last known-good version
 
 Use one of these strategies:
 
-| Strategy | How | Best for |
-| -------- | --- | -------- |
-| Stable channel | `autoUpdatesChannel: "stable"` or Homebrew stable cask | Team defaults. |
-| Minimum version | `minimumVersion` | Prevent very old machines. |
-| Specific version | Native installer with a version number | Client delivery, reproduction, rollback. |
+| Strategy         | How                                                    | Best for                                 |
+| ---------------- | ------------------------------------------------------ | ---------------------------------------- |
+| Stable channel   | `autoUpdatesChannel: "stable"` or Homebrew stable cask | Team defaults.                           |
+| Minimum version  | `minimumVersion`                                       | Prevent very old machines.               |
+| Specific version | Native installer with a version number                 | Client delivery, reproduction, rollback. |
 
 Specific version example:
 
@@ -305,7 +320,7 @@ Official releases also provide manifest and signature verification for controlle
 
 ### What is the latest Claude Code version?
 
-As checked on May 24, 2026, npm reports `latest` and `next` as `2.1.150`, and `stable` as `2.1.142`. Always verify before upgrading:
+As checked on May 29, 2026, npm reports `latest` and `next` as `2.1.156`, and `stable` as `2.1.145`. Always verify before upgrading:
 
 ```bash
 npm view @anthropic-ai/claude-code dist-tags --json
@@ -333,6 +348,9 @@ Use the command that matches your original install method. Native installer user
 - [Install Claude Code on Windows](/en/faqs/how-to-install-claude-code-on-windows)
 - [Claude Code usage limits](/en/faqs/claude-code-usage-limits)
 - [Plan Mode guide](/en/tutorial/workflows/plan-mode)
+- [Claude Code Dynamic Workflows](/en/mechanics/dynamic-workflows)
+- [Claude Code Ultracode](/en/mechanics/ultracode)
+- [Opus 4.8 slow or expensive troubleshooting](/en/troubleshooting/claude-code-opus-4-8-slow-or-expensive)
 - [Tools allowlist](/en/tutorial/configuration/tools-allowlist)
 - [Claude Code API documentation](/en/faqs/claude-code-api-documentation)
 - [Troubleshooting hub](/en/troubleshooting)
@@ -340,6 +358,8 @@ Use the command that matches your original install method. Native installer user
 ## Official Sources
 
 - [Claude Code Changelog](https://code.claude.com/docs/en/changelog)
+- [Claude Opus 4.8 announcement](https://www.anthropic.com/news/claude-opus-4-8)
+- [Claude Code Dynamic Workflows documentation](https://code.claude.com/docs/en/workflows)
 - [Claude Code Advanced setup](https://code.claude.com/docs/en/installation)
 - [Claude Code npm package](https://www.npmjs.com/package/@anthropic-ai/claude-code)
 - [Troubleshoot installation and login](https://code.claude.com/docs/en/troubleshoot-install)

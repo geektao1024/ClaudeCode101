@@ -1,0 +1,169 @@
+---
+title: 'Claude Code Opus 4.8 Slow Or Expensive'
+description: 'Troubleshoot Claude Code after Opus 4.8 when sessions feel slower, usage rises, ultracode burns tokens, dynamic workflows fan out, or fast mode is misunderstood.'
+---
+
+If Claude Code feels slower or more expensive after the Opus 4.8 rollout, do not assume the model is broken. First separate four different causes: higher effort, larger context, dynamic workflow fan-out, and billing surface.
+
+> Last checked on May 29, 2026. Opus 4.8 defaults to high effort, dynamic workflows are a research preview, and Claude Code `2.1.156` fixes a same-week Opus 4.8 thinking-block API error. Run `claude --version` and check your active model, effort, and account before changing workflows.
+
+## Quick Diagnosis
+
+| Symptom                                            | Most likely cause                                                | First fix                                                                     |
+| -------------------------------------------------- | ---------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| Each turn feels slower after switching to Opus 4.8 | Higher effort or harder model behavior.                          | Check `/effort`; use `high` for normal tasks and reserve `xhigh`/`ultracode`. |
+| Usage rises during broad tasks                     | Dynamic workflows or subagents are doing more work.              | Narrow the prompt and watch `/workflows`.                                     |
+| `ultracode` burns through usage                    | Claude may be planning workflows for substantive tasks.          | Switch back to `/effort high` after the hard session.                         |
+| Fast mode cost surprises you                       | Fast mode trades money for speed.                                | Use it for latency-sensitive turns, not long unattended runs.                 |
+| 400 thinking-block API error                       | Known Opus 4.8 issue fixed in Claude Code `2.1.156`.             | Update Claude Code, then restart the affected session if needed.              |
+| One project is much slower than another            | Context, MCP output, files, logs, or repo size differ.           | Use `/clear`, `/compact`, and scoped file paths.                              |
+| Team members see different options                 | latest/stable channel, plan, provider, or admin settings differ. | Compare versions, `/config`, and organization settings.                       |
+
+## Step 1: Confirm The Version And Channel
+
+Run:
+
+```bash
+claude --version
+npm view @anthropic-ai/claude-code dist-tags --json
+```
+
+At the time this page was checked, npm reported:
+
+```json
+{
+  "latest": "2.1.156",
+  "next": "2.1.156",
+  "stable": "2.1.145"
+}
+```
+
+If you are on an older `2.1.x` release and hit an Opus 4.8 thinking-block API error, update first:
+
+```bash
+claude update
+claude --version
+```
+
+If you installed with npm:
+
+```bash
+npm install -g @anthropic-ai/claude-code@latest
+claude --version
+```
+
+For the full update matrix, use [Claude Code latest version](/en/upgrade).
+
+## Step 2: Check Model, Effort, And Fast Mode
+
+Inside Claude Code:
+
+```text
+/model
+/effort
+```
+
+Use this decision table:
+
+| Goal                                 | Recommended setting                          | Why                                                      |
+| ------------------------------------ | -------------------------------------------- | -------------------------------------------------------- |
+| Everyday implementation              | Opus or Sonnet with `high`/default effort.   | Balanced speed and quality.                              |
+| Difficult bug or architecture review | `xhigh` for the focused session.             | More reasoning without automatic workflow fan-out.       |
+| Large audit or migration             | `ultracode`, but with a narrow prompt.       | Allows workflow orchestration when the task warrants it. |
+| Fast interactive iteration           | Fast mode, if available and worth the price. | Better latency, but not the cheapest long-run setting.   |
+| Cost-sensitive batch work            | Smaller scope, normal effort, maybe Sonnet.  | Reduces token and workflow expansion risk.               |
+
+Do not combine every expensive setting by habit. `ultracode` plus broad prompts plus large context is the pattern most likely to feel slow and costly.
+
+## Step 3: Check Whether A Workflow Is Running
+
+If you used `ultracode` or asked Claude to create a workflow:
+
+```text
+/workflows
+```
+
+Look for:
+
+| Signal                    | Meaning                                                          | Action                                              |
+| ------------------------- | ---------------------------------------------------------------- | --------------------------------------------------- |
+| Many background agents    | The task fanned out.                                             | Let it finish only if the scope is worth the usage. |
+| Long-running verification | Agents are cross-checking findings.                              | Good for audits, poor for tiny edits.               |
+| Unexpected task direction | Prompt was too broad or ambiguous.                               | Stop and restart with a narrower workflow.          |
+| Multiple workflow phases  | Claude may be doing inventory, implementation, and verification. | Split phases manually next time.                    |
+
+For workflow behavior, read [Dynamic workflows](/en/mechanics/dynamic-workflows) and [Ultracode](/en/mechanics/ultracode).
+
+## Step 4: Reduce Context Before Blaming The Model
+
+Long sessions often become expensive because the next turn carries too much history.
+
+Use:
+
+```text
+/compact
+```
+
+or start fresh with a focused task. Before a new expensive run, give Claude:
+
+1. The exact directory or files in scope.
+2. The exact error or goal.
+3. What not to touch.
+4. Whether the first pass is read-only.
+5. What evidence the final answer must include.
+
+Bad prompt:
+
+```text
+Use ultracode to fix the whole project.
+```
+
+Better prompt:
+
+```text
+/effort ultracode
+Run a read-only workflow on src/app/api and src/shared/auth only. Find missing permission checks. Do not edit files. Return file path, evidence, risk, and minimal fix.
+```
+
+## Step 5: Decide Whether To Use Opus 4.8 At All
+
+Opus 4.8 is not automatically the cheapest or fastest choice for every Claude Code task.
+
+| Task type                      | Practical choice                                              |
+| ------------------------------ | ------------------------------------------------------------- |
+| Large agentic coding task      | Opus 4.8 can be worth it, especially if wrong code is costly. |
+| Routine documentation edits    | Sonnet or normal effort may be enough.                        |
+| Short one-file edits           | Use the fastest reliable model/settings you have.             |
+| Broad repository audit         | Opus 4.8 plus scoped workflow can be useful.                  |
+| Creative writing or style work | Test against your own benchmark; community reports are mixed. |
+| Production deployment work     | Use Plan Mode, version pinning, tests, and explicit rollback. |
+
+The important point: model quality and workflow automation are separate decisions. You can use Opus 4.8 without ultracode, and you can use dynamic workflows only when the task deserves it.
+
+## Common Launch-Window Misreads
+
+| Claim you may see online               | Safer interpretation                                                                         |
+| -------------------------------------- | -------------------------------------------------------------------------------------------- |
+| "Opus 4.8 is slow."                    | It may be slower on higher effort or broader tasks; measure your exact workflow.             |
+| "Ultracode is magic."                  | It is useful for large scoped work, not a replacement for task boundaries.                   |
+| "Fast mode is cheaper."                | Fast mode is cheaper than previous fast mode, but costs more than standard Opus 4.8 pricing. |
+| "Dynamic workflows replace subagents." | Workflows can coordinate subagents; smaller tasks still fit ordinary subagents.              |
+| "4.8 failed my test, so it is worse."  | One test is signal, not proof. Re-run with the same prompt, files, model, and effort.        |
+| "Everyone has ultracode now."          | Access can depend on version, plan, provider, and organization settings.                     |
+
+## Related Guides
+
+- [Claude Code latest version](/en/upgrade)
+- [Ultracode](/en/mechanics/ultracode)
+- [Dynamic workflows](/en/mechanics/dynamic-workflows)
+- [Pricing and limits](/en/pricing)
+- [Usage limits FAQ](/en/faqs/claude-code-usage-limits)
+- [Context management](/en/mechanics/context-management)
+- [Rate limit error](/en/troubleshooting/claude-code-rate-limit-error)
+
+## Official Sources
+
+- [Claude Opus 4.8 announcement](https://www.anthropic.com/news/claude-opus-4-8)
+- [Claude Code changelog](https://code.claude.com/docs/en/changelog)
+- [Dynamic workflows documentation](https://code.claude.com/docs/en/workflows)
+- [Manage Claude Code costs effectively](https://code.claude.com/docs/en/costs)

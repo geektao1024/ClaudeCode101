@@ -1,0 +1,178 @@
+---
+title: 'Claude Code Ultracode'
+description: '解释 Claude Code ultracode 是什么、/effort ultracode 和 xhigh、dynamic workflows 的关系、什么时候该用、什么时候不该用，以及如何控制成本。'
+---
+
+Claude Code `ultracode` 是一个面向高难度编码会话的 effort 设置。它把 `xhigh` 推理强度和自动 dynamic workflow 编排结合起来，让 Claude 判断当前任务是否应该拆成后台 workflow，而不是一直停留在普通对话循环里。
+
+> 最后核查：2026 年 5 月 29 日。Claude Code 官方文档把 ultracode 放在 dynamic workflows 体系下；dynamic workflows 仍是 research preview，并要求 Claude Code `2.1.154` 或更高版本。npm 当前显示 `@anthropic-ai/claude-code` 的 `latest` 和 `next` 为 `2.1.156`，`stable` 为 `2.1.145`。
+
+## 快速结论
+
+任务范围大、单轮很难验证、或者值得额外消耗来换更强校验时，再用 ultracode：
+
+```text
+/effort ultracode
+```
+
+然后给一个明确范围的任务：
+
+```text
+Audit the auth, billing, and admin routes for missing permission checks. Use a workflow only if it helps. Report confirmed findings with file paths, evidence, and minimal fixes.
+```
+
+不要把 ultracode 长期开成默认模式。它可能更慢、更贵，也比普通 Claude Code 会话更自动化。
+
+## 一张表看懂 Ultracode
+
+| 设置        | 做什么                                   | 适合什么                                     | 主要风险                       |
+| ----------- | ---------------------------------------- | -------------------------------------------- | ------------------------------ |
+| `high`      | 普通编码任务的强推理默认档。             | 日常多文件修改、调试、功能实现。             | 对全仓库模式问题可能覆盖不够。 |
+| `xhigh`     | 更深推理，但不会自动做 workflow 扩散。   | 困难调试、架构评审、敏感重构。               | 更耗 token，响应更慢。         |
+| `ultracode` | `xhigh` 加上自动 dynamic workflow 编排。 | 大审查、大迁移、大研究、需要交叉验证的决策。 | 任务扩散后用量可能明显上升。   |
+| `max`       | 可用时代表最大推理深度。                 | 少数极难任务。                               | 慢且贵，不适合作为日常默认。   |
+
+关键区别：`xhigh` 是让 Claude 想得更深；`ultracode` 还允许 Claude 判断是否要把任务变成由后台 agents 执行的 workflow。
+
+## 为什么 Opus 4.8 后很多人搜 Ultracode
+
+Opus 4.8 发布后出现了几类新的搜索意图，需要直接回答：
+
+| 搜索表达                                | 背后的真实问题                         | 简短答案                                                         |
+| --------------------------------------- | -------------------------------------- | ---------------------------------------------------------------- |
+| `what is ultracode effort`              | 这是新模型、新套餐，还是新模式？       | 它是 Claude Code 的 effort 设置，不是单独模型或订阅。            |
+| `Claude Code ultracode vs xhigh`        | 到底该选哪个？                         | 要更深推理用 `xhigh`；需要可能的 workflow 编排才用 `ultracode`。 |
+| `Claude Code ultracode not showing`     | 为什么菜单里没有？                     | 查版本、套餐/provider、`/config` 和组织管理员设置。              |
+| `Opus 4.8 ultracode slow`               | 变慢是不是正常？                       | 很多情况下正常：更高 effort 和 workflow 编排都会增加耗时。       |
+| `Claude Code ultracode cost`            | 会不会烧更多用量？                     | 可能会。先缩小范围，再看 cost/usage 表面。                       |
+| `Claude Code workflow agents can code`  | workflow agents 只是审查，还是能编码？ | 可以支持大规模编码工作流，但编辑必须收窄范围并测试。             |
+| `Claude Code ultracode thinking blocks` | 和 Opus 4.8 API 报错有关吗？           | 如果遇到 thinking-block API 错误，先升级到至少 `2.1.156`。       |
+
+这些不是官方搜索量数据，而是 Opus 4.8 发布窗口里社区和创作者讨论中出现的意图模式。
+
+## 什么时候值得用 Ultracode
+
+适合：
+
+| 任务                  | 为什么 ultracode 有帮助                         |
+| --------------------- | ----------------------------------------------- |
+| 全仓库权限审查        | 多个 agents 可以分路由组检查，再交叉验证结果。  |
+| 大型框架或 API 迁移   | 可以按 package、文件组或迁移步骤拆分。          |
+| 安全或 hardening 扫描 | 发现需要独立验证后再进入实施。                  |
+| 大型内容站 SEO 盘点   | 可以同时比对内容文件、路由、metadata、sitemap。 |
+| 复杂根因分析          | 多个假设可以并行调查，再汇总。                  |
+| 高风险方案评审        | workflow 可以先写方案，再反驳和修正方案。       |
+
+不适合：
+
+| 任务                         | 更好的方式                           |
+| ---------------------------- | ------------------------------------ |
+| 单文件错字、import、样式小修 | 普通 `high` effort 会话。            |
+| 文件范围明确的小功能         | Plan Mode 后正常实现。               |
+| 你已经反复使用的固定提示词   | Slash command 或 skill。             |
+| 成本敏感的探索               | 缩小 prompt、用 `high`、手工检查点。 |
+| 需要频繁人工决策的工作       | 分阶段交互式会话，而不是后台跑。     |
+
+## 如何开启 Ultracode
+
+Claude Code 里输入：
+
+```text
+/effort ultracode
+```
+
+如果看不到这个选项，按顺序检查：
+
+1. 运行 `claude --version`。
+2. 升级到支持 dynamic workflows 的版本。
+3. 打开 `/config`，查 Dynamic workflows 相关设置。
+4. 确认当前套餐或 provider 是否支持 workflows。
+5. 如果是组织账号，确认管理员有没有禁用 workflows。
+6. 设置变更后重启会话。
+
+如果选项有了但 workflow 不触发，可以明确要求：
+
+```text
+Create a workflow for this audit, but start read-only and ask before edits.
+```
+
+## 成本和速度预期
+
+Ultracode 变慢通常有三类原因：
+
+| 原因                 | 发生了什么                           | 怎么处理                                    |
+| -------------------- | ------------------------------------ | ------------------------------------------- |
+| 更高推理强度         | Claude 每一步花更多推理预算。        | 不是困难任务就用 `high`。                   |
+| workflow 扩散        | Claude 可能启动大量后台 agents。     | 首轮缩小范围，用 `/workflows` 观察。        |
+| 验证循环             | agents 会在返回前检查发现。          | 先只读发现，再单独实施。                    |
+| 上下文或文件噪声过大 | 旧日志、MCP 输出或宽泛文件拖慢判断。 | 用 `/clear`、`/compact`，并给明确路径。     |
+| 误解 Fast mode       | Fast mode 加快输出，但定价不同。     | 不要把 Fast mode 当成长时间无人值守默认项。 |
+
+如果目标是控成本，继续看 [上下文管理](/zh/mechanics/context-management)、[价格与限制](/zh/pricing)、[Opus 4.8 变慢或变贵排查](/zh/troubleshooting/claude-code-opus-4-8-slow-or-expensive)。
+
+## 可直接复制的提示词模式
+
+### 只读审查
+
+```text
+/effort ultracode
+Run a read-only workflow to audit content/pages for stale Claude Code version claims. Do not edit files. Return a table with file path, claim, evidence, and recommended change.
+```
+
+### 大迁移试点
+
+```text
+/effort ultracode
+Create a workflow for a migration pilot in src/modules/billing only. First inventory the affected files, then propose the smallest safe sequence. Do not edit until I approve the plan.
+```
+
+### 验证工作流
+
+```text
+/effort ultracode
+Use a workflow to verify the previous implementation. Check tests, route generation, sitemap inclusion, and obvious regressions. Report only evidence-backed issues.
+```
+
+模式很固定：范围、模式、证据、停止条件。缺少这些，ultracode 容易扩散。
+
+## Ultracode 和 Dynamic Workflows 的区别
+
+Ultracode 是开关；Dynamic workflows 是机制。
+
+| 术语             | 含义                                                       |
+| ---------------- | ---------------------------------------------------------- |
+| Ultracode        | Claude Code effort 设置，启用 `xhigh` 和 workflow 判断。   |
+| Dynamic workflow | Claude 可能为任务创建的后台编排流程。                      |
+| `/workflows`     | 查看正在运行或已完成 workflow 的地方。                     |
+| `/deep-research` | web search 可用时的内置研究 workflow。                     |
+| Subagent         | 独立上下文的专门 worker；workflow 可以协调大量 subagents。 |
+
+完整机制看 [Dynamic Workflows](/zh/mechanics/dynamic-workflows)，更小的构件看 [Subagents](/zh/mechanics/subagents)。
+
+## 常见错误
+
+| 错误                             | 为什么有问题                       | 更好的做法                         |
+| -------------------------------- | ---------------------------------- | ---------------------------------- |
+| 所有 prompt 都用 ultracode       | 大多数任务不需要这么高的消耗。     | 默认用 `high`，必要时再升级。      |
+| 直接说“修整个仓库”               | workflow 会在没有边界时扩散。      | 明确目录、模块和排除文件。         |
+| 跳过只读规划                     | 多个 agents 可能同时发现和编辑。   | 拆成盘点、计划、实施、验证。       |
+| 把社区反馈当成事实               | 发布当天反馈很嘈杂，且和账号有关。 | 用文档、版本、套餐、本地行为验证。 |
+| 忽略管理员设置                   | Enterprise 和组织账号可能不同。    | 查 `/config` 和 managed settings。 |
+| 第一次跑完就保存成 workflow 命令 | 可能固化错误流程。                 | 真实任务跑通后再保存。             |
+
+## 相关页面
+
+- [Dynamic Workflows](/zh/mechanics/dynamic-workflows)
+- [Claude Code 最新版本](/zh/upgrade)
+- [Opus 4.8 变慢或变贵排查](/zh/troubleshooting/claude-code-opus-4-8-slow-or-expensive)
+- [Subagents](/zh/mechanics/subagents)
+- [Plan Mode](/zh/mechanics/plan-mode)
+- [上下文管理](/zh/mechanics/context-management)
+- [价格与限制](/zh/pricing)
+
+## 官方来源
+
+- [Dynamic workflows documentation](https://code.claude.com/docs/en/workflows)
+- [Dynamic workflows announcement](https://claude.com/blog/introducing-dynamic-workflows-in-claude-code)
+- [Claude Code changelog](https://code.claude.com/docs/en/changelog)
+- [Claude Opus 4.8 announcement](https://www.anthropic.com/news/claude-opus-4-8)

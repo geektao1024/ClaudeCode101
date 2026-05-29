@@ -1,0 +1,169 @@
+---
+title: 'Claude Code Opus 4.8 变慢或变贵'
+description: '排查 Claude Code 升级 Opus 4.8 后会话变慢、用量上升、ultracode 消耗 token、dynamic workflows 扩散、fast mode 被误解等问题。'
+---
+
+如果 Opus 4.8 发布后你感觉 Claude Code 变慢或变贵，不要直接下结论说模型坏了。先分清四件事：effort 变高、上下文变大、dynamic workflow 扩散、以及你当前到底走订阅还是 API/云 provider 账单。
+
+> 最后核查：2026 年 5 月 29 日。Opus 4.8 默认 high effort，dynamic workflows 仍是 research preview，Claude Code `2.1.156` 修复了同周出现的 Opus 4.8 thinking-block API 错误。改工作流前，先运行 `claude --version`，并确认当前模型、effort 和账号。
+
+## 快速定位
+
+| 现象                         | 最可能原因                                            | 先做什么                                                            |
+| ---------------------------- | ----------------------------------------------------- | ------------------------------------------------------------------- |
+| 切到 Opus 4.8 后每轮更慢     | effort 更高，或模型行为更谨慎。                       | 查 `/effort`；普通任务用 `high`，困难任务再用 `xhigh`/`ultracode`。 |
+| 宽泛任务用量明显上升         | dynamic workflows 或 subagents 做了更多工作。         | 缩小 prompt，用 `/workflows` 观察。                                 |
+| `ultracode` 很快消耗用量     | Claude 可能为实质任务自动规划 workflow。              | 困难会话结束后切回 `/effort high`。                                 |
+| Fast mode 费用和预期不一致   | Fast mode 是用更高价格换速度。                        | 给交互延迟敏感的短任务用，不要给长时间无人值守任务默认开。          |
+| 400 thinking-block API error | Claude Code `2.1.156` 已修复的 Opus 4.8 问题。        | 升级 Claude Code，必要时重启受影响会话。                            |
+| 某个项目明显比另一个慢       | 上下文、MCP 输出、文件、日志或仓库大小不同。          | 用 `/clear`、`/compact`，并限制文件路径。                           |
+| 团队成员看到的选项不一致     | latest/stable 通道、套餐、provider 或管理员设置不同。 | 对比版本、`/config` 和组织设置。                                    |
+
+## 第一步：确认版本和通道
+
+运行：
+
+```bash
+claude --version
+npm view @anthropic-ai/claude-code dist-tags --json
+```
+
+本页核查时 npm 返回：
+
+```json
+{
+  "latest": "2.1.156",
+  "next": "2.1.156",
+  "stable": "2.1.145"
+}
+```
+
+如果你还在更早的 `2.1.x`，并且遇到 Opus 4.8 thinking-block API 错误，先升级：
+
+```bash
+claude update
+claude --version
+```
+
+npm 全局安装则用：
+
+```bash
+npm install -g @anthropic-ai/claude-code@latest
+claude --version
+```
+
+完整更新矩阵看 [Claude Code 最新版本](/zh/upgrade)。
+
+## 第二步：检查模型、Effort 和 Fast Mode
+
+在 Claude Code 里：
+
+```text
+/model
+/effort
+```
+
+按这个表判断：
+
+| 目标                | 推荐设置                                 | 原因                                 |
+| ------------------- | ---------------------------------------- | ------------------------------------ |
+| 日常实现            | Opus 或 Sonnet，配 `high`/默认 effort。  | 速度和质量更均衡。                   |
+| 困难 bug 或架构评审 | `xhigh`，只给当前聚焦会话使用。          | 更深推理，但不会自动 workflow 扩散。 |
+| 大审查或大迁移      | `ultracode`，但 prompt 必须收窄。        | 允许任务需要时进入 workflow 编排。   |
+| 快速交互迭代        | 可用且值得时用 Fast mode。               | 延迟更低，但不是最便宜的长跑设置。   |
+| 成本敏感的批处理    | 缩小范围、普通 effort，必要时用 Sonnet。 | 降低 token 和 workflow 扩散风险。    |
+
+不要习惯性叠满所有昂贵设置。`ultracode`、宽泛 prompt、大上下文同时出现，是最容易又慢又贵的组合。
+
+## 第三步：确认有没有 Workflow 正在跑
+
+如果你用了 `ultracode`，或要求 Claude 创建 workflow：
+
+```text
+/workflows
+```
+
+重点看：
+
+| 信号               | 含义                                | 处理方式                       |
+| ------------------ | ----------------------------------- | ------------------------------ |
+| 大量后台 agents    | 任务已经扩散。                      | 只有范围值得消耗时才让它跑完。 |
+| 长时间验证         | agents 正在交叉检查发现。           | 审查任务有价值，小修不划算。   |
+| 方向和预期不一致   | prompt 太宽或有歧义。               | 停止后用更窄 workflow 重开。   |
+| 多个 workflow 阶段 | Claude 可能在盘点、实施、验证全做。 | 下次手工拆阶段。               |
+
+Workflow 机制看 [Dynamic Workflows](/zh/mechanics/dynamic-workflows) 和 [Ultracode](/zh/mechanics/ultracode)。
+
+## 第四步：先清上下文，再怪模型
+
+长会话变贵，经常不是模型单独导致，而是下一轮带着太多历史。
+
+用：
+
+```text
+/compact
+```
+
+或者重新开一个聚焦任务。开始昂贵任务前，明确告诉 Claude：
+
+1. 哪些目录或文件在范围内；
+2. 精确错误或目标；
+3. 哪些东西不要碰；
+4. 第一轮是否只读；
+5. 最终答案必须包含什么证据。
+
+差的 prompt：
+
+```text
+Use ultracode to fix the whole project.
+```
+
+更好的 prompt：
+
+```text
+/effort ultracode
+Run a read-only workflow on src/app/api and src/shared/auth only. Find missing permission checks. Do not edit files. Return file path, evidence, risk, and minimal fix.
+```
+
+## 第五步：判断是否真的需要 Opus 4.8
+
+Opus 4.8 不等于所有 Claude Code 任务里最便宜或最快的选择。
+
+| 任务类型            | 实用选择                                    |
+| ------------------- | ------------------------------------------- |
+| 大型 agentic coding | Opus 4.8 可能值得，尤其是错代码代价很高时。 |
+| 日常文档修改        | Sonnet 或普通 effort 可能足够。             |
+| 短小单文件修改      | 用你手里最快且可靠的模型/设置。             |
+| 全仓库审查          | Opus 4.8 加收窄的 workflow 可能有价值。     |
+| 创意写作或风格任务  | 用自己的样例测试；社区反馈并不一致。        |
+| 生产部署相关工作    | 用 Plan Mode、版本固定、测试和明确回滚。    |
+
+重点是：模型质量和工作流自动化是两件事。你可以只用 Opus 4.8，不开 ultracode；也可以只在任务真的值得时使用 dynamic workflows。
+
+## 发布窗口里的常见误读
+
+| 网上可能看到的说法                   | 更稳妥的理解                                                          |
+| ------------------------------------ | --------------------------------------------------------------------- |
+| “Opus 4.8 很慢。”                    | 高 effort 或宽泛任务可能更慢；要测你自己的具体工作流。                |
+| “Ultracode 是魔法。”                 | 它适合有边界的大任务，不替代任务拆分。                                |
+| “Fast mode 更便宜。”                 | 它比上一代 fast mode 便宜，但仍高于 Opus 4.8 标准价格。               |
+| “Dynamic workflows 取代 subagents。” | workflow 可以协调 subagents；小任务仍适合普通 subagents。             |
+| “4.8 没过我的测试，所以更差。”       | 单个测试是信号，不是证明。要用同一 prompt、文件、模型和 effort 复测。 |
+| “所有人都能看到 ultracode。”         | 是否可见可能受版本、套餐、provider 和组织设置影响。                   |
+
+## 相关页面
+
+- [Claude Code 最新版本](/zh/upgrade)
+- [Ultracode](/zh/mechanics/ultracode)
+- [Dynamic Workflows](/zh/mechanics/dynamic-workflows)
+- [价格与限制](/zh/pricing)
+- [Claude Code 用量限制](/zh/faqs/claude-code-usage-limits)
+- [上下文管理](/zh/mechanics/context-management)
+- [Rate limit 错误](/zh/troubleshooting/claude-code-rate-limit-error)
+
+## 官方来源
+
+- [Claude Opus 4.8 announcement](https://www.anthropic.com/news/claude-opus-4-8)
+- [Claude Code changelog](https://code.claude.com/docs/en/changelog)
+- [Dynamic workflows documentation](https://code.claude.com/docs/en/workflows)
+- [Manage Claude Code costs effectively](https://code.claude.com/docs/en/costs)

@@ -1,26 +1,27 @@
 ---
 title: 'Claude Code Troubleshooting'
-description: 'A practical Claude Code troubleshooting hub for command not found, Windows PATH, install permissions, login errors, invalid API keys, rate limits, network failures, MCP connection issues, and tool permissions.'
+description: 'A practical Claude Code troubleshooting hub for command not found, Windows PATH, install permissions, login errors, invalid API keys, rate limits, Opus 4.8 slow sessions, network failures, MCP connection issues, and tool permissions.'
 ---
 
 Start from the exact symptom before reinstalling Claude Code. Most failures come from one of six places: PATH, shell startup files, local permissions, authentication state, network/proxy access, or MCP/tool configuration.
 
-> Last checked on May 24, 2026. Claude Code exposes both in-app checks and shell checks. If Claude Code opens, run `/doctor`, `/status`, `/mcp`, and the command related to the failing surface. If it cannot start, run `claude doctor` from your shell, then match the error below.
+> Last checked on May 29, 2026. Claude Code exposes both in-app checks and shell checks. If Claude Code opens, run `/doctor`, `/status`, `/mcp`, and the command related to the failing surface. If it cannot start, run `claude doctor` from your shell, then match the error below.
 
 ## Quick Diagnosis
 
 Use the shortest path first:
 
-| Symptom | First check | Open this page |
-| --- | --- | --- |
-| `claude: command not found` or "not recognized" | Is the installed binary on the PATH used by this shell? | [Claude command not found](/en/troubleshooting/claude-command-not-found) |
-| Works in one Windows shell but not another | Are PowerShell, CMD, Git Bash, and WSL using different PATHs? | [Windows PATH setup](/en/troubleshooting/claude-code-windows-path) |
-| Install fails with EACCES or permission denied | Is the package manager writing to a system directory? | [Permission errors](/en/troubleshooting/claude-code-permission-errors) |
-| Login loop, OAuth failure, 403, or expired session | Is Claude Code using the intended account or organization? | [Login or authentication error](/en/troubleshooting/claude-code-login-or-authentication-error) |
-| `Invalid API key`, expired token, or wrong org | Is an API key overriding subscription login? | [Invalid API key](/en/troubleshooting/claude-code-invalid-api-key) |
-| Timeout, SSL, proxy, VPN, or cannot reach API | Does the terminal network path differ from the browser path? | [Unable to connect to API](/en/troubleshooting/claude-code-unable-to-connect-to-api) |
-| 429, session limit, weekly limit, or low credit | Is this subscription usage, API billing, or provider throttling? | [Rate limit error](/en/troubleshooting/claude-code-rate-limit-error) |
-| MCP server does not appear or authenticate | Does `/mcp` show config, startup, auth, or permission failure? | [MCP server not connecting](/en/troubleshooting/claude-code-mcp-not-connecting) |
+| Symptom                                                | First check                                                         | Open this page                                                                                 |
+| ------------------------------------------------------ | ------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `claude: command not found` or "not recognized"        | Is the installed binary on the PATH used by this shell?             | [Claude command not found](/en/troubleshooting/claude-command-not-found)                       |
+| Works in one Windows shell but not another             | Are PowerShell, CMD, Git Bash, and WSL using different PATHs?       | [Windows PATH setup](/en/troubleshooting/claude-code-windows-path)                             |
+| Install fails with EACCES or permission denied         | Is the package manager writing to a system directory?               | [Permission errors](/en/troubleshooting/claude-code-permission-errors)                         |
+| Login loop, OAuth failure, 403, or expired session     | Is Claude Code using the intended account or organization?          | [Login or authentication error](/en/troubleshooting/claude-code-login-or-authentication-error) |
+| `Invalid API key`, expired token, or wrong org         | Is an API key overriding subscription login?                        | [Invalid API key](/en/troubleshooting/claude-code-invalid-api-key)                             |
+| Timeout, SSL, proxy, VPN, or cannot reach API          | Does the terminal network path differ from the browser path?        | [Unable to connect to API](/en/troubleshooting/claude-code-unable-to-connect-to-api)           |
+| 429, session limit, weekly limit, or low credit        | Is this subscription usage, API billing, or provider throttling?    | [Rate limit error](/en/troubleshooting/claude-code-rate-limit-error)                           |
+| Opus 4.8 feels slow, costly, or confusing after update | Is this effort, context, ultracode, workflow fan-out, or fast mode? | [Opus 4.8 slow or expensive](/en/troubleshooting/claude-code-opus-4-8-slow-or-expensive)       |
+| MCP server does not appear or authenticate             | Does `/mcp` show config, startup, auth, or permission failure?      | [MCP server not connecting](/en/troubleshooting/claude-code-mcp-not-connecting)                |
 
 Do not skip the first check. Reinstalling rarely fixes a network proxy, a stale API key, or a shell that has not loaded the new PATH.
 
@@ -40,12 +41,12 @@ Good troubleshooting is boring and sequential. Change one variable at a time.
 
 Installation failures usually happen before Claude Code itself can help you. Focus on the shell and package manager first.
 
-| Problem pattern | Likely cause | Next step |
-| --- | --- | --- |
-| `claude` is missing after install | Terminal did not load the install directory into PATH. | Restart the terminal and read [command not found](/en/troubleshooting/claude-command-not-found). |
-| Works in zsh but not bash, or PowerShell but not CMD | Different shells load different PATH files. | Compare shells and read [Windows PATH setup](/en/troubleshooting/claude-code-windows-path) if on Windows. |
-| Permission denied during install | Package manager is writing to a protected directory. | Avoid broad `sudo` habits; use [permission errors](/en/troubleshooting/claude-code-permission-errors). |
-| First run fails after install | CLI is installed, but login or network is not ready. | Move to authentication or network checks. |
+| Problem pattern                                      | Likely cause                                           | Next step                                                                                                 |
+| ---------------------------------------------------- | ------------------------------------------------------ | --------------------------------------------------------------------------------------------------------- |
+| `claude` is missing after install                    | Terminal did not load the install directory into PATH. | Restart the terminal and read [command not found](/en/troubleshooting/claude-command-not-found).          |
+| Works in zsh but not bash, or PowerShell but not CMD | Different shells load different PATH files.            | Compare shells and read [Windows PATH setup](/en/troubleshooting/claude-code-windows-path) if on Windows. |
+| Permission denied during install                     | Package manager is writing to a protected directory.   | Avoid broad `sudo` habits; use [permission errors](/en/troubleshooting/claude-code-permission-errors).    |
+| First run fails after install                        | CLI is installed, but login or network is not ready.   | Move to authentication or network checks.                                                                 |
 
 Useful supporting pages:
 
@@ -57,12 +58,12 @@ Useful supporting pages:
 
 Authentication problems are often caused by mixing subscription login and API-style credentials.
 
-| Error or behavior | What it usually means | Open next |
-| --- | --- | --- |
-| Browser login loops | OAuth session, browser profile, or organization access is not completing. | [Login or authentication error](/en/troubleshooting/claude-code-login-or-authentication-error) |
-| `Invalid API key` | A key is missing, stale, revoked, or from the wrong organization/provider. | [Invalid API key](/en/troubleshooting/claude-code-invalid-api-key) |
-| 403 or access denied | Account, organization, seat, or provider permission mismatch. | [Login or authentication error](/en/troubleshooting/claude-code-login-or-authentication-error) |
-| Works locally but not in CI | Environment variables, provider credentials, or secrets are different. | [Headless mode FAQ](/en/faqs/claude-code-headless-mode) |
+| Error or behavior           | What it usually means                                                      | Open next                                                                                      |
+| --------------------------- | -------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| Browser login loops         | OAuth session, browser profile, or organization access is not completing.  | [Login or authentication error](/en/troubleshooting/claude-code-login-or-authentication-error) |
+| `Invalid API key`           | A key is missing, stale, revoked, or from the wrong organization/provider. | [Invalid API key](/en/troubleshooting/claude-code-invalid-api-key)                             |
+| 403 or access denied        | Account, organization, seat, or provider permission mismatch.              | [Login or authentication error](/en/troubleshooting/claude-code-login-or-authentication-error) |
+| Works locally but not in CI | Environment variables, provider credentials, or secrets are different.     | [Headless mode FAQ](/en/faqs/claude-code-headless-mode)                                        |
 
 Do not paste API keys into Claude, docs, tickets, screenshots, or prompts. Record the credential source, not the secret value.
 
@@ -85,12 +86,13 @@ Use [Unable to connect to API](/en/troubleshooting/claude-code-unable-to-connect
 
 Rate errors are not all the same.
 
-| Message | Likely surface | What to do first |
-| --- | --- | --- |
-| `Request rejected (429)` | Temporary throttling or provider rate limit. | Wait, reduce parallel work, and retry with a smaller task. |
-| `session limit` or `weekly limit` | Subscription usage window. | Check plan usage and reset timing. |
-| `Credit balance is too low` | API billing or provider workspace credit. | Check the relevant console and spend caps. |
-| Slow or expensive long sessions | Context bloat and repeated tool calls. | Use `/clear`, `/compact`, focused prompts, and [context management](/en/mechanics/context-management). |
+| Message                           | Likely surface                                                             | What to do first                                                                                       |
+| --------------------------------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `Request rejected (429)`          | Temporary throttling or provider rate limit.                               | Wait, reduce parallel work, and retry with a smaller task.                                             |
+| `session limit` or `weekly limit` | Subscription usage window.                                                 | Check plan usage and reset timing.                                                                     |
+| `Credit balance is too low`       | API billing or provider workspace credit.                                  | Check the relevant console and spend caps.                                                             |
+| Slow or expensive long sessions   | Context bloat and repeated tool calls.                                     | Use `/clear`, `/compact`, focused prompts, and [context management](/en/mechanics/context-management). |
+| Slow or expensive after Opus 4.8  | Higher effort, ultracode, workflow fan-out, or fast mode misunderstanding. | Start with [Opus 4.8 slow or expensive](/en/troubleshooting/claude-code-opus-4-8-slow-or-expensive).   |
 
 Start with [Rate limit error](/en/troubleshooting/claude-code-rate-limit-error), then read [Claude Code usage limits](/en/faqs/claude-code-usage-limits) and [Pricing and limits](/en/pricing).
 
@@ -98,13 +100,13 @@ Start with [Rate limit error](/en/troubleshooting/claude-code-rate-limit-error),
 
 MCP failures usually come from config, startup command, credentials, or permission scope.
 
-| Symptom | Check |
-| --- | --- |
-| Server does not appear in `/mcp` | Wrong config location, malformed JSON, disabled server, or session not restarted. |
-| Server appears but does not connect | Startup command, environment variables, transport, URL, or auth flow. |
-| Remote MCP auth fails | OAuth callback, token, client registration, or provider-side permission. |
-| Tool appears but cannot act | Tool allowlist, permission mode, server scopes, or missing account access. |
-| Claude uses too much MCP context | Too many servers or tools exposed at once. |
+| Symptom                             | Check                                                                             |
+| ----------------------------------- | --------------------------------------------------------------------------------- |
+| Server does not appear in `/mcp`    | Wrong config location, malformed JSON, disabled server, or session not restarted. |
+| Server appears but does not connect | Startup command, environment variables, transport, URL, or auth flow.             |
+| Remote MCP auth fails               | OAuth callback, token, client registration, or provider-side permission.          |
+| Tool appears but cannot act         | Tool allowlist, permission mode, server scopes, or missing account access.        |
+| Claude uses too much MCP context    | Too many servers or tools exposed at once.                                        |
 
 Read [MCP server not connecting](/en/troubleshooting/claude-code-mcp-not-connecting), then [MCP directory](/en/mcp), [MCP security checklist](/en/mcp/mcp-security-checklist), and [Tools allowlist](/en/tutorial/configuration/tools-allowlist).
 
@@ -112,13 +114,13 @@ Read [MCP server not connecting](/en/troubleshooting/claude-code-mcp-not-connect
 
 If Claude Code refuses a tool call, asks repeatedly, or a hook blocks an action, separate policy from failure.
 
-| Surface | What to inspect |
-| --- | --- |
-| Permission rules | Whether the tool is allow, ask, or deny in settings. |
-| Plan Mode | Whether the session is intentionally read-only. |
-| Hooks | Whether `PreToolUse` or another hook is denying the action. |
-| MCP scopes | Whether the external tool account can read or write the target resource. |
-| OS permissions | Whether the local user can access the file, binary, or directory. |
+| Surface          | What to inspect                                                          |
+| ---------------- | ------------------------------------------------------------------------ |
+| Permission rules | Whether the tool is allow, ask, or deny in settings.                     |
+| Plan Mode        | Whether the session is intentionally read-only.                          |
+| Hooks            | Whether `PreToolUse` or another hook is denying the action.              |
+| MCP scopes       | Whether the external tool account can read or write the target resource. |
+| OS permissions   | Whether the local user can access the file, binary, or directory.        |
 
 Useful next pages: [Tools allowlist](/en/tutorial/configuration/tools-allowlist), [Hooks](/en/mechanics/hooks), [Plan Mode](/en/mechanics/plan-mode), and [Permission errors](/en/troubleshooting/claude-code-permission-errors).
 

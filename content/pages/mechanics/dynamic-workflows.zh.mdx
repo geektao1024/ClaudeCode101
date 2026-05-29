@@ -1,0 +1,193 @@
+---
+title: 'Claude Code Dynamic Workflows'
+description: '解释 Claude Code dynamic workflows、ultracode、适用场景、成本风险，以及什么时候应该用 workflows 而不是 subagents、skills 或普通会话。'
+---
+
+Claude Code dynamic workflows 是一种让 Claude 编写并运行 workflow 脚本、在后台编排大量 subagents 的能力。它适合单轮对话或普通 subagent 难以覆盖的大任务：全仓库审查、大规模迁移、安全扫描、广泛资料研究，或需要多个独立视角互相校验的方案。
+
+> 最后核查：2026 年 5 月 29 日。Dynamic workflows 仍是 research preview。当前 Claude Code 官方文档说明它需要 Claude Code `2.1.154` 或更高版本，并面向付费套餐、Anthropic API、Amazon Bedrock、Google Cloud Vertex AI 和 Microsoft Foundry 等场景开放。可用性、费用、管理员控制和限制都可能继续变化。
+
+## 快速结论
+
+当任务需要大量独立 agents、可重复编排、并最终汇总成一份经过交叉检查的报告时，才考虑 dynamic workflow。日常小改动、短问答、或者中途需要频繁让人决策的任务，不应该默认用它。
+
+可以从小范围开始：
+
+```text
+Run a workflow to audit the auth routes for missing permission checks. Report only confirmed findings with file paths, evidence, and the smallest fix.
+```
+
+查看运行状态：
+
+```text
+/workflows
+```
+
+如果你希望当前会话里由 Claude 判断什么时候需要 workflow，可以用：
+
+```text
+/effort ultracode
+```
+
+普通工作结束后切回：
+
+```text
+/effort high
+```
+
+专门的 effort 设置看 [Claude Code Ultracode](/zh/mechanics/ultracode)。如果你是因为 Opus 4.8 后突然变慢或变贵才来到这里，先看 [Opus 4.8 变慢或变贵排查](/zh/troubleshooting/claude-code-opus-4-8-slow-or-expensive)。
+
+## Dynamic Workflows 带来了什么
+
+Subagents 已经可以委派单个旁路任务。Dynamic workflows 的区别是把“编排逻辑”放到脚本里执行，因此规模和可复用性不同：
+
+| 机制                   | 适合什么                                             | 局限                                   |
+| ---------------------- | ---------------------------------------------------- | -------------------------------------- |
+| Subagent               | 一个聚焦的旁路任务，独立上下文。                     | 仍然由 Claude 在对话里逐步协调。       |
+| Skill 或 slash command | 主会话里的可复用提示词结构。                         | 计划和中间结果仍然占用对话上下文。     |
+| Agent team             | 多个命名 worker 协作。                               | 对一次性研究来说配置较重。             |
+| Dynamic workflow       | 用脚本协调大量 agent、后台运行、交叉验证并汇总结果。 | 更耗用量，中途交互少，操作复杂度更高。 |
+
+实际差异是：workflow 可以把中间状态留在脚本里，让多个 agent 独立产出后互相校验，最后只把整理后的结论交回主会话，而不是把所有搜索、测试和文件读取结果都塞进当前上下文。
+
+## 发布窗口里值得直接回答的问题
+
+Opus 4.8 发布后出现了一批关联长尾问题，不应该藏在普通 changelog 段落里：
+
+| 用户真正想问什么                            | 直接答案                                                          |
+| ------------------------------------------- | ----------------------------------------------------------------- |
+| ultracode 和 dynamic workflows 是一回事吗？ | 不是。Ultracode 是 effort 设置；dynamic workflow 是实际编排流程。 |
+| workflow agents 能不能改代码？              | 可以支持编码工作，但生产修改必须收窄范围、人工审查并跑测试。      |
+| 这是不是只适合审查？                        | 不是。审查、迁移、废弃 API 扫描、资料研究、验证都可能适合。       |
+| 为什么我看不到 workflows 或 ultracode？     | 查 Claude Code 版本、`/config`、套餐/provider 和组织设置。        |
+| workflow 一定比 subagents 更好吗？          | 不是。小范围噪音任务仍然适合普通 subagents。                      |
+| 为什么变慢？                                | 高 effort、后台 agents、验证循环都会增加耗时。                    |
+| 会不会更贵？                                | 可能会。官方发布说明明确提醒 workflows 可能明显增加用量。         |
+
+## 使用前先确认这些条件
+
+不要只看别人截图说“已经有了”。先确认四件事：
+
+| 检查项            | 命令或位置                                 | 为什么重要                                                                         |
+| ----------------- | ------------------------------------------ | ---------------------------------------------------------------------------------- |
+| Claude Code 版本  | `claude --version`                         | 官方文档要求 `2.1.154` 或更高。                                                    |
+| 当前模型和 effort | `/model`、`/effort`                        | Opus 4.8 默认 high effort，复杂 workflow 可能更耗 token。                          |
+| 账号或 provider   | Claude 订阅、API、Bedrock、Vertex、Foundry | 可用性取决于套餐、provider 和组织设置。                                            |
+| 管理员设置        | `/config` 或 managed settings              | 组织可以禁用 workflows；Pro 用户可能需要在 `/config` 的 Dynamic workflows 行开启。 |
+
+如果你是为了 Opus 4.8 更新后出现 thinking-block API 错误而排查，优先升级到至少 `2.1.156`，必要时重启受影响会话。
+
+## 怎么启动 Workflow
+
+常见入口有三个。
+
+### 直接要求 Workflow
+
+在提示词里包含 `workflow`：
+
+```text
+Run a workflow to compare every page in content/pages against the sitemap rules and report missing indexable pages.
+```
+
+Claude Code 通常会高亮触发词，并根据权限模式展示运行前确认。
+
+### 使用 Ultracode
+
+`ultracode` 把 `xhigh` effort 和自动 workflow 编排结合起来：
+
+```text
+/effort ultracode
+```
+
+它适合严肃的大任务会话，不适合长期默认开启。一个请求可能拆成多次 workflow：理解仓库、实施修改、再验证结果。
+
+### 运行内置或保存过的 Workflow
+
+当 web search 可用时，Claude Code 带有 `/deep-research` 这个内置 workflow：
+
+```text
+/deep-research What changed in Claude Code 2.1.154 and 2.1.156?
+```
+
+你保存的 workflows 也可以变成 slash command。项目级 workflows 放在 `.claude/workflows/`，个人 workflows 放在 `~/.claude/workflows/`。
+
+## 什么时候适合用
+
+适合：
+
+| 任务                  | 为什么 workflow 有价值                               |
+| --------------------- | ---------------------------------------------------- |
+| 全仓库安全审查        | 多个 agent 可以分模块检查，再交叉验证发现。          |
+| 大规模迁移            | 可以把文件或包拆成批次，并反复跑验证。               |
+| 依赖或 API 废弃项审查 | 多个 agent 搜不同模式，再合并重复结论。              |
+| 内容或 SEO 清单盘点   | 可以同时检查内容文件、路由、sitemap 规则和公开 URL。 |
+| 高风险方案评审        | 多个 agent 从不同角度写方案和反驳方案。              |
+
+不适合：
+
+| 任务                                 | 更好的方式                                  |
+| ------------------------------------ | ------------------------------------------- |
+| 单文件小修改                         | 普通 Claude Code 会话。                     |
+| 反复使用但应在主上下文里执行的提示词 | Skill 或 slash command。                    |
+| 每几分钟就要用户做决定               | Plan Mode 或手工分阶段流程。                |
+| 多个 agents 可能同时编辑同一批文件   | Worktree、窄范围阶段，或先做人工审查计划。  |
+| 成本敏感的长时间运行                 | 降低 effort、缩小范围，或用普通 subagents。 |
+
+## 成本和风险控制
+
+Dynamic workflows 的用量可能明显高于普通会话。把它当成受控工程操作，而不是“更聪明的默认按钮”：
+
+1. 第一轮范围要窄。
+2. 先做只读分析，再考虑编辑。
+3. 明确哪些目录在范围内、哪些不在范围内。
+4. 每条发现都要求证据。
+5. 分开做分析、实施和验证。
+6. 运行时用 `/workflows` 查看状态。
+7. 发现跑偏或消耗过高就停止。
+8. 只有真实任务跑通后，才保存 workflow。
+
+生产仓库里，workflow 应该和 [Plan Mode](/zh/mechanics/plan-mode)、[工具权限管理](/zh/tutorial/configuration/tools-allowlist)、[Hooks](/zh/mechanics/hooks) 一起使用。Workflow 能协调 agents，但不能替代仓库策略。
+
+## Dynamic Workflows 和 Opus 4.8 的关系
+
+Opus 4.8 是让 dynamic workflows 变成热点的模型更新，但两者不是一回事。
+
+| 主题                  | 记住这一点                                                           |
+| --------------------- | -------------------------------------------------------------------- |
+| Opus 4.8              | 模型更新，默认 high effort，支持 fast mode，长周期 coding 表现更强。 |
+| Claude Code `2.1.154` | 加入 Opus 4.8 支持和 dynamic workflows 的 CLI 更新。                 |
+| Claude Code `2.1.156` | 修复 Opus 4.8 thinking-block API 错误的后续版本。                    |
+| Dynamic workflows     | Claude Code 的编排功能，可以在一个任务背后运行大量 subagents。       |
+| Ultracode             | Claude Code 的 effort 设置，让 Claude 判断什么时候启用 workflows。   |
+
+如果你只是想确认版本或升级命令，看 [Claude Code 最新版本](/zh/upgrade)。如果你在判断一个大任务是否值得后台编排，继续看本页。
+
+## 常见错误
+
+| 错误                             | 问题                              | 更好的做法                               |
+| -------------------------------- | --------------------------------- | ---------------------------------------- |
+| 所有任务都开 ultracode           | 用量会快速上升。                  | 只给困难会话用，结束后切回 high effort。 |
+| 一上来就让它做超大迁移           | workflow 可能扩散太多。           | 先做 inventory 或小范围试点。            |
+| 允许多个 agents 同时编辑共享文件 | 容易冲突和重复修改。              | 按模块拆分或使用 worktree 隔离。         |
+| 把最终报告当成绝对事实           | agents 仍可能漏上下文或夸大结论。 | 要求证据并运行测试。                     |
+| 第一次生成就保存 workflow        | 可能固化错误流程。                | 真实任务多跑几次再保存。                 |
+| 忽略管理员和 provider 限制       | 不是所有环境都可用。              | 查 `/config`、套餐和 provider 文档。     |
+
+## 相关页面
+
+- [Claude Code 最新版本](/zh/upgrade)
+- [Ultracode](/zh/mechanics/ultracode)
+- [Opus 4.8 变慢或变贵排查](/zh/troubleshooting/claude-code-opus-4-8-slow-or-expensive)
+- [Subagents](/zh/mechanics/subagents)
+- [Plan Mode](/zh/mechanics/plan-mode)
+- [上下文管理](/zh/mechanics/context-management)
+- [工具权限管理](/zh/tutorial/configuration/tools-allowlist)
+- [Hooks](/zh/mechanics/hooks)
+- [MCP 安全清单](/zh/mcp/mcp-security-checklist)
+
+## 官方来源
+
+- [Dynamic workflows documentation](https://code.claude.com/docs/en/workflows)
+- [Claude Opus 4.8 announcement](https://www.anthropic.com/news/claude-opus-4-8)
+- [Claude Code changelog](https://code.claude.com/docs/en/changelog)
+- [What's new in Claude Opus 4.8](https://platform.claude.com/docs/en/about-claude/models/whats-new-claude-4-8)

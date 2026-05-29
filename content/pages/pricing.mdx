@@ -11,10 +11,10 @@ how much context the session carries, and whether a team has spend or rate
 limits in place.
 
 <Callout type="warning">
-  Last checked on May 24, 2026. Prices, included features, tax, regional
-  availability, model names, rate limits, and usage-credit rules can change.
-  Use this page as a practical decision guide, then verify the final number in
-  your own Claude account, Claude Console, or cloud provider dashboard.
+  Last checked on May 29, 2026. Prices, included features, tax, regional
+  availability, model names, rate limits, and usage-credit rules can change. Use
+  this page as a practical decision guide, then verify the final number in your
+  own Claude account, Claude Console, or cloud provider dashboard.
 </Callout>
 
 ## Quick Answer
@@ -35,26 +35,26 @@ API billing instead of your Pro, Max, Team, or Enterprise included usage.
 
 These are the public signals worth checking before buying or upgrading:
 
-| Path | Public signal to verify | Best fit | Watch out |
-| --- | --- | --- | --- |
-| Free | Free Claude accounts can use Claude chat surfaces, but Claude Code access is not the normal fit for terminal development. | Trying Claude before paying. | Do not plan a Claude Code workflow around Free. |
-| Pro | The public pricing page lists Pro at $17/month with annual billing, or $20 monthly, and includes Claude Code. | Learning, side projects, small repositories, occasional coding. | Usage is shared across Claude surfaces, so long Claude Code sessions can run into limits. |
-| Max 5x | Anthropic Help Center lists Max 5x at $100/month for web subscriptions. | Frequent Claude Code use, larger repos, longer sessions. | It is higher usage, not unlimited usage. |
-| Max 20x | Anthropic Help Center lists Max 20x at $200/month for web subscriptions. | Heavy personal coding, repeated long sessions, more planning with Opus. | Still finite; large context and Opus-heavy workflows can drain usage. |
-| Team | Public pricing lists standard Team seats and higher-usage premium options, with centralized administration. | Multiple developers, shared billing, admin controls, connectors, and team rollout. | Seat type, billing cycle, organization policies, and usage credits matter. |
-| Enterprise | Self-serve or sales-assisted Enterprise paths add deeper admin, security, SSO, connector, compliance, and deployment controls. | Governed company adoption. | Treat it as a rollout and governance project, not just a developer upgrade. |
-| API / Console / cloud | Model usage is billed by token through Claude Console, Bedrock, Vertex AI, Microsoft Foundry, or another supported provider. | Automation, CI, scripted agents, high-intensity bursts, and provider-managed infrastructure. | Costs can grow quickly if scripts loop, context is huge, or spend limits are missing. |
+| Path                  | Public signal to verify                                                                                                        | Best fit                                                                                     | Watch out                                                                                 |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| Free                  | Free Claude accounts can use Claude chat surfaces, but Claude Code access is not the normal fit for terminal development.      | Trying Claude before paying.                                                                 | Do not plan a Claude Code workflow around Free.                                           |
+| Pro                   | The public pricing page lists Pro at $17/month with annual billing, or $20 monthly, and includes Claude Code.                  | Learning, side projects, small repositories, occasional coding.                              | Usage is shared across Claude surfaces, so long Claude Code sessions can run into limits. |
+| Max 5x                | Anthropic Help Center lists Max 5x at $100/month for web subscriptions.                                                        | Frequent Claude Code use, larger repos, longer sessions.                                     | It is higher usage, not unlimited usage.                                                  |
+| Max 20x               | Anthropic Help Center lists Max 20x at $200/month for web subscriptions.                                                       | Heavy personal coding, repeated long sessions, more planning with Opus.                      | Still finite; large context and Opus-heavy workflows can drain usage.                     |
+| Team                  | Public pricing lists standard Team seats and higher-usage premium options, with centralized administration.                    | Multiple developers, shared billing, admin controls, connectors, and team rollout.           | Seat type, billing cycle, organization policies, and usage credits matter.                |
+| Enterprise            | Self-serve or sales-assisted Enterprise paths add deeper admin, security, SSO, connector, compliance, and deployment controls. | Governed company adoption.                                                                   | Treat it as a rollout and governance project, not just a developer upgrade.               |
+| API / Console / cloud | Model usage is billed by token through Claude Console, Bedrock, Vertex AI, Microsoft Foundry, or another supported provider.   | Automation, CI, scripted agents, high-intensity bursts, and provider-managed infrastructure. | Costs can grow quickly if scripts loop, context is huge, or spend limits are missing.     |
 
 ## Subscription Usage vs API Billing
 
 Before comparing prices, identify the active billing path.
 
-| Sign-in path | What usage means | How running out feels | Where to verify |
-| --- | --- | --- | --- |
-| Pro or Max via `/login` | Included subscription usage shared across Claude web, desktop, mobile, and Claude Code. | Claude Code shows a limit or reset message. | Claude account plan page, Claude Code usage display, and reset messages. |
-| Team or Enterprise via `/login` | Included organization usage, policy, or seat allowance. | A team or organization limit message, or an admin-controlled restriction. | Admin console, organization analytics, and plan settings. |
-| `ANTHROPIC_API_KEY` | Pay-as-you-go API usage. | Usually no subscription-style hard stop; the account is billed for usage until credits, spend limits, or rate limits stop it. | Claude Console usage, billing, spend limits, and API keys. |
-| Bedrock, Vertex, or Microsoft Foundry | Provider-side token billing and provider quotas. | Cloud-provider rate, quota, or billing behavior. | Cloud console, provider quotas, and provider billing reports. |
+| Sign-in path                          | What usage means                                                                        | How running out feels                                                                                                         | Where to verify                                                          |
+| ------------------------------------- | --------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| Pro or Max via `/login`               | Included subscription usage shared across Claude web, desktop, mobile, and Claude Code. | Claude Code shows a limit or reset message.                                                                                   | Claude account plan page, Claude Code usage display, and reset messages. |
+| Team or Enterprise via `/login`       | Included organization usage, policy, or seat allowance.                                 | A team or organization limit message, or an admin-controlled restriction.                                                     | Admin console, organization analytics, and plan settings.                |
+| `ANTHROPIC_API_KEY`                   | Pay-as-you-go API usage.                                                                | Usually no subscription-style hard stop; the account is billed for usage until credits, spend limits, or rate limits stop it. | Claude Console usage, billing, spend limits, and API keys.               |
+| Bedrock, Vertex, or Microsoft Foundry | Provider-side token billing and provider quotas.                                        | Cloud-provider rate, quota, or billing behavior.                                                                              | Cloud console, provider quotas, and provider billing reports.            |
 
 If a developer says, "Claude Code suddenly became expensive," check
 authentication before changing plans:
@@ -77,28 +77,41 @@ API prices matter when Claude Code is authenticated through an API key, when you
 run headless automation, or when a team moves intensive work to usage-based
 billing.
 
-| Model family on the public pricing page | Current public API signal | Practical Claude Code use |
-| --- | --- | --- |
-| Opus 4.7 | $5 / MTok input and $25 / MTok output on the public pricing page. | Expensive reasoning for architecture, hard debugging, planning, and high-risk reviews. |
-| Sonnet 4.6 | $3 / MTok input and $15 / MTok output on the public pricing page. | The default balance for most implementation, tests, refactors, and everyday coding. |
-| Haiku | Lower-cost fast model family when available to the account. | Quick lookups, mechanical edits, scripts, classification, or high-volume simple work. |
-| Prompt caching | Pricing page lists write and read rates separately. | Useful when the same large context is reused, but it should not be a reason to load unnecessary files. |
+| Model family on the public pricing page | Current public API signal                                                                 | Practical Claude Code use                                                                                         |
+| --------------------------------------- | ----------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| Opus 4.8                                | $5 / MTok input and $25 / MTok output at launch, the same standard API price as Opus 4.7. | Expensive reasoning for architecture, hard debugging, planning, high-risk reviews, and long-horizon agentic work. |
+| Sonnet 4.6                              | $3 / MTok input and $15 / MTok output on the public pricing page.                         | The default balance for most implementation, tests, refactors, and everyday coding.                               |
+| Haiku                                   | Lower-cost fast model family when available to the account.                               | Quick lookups, mechanical edits, scripts, classification, or high-volume simple work.                             |
+| Prompt caching                          | Pricing page lists write and read rates separately.                                       | Useful when the same large context is reused, but it should not be a reason to load unnecessary files.            |
 
 Exact model names and availability change. In Claude Code, `/model` is the
 source of truth for what your account can actually use. A practical pattern is:
 plan with Opus when the decision is hard, then execute with Sonnet once the plan
 is clear.
 
+## Opus 4.8, Fast Mode, And Dynamic Workflow Cost
+
+The Opus 4.8 rollout adds two cost-sensitive choices:
+
+| Feature                | Cost signal                                                                     | Practical rule                                                                          |
+| ---------------------- | ------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| Opus 4.8 standard mode | $5 / MTok input and $25 / MTok output at launch.                                | Use it for hard planning, audits, migrations, and reviews where quality matters.        |
+| Opus 4.8 fast mode     | $10 / MTok input and $50 / MTok output at launch, with up to 2.5x output speed. | Use it for latency-sensitive interactive work, not unattended long runs.                |
+| Dynamic workflows      | No separate fixed price; they consume normal model usage across many subagents. | Start scoped, monitor `/workflows`, and avoid broad prompts that fan out unnecessarily. |
+| Ultracode              | Combines `xhigh` effort with automatic workflow orchestration.                  | Turn it on for difficult sessions, then return to `/effort high` for routine work.      |
+
+The important point: dynamic workflows are not a cheaper way to run Claude Code. They are a way to coordinate more work. More agents usually means more usage unless the task is carefully scoped.
+
 ## Usage Limits vs Length Limits
 
 Many users mix up two different limits:
 
-| Limit type | What it means | How to respond |
-| --- | --- | --- |
-| Usage limit | Your plan, account, or organization has used its allowed capacity for a time window. | Wait for reset, upgrade, enable usage credits if available, switch to API billing, or reduce model/context usage. |
-| Rate limit | Requests or tokens are arriving faster than the account or provider allows. | Slow down, reduce parallel sessions, retry later, or request appropriate organization limits. |
-| Length/context limit | The session carries too much conversation, file content, tool output, or MCP output. | Use `/compact`, `/clear`, narrow files, trim logs, and split the task. |
-| Credit or spend limit | API credits, auto-reload, provider quota, or workspace spend cap stops the run. | Check the billing console before retrying. |
+| Limit type            | What it means                                                                        | How to respond                                                                                                    |
+| --------------------- | ------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------- |
+| Usage limit           | Your plan, account, or organization has used its allowed capacity for a time window. | Wait for reset, upgrade, enable usage credits if available, switch to API billing, or reduce model/context usage. |
+| Rate limit            | Requests or tokens are arriving faster than the account or provider allows.          | Slow down, reduce parallel sessions, retry later, or request appropriate organization limits.                     |
+| Length/context limit  | The session carries too much conversation, file content, tool output, or MCP output. | Use `/compact`, `/clear`, narrow files, trim logs, and split the task.                                            |
+| Credit or spend limit | API credits, auto-reload, provider quota, or workspace spend cap stops the run.      | Check the billing console before retrying.                                                                        |
 
 Claude Help Center explains that Claude usage across product surfaces counts
 toward the same usage limit for paid plans, while context length is a separate
@@ -120,12 +133,12 @@ The visible prompt is only part of the cost. Claude Code also carries:
 
 The same user request can be cheap or expensive depending on precision:
 
-| Prompt style | Cost profile | Better version |
-| --- | --- | --- |
-| "Review the whole repo and fix issues." | Expensive and unfocused. | "Inspect `src/auth/session.ts` and the failing login test, then propose a minimal fix." |
-| "Read this entire build log." | Large context load. | "Use the last 40 lines and the first error only." |
-| "Use all MCP tools to investigate." | Tool and context explosion. | "Use GitHub MCP for PR #42 only, then summarize blockers." |
-| "Continue from yesterday." | Often drags stale context. | Start fresh with a short summary, target files, and acceptance criteria. |
+| Prompt style                            | Cost profile                | Better version                                                                          |
+| --------------------------------------- | --------------------------- | --------------------------------------------------------------------------------------- |
+| "Review the whole repo and fix issues." | Expensive and unfocused.    | "Inspect `src/auth/session.ts` and the failing login test, then propose a minimal fix." |
+| "Read this entire build log."           | Large context load.         | "Use the last 40 lines and the first error only."                                       |
+| "Use all MCP tools to investigate."     | Tool and context explosion. | "Use GitHub MCP for PR #42 only, then summarize blockers."                              |
+| "Continue from yesterday."              | Often drags stale context.  | Start fresh with a short summary, target files, and acceptance criteria.                |
 
 ## Cost-Control Workflow
 
@@ -147,14 +160,14 @@ Use this before any long Claude Code session:
 
 Upgrade only after identifying the bottleneck:
 
-| Symptom | Likely cause | Better next step |
-| --- | --- | --- |
-| You hit limits while learning or doing small projects. | Pro usage is enough for some days but not for your workflow. | Clean up context first, then consider Max 5x. |
-| Daily coding stops mid-flow on normal work. | Personal subscription limit is too low. | Consider Max 5x or Max 20x depending on frequency. |
-| Large refactors burn usage quickly. | Context and model choice are the issue, not only plan size. | Use Plan Mode, Sonnet execution, smaller checkpoints, and `/clear`. |
-| A team cannot see who spent what. | Individual subscriptions are being used for team work. | Move to Team or Enterprise planning with admin controls. |
-| Automation needs to run in CI. | Subscription UX is the wrong abstraction. | Use API or provider billing with spend limits and monitoring. |
-| Bills spike unexpectedly. | API key, script loop, MCP output, or provider quota issue. | Stop automation, check active credentials, inspect usage reports, then add caps. |
+| Symptom                                                | Likely cause                                                 | Better next step                                                                 |
+| ------------------------------------------------------ | ------------------------------------------------------------ | -------------------------------------------------------------------------------- |
+| You hit limits while learning or doing small projects. | Pro usage is enough for some days but not for your workflow. | Clean up context first, then consider Max 5x.                                    |
+| Daily coding stops mid-flow on normal work.            | Personal subscription limit is too low.                      | Consider Max 5x or Max 20x depending on frequency.                               |
+| Large refactors burn usage quickly.                    | Context and model choice are the issue, not only plan size.  | Use Plan Mode, Sonnet execution, smaller checkpoints, and `/clear`.              |
+| A team cannot see who spent what.                      | Individual subscriptions are being used for team work.       | Move to Team or Enterprise planning with admin controls.                         |
+| Automation needs to run in CI.                         | Subscription UX is the wrong abstraction.                    | Use API or provider billing with spend limits and monitoring.                    |
+| Bills spike unexpectedly.                              | API key, script loop, MCP output, or provider quota issue.   | Stop automation, check active credentials, inspect usage reports, then add caps. |
 
 ## Team Cost Governance
 
@@ -164,14 +177,14 @@ development?"
 
 Start with a two-week pilot:
 
-| Pilot item | What to record |
-| --- | --- |
-| Users | Role, repositories, average session length, and model choice. |
-| Tasks | Bug fixes, refactors, reviews, test generation, docs, CI automation. |
-| Usage path | Subscription seat, Console API, or cloud provider. |
+| Pilot item   | What to record                                                                   |
+| ------------ | -------------------------------------------------------------------------------- |
+| Users        | Role, repositories, average session length, and model choice.                    |
+| Tasks        | Bug fixes, refactors, reviews, test generation, docs, CI automation.             |
+| Usage path   | Subscription seat, Console API, or cloud provider.                               |
 | Cost drivers | Context-heavy repos, repeated file scans, MCP output, subagents, failed retries. |
-| Controls | Spend limit, rate limit, approval policy, MCP permissions, and owner. |
-| Outcome | Time saved, quality issues, incidents, monthly cost projection. |
+| Controls     | Spend limit, rate limit, approval policy, MCP permissions, and owner.            |
+| Outcome      | Time saved, quality issues, incidents, monthly cost projection.                  |
 
 Official Claude Code cost guidance recommends tracking usage, setting spend
 limits for teams, managing context proactively, reducing MCP overhead, and using
@@ -225,7 +238,9 @@ accidentally.
 - [How much is Claude Code?](/en/faqs/how-much-is-claude-code)
 - [Claude Code usage limits](/en/faqs/claude-code-usage-limits)
 - [Claude Code rate limit error](/en/troubleshooting/claude-code-rate-limit-error)
+- [Opus 4.8 slow or expensive troubleshooting](/en/troubleshooting/claude-code-opus-4-8-slow-or-expensive)
 - [Claude Code invalid API key](/en/troubleshooting/claude-code-invalid-api-key)
+- [Claude Code Ultracode](/en/mechanics/ultracode)
 - [Context management](/en/mechanics/context-management)
 - [Plan Mode](/en/mechanics/plan-mode)
 - [MCP directory](/en/mcp)
@@ -234,6 +249,9 @@ accidentally.
 ## Official Sources
 
 - [Claude plans and pricing](https://claude.com/pricing)
+- [Claude Opus 4.8 announcement](https://www.anthropic.com/news/claude-opus-4-8)
+- [What's new in Claude Opus 4.8](https://platform.claude.com/docs/en/about-claude/models/whats-new-claude-4-8)
+- [Claude Code dynamic workflows](https://code.claude.com/docs/en/workflows)
 - [Manage Claude Code costs effectively](https://code.claude.com/docs/en/costs)
 - [Use Claude Code with your Pro or Max plan](https://support.claude.com/en/articles/11145838-use-claude-code-with-your-pro-or-max-plan)
 - [Models, usage, and limits in Claude Code](https://support.claude.com/en/articles/14552983-models-usage-and-limits-in-claude-code)

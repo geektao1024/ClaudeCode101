@@ -1,0 +1,178 @@
+---
+title: 'Claude Code Ultracode'
+description: 'What Claude Code ultracode is, how /effort ultracode relates to xhigh and dynamic workflows, when to use it, when to avoid it, and how to control cost.'
+---
+
+Claude Code `ultracode` is an effort setting for serious coding sessions. It combines `xhigh` reasoning effort with automatic dynamic workflow orchestration, so Claude can decide when a task should be split into a workflow instead of staying in one ordinary chat loop.
+
+> Last checked on May 29, 2026. Official Claude Code docs describe ultracode as part of dynamic workflows, which are still a research preview and require Claude Code `2.1.154` or later. npm currently reports `@anthropic-ai/claude-code` `latest` and `next` as `2.1.156`, and `stable` as `2.1.145`.
+
+## Quick Answer
+
+Use ultracode when the task is broad, hard to verify in one pass, or important enough to justify extra usage:
+
+```text
+/effort ultracode
+```
+
+Then ask for a scoped task:
+
+```text
+Audit the auth, billing, and admin routes for missing permission checks. Use a workflow only if it helps. Report confirmed findings with file paths, evidence, and minimal fixes.
+```
+
+Do not turn on ultracode as a permanent default. It can be slower, more expensive, and more autonomous than a normal Claude Code session.
+
+## Ultracode In One Table
+
+| Setting     | What it does                                             | Best for                                                         | Main risk                                      |
+| ----------- | -------------------------------------------------------- | ---------------------------------------------------------------- | ---------------------------------------------- |
+| `high`      | Strong default reasoning for normal coding.              | Everyday multi-file edits, debugging, implementation.            | May still miss broad repository patterns.      |
+| `xhigh`     | More reasoning depth without automatic workflow fan-out. | Hard debugging, architecture review, delicate refactors.         | Higher token use and slower turns.             |
+| `ultracode` | `xhigh` plus automatic dynamic workflow orchestration.   | Large audits, migrations, research, and cross-checked decisions. | Much higher usage if the task fans out widely. |
+| `max`       | Maximum reasoning depth where available.                 | Rare, very difficult tasks.                                      | Slow and expensive; not a daily driver.        |
+
+The key distinction: `xhigh` changes how hard Claude thinks. `ultracode` also lets Claude decide when the work should become a workflow with background agents.
+
+## Why People Search For Ultracode After Opus 4.8
+
+The Opus 4.8 rollout created a few new search intents that deserve direct answers:
+
+| Search phrase                           | Real question behind it                 | Short answer                                                                    |
+| --------------------------------------- | --------------------------------------- | ------------------------------------------------------------------------------- |
+| `what is ultracode effort`              | Is this a new model, a plan, or a mode? | It is a Claude Code effort setting, not a separate model or subscription.       |
+| `Claude Code ultracode vs xhigh`        | Which one should I use?                 | Use `xhigh` for depth; use `ultracode` when workflow orchestration may help.    |
+| `Claude Code ultracode not showing`     | Why is the option missing?              | Check version, plan/provider, `/config`, and organization admin settings.       |
+| `Opus 4.8 ultracode slow`               | Is slow behavior expected?              | Often yes: higher effort and workflow orchestration can take longer.            |
+| `Claude Code ultracode cost`            | Will it burn more usage?                | It can. Start scoped and check cost/usage surfaces before long unattended use.  |
+| `Claude Code workflow agents can code`  | Are workflow agents only for review?    | They can support large coding workflows, but edits should be scoped and tested. |
+| `Claude Code ultracode thinking blocks` | Is the Opus 4.8 API error related?      | Update to at least `2.1.156` if you hit the thinking-block API error.           |
+
+These are not official keyword volumes. They are observed community and creator discussion patterns from the Opus 4.8 launch window.
+
+## When Ultracode Is Worth Trying
+
+Good fits:
+
+| Task                                   | Why ultracode can help                                                      |
+| -------------------------------------- | --------------------------------------------------------------------------- |
+| Repository-wide permission audit       | Multiple agents can inspect different route groups and cross-check results. |
+| Large framework or API migration       | The task can be split by package, file group, or migration step.            |
+| Security or hardening sweep            | Findings benefit from independent verification before implementation.       |
+| SEO/content inventory for a large site | Agents can compare content files, routes, metadata, sitemap, and sources.   |
+| Complex root-cause investigation       | Several hypotheses can be explored in parallel, then reconciled.            |
+| High-stakes plan review                | One workflow can draft, challenge, and refine the plan before edits.        |
+
+Poor fits:
+
+| Task                                | Better option                                                |
+| ----------------------------------- | ------------------------------------------------------------ |
+| One-file typo, import, or style fix | Normal `high` effort session.                                |
+| A small feature with clear files    | Plan Mode, then ordinary implementation.                     |
+| Repeated prompt you already know    | Slash command or skill.                                      |
+| Cost-sensitive exploration          | Narrow prompt, `high` effort, and manual checkpoints.        |
+| Work needing constant decisions     | Staged interactive session instead of a background workflow. |
+
+## How To Enable Ultracode
+
+Inside Claude Code:
+
+```text
+/effort ultracode
+```
+
+If it is missing, check in this order:
+
+1. Run `claude --version`.
+2. Update to a version that supports dynamic workflows.
+3. Open `/config` and look for Dynamic workflows.
+4. Check whether you are on a plan or provider surface where workflows are available.
+5. If you use an organization account, ask whether admins disabled workflows.
+6. Restart the session after changing settings.
+
+If the option appears but workflows do not run, ask explicitly:
+
+```text
+Create a workflow for this audit, but start read-only and ask before edits.
+```
+
+## Cost And Speed Expectations
+
+Ultracode can feel slow for three different reasons:
+
+| Reason                       | What is happening                                                  | What to do                                                             |
+| ---------------------------- | ------------------------------------------------------------------ | ---------------------------------------------------------------------- |
+| Higher reasoning effort      | Claude is spending more thought on each step.                      | Use `high` unless the task truly needs `xhigh`.                        |
+| Workflow fan-out             | Claude may launch a background workflow with many agents.          | Scope the first run and watch `/workflows`.                            |
+| Verification loops           | Agents may check findings before returning the final answer.       | Ask for read-only findings first, then run implementation separately.  |
+| Large context or noisy files | Claude spends effort parsing old logs, MCP output, or broad files. | Use `/clear`, `/compact`, and narrow file paths.                       |
+| Fast mode misunderstanding   | Fast mode speeds output but has different pricing.                 | Do not use Fast mode as the default for long unattended workflow runs. |
+
+If the goal is cost control, use [Context management](/en/mechanics/context-management), [Pricing and limits](/en/pricing), and [Opus 4.8 slow or expensive troubleshooting](/en/troubleshooting/claude-code-opus-4-8-slow-or-expensive).
+
+## Prompt Patterns That Work
+
+### Read-Only Audit
+
+```text
+/effort ultracode
+Run a read-only workflow to audit content/pages for stale Claude Code version claims. Do not edit files. Return a table with file path, claim, evidence, and recommended change.
+```
+
+### Large Migration Pilot
+
+```text
+/effort ultracode
+Create a workflow for a migration pilot in src/modules/billing only. First inventory the affected files, then propose the smallest safe sequence. Do not edit until I approve the plan.
+```
+
+### Verification Workflow
+
+```text
+/effort ultracode
+Use a workflow to verify the previous implementation. Check tests, route generation, sitemap inclusion, and obvious regressions. Report only evidence-backed issues.
+```
+
+The pattern is deliberate: scope, mode, evidence, and stopping condition. Without those, ultracode can over-expand.
+
+## Ultracode vs Dynamic Workflows
+
+Ultracode is the switch. Dynamic workflows are the mechanism.
+
+| Term             | Meaning                                                                 |
+| ---------------- | ----------------------------------------------------------------------- |
+| Ultracode        | A Claude Code effort setting that enables `xhigh` plus workflow choice. |
+| Dynamic workflow | The background orchestration run that Claude may create for a task.     |
+| `/workflows`     | The place to watch running or completed workflow jobs.                  |
+| `/deep-research` | A bundled workflow for research when web search is available.           |
+| Subagent         | A focused worker with separate context; workflows can coordinate many.  |
+
+Read [Dynamic workflows](/en/mechanics/dynamic-workflows) for the full mechanism and [Subagents](/en/mechanics/subagents) for the smaller building block.
+
+## Common Mistakes
+
+| Mistake                                | Why it hurts                                          | Better approach                                         |
+| -------------------------------------- | ----------------------------------------------------- | ------------------------------------------------------- |
+| Using ultracode for every prompt       | It spends more effort than most tasks need.           | Use `high` by default, then escalate.                   |
+| Asking for "fix the whole repo"        | The workflow may fan out without useful boundary.     | Name directories, modules, and excluded files.          |
+| Skipping read-only planning            | Many agents may discover and edit at once.            | Separate inventory, plan, implementation, verification. |
+| Treating community reports as facts    | Launch-day reports can be noisy and account-specific. | Verify with docs, version, plan, and local behavior.    |
+| Ignoring admin settings                | Enterprise and organization accounts can differ.      | Check `/config` and managed settings.                   |
+| Saving the first workflow as a command | You may preserve a bad process.                       | Save only after the run succeeds on a real task.        |
+
+## Related Guides
+
+- [Dynamic workflows](/en/mechanics/dynamic-workflows)
+- [Claude Code latest version](/en/upgrade)
+- [Opus 4.8 slow or expensive troubleshooting](/en/troubleshooting/claude-code-opus-4-8-slow-or-expensive)
+- [Subagents](/en/mechanics/subagents)
+- [Plan Mode](/en/mechanics/plan-mode)
+- [Context management](/en/mechanics/context-management)
+- [Pricing and limits](/en/pricing)
+
+## Official Sources
+
+- [Dynamic workflows documentation](https://code.claude.com/docs/en/workflows)
+- [Dynamic workflows announcement](https://claude.com/blog/introducing-dynamic-workflows-in-claude-code)
+- [Claude Code changelog](https://code.claude.com/docs/en/changelog)
+- [Claude Opus 4.8 announcement](https://www.anthropic.com/news/claude-opus-4-8)

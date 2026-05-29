@@ -16,7 +16,7 @@ description: '聚焦 Claude Code 官方文档、FAQ、MCP 服务器、CLI 工作
 
 - [Claude Code 常见问题](/zh/faqs) - 安装、价格、限制、MCP、Plan Mode、`CLAUDE.md` 的短答案。
 - [Claude Code 价格和用量](/zh/pricing) - 官方价格信号、订阅与 API 用量区别、成本控制工作流。
-- [Claude Code 机制专题](/zh/mechanics) - 深入解释 CLAUDE.md、Plan Mode、命令、Hooks、Subagents 和上下文。
+- [Claude Code 机制专题](/zh/mechanics) - 深入解释 CLAUDE.md、Plan Mode、命令、Hooks、Subagents、Ultracode、Dynamic Workflows 和上下文。
 - [MCP 目录](/zh/mcp) - 实用 MCP 工具页和安全检查。
 - [故障排查](/zh/troubleshooting) - 处理安装、PATH、登录、权限和 MCP 连接问题。
 - [完整教程中心](/zh/tutorial) - 按步骤学习 Claude Code 实战用法。
@@ -42,6 +42,8 @@ description: '聚焦 Claude Code 官方文档、FAQ、MCP 服务器、CLI 工作
 - [Claude Code 多少钱？](/zh/faqs/how-much-is-claude-code)
 - [Claude Code 有哪些用量限制？](/zh/faqs/claude-code-usage-limits)
 - [Claude Code API 文档在哪里？](/zh/faqs/claude-code-api-documentation)
+- [Claude Code ultracode 是什么？](/zh/mechanics/ultracode)
+- [为什么 Opus 4.8 在 Claude Code 里变慢或变贵？](/zh/troubleshooting/claude-code-opus-4-8-slow-or-expensive)
 
 ## 故障排查
 
@@ -60,6 +62,8 @@ description: '聚焦 Claude Code 官方文档、FAQ、MCP 服务器、CLI 工作
 - [Slash Commands](/zh/mechanics/slash-commands) - 把重复提示词变成可复用命令。
 - [Hooks](/zh/mechanics/hooks) - 添加工作流自动化和护栏。
 - [Subagents](/zh/mechanics/subagents) - 为重复的专业角色配置专门代理。
+- [Dynamic Workflows](/zh/mechanics/dynamic-workflows) - 用于大规模审查、迁移和交叉验证研究的后台编排。
+- [Ultracode](/zh/mechanics/ultracode) - 用 `xhigh` 加 workflow 判断处理有明确范围的困难会话。
 - [上下文管理](/zh/mechanics/context-management) - 减少噪声上下文和无效消耗。
 
 ## MCP 和工具
@@ -98,4 +102,5 @@ description: '聚焦 Claude Code 官方文档、FAQ、MCP 服务器、CLI 工作
 3. 配置工具权限和 GitHub CLI。
 4. 大改动前学会 Plan Mode。
 5. 只有服务真实工作流时再添加 MCP server。
-6. 基础稳定后，再学习上下文管理和 Headless Mode。
+6. 能清楚收窄任务后，再学习 dynamic workflows 和 ultracode。
+7. 基础稳定后，再学习上下文管理和 Headless Mode。
