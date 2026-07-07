@@ -1,4 +1,8 @@
-import React from 'react';
+import React, {
+  isValidElement,
+  type ComponentProps,
+  type ReactNode,
+} from 'react';
 import defaultMdxComponents from 'fumadocs-ui/mdx';
 import type { MDXComponents } from 'mdx/types';
 
@@ -20,6 +24,55 @@ const calloutStyles: Record<string, string> = {
   error:
     'border-red-200 bg-red-50 text-red-950 dark:border-red-900 dark:bg-red-950/30 dark:text-red-50',
 };
+
+function normalizeHeading(text: string) {
+  return text.replace(/\s+/g, ' ').trim().toLowerCase();
+}
+
+function getNodeText(node: ReactNode): string {
+  if (typeof node === 'string' || typeof node === 'number') {
+    return String(node);
+  }
+
+  if (Array.isArray(node)) {
+    return node.map(getNodeText).join('');
+  }
+
+  if (isValidElement(node)) {
+    return getNodeText((node.props as { children?: ReactNode }).children);
+  }
+
+  return '';
+}
+
+export function createPageHeadingComponents(title?: string): MDXComponents {
+  let firstHeadingSeen = false;
+  const normalizedTitle = normalizeHeading(title || '');
+
+  return {
+    h1: ({ children, className, ...props }: ComponentProps<'h1'>) => {
+      const isFirstHeading = !firstHeadingSeen;
+      firstHeadingSeen = true;
+      const headingText = normalizeHeading(getNodeText(children));
+
+      if (isFirstHeading && headingText && headingText === normalizedTitle) {
+        return null;
+      }
+
+      return (
+        <h2
+          {...props}
+          className={cn(
+            'mt-10 scroll-m-28 text-2xl font-bold tracking-normal',
+            className
+          )}
+        >
+          {children}
+        </h2>
+      );
+    },
+  };
+}
 
 function Callout({
   type = 'default',

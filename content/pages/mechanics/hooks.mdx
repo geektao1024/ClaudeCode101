@@ -1,6 +1,6 @@
 ---
 title: 'Claude Code Hooks'
-description: 'A practical Claude Code hooks guide covering lifecycle events, PreToolUse guardrails, PostToolUse checks, matchers, settings files, outputs, permissions, debugging, and team rollout.'
+description: 'Claude Code hooks guide for lifecycle events, PreToolUse guardrails, PostToolUse checks, matchers, settings, outputs, permissions, and debugging.'
 ---
 
 Hooks let Claude Code run your own automation at specific points in a session. They can block risky tool calls, add context, run checks after edits, notify you when Claude needs input, log activity, or integrate Claude Code with team workflows. Use hooks when you need repeatable behavior around the agent loop, not when you only need a reusable prompt.
@@ -17,16 +17,16 @@ Do not use hooks as hidden magic. A hook should make a workflow safer, clearer, 
 
 Choose hooks only when the trigger is an event.
 
-| Need | Better mechanism |
-| --- | --- |
-| A repeated prompt shortcut | Slash command or skill |
-| A reusable multi-step workflow | Skill |
-| Durable project instructions | `CLAUDE.md` or `.claude/rules/` |
-| Prevent a tool call before it runs | `PreToolUse` hook or permission rule |
-| Run a check after Claude edits files | `PostToolUse` hook |
-| Enforce repository quality in all workflows | CI, pre-commit, or test pipeline |
-| Notify a human when Claude needs input | `Notification` hook |
-| Audit tool calls or session lifecycle | Hooks plus logs |
+| Need                                        | Better mechanism                     |
+| ------------------------------------------- | ------------------------------------ |
+| A repeated prompt shortcut                  | Slash command or skill               |
+| A reusable multi-step workflow              | Skill                                |
+| Durable project instructions                | `CLAUDE.md` or `.claude/rules/`      |
+| Prevent a tool call before it runs          | `PreToolUse` hook or permission rule |
+| Run a check after Claude edits files        | `PostToolUse` hook                   |
+| Enforce repository quality in all workflows | CI, pre-commit, or test pipeline     |
+| Notify a human when Claude needs input      | `Notification` hook                  |
+| Audit tool calls or session lifecycle       | Hooks plus logs                      |
 
 Hooks are powerful because they are automatic. That is also the risk. Start narrow.
 
@@ -44,14 +44,14 @@ For command hooks, Claude Code sends JSON to the hook process through stdin. The
 
 Hook scope depends on where you configure it:
 
-| Location | Scope | Commit it? | Use case |
-| --- | --- | --- | --- |
-| `~/.claude/settings.json` | All your projects | No | Personal notifications and local habits. |
-| `.claude/settings.json` | Current project | Usually yes | Team-shared guardrails and workflow checks. |
-| `.claude/settings.local.json` | Current project | No | Local machine paths, private scripts, experiments. |
-| Managed policy settings | Organization | Admin controlled | Enterprise policy and mandatory controls. |
-| Plugin hooks | Where plugin is enabled | Bundled | Distributable workflow integrations. |
-| Skill or agent frontmatter | While active | Yes | Workflow-specific hook behavior. |
+| Location                      | Scope                   | Commit it?       | Use case                                           |
+| ----------------------------- | ----------------------- | ---------------- | -------------------------------------------------- |
+| `~/.claude/settings.json`     | All your projects       | No               | Personal notifications and local habits.           |
+| `.claude/settings.json`       | Current project         | Usually yes      | Team-shared guardrails and workflow checks.        |
+| `.claude/settings.local.json` | Current project         | No               | Local machine paths, private scripts, experiments. |
+| Managed policy settings       | Organization            | Admin controlled | Enterprise policy and mandatory controls.          |
+| Plugin hooks                  | Where plugin is enabled | Bundled          | Distributable workflow integrations.               |
+| Skill or agent frontmatter    | While active            | Yes              | Workflow-specific hook behavior.                   |
 
 For a website or SaaS project, put team-shared hooks in `.claude/settings.json` only after the team agrees. Put local-only paths and personal notifications in settings.local or user settings.
 
@@ -102,22 +102,22 @@ Start with a non-blocking check or a log-only hook. Blocking hooks should come l
 
 The official reference has many events. For most teams, these are the important ones:
 
-| Event | When it fires | Common use |
-| --- | --- | --- |
-| `SessionStart` | A session begins or resumes. | Load context, show current branch, warn about environment. |
-| `InstructionsLoaded` | `CLAUDE.md` or rules are loaded. | Log instruction loading, detect stale rules. |
-| `UserPromptSubmit` | Before Claude processes a submitted prompt. | Add context, validate prompt shape, block unsafe requests. |
-| `UserPromptExpansion` | A slash command or skill expands into a prompt. | Audit or block specific command expansions. |
-| `PreToolUse` | Before a tool call executes. | Block destructive Bash, protect secrets, require approvals. |
-| `PermissionRequest` | When Claude is about to ask permission. | Auto-answer narrow, trusted permission prompts. |
-| `PostToolUse` | After a tool call succeeds. | Run formatters, check changed files, log tool output. |
-| `PostToolUseFailure` | After a tool call fails. | Add debugging context or log failures. |
-| `PostToolBatch` | After a batch of parallel tools finishes. | Aggregate batch-level checks. |
-| `Notification` | Claude Code sends a notification. | Desktop alerts, chat notifications, idle reminders. |
-| `SubagentStart` / `SubagentStop` | A subagent starts or finishes. | Monitor specialist agents and capture summaries. |
-| `PreCompact` / `PostCompact` | Before or after context compaction. | Save handoff notes or rehydrate context. |
-| `Stop` | Claude finishes a turn. | Require final checks or add reminders. |
-| `SessionEnd` | Session terminates. | Cleanup, save metrics, write audit logs. |
+| Event                            | When it fires                                   | Common use                                                  |
+| -------------------------------- | ----------------------------------------------- | ----------------------------------------------------------- |
+| `SessionStart`                   | A session begins or resumes.                    | Load context, show current branch, warn about environment.  |
+| `InstructionsLoaded`             | `CLAUDE.md` or rules are loaded.                | Log instruction loading, detect stale rules.                |
+| `UserPromptSubmit`               | Before Claude processes a submitted prompt.     | Add context, validate prompt shape, block unsafe requests.  |
+| `UserPromptExpansion`            | A slash command or skill expands into a prompt. | Audit or block specific command expansions.                 |
+| `PreToolUse`                     | Before a tool call executes.                    | Block destructive Bash, protect secrets, require approvals. |
+| `PermissionRequest`              | When Claude is about to ask permission.         | Auto-answer narrow, trusted permission prompts.             |
+| `PostToolUse`                    | After a tool call succeeds.                     | Run formatters, check changed files, log tool output.       |
+| `PostToolUseFailure`             | After a tool call fails.                        | Add debugging context or log failures.                      |
+| `PostToolBatch`                  | After a batch of parallel tools finishes.       | Aggregate batch-level checks.                               |
+| `Notification`                   | Claude Code sends a notification.               | Desktop alerts, chat notifications, idle reminders.         |
+| `SubagentStart` / `SubagentStop` | A subagent starts or finishes.                  | Monitor specialist agents and capture summaries.            |
+| `PreCompact` / `PostCompact`     | Before or after context compaction.             | Save handoff notes or rehydrate context.                    |
+| `Stop`                           | Claude finishes a turn.                         | Require final checks or add reminders.                      |
+| `SessionEnd`                     | Session terminates.                             | Cleanup, save metrics, write audit logs.                    |
 
 Do not hook every event. Pick the one lifecycle point that matches the workflow.
 
@@ -243,13 +243,13 @@ Keep session hooks fast. Slow startup hooks make Claude Code feel broken even wh
 
 Hooks and permissions work together:
 
-| Control | Best use |
-| --- | --- |
-| Permission rules | Baseline allow, ask, and deny policy. |
-| `PreToolUse` hooks | Context-aware enforcement before a tool executes. |
+| Control                   | Best use                                          |
+| ------------------------- | ------------------------------------------------- |
+| Permission rules          | Baseline allow, ask, and deny policy.             |
+| `PreToolUse` hooks        | Context-aware enforcement before a tool executes. |
 | `PermissionRequest` hooks | Narrow auto-approval or custom approval behavior. |
-| `PostToolUse` hooks | Feedback after a tool succeeds. |
-| CI / tests | Final enforcement outside Claude Code. |
+| `PostToolUse` hooks       | Feedback after a tool succeeds.                   |
+| CI / tests                | Final enforcement outside Claude Code.            |
 
 Do not rely on one layer. For example, use permissions to deny broad dangerous tools, use a `PreToolUse` hook to block risky patterns, and use CI to prove the repository still works.
 
@@ -309,16 +309,16 @@ Start with one high-value hook, such as blocking edits to `.env` or logging MCP 
 
 ## Common Mistakes
 
-| Mistake | Why it hurts | Better approach |
-| --- | --- | --- |
-| Hooking every event | Adds overhead and noise. | Target one lifecycle point. |
-| Using hooks as hidden automation | Teammates cannot predict behavior. | Document hooks and make outputs clear. |
-| Blocking too early | False positives slow work. | Start with observe or warn mode. |
-| Running slow scripts | Makes Claude Code feel stuck. | Add timeouts and narrow matchers. |
-| Printing secrets | Hook output can reach logs or context. | Sanitize output. |
-| Using PostToolUse to prevent writes | The write already happened. | Use PreToolUse for prevention. |
-| Letting local paths leak into project settings | Breaks teammates. | Use `CLAUDE_PROJECT_DIR` or local settings. |
-| Forgetting permissions and CI | Hooks are only one layer. | Combine hooks with policy and verification. |
+| Mistake                                        | Why it hurts                           | Better approach                             |
+| ---------------------------------------------- | -------------------------------------- | ------------------------------------------- |
+| Hooking every event                            | Adds overhead and noise.               | Target one lifecycle point.                 |
+| Using hooks as hidden automation               | Teammates cannot predict behavior.     | Document hooks and make outputs clear.      |
+| Blocking too early                             | False positives slow work.             | Start with observe or warn mode.            |
+| Running slow scripts                           | Makes Claude Code feel stuck.          | Add timeouts and narrow matchers.           |
+| Printing secrets                               | Hook output can reach logs or context. | Sanitize output.                            |
+| Using PostToolUse to prevent writes            | The write already happened.            | Use PreToolUse for prevention.              |
+| Letting local paths leak into project settings | Breaks teammates.                      | Use `CLAUDE_PROJECT_DIR` or local settings. |
+| Forgetting permissions and CI                  | Hooks are only one layer.              | Combine hooks with policy and verification. |
 
 ## Practical Starter Hooks
 

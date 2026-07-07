@@ -1,41 +1,45 @@
 ---
 title: 'Claude Code FAQ'
-description: 'Claude Code 高频问题总入口：安装、Windows 配置、价格、用量限制、CLAUDE.md、Plan Mode、MCP、Ultracode、Dynamic Workflows、自定义命令、Headless 和 API 文档。'
+description: 'Claude Code FAQ 总入口：安装、更新、价格、用量、CLAUDE.md、Plan Mode、MCP、Ultrathink、Ultracode、自定义命令和 API。'
 ---
 
 这个页面是 ClaudeCode101 的短答案入口。用户搜索一个具体 Claude Code 问题时，先在这里得到可执行结论，再进入完整教程、机制专题、MCP 页面、价格说明或故障排查页面。
 
-> 最后核查：2026 年 5 月 29 日。Claude Code 的安装方式、套餐权限、模型可用性、Dynamic Workflows 和用量限制变化很快。这个页面负责帮你找到正确入口；涉及账号价格、用量和模型权限时，以官方页面和你自己账号内显示的信息为准。
+> 最后核查：2026 年 7 月 7 日。Claude Code 的安装方式、包管理器行为、套餐权限、模型可用性、Dynamic Workflows 和用量限制变化很快。这个页面负责帮你找到正确入口；涉及账号价格、用量和模型权限时，以官方页面和你自己账号内显示的信息为准。
 
 ## 快速结论
 
 按你的搜索意图进入：
 
-- **安装 Claude Code：** 先看安装 FAQ；如果失败，再进完整安装教程和故障排查。
+- **安装和更新 Claude Code：** 先看安装 FAQ；更新前判断该用 `claude update`、npm、Homebrew、WinGet、apt、dnf 还是 apk。
 - **Windows 配置：** 先判断用原生 Windows 还是 WSL，再处理 PATH、Shell 和包管理器。
 - **价格和用量：** 把价格、限制、`/model`、`/usage`、`/clear`、`/compact` 放在一起看。
-- **项目记忆：** 写大段项目说明前，先看 CLAUDE.md 应该写什么。
+- **项目记忆：** 写大段项目说明前，先看 CLAUDE.md 和官方 memory 文档应该怎么用。
 - **Plan Mode：** 多文件改动、迁移、价格页、重定向、登录、支付等高风险任务先规划。
 - **MCP servers：** 一次只接一个 server，并收紧工具权限。
-- **自动化：** 重复提示词用自定义命令；大规模编排任务看 Dynamic Workflows；脚本化运行看 headless；程序化集成看 Agent SDK/API 文档。
+- **自动化：** 重复提示词用自定义命令和 skills；命令输入看参数 FAQ；脚本化运行看 headless；程序化集成看 Agent SDK/API 文档。
+- **深度推理：** 花更多时间或 token 前，先区分 Ultrathink、Ultracode 和 Plan Mode。
 
 FAQ 页面负责回答第一个问题，链接页负责帮你真正执行。
 
 ## 从这些问题开始
 
-| 问题                                                                               | 简短答案                                                             | 下一步                                                              |
-| ---------------------------------------------------------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| [如何安装 Claude Code？](/zh/faqs/how-to-install-claude-code)                      | 按当前官方路径安装，验证 `claude` 命令，再完成认证。                 | [安装教程](/zh/tutorial/getting-started/installation)               |
-| [Windows 上如何安装 Claude Code？](/zh/faqs/how-to-install-claude-code-on-windows) | Windows 项目优先原生安装；Linux 工具链优先 WSL 2。                   | [Windows PATH 排障](/zh/troubleshooting/claude-code-windows-path)   |
-| [Claude Code 多少钱？](/zh/faqs/how-much-is-claude-code)                           | 订阅用户看 Free、Pro、Max、Team、Enterprise；API 用户看 token 成本。 | [价格与限制中心](/zh/pricing)                                       |
-| [Claude Code 用量限制是什么？](/zh/faqs/claude-code-usage-limits)                  | 限制取决于登录方式、模型、上下文大小，以及订阅/API 计费方式。        | [Rate limit 排障](/zh/troubleshooting/claude-code-rate-limit-error) |
-| [CLAUDE.md 是什么？](/zh/faqs/what-is-claude-md)                                   | 它是项目长期记忆，适合放命令、规范、架构边界和评审规则。             | [CLAUDE.md 机制](/zh/mechanics/claude-md)                           |
-| [Plan Mode 是什么？](/zh/faqs/what-is-plan-mode)                                   | 它让 Claude Code 先读代码并提出计划，再决定是否编辑文件。            | [Plan Mode 机制](/zh/mechanics/plan-mode)                           |
-| [MCP servers 是什么？](/zh/faqs/claude-code-mcp-servers)                           | MCP 让 Claude Code 接入 GitHub、浏览器、文档、数据库或内部系统。     | [MCP 目录](/zh/mcp)                                                 |
-| [自定义命令是什么？](/zh/faqs/claude-code-custom-commands)                         | 自定义命令和 slash commands 能把重复提示词变成命名工作流。           | [Slash Commands 机制](/zh/mechanics/slash-commands)                 |
-| [Headless mode 是什么？](/zh/faqs/claude-code-headless-mode)                       | Headless 用于脚本、JSON 输出、检查任务和类 CI 流程。                 | [API 文档 FAQ](/zh/faqs/claude-code-api-documentation)              |
-| [Claude Code API 文档在哪里？](/zh/faqs/claude-code-api-documentation)             | CLI 看终端文档，Agent SDK 看代理自动化，Claude API 看模型调用。      | [Headless mode FAQ](/zh/faqs/claude-code-headless-mode)             |
-| Claude Code ultracode 是什么？                                                     | `ultracode` 把 `xhigh` effort 和自动 dynamic workflow 编排结合起来。 | [Ultracode 机制](/zh/mechanics/ultracode)                           |
+| 问题                                                                                 | 简短答案                                                              | 下一步                                                              |
+| ------------------------------------------------------------------------------------ | --------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| [如何安装 Claude Code？](/zh/faqs/how-to-install-claude-code)                        | 按当前官方路径安装，验证 `claude` 命令，再完成认证。                  | [安装教程](/zh/tutorial/getting-started/installation)               |
+| [Claude update 和 npm install 怎么选？](/zh/faqs/claude-update-vs-npm-install)       | 用安装当前 `claude` 命令的同一个渠道更新。                            | [最新版本与更新日志](/zh/upgrade)                                   |
+| [Windows 上如何安装 Claude Code？](/zh/faqs/how-to-install-claude-code-on-windows)   | Windows 项目优先原生安装；Linux 工具链优先 WSL 2。                    | [Windows PATH 排障](/zh/troubleshooting/claude-code-windows-path)   |
+| [Claude Code 多少钱？](/zh/faqs/how-much-is-claude-code)                             | 订阅用户看 Free、Pro、Max、Team、Enterprise；API 用户看 token 成本。  | [价格与限制中心](/zh/pricing)                                       |
+| [Claude Code 用量限制是什么？](/zh/faqs/claude-code-usage-limits)                    | 限制取决于登录方式、模型、上下文大小，以及订阅/API 计费方式。         | [Rate limit 排障](/zh/troubleshooting/claude-code-rate-limit-error) |
+| [CLAUDE.md 是什么？](/zh/faqs/what-is-claude-md)                                     | 它是项目长期记忆，适合放命令、规范、架构边界和评审规则。              | [CLAUDE.md 机制](/zh/mechanics/claude-md)                           |
+| [Claude Code memory 官方文档在哪里？](/zh/faqs/claude-code-memory-official-docs)     | 官方文档负责真实行为，ClaudeCode101 负责实际配置取舍。                | [CLAUDE.md 机制](/zh/mechanics/claude-md)                           |
+| [Plan Mode 是什么？](/zh/faqs/what-is-plan-mode)                                     | 它让 Claude Code 先读代码并提出计划，再决定是否编辑文件。             | [Plan Mode 机制](/zh/mechanics/plan-mode)                           |
+| [MCP servers 是什么？](/zh/faqs/claude-code-mcp-servers)                             | MCP 让 Claude Code 接入 GitHub、浏览器、文档、数据库或内部系统。      | [MCP 目录](/zh/mcp)                                                 |
+| [自定义命令是什么？](/zh/faqs/claude-code-custom-commands)                           | 自定义命令和 slash commands 能把重复提示词变成命名工作流。            | [Slash Commands 机制](/zh/mechanics/slash-commands)                 |
+| [自定义命令参数怎么传？](/zh/faqs/claude-code-custom-command-arguments)              | 命令名后面的文本就是参数；复杂输入建议用 skills 声明。                | [自定义命令教程](/zh/tutorial/tools-integration/custom-commands)    |
+| [Headless mode 是什么？](/zh/faqs/claude-code-headless-mode)                         | Headless 用于脚本、JSON 输出、检查任务和类 CI 流程。                  | [API 文档 FAQ](/zh/faqs/claude-code-api-documentation)              |
+| [Claude Code API 文档在哪里？](/zh/faqs/claude-code-api-documentation)               | CLI 看终端文档，Agent SDK 看代理自动化，Claude API 看模型调用。       | [Headless mode FAQ](/zh/faqs/claude-code-headless-mode)             |
+| [Ultrathink 和 Ultracode 有什么区别？](/zh/faqs/claude-code-ultrathink-vs-ultracode) | `ultrathink` 适合单个难推理步骤；Ultracode 适合范围明确的仓库级任务。 | [Ultrathink 教程](/zh/tutorial/optimization/ultrathink-mode)        |
 
 ## 安装和首次运行问题
 
@@ -44,6 +48,7 @@ FAQ 页面负责回答第一个问题，链接页负责帮你真正执行。
 | 你在问什么                     | 先看                                                                      | 需要验证                                      |
 | ------------------------------ | ------------------------------------------------------------------------- | --------------------------------------------- |
 | “现在该怎么安装 Claude Code？” | [如何安装 Claude Code](/zh/faqs/how-to-install-claude-code)               | `claude --version`、Shell PATH、登录方式。    |
+| “怎么更新 Claude Code？”       | [Claude update 和 npm install](/zh/faqs/claude-update-vs-npm-install)     | 当前 binary 路径、包管理器和 dist-tags。      |
 | “为什么 Windows 不一样？”      | [Windows 安装指南](/zh/faqs/how-to-install-claude-code-on-windows)        | 原生终端还是 WSL、包管理器和 PATH。           |
 | “为什么 `claude` 运行不了？”   | [command not found 修复](/zh/troubleshooting/claude-command-not-found)    | binary 位置和当前 Shell 加载的 PATH。         |
 | “为什么登录失败？”             | [登录排障](/zh/troubleshooting/claude-code-login-or-authentication-error) | 浏览器登录、API key、组织席位、本地凭据状态。 |
@@ -69,16 +74,16 @@ Claude Code 价格问题容易混，因为订阅用量和 API 计费是两套不
 
 机制页面解释为什么这样用，以及真实项目里要避开什么。
 
-| 工作流需求                      | 先看                                               | 再读                                                 |
-| ------------------------------- | -------------------------------------------------- | ---------------------------------------------------- |
-| 固定项目规则                    | [CLAUDE.md 是什么？](/zh/faqs/what-is-claude-md)   | [CLAUDE.md 机制](/zh/mechanics/claude-md)            |
-| 修改前先规划                    | [Plan Mode 是什么？](/zh/faqs/what-is-plan-mode)   | [Plan Mode 机制](/zh/mechanics/plan-mode)            |
-| 减少上下文膨胀和额度浪费        | [用量限制](/zh/faqs/claude-code-usage-limits)      | [上下文管理](/zh/mechanics/context-management)       |
-| 复用重复提示词                  | [自定义命令](/zh/faqs/claude-code-custom-commands) | [Slash Commands](/zh/mechanics/slash-commands)       |
-| 增加自动护栏                    | [自定义命令](/zh/faqs/claude-code-custom-commands) | [Hooks](/zh/mechanics/hooks)                         |
-| 委派噪音很大的旁路任务          | [API 文档](/zh/faqs/claude-code-api-documentation) | [Subagents](/zh/mechanics/subagents)                 |
-| 编排大规模审查或迁移            | [最新版本与更新日志](/zh/upgrade)                  | [Dynamic Workflows](/zh/mechanics/dynamic-workflows) |
-| 让 Claude 判断是否使用 workflow | [最新版本与更新日志](/zh/upgrade)                  | [Ultracode](/zh/mechanics/ultracode)                 |
+| 工作流需求                  | 先看                                                                         | 再读                                                             |
+| --------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| 固定项目规则                | [Claude Code memory 官方文档](/zh/faqs/claude-code-memory-official-docs)     | [CLAUDE.md 机制](/zh/mechanics/claude-md)                        |
+| 修改前先规划                | [Plan Mode 是什么？](/zh/faqs/what-is-plan-mode)                             | [Plan Mode 机制](/zh/mechanics/plan-mode)                        |
+| 减少上下文膨胀和额度浪费    | [用量限制](/zh/faqs/claude-code-usage-limits)                                | [上下文管理](/zh/mechanics/context-management)                   |
+| 复用重复提示词              | [自定义命令参数](/zh/faqs/claude-code-custom-command-arguments)              | [自定义命令教程](/zh/tutorial/tools-integration/custom-commands) |
+| 增加自动护栏                | [自定义命令](/zh/faqs/claude-code-custom-commands)                           | [Hooks](/zh/mechanics/hooks)                                     |
+| 委派噪音很大的旁路任务      | [API 文档](/zh/faqs/claude-code-api-documentation)                           | [Subagents](/zh/mechanics/subagents)                             |
+| 编排大规模审查或迁移        | [最新版本与更新日志](/zh/upgrade)                                            | [Dynamic Workflows](/zh/mechanics/dynamic-workflows)             |
+| 选择深度推理或工作流 effort | [Ultrathink 和 Ultracode 区别](/zh/faqs/claude-code-ultrathink-vs-ultracode) | [Ultracode](/zh/mechanics/ultracode)                             |
 
 如果你问“应该先配置什么”，通常顺序是：`CLAUDE.md`、权限、一个可复用命令、Plan Mode 习惯，然后等模式反复出现后再加 hooks 或 subagents。Dynamic Workflows 更靠后，只有任务范围大到值得额外用量和编排成本时再用。
 

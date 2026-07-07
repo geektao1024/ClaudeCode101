@@ -1,375 +1,124 @@
 ---
-title: "Custom Commands"
-description: "Creating custom command shortcuts and automation for Claude Code workflows"
+title: 'Claude Code Custom Commands: Arguments and Skills'
+description: 'Create Claude Code custom commands with .claude/commands, pass arguments, choose when to use skills, and keep reusable workflows safe and maintainable.'
 ---
 
-# Custom Commands
+# Claude Code Custom Commands
 
-Custom commands allow you to create shortcuts and automation for frequently used workflows in Claude Code.
+Claude Code custom commands are reusable slash-command prompts for repeated workflows such as code review, release notes, issue triage, migrations, and deploy checklists. Current Claude Code treats old `.claude/commands/*.md` files and newer skills as part of the same slash-command workflow: commands still work, but skills are the better home for workflows that need metadata, arguments, supporting files, or automatic invocation.
 
-## What are Custom Commands?
+## Quick Answer
 
-Custom commands are:
-- **Shortcuts**: Quick access to complex operations
-- **Automation**: Streamlined repetitive tasks
-- **Templates**: Reusable instruction patterns
-- **Workflows**: Multi-step process automation
-
-## Types of Custom Commands
-
-### 1. Slash Commands
-
-Quick shortcuts that start with `/`:
+Use a custom command for a short prompt you want to invoke manually:
 
 ```markdown
-# .claude/commands/deploy.md
----
-name: deploy
-description: Deploy application to staging environment
----
+# .claude/commands/review.md
 
-Please perform a production-ready deployment:
-1. Run all tests and ensure they pass
-2. Build the application for production
-3. Run security checks and linting
-4. Deploy to staging environment
-5. Verify deployment health checks
-6. Provide deployment summary
+Review the current git diff. Focus on correctness bugs, regressions, security risks, and missing tests.
+Lead with concrete findings and file references.
+```
+
+Then run:
+
+```text
+/review
+```
+
+Use a skill when the workflow needs a description, argument hints, allowed tools, examples, scripts, or supporting files:
+
+```text
+.claude/skills/release-check/SKILL.md
+```
+
+## Commands vs Skills
+
+| Need                                  | Use                            | Why                                                           |
+| ------------------------------------- | ------------------------------ | ------------------------------------------------------------- |
+| One short reusable prompt             | `.claude/commands/name.md`     | Lowest overhead.                                              |
+| A workflow with arguments or examples | `.claude/skills/name/SKILL.md` | Skills support frontmatter and supporting files.              |
+| Team process with checklists          | Skill                          | Easier to document and maintain.                              |
+| External tool access                  | MCP, CLI, or plugin            | A command only gives instructions; it does not create a tool. |
+| Always-on project context             | `CLAUDE.md`                    | It should load as memory, not be invoked manually.            |
+
+## Pass Arguments
+
+Text after the command name becomes its arguments. Write the command so Claude knows how to use that trailing text:
+
+```markdown
+# .claude/commands/explain.md
+
+Explain the target provided after `/explain`.
+If the user gives a file path, inspect that file first.
+If the user gives a concept, explain it with examples from this repository.
 ```
 
 Usage:
-```
-/deploy
+
+```text
+/explain src/core/auth/index.ts
+/explain MCP server permissions
 ```
 
-### 2. Workflow Commands
+For named positional arguments and autocomplete hints, use a skill:
 
-Multi-step automation sequences:
+```yaml
+---
+description: Draft release notes for the target version.
+argument-hint: '[version]'
+arguments: version
+---
+Draft release notes for $version from the current git history.
+```
+
+## Useful Command Examples
+
+### Review Current Diff
 
 ```markdown
-# .claude/commands/feature.md
----
-name: feature
-description: Start new feature development
-parameters:
-  - name: feature_name
-    type: string
-    required: true
-  - name: branch_prefix
-    type: string
-    default: "feature"
----
+# .claude/commands/review.md
 
-Create a new feature branch and setup:
-1. Create branch: {{branch_prefix}}/{{feature_name}}
-2. Update local dependencies
-3. Create basic component structure in src/components/{{feature_name}}/
-4. Add feature to main navigation
-5. Create initial test file
-6. Update documentation with feature overview
+Review the current git diff for correctness bugs, regressions, security issues, and missing tests.
+Return findings first, with file paths and line numbers.
+Do not summarize unless there are findings.
 ```
 
-Usage:
-```
-/feature user-dashboard
-/feature payment-system --branch_prefix=enhancement
-```
-
-### 3. Analysis Commands
-
-Code analysis and reporting shortcuts:
+### Write Release Notes
 
 ```markdown
-# .claude/commands/analyze.md
----
-name: analyze
-description: Comprehensive codebase analysis
----
+# .claude/commands/release-notes.md
 
-Perform a comprehensive analysis of the current codebase:
-1. Analyze project structure and architecture
-2. Identify potential performance bottlenecks
-3. Check for code duplication and refactoring opportunities
-4. Review security considerations
-5. Assess test coverage
-6. Generate improvement recommendations
+Read the commits since the latest tag and draft concise release notes.
+Separate user-facing changes, fixes, and internal maintenance.
+Call out migration or rollback risks.
 ```
 
-## Creating Custom Commands
-
-### Command File Structure
-
-```
-.claude/
-├── commands/
-│   ├── deploy.md
-│   ├── feature.md
-│   ├── analyze.md
-│   └── refactor.md
-└── templates/
-    ├── component.md
-    └── api.md
-```
-
-### Command Metadata
+### Triage GitHub Issues
 
 ```markdown
----
-name: command_name
-description: Brief description of what the command does
-parameters:
-  - name: param1
-    type: string|number|boolean
-    required: true|false
-    default: default_value
-    description: Parameter description
-tags:
-  - development
-  - testing
-  - deployment
----
+# .claude/commands/triage-issues.md
 
-Command instructions here...
+Use GitHub CLI to list open issues, group them by theme, and suggest the next three to handle.
+Do not modify issues unless explicitly asked.
 ```
 
-### Parameter Usage
+## Safety Rules
 
-```markdown
-# Using parameters in commands
-Please create a {{component_type}} component named {{component_name}}:
-1. Create file: src/components/{{component_name}}/{{component_name}}.tsx
-2. Include {{features}} if specified
-3. Add to index.ts with {{export_type}} export
-```
+- Keep commands short. Move long procedures into skills.
+- Do not hide broad permissions in a command.
+- Keep project facts in `CLAUDE.md`, not repeated in every command.
+- Test a command on a small diff before using it on release work.
+- Remove commands that duplicate a better skill.
 
-## Advanced Command Features
+## Related Guides
 
-### 1. Conditional Logic
+- [Claude Code skills and commands](/en/faqs/claude-code-custom-commands)
+- [Claude Code custom command arguments](/en/faqs/claude-code-custom-command-arguments)
+- [Tools allowlist](/en/tutorial/configuration/tools-allowlist)
+- [GitHub CLI integration](/en/tutorial/configuration/github-cli)
+- [Headless Mode](/en/tutorial/advanced/headless-mode)
+- [CLAUDE.md](/en/tutorial/configuration/claude-md)
 
-```markdown
-# .claude/commands/setup.md
----
-name: setup
-parameters:
-  - name: environment
-    type: string
-    default: "development"
-  - name: with_database
-    type: boolean
-    default: false
----
+## Official Sources
 
-Setup {{environment}} environment:
-
-{% if environment == "production" %}
-1. Verify production credentials
-2. Run security audit
-3. Enable monitoring
-{% else %}
-1. Setup development database
-2. Install dev dependencies
-3. Configure debug mode
-{% endif %}
-
-{% if with_database %}
-4. Initialize database schema
-5. Run migrations
-6. Seed test data
-{% endif %}
-```
-
-### 2. Template Inheritance
-
-```markdown
-# .claude/templates/base-component.md
----
-template: true
----
-
-Create a React component with:
-1. TypeScript interface
-2. Proper prop validation
-3. Accessibility attributes
-4. Unit tests
-5. Storybook stories
-
-# .claude/commands/ui-component.md
----
-extends: base-component
-name: ui-component
----
-
-{% include "base-component" %}
-
-Additionally for UI components:
-6. Design system integration
-7. Responsive design
-8. Theme support
-```
-
-### 3. Command Composition
-
-```markdown
-# .claude/commands/full-feature.md
----
-name: full-feature
-description: Complete feature development workflow
----
-
-Execute the complete feature development workflow:
-
-1. {% command "feature" feature_name %}
-2. {% command "test" type="unit" %}
-3. {% command "analyze" focus="security" %}
-4. {% command "deploy" environment="staging" %}
-```
-
-## Configuration
-
-### Global Commands
-
-```json
-// .claude/config.json
-{
-  "commands": {
-    "globalPath": "~/.claude/global-commands",
-    "autoload": true,
-    "aliases": {
-      "d": "deploy",
-      "f": "feature",
-      "a": "analyze"
-    }
-  }
-}
-```
-
-### Project-Specific Commands
-
-```json
-// .claude/project.json
-{
-  "name": "my-project",
-  "commands": {
-    "path": ".claude/commands",
-    "enabled": [
-      "deploy",
-      "feature",
-      "analyze"
-    ],
-    "disabled": [
-      "production-deploy"
-    ]
-  }
-}
-```
-
-## Best Practices
-
-### 1. Command Design
-
-**Keep Commands Focused**
-- Single responsibility principle
-- Clear, specific outcomes
-- Minimal parameter complexity
-
-**Use Descriptive Names**
-```markdown
-# Good
-/deploy-staging
-/create-api-endpoint
-/run-security-audit
-
-# Avoid
-/do-stuff
-/fix
-/update
-```
-
-### 2. Parameter Validation
-
-```markdown
----
-parameters:
-  - name: component_name
-    type: string
-    required: true
-    pattern: "^[A-Z][a-zA-Z0-9]*$"
-    description: "PascalCase component name"
-  - name: port
-    type: number
-    min: 1000
-    max: 9999
-    default: 3000
----
-```
-
-### 3. Documentation
-
-```markdown
-# .claude/commands/deploy.md
----
-name: deploy
-description: Deploy application with comprehensive checks
-examples:
-  - "/deploy"
-  - "/deploy --environment=production"
-  - "/deploy --skip-tests=true"
----
-
-## What this command does:
-- Runs complete test suite
-- Builds optimized production bundle
-- Performs security scanning
-- Deploys to specified environment
-- Verifies deployment health
-
-## Prerequisites:
-- Clean git working directory
-- Valid deployment credentials
-- All tests passing locally
-```
-
-## Command Library Examples
-
-### Development Commands
-
-```markdown
-# .claude/commands/setup-dev.md
-Setup complete development environment with hot reloading and debugging tools
-
-# .claude/commands/clean-build.md
-Clean all build artifacts and perform fresh installation
-
-# .claude/commands/update-deps.md
-Update all dependencies and check for security vulnerabilities
-```
-
-### Testing Commands
-
-```markdown
-# .claude/commands/test-coverage.md
-Run full test suite with coverage reporting and analysis
-
-# .claude/commands/test-ci.md
-Run tests in CI mode with proper exit codes and reporting
-
-# .claude/commands/test-performance.md
-Run performance benchmarks and generate comparison reports
-```
-
-### Deployment Commands
-
-```markdown
-# .claude/commands/deploy-staging.md
-Deploy to staging environment with smoke tests
-
-# .claude/commands/rollback.md
-Rollback to previous deployment version with verification
-
-# .claude/commands/health-check.md
-Verify all services are running and responding correctly
-```
-
----
-
-**Next**: Return to [Tutorial Home](/en/tutorial) to explore other Claude Code capabilities.
+- [Claude Code commands reference](https://code.claude.com/docs/en/commands)
+- [Claude Code skills](https://code.claude.com/docs/en/skills)

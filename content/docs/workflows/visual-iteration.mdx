@@ -1,3 +1,8 @@
+---
+title: 'Claude Code Visual Iteration: Screenshot UI Workflow'
+description: 'Use screenshots with Claude Code to compare UI states, find visual defects, iterate components, and verify frontend changes.'
+---
+
 # Visual Iteration
 
 Use screenshot-based development with Claude Code to rapidly iterate on UI designs and implement pixel-perfect interfaces.
@@ -16,12 +21,13 @@ Claude Code can analyze screenshots and provide precise implementation guidance:
 ### Getting Started
 
 ```
-I have a screenshot of a design I need to implement. 
+I have a screenshot of a design I need to implement.
 Can you analyze it and help me create the HTML/CSS?
 [attach screenshot]
 ```
 
 Claude will:
+
 - Identify layout patterns and components
 - Suggest appropriate HTML structure
 - Generate CSS for styling and positioning
@@ -32,6 +38,7 @@ Claude will:
 ### 1. Component Identification
 
 **Breaking Down Designs**:
+
 ```
 Analyze this screenshot and identify:
 1. Main layout structure
@@ -42,6 +49,7 @@ Analyze this screenshot and identify:
 ```
 
 **Component Prioritization**:
+
 ```
 Based on this design, what order should I implement components in?
 Which ones are most complex and need special attention?
@@ -50,15 +58,17 @@ Which ones are most complex and need special attention?
 ### 2. Layout Implementation
 
 **CSS Grid/Flexbox**:
+
 ```
-This screenshot shows a complex layout. 
+This screenshot shows a complex layout.
 Help me implement it using CSS Grid and Flexbox:
 [attach screenshot]
 ```
 
 **Responsive Design**:
+
 ```
-I have desktop and mobile screenshots of the same design. 
+I have desktop and mobile screenshots of the same design.
 Help me create a responsive implementation:
 [attach multiple screenshots]
 ```
@@ -66,6 +76,7 @@ Help me create a responsive implementation:
 ### 3. Styling Details
 
 **Typography Matching**:
+
 ```
 Match the typography in this screenshot:
 1. Font families and weights
@@ -75,6 +86,7 @@ Match the typography in this screenshot:
 ```
 
 **Color Extraction**:
+
 ```
 Extract the color palette from this design:
 1. Primary and secondary colors
@@ -88,6 +100,7 @@ Extract the color palette from this design:
 ### Design System Creation
 
 **Component Library**:
+
 ```
 Based on these UI screenshots, help me create a design system:
 1. Extract reusable components
@@ -97,6 +110,7 @@ Based on these UI screenshots, help me create a design system:
 ```
 
 **Style Guide Generation**:
+
 ```
 Generate a style guide based on this collection of screenshots:
 1. Document component variations
@@ -108,22 +122,25 @@ Generate a style guide based on this collection of screenshots:
 ### Animation and Interactions
 
 **Micro-interactions**:
+
 ```
-This screenshot shows a button with hover effects. 
+This screenshot shows a button with hover effects.
 Help me implement smooth transitions and animations.
 ```
 
 **Complex Animations**:
+
 ```
-I have before/after screenshots of a page transition. 
+I have before/after screenshots of a page transition.
 Help me create the animation between these states.
 ```
 
 ### Cross-Browser Compatibility
 
 **Browser Testing**:
+
 ```
-I have screenshots showing rendering differences across browsers. 
+I have screenshots showing rendering differences across browsers.
 Help me fix the inconsistencies:
 [attach browser comparison screenshots]
 ```
@@ -165,7 +182,7 @@ Create an Angular component from this screenshot:
 ### Responsive Analysis
 
 ```
-I have screenshots of this design on different screen sizes. 
+I have screenshots of this design on different screen sizes.
 Help me implement a mobile-first approach:
 [attach mobile, tablet, desktop screenshots]
 ```
@@ -183,7 +200,7 @@ Optimize this design for touch devices:
 ### Performance Optimization
 
 ```
-This design has many images and complex layouts. 
+This design has many images and complex layouts.
 Help me optimize for mobile performance:
 1. Image optimization strategies
 2. CSS optimization
@@ -266,18 +283,21 @@ Start with our [Resources & Tools](/en/resources) page. If you want to generate 
 ## Tools and Techniques
 
 ### Screenshot Tools
+
 - **Browser DevTools**: Built-in screenshot capabilities
 - **Figma**: Design handoff and specifications
 - **Zeplin**: Design-to-code workflow
 - **Percy**: Visual testing platform
 
 ### Analysis Tools
+
 - **Lighthouse**: Performance and accessibility audits
 - **WAVE**: Web accessibility evaluation
 - **ColorZilla**: Color extraction and analysis
 - **WhatFont**: Typography identification
 
 ### Implementation Tools
+
 - **CSS Grid Generator**: Layout creation
 - **Flexbox Froggy**: Flexbox learning
 - **Can I Use**: Browser compatibility checking
@@ -317,6 +337,7 @@ Document the visual implementation:
 ### Common Issues
 
 **Layout Problems**:
+
 ```
 My implementation doesn't match the screenshot. Help me debug:
 1. Box model issues
@@ -326,6 +347,7 @@ My implementation doesn't match the screenshot. Help me debug:
 ```
 
 **Styling Inconsistencies**:
+
 ```
 The colors/fonts don't match the design exactly:
 1. Color space differences
@@ -335,6 +357,7 @@ The colors/fonts don't match the design exactly:
 ```
 
 **Responsive Breakpoints**:
+
 ```
 The responsive behavior doesn't match the design:
 1. Breakpoint selection

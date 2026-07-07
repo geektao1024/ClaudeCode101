@@ -1,6 +1,6 @@
 ---
 title: 'Claude Code Latest Version, Update Commands, and Changelog'
-description: 'Check the latest Claude Code version, latest vs stable channels, update commands for every installer, changelog links, version mismatch fixes, and upgrade checklists.'
+description: 'Check how to update Claude Code, compare latest vs stable, verify npm dist-tags, read changelog links, and fix version mismatch issues.'
 ---
 
 # Claude Code Latest Version, Update Commands, and Changelog
@@ -8,9 +8,9 @@ description: 'Check the latest Claude Code version, latest vs stable channels, u
 This page helps with the practical version questions people actually search for: **what is the current Claude Code version, how do I update it, and what should I check if behavior changes after an update**.
 
 <Callout type="info">
-  Last checked on May 29, 2026. npm reports `@anthropic-ai/claude-code` `latest`
-  and `next` as `2.1.156`, and `stable` as `2.1.145`. The official changelog
-  currently starts with `2.1.156`, dated May 29, 2026. Claude Code ships
+  Last checked on July 7, 2026. npm reports `@anthropic-ai/claude-code` `latest`
+  and `next` as `2.1.202`, and `stable` as `2.1.195`. The official changelog
+  currently starts with `2.1.202`, dated July 6, 2026. Claude Code ships
   quickly, so verify again before upgrading production developer machines.
 </Callout>
 
@@ -38,6 +38,8 @@ Then update with the command that matches your install method:
 
 Do not trust a random screenshot as the source of truth. Claude Code has latest and stable channels, several installers, and background auto-updates, so different machines can show different versions on the same day.
 
+If your real question is whether to run `claude update`, `npm install -g`, or `npm update -g`, use the dedicated [Claude update vs npm install FAQ](/en/faqs/claude-update-vs-npm-install).
+
 ## How to Check the Current Latest Version
 
 ### Check Your Installed Version
@@ -58,9 +60,9 @@ You may see output like:
 
 ```json
 {
-  "latest": "2.1.156",
-  "next": "2.1.156",
-  "stable": "2.1.145"
+  "latest": "2.1.202",
+  "next": "2.1.202",
+  "stable": "2.1.195"
 }
 ```
 
@@ -79,7 +81,7 @@ Use official sources for release notes:
 - [Claude Code Changelog](https://code.claude.com/docs/en/changelog)
 - [Claude Code npm package](https://www.npmjs.com/package/@anthropic-ai/claude-code)
 
-At the time this page was checked, `2.1.156` was the newest changelog entry and fixed an Opus 4.8 issue where thinking blocks could be modified and cause API errors. The important user-facing release is `2.1.154`, which added Opus 4.8 support, dynamic workflows, cheaper Opus 4.8 fast mode, high effort defaults, and several agent, plugin, MCP, safety, and background-session fixes.
+At the time this page was checked, `2.1.202` was the newest official changelog entry. Read the changelog before upgrading because Claude Code releases can include CLI behavior, permission, model, MCP, IDE, workflow, and installer changes that matter more than the version number alone. The important earlier Opus 4.8 rollout was `2.1.154`, followed by `2.1.156` for a same-week thinking-block error fix.
 
 ## What Changed With Opus 4.8 And Claude Code 2.1.154
 
@@ -249,8 +251,8 @@ For teams, record:
 
 | Record              | Example                                             |
 | ------------------- | --------------------------------------------------- |
-| Previous version    | `2.1.145`                                           |
-| New version         | `2.1.156`                                           |
+| Previous version    | `2.1.195`                                           |
+| New version         | `2.1.202`                                           |
 | Install method      | Homebrew stable / npm / native                      |
 | Reason              | Required bug fix or feature                         |
 | Verification result | `claude doctor` OK, MCP OK                          |
@@ -320,7 +322,7 @@ Official releases also provide manifest and signature verification for controlle
 
 ### What is the latest Claude Code version?
 
-As checked on May 29, 2026, npm reports `latest` and `next` as `2.1.156`, and `stable` as `2.1.145`. Always verify before upgrading:
+As checked on July 7, 2026, npm reports `latest` and `next` as `2.1.202`, and `stable` as `2.1.195`. Always verify before upgrading:
 
 ```bash
 npm view @anthropic-ai/claude-code dist-tags --json
@@ -340,16 +342,18 @@ Native installs auto-update in the background. Homebrew, WinGet, apt, dnf, apk, 
 
 ### Should I use `claude update` or `npm install -g`?
 
-Use the command that matches your original install method. Native installer users should use `claude update`; npm users should use `npm install -g @anthropic-ai/claude-code@latest`. Mixing installers is the fastest way to create version confusion.
+Use the command that matches your original install method. Native installer users should use `claude update`; npm users should use `npm install -g @anthropic-ai/claude-code@latest`. For the full decision path, read [Claude update vs npm install](/en/faqs/claude-update-vs-npm-install). Mixing installers is the fastest way to create version confusion.
 
 ## Related Guides
 
 - [How to install Claude Code](/en/faqs/how-to-install-claude-code)
+- [Claude update vs npm install](/en/faqs/claude-update-vs-npm-install)
 - [Install Claude Code on Windows](/en/faqs/how-to-install-claude-code-on-windows)
 - [Claude Code usage limits](/en/faqs/claude-code-usage-limits)
 - [Plan Mode guide](/en/tutorial/workflows/plan-mode)
 - [Claude Code Dynamic Workflows](/en/mechanics/dynamic-workflows)
 - [Claude Code Ultracode](/en/mechanics/ultracode)
+- [Ultrathink vs Ultracode](/en/faqs/claude-code-ultrathink-vs-ultracode)
 - [Opus 4.8 slow or expensive troubleshooting](/en/troubleshooting/claude-code-opus-4-8-slow-or-expensive)
 - [Tools allowlist](/en/tutorial/configuration/tools-allowlist)
 - [Claude Code API documentation](/en/faqs/claude-code-api-documentation)

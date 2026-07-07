@@ -1,0 +1,54 @@
+---
+title: 'Claude Code Ultrathink vs Ultracode'
+description: '对比 Claude Code ultrathink、ultracode、Plan Mode 和深度推理提示词，判断编码、调试、仓库任务应该用哪个。'
+schema_question: 'Claude Code 里的 ultrathink 和 ultracode 有什么区别？'
+schema_answer: 'ultrathink 更适合理解为单轮 prompt 里的深度推理请求。ultracode 更像面向复杂仓库任务的工作流或 effort 设置。架构判断、调试假设、难题规划用 ultrathink；多文件审计、迁移、实现类任务才考虑 ultracode，并且要接受更高延迟和 token 成本。'
+---
+
+# Claude Code Ultrathink 和 Ultracode 区别
+
+用能解决问题的最小模式。更多推理不等于更好。
+
+> 最后核查：2026 年 7 月 7 日。Claude Code 的推理模式、工作流名称和界面标签可能变化。这里是实用判断指南，最终以你当前 CLI 行为为准。
+
+## 快速答案
+
+| 选择         | 适合场景                           | 不适合场景                   |
+| ------------ | ---------------------------------- | ---------------------------- |
+| `ultrathink` | 单个难推理步骤、架构问题、调试假设 | 简单编辑或明显命令           |
+| Ultracode    | 仓库级任务、审计、迁移、多文件实现 | 小改动、目标不清、低价值探索 |
+| Plan Mode    | 编辑前先看方案                     | 已经明确知道要改什么         |
+
+## 什么时候用 Ultrathink
+
+问题主要卡在推理时，用 `ultrathink`：
+
+- 两种架构方案取舍
+- 隐蔽 bug 的调试
+- 风险迁移的方案设计
+- 检查某个修复是否有副作用
+
+它不能替代测试、源码检查或官方文档。
+
+## 什么时候用 Ultracode
+
+任务足够大，才考虑 ultracode：
+
+- 仓库级审计
+- 多页面 SEO 清理
+- 框架迁移
+- 多文件重构并验证
+- 需要连续排查的构建或部署失败
+
+如果只是改一行文案，通常不值得用。
+
+## Plan Mode 的位置
+
+Plan Mode 解决的是另一个问题：Claude 是否应该先检查和规划，再动手改。认证、支付、重定向、schema、大规模内容迁移这类场景，Plan Mode 更有价值。
+
+## 相关页面
+
+- [Claude Code Ultrathink Mode](/zh/tutorial/optimization/ultrathink-mode)
+- [Claude Code Plan Mode 是什么](/zh/faqs/what-is-plan-mode)
+- [Claude Code Ultracode 是什么](/zh/mechanics/ultracode)
+- [Claude Code FAQ Hub](/zh/faqs)

@@ -1,6 +1,9 @@
 import { notFound } from 'next/navigation';
 import Script from 'next/script';
-import { getMDXComponents } from '@/mdx-components';
+import {
+  createPageHeadingComponents,
+  getMDXComponents,
+} from '@/mdx-components';
 import { createRelativeLink } from 'fumadocs-ui/mdx';
 import {
   DocsBody,
@@ -77,6 +80,7 @@ export async function KnowledgeContentPage({
         <DocsBody>
           <MDXContent
             components={getMDXComponents({
+              ...createPageHeadingComponents(page.data.title),
               a: createRelativeLink(pagesSource, page),
             })}
           />
@@ -122,6 +126,7 @@ export async function generateKnowledgeMetadata({
 
   const path = getPath(locale, page.url);
   const canonical = `${envConfigs.app_url}/${locale}${path}`;
+  const imageUrl = `${envConfigs.app_url}${envConfigs.app_preview_image}`;
 
   return {
     title: page.data.title,
@@ -131,7 +136,23 @@ export async function generateKnowledgeMetadata({
       languages: {
         zh: `${envConfigs.app_url}/zh${path}`,
         en: `${envConfigs.app_url}/en${path}`,
+        'x-default': `${envConfigs.app_url}/en${path}`,
       },
+    },
+    openGraph: {
+      title: page.data.title,
+      description: page.data.description,
+      url: canonical,
+      siteName: envConfigs.app_name,
+      images: [imageUrl],
+      locale,
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: page.data.title,
+      description: page.data.description,
+      images: [imageUrl],
     },
   };
 }

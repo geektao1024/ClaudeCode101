@@ -1,11 +1,28 @@
 ---
-title: "Headless Mode Automation"
-description: "Using Claude Code headless mode for infrastructure automation"
+title: 'Claude Code Headless Mode: claude -p and CI'
+description: 'Use Claude Code headless mode with claude -p, stream-json, allowed tools, max turns, CI scripts, GitHub automation, and safe non-interactive workflows.'
 ---
 
-# Headless Mode Automation
+# Claude Code Headless Mode
 
-Claude Code includes headless mode for non-interactive contexts like CI, pre-commit hooks, build scripts, and automation.
+Claude Code headless mode usually means running Claude Code non-interactively with `claude -p` or `--print`. Use it for one-off scripts, CI summaries, GitHub issue triage, JSON output, and read-only audits where an interactive chat session would be too slow or hard to automate.
+
+## Quick Answer
+
+Use `claude -p` when you want Claude Code to run once, produce output, and exit:
+
+```bash
+claude -p "Summarize the current git diff and list release risks"
+```
+
+For safer automation, set the output format, keep tool permissions narrow, and cap the run:
+
+```bash
+claude -p "Review this diff and return JSON risks" \
+  --output-format json \
+  --allowedTools "Read,Bash(git diff:*)" \
+  --max-turns 3
+```
 
 ## What is Headless Mode
 
@@ -21,6 +38,7 @@ claude -p "Analyze current project code quality and generate a report"
 
 - `--output-format stream-json` - Streaming JSON output
 - `--allowedTools` - Specify allowed tools
+- `--max-turns` - Limit how long the agent can continue
 - `--verbose` - Verbose output for debugging
 
 ## Use Cases

@@ -1,25 +1,25 @@
 ---
-title: 'What Is CLAUDE.md?'
-description: 'CLAUDE.md explained for Claude Code: where to place it, how project memory loads, what to write, what to avoid, imports, AGENTS.md migration, and team maintenance.'
+title: 'What Is CLAUDE.md? Claude Code Memory and Rules'
+description: 'CLAUDE.md explained for Claude Code: official memory docs, project file location, CLAUDE.local.md, .claude/rules, imports, AGENTS.md, and team setup.'
 schema_question: 'What is CLAUDE.md in Claude Code?'
 schema_answer: 'CLAUDE.md is the main project memory file Claude Code reads to understand stable repository instructions. Put shared project rules in the repository root or nearest relevant directory, keep private notes in CLAUDE.local.md, use rules for scoped guidance, and avoid secrets or stale instructions.'
 ---
 
 `CLAUDE.md` is the project memory file Claude Code reads so you do not need to repeat the same repository rules in every session. It is best for stable context: architecture, commands, coding standards, test expectations, permission habits, and review checklists.
 
-> Last checked on May 24, 2026. Claude Code memory behavior can evolve, so treat this page as a practical guide and verify unusual setups against the official memory docs.
+> Last checked on July 7, 2026. Claude Code memory behavior can evolve, so treat this page as a practical guide and verify unusual setups against the official [Claude Code memory docs](https://code.claude.com/docs/en/memory).
 
 ## Short Answer
 
-Create `CLAUDE.md` when Claude Code needs durable project context. Put the shared version where the team can find it, keep it short enough to stay useful, and update it only when a rule is stable.
+Create `CLAUDE.md` when Claude Code needs durable project context. Put the shared version where the team can find it, keep it short enough to stay useful, and update it only when a rule is stable. If you are looking for the official documentation, start with Claude Code memory docs, then use this page for examples and setup choices.
 
-| Question | Practical answer |
-| --- | --- |
-| What is it? | A Markdown instruction file for Claude Code project memory. |
-| Where should it go? | Usually the repository root, or the closest directory that owns the work. |
-| Should it be committed? | Commit shared project rules; keep private notes out of git. |
-| Is it a security control? | No. Use permissions and managed settings for enforcement. |
-| How long should it be? | Long enough to remove repeated explanations, short enough to remain scannable. |
+| Question                  | Practical answer                                                               |
+| ------------------------- | ------------------------------------------------------------------------------ |
+| What is it?               | A Markdown instruction file for Claude Code project memory.                    |
+| Where should it go?       | Usually the repository root, or the closest directory that owns the work.      |
+| Should it be committed?   | Commit shared project rules; keep private notes out of git.                    |
+| Is it a security control? | No. Use permissions and managed settings for enforcement.                      |
+| How long should it be?    | Long enough to remove repeated explanations, short enough to remain scannable. |
 
 ## Where To Put CLAUDE.md
 
@@ -51,12 +51,12 @@ Use the closest file for rules that only apply to one app, package, or directory
 
 ## Memory Levels
 
-| Memory surface | Typical location | Best use | Git policy |
-| --- | --- | --- | --- |
-| User memory | `~/.claude/CLAUDE.md` | Personal preferences across all repositories. | Do not commit. |
-| Project memory | `./CLAUDE.md` | Shared project architecture, commands, conventions. | Usually commit. |
-| Local memory | `./CLAUDE.local.md` | Private paths, local ports, temporary notes. | Usually gitignore. |
-| Scoped rules | `.claude/rules/*.md` | Focused guidance for file types, directories, or tasks. | Commit if shared. |
+| Memory surface | Typical location      | Best use                                                | Git policy         |
+| -------------- | --------------------- | ------------------------------------------------------- | ------------------ |
+| User memory    | `~/.claude/CLAUDE.md` | Personal preferences across all repositories.           | Do not commit.     |
+| Project memory | `./CLAUDE.md`         | Shared project architecture, commands, conventions.     | Usually commit.    |
+| Local memory   | `./CLAUDE.local.md`   | Private paths, local ports, temporary notes.            | Usually gitignore. |
+| Scoped rules   | `.claude/rules/*.md`  | Focused guidance for file types, directories, or tasks. | Commit if shared.  |
 
 Keep each layer honest. User memory is for how you like to work. Project memory is for how the repository works. Local memory is for your workstation. Rules are for targeted guidance.
 
@@ -64,15 +64,15 @@ Keep each layer honest. User memory is for how you like to work. Project memory 
 
 Good `CLAUDE.md` content answers questions a developer would otherwise repeat:
 
-| Section | Useful content |
-| --- | --- |
-| Project shape | Main apps, packages, route system, content locations. |
-| Commands | Install, dev, build, test, format, typecheck, deploy preview. |
-| Architecture boundaries | What modules own what, and what should not be crossed casually. |
-| Coding standards | Existing patterns, naming rules, component style, data access rules. |
-| Verification | Required checks before saying work is done. |
-| SEO or content rules | URL preservation, metadata conventions, internal link rules. |
-| Safety notes | Permission boundaries, destructive commands to avoid, deploy rules. |
+| Section                 | Useful content                                                       |
+| ----------------------- | -------------------------------------------------------------------- |
+| Project shape           | Main apps, packages, route system, content locations.                |
+| Commands                | Install, dev, build, test, format, typecheck, deploy preview.        |
+| Architecture boundaries | What modules own what, and what should not be crossed casually.      |
+| Coding standards        | Existing patterns, naming rules, component style, data access rules. |
+| Verification            | Required checks before saying work is done.                          |
+| SEO or content rules    | URL preservation, metadata conventions, internal link rules.         |
+| Safety notes            | Permission boundaries, destructive commands to avoid, deploy rules.  |
 
 Example:
 
@@ -80,21 +80,25 @@ Example:
 # ClaudeCode101 project notes
 
 ## Commands
+
 - Install: `pnpm install`
 - Generate docs index: `pnpm exec fumadocs-mdx`
 - Build: `pnpm build`
 
 ## Content rules
+
 - Preserve existing SEO URLs unless a redirect is planned.
 - Keep FAQ pages concise but useful: answer first, then expand with examples.
 - Link FAQ pages to the deeper tutorial, mechanics, or troubleshooting page.
 
 ## Code rules
+
 - Prefer existing ShipAny template services and blocks.
 - Do not bypass existing auth, payment, or i18n services.
 - Use `apply_patch` for hand edits and run a build before handoff.
 
 ## Review checklist
+
 - Metadata matches the search intent.
 - Internal links point to the correct locale.
 - Dark mode and mobile layout still work.
@@ -104,14 +108,14 @@ Example:
 
 Avoid turning `CLAUDE.md` into a dumping ground.
 
-| Avoid | Why |
-| --- | --- |
-| API keys, tokens, customer data | Memory files can be read by the assistant and may be committed by mistake. |
-| Long pasted docs | They waste context and go stale. Link to source docs instead. |
-| One-off preferences | They make the file noisy and hard to trust. |
-| Conflicting rules | Claude will need to guess which instruction wins. |
-| Old deployment notes | Stale operational guidance causes real mistakes. |
-| "Make it better" style instructions | They are not actionable. |
+| Avoid                               | Why                                                                        |
+| ----------------------------------- | -------------------------------------------------------------------------- |
+| API keys, tokens, customer data     | Memory files can be read by the assistant and may be committed by mistake. |
+| Long pasted docs                    | They waste context and go stale. Link to source docs instead.              |
+| One-off preferences                 | They make the file noisy and hard to trust.                                |
+| Conflicting rules                   | Claude will need to guess which instruction wins.                          |
+| Old deployment notes                | Stale operational guidance causes real mistakes.                           |
+| "Make it better" style instructions | They are not actionable.                                                   |
 
 If a note is temporary, keep it in the active conversation or a local scratch file. If it is stable and repeated, promote it into project memory.
 
@@ -139,13 +143,13 @@ In a team repository, add `CLAUDE.local.md` to `.gitignore` unless your team int
 
 `CLAUDE.md` is broad memory. Rules should be narrower.
 
-| Need | Better surface |
-| --- | --- |
-| "This repo uses Next.js, MDX, and Cloudflare Workers" | `CLAUDE.md` |
-| "All MDX FAQ files need schema fields" | `.claude/rules/mdx-faq.md` |
-| "Admin pages must use RBAC helpers" | `.claude/rules/admin.md` |
-| "Never deploy from feature threads" | `CLAUDE.md` or managed settings |
-| "My personal preference is Chinese final summaries" | User memory |
+| Need                                                  | Better surface                  |
+| ----------------------------------------------------- | ------------------------------- |
+| "This repo uses Next.js, MDX, and Cloudflare Workers" | `CLAUDE.md`                     |
+| "All MDX FAQ files need schema fields"                | `.claude/rules/mdx-faq.md`      |
+| "Admin pages must use RBAC helpers"                   | `.claude/rules/admin.md`        |
+| "Never deploy from feature threads"                   | `CLAUDE.md` or managed settings |
+| "My personal preference is Chinese final summaries"   | User memory                     |
 
 If the rule only matters for a subset of files, scoped rules keep the main memory smaller.
 
@@ -167,16 +171,17 @@ Use imports for stable references, not for dumping entire documentation trees. I
 
 Some repositories already have `AGENTS.md` from other coding-agent workflows. Do not duplicate everything blindly.
 
-| Situation | Recommendation |
-| --- | --- |
-| The repo only has `AGENTS.md` | Create `CLAUDE.md` and import it with `@AGENTS.md`, then add Claude-specific notes below. |
-| `AGENTS.md` is general and accurate | Use `@AGENTS.md` inside `CLAUDE.md` so both agent workflows share the same base rules. |
-| `AGENTS.md` is stale | Move only the accurate rules into `CLAUDE.md`, then clean the old file later. |
+| Situation                           | Recommendation                                                                            |
+| ----------------------------------- | ----------------------------------------------------------------------------------------- |
+| The repo only has `AGENTS.md`       | Create `CLAUDE.md` and import it with `@AGENTS.md`, then add Claude-specific notes below. |
+| `AGENTS.md` is general and accurate | Use `@AGENTS.md` inside `CLAUDE.md` so both agent workflows share the same base rules.    |
+| `AGENTS.md` is stale                | Move only the accurate rules into `CLAUDE.md`, then clean the old file later.             |
 
 ```md
 @AGENTS.md
 
 ## Claude Code
+
 - Use plan mode before large billing, auth, or deployment changes.
 ```
 

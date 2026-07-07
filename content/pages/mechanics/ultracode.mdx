@@ -5,7 +5,7 @@ description: 'What Claude Code ultracode is, how /effort ultracode relates to xh
 
 Claude Code `ultracode` is an effort setting for serious coding sessions. It combines `xhigh` reasoning effort with automatic dynamic workflow orchestration, so Claude can decide when a task should be split into a workflow instead of staying in one ordinary chat loop.
 
-> Last checked on May 29, 2026. Official Claude Code docs describe ultracode as part of dynamic workflows, which are still a research preview and require Claude Code `2.1.154` or later. npm currently reports `@anthropic-ai/claude-code` `latest` and `next` as `2.1.156`, and `stable` as `2.1.145`.
+> Last checked on July 7, 2026. Official Claude Code docs describe ultracode as part of dynamic workflows, which are still a research preview and require Claude Code `2.1.154` or later. npm currently reports `@anthropic-ai/claude-code` `latest` and `next` as `2.1.202`, and `stable` as `2.1.195`.
 
 ## Quick Answer
 
@@ -38,15 +38,15 @@ The key distinction: `xhigh` changes how hard Claude thinks. `ultracode` also le
 
 The Opus 4.8 rollout created a few new search intents that deserve direct answers:
 
-| Search phrase                           | Real question behind it                 | Short answer                                                                    |
-| --------------------------------------- | --------------------------------------- | ------------------------------------------------------------------------------- |
-| `what is ultracode effort`              | Is this a new model, a plan, or a mode? | It is a Claude Code effort setting, not a separate model or subscription.       |
-| `Claude Code ultracode vs xhigh`        | Which one should I use?                 | Use `xhigh` for depth; use `ultracode` when workflow orchestration may help.    |
-| `Claude Code ultracode not showing`     | Why is the option missing?              | Check version, plan/provider, `/config`, and organization admin settings.       |
-| `Opus 4.8 ultracode slow`               | Is slow behavior expected?              | Often yes: higher effort and workflow orchestration can take longer.            |
-| `Claude Code ultracode cost`            | Will it burn more usage?                | It can. Start scoped and check cost/usage surfaces before long unattended use.  |
-| `Claude Code workflow agents can code`  | Are workflow agents only for review?    | They can support large coding workflows, but edits should be scoped and tested. |
-| `Claude Code ultracode thinking blocks` | Is the Opus 4.8 API error related?      | Update to at least `2.1.156` if you hit the thinking-block API error.           |
+| Search phrase                           | Real question behind it                 | Short answer                                                                                           |
+| --------------------------------------- | --------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `what is ultracode effort`              | Is this a new model, a plan, or a mode? | It is a Claude Code effort setting, not a separate model or subscription.                              |
+| `Claude Code ultracode vs xhigh`        | Which one should I use?                 | Use `xhigh` for depth; use `ultracode` when workflow orchestration may help.                           |
+| `Claude Code ultracode not showing`     | Why is the option missing?              | Check version, plan/provider, `/config`, and organization admin settings.                              |
+| `Opus 4.8 ultracode slow`               | Is slow behavior expected?              | Often yes: higher effort and workflow orchestration can take longer.                                   |
+| `Claude Code ultracode cost`            | Will it burn more usage?                | It can. Start scoped and check cost/usage surfaces before long unattended use.                         |
+| `Claude Code workflow agents can code`  | Are workflow agents only for review?    | They can support large coding workflows, but edits should be scoped and tested.                        |
+| `Claude Code ultracode thinking blocks` | Is the Opus 4.8 API error related?      | Update to the current latest or at least `2.1.156` if you hit the historical thinking-block API error. |
 
 These are not official keyword volumes. They are observed community and creator discussion patterns from the Opus 4.8 launch window.
 
@@ -163,6 +163,7 @@ Read [Dynamic workflows](/en/mechanics/dynamic-workflows) for the full mechanism
 ## Related Guides
 
 - [Dynamic workflows](/en/mechanics/dynamic-workflows)
+- [Ultrathink vs Ultracode](/en/faqs/claude-code-ultrathink-vs-ultracode)
 - [Claude Code latest version](/en/upgrade)
 - [Opus 4.8 slow or expensive troubleshooting](/en/troubleshooting/claude-code-opus-4-8-slow-or-expensive)
 - [Subagents](/en/mechanics/subagents)

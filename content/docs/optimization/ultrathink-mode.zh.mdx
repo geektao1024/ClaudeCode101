@@ -1,32 +1,56 @@
-# Ultrathink 模式
+---
+title: 'Claude Code Ultrathink：深度推理和成本'
+description: '解释 Claude Code ultrathink 适合哪些复杂架构、调试、迁移和 Plan Mode 场景，以及如何避免过度消耗 token。'
+---
 
-在提示词里加上`ultrathink`关键字，让Claude进行深度思考。质量更高，但消耗更多token。
+# Ultrathink Mode
+
+在 Claude Code prompt 里加入 `ultrathink`，适合需要更深推理的架构设计、复杂调试、迁移方案和高风险实现计划。它可能提升方案质量，但会消耗更多 token，不应该作为日常小改动的默认写法。
+
+## 快速答案
+
+当“错误方案的成本”高于“多花一点推理成本”时，用 `ultrathink`。典型场景包括多文件重构、支付或认证改造、数据迁移、生产故障排查和 Plan Mode 方案审查。
+
+简单文案、格式化、明显 bug 修复、普通 CRUD，不需要 `ultrathink`。
 
 ## 如何使用
 
-在任意位置加上`ultrathink`关键字即可：
+在 prompt 任意位置加上 `ultrathink`：
 
 ![Ultrathink 开启方式](/img/media/image7.png)
 
-## 最佳组合
+## 适合场景
 
-**Opus + Ultrathink + Plan Mode**是最强组合。思考质量高，能一次性解决复杂问题，避免反复修改。虽然单次消耗的token多，但因为不用反复兜圈子，总体上可能更省token。
+**适合用：**
 
-## 适用场景
-
-**适合用的场景**：
 - 复杂架构设计
-- 技术方案选择
-- 复杂业务逻辑
-- 算法优化
+- 技术方案取舍
+- 隐蔽 bug 调试
+- 多文件迁移方案
+- 支付、认证、数据库、重定向等高风险改动
 
-**不适合的场景**：
-- 简单CRUD操作
-- 样式调整
-- Bug快速修复
+**不适合用：**
 
-## 实际效果
+- 简单 CRUD
+- 样式微调
+- 快速 bug 修复
+- 格式化
+- 明确的一行文案修改
 
-比如你让Claude设计电商系统架构，加上ultrathink后，它会深度分析业务需求，对比多种技术方案，考虑扩展性和维护性，给出非常详细的实施建议。不加ultrathink的话，可能只给你一个简单的方案，很多细节都没考虑到。
+## 和 Plan Mode 搭配
 
-配合Plan Mode使用效果最好：先用ultrathink深度思考方案，确认无误后再让它具体实施。这样既保证了方案质量，又避免了后期返工。
+更稳的用法是：先用 `ultrathink` 做方案判断，再用 Plan Mode 审查实现路径，最后再允许 Claude Code 修改文件。
+
+这种方式适合生产仓库、迁移、SEO URL 调整、认证、支付和数据库相关任务。它不是为了显得“更强”，而是为了减少错误方向导致的返工。
+
+## 和 Ultracode 的区别
+
+`ultrathink` 更像单轮 prompt 里的深度推理请求。Ultracode 更适合范围明确的仓库级任务，例如审计、迁移、多文件实现或需要更高 effort 的工作流。
+
+不要把二者都当默认模式。任务越小，越应该用普通模式。
+
+## 相关页面
+
+- [Ultrathink 和 Ultracode 区别](/zh/faqs/claude-code-ultrathink-vs-ultracode)
+- [Plan Mode 是什么](/zh/faqs/what-is-plan-mode)
+- [Claude Code Ultracode](/zh/mechanics/ultracode)

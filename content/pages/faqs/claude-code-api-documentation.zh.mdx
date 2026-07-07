@@ -7,31 +7,31 @@ schema_answer: 'Claude Code 没有一个单独的 REST API reference。直接模
 
 如果你在找 “Claude Code API 文档”，先要确认你说的是哪一层。**Claude Code 是 CLI 和 agentic coding 工作流；Claude API 才是在你自己的应用里调用模型的平台 API。** 你需要的文档取决于你要找模型 endpoint、终端自动化、可编程 agent，还是外部工具集成。
 
-> 最后核查：2026 年 5 月 24 日。Claude Code 和 Claude Platform 文档变化很快。这个 FAQ 是文档分流入口；生产上线前，请到官方文档重新核对 endpoint、CLI flags、SDK 语法、认证规则、价格和限制。
+> 最后核查：2026 年 7 月 7 日。Claude Code 和 Claude Platform 文档变化很快。这个 FAQ 是文档分流入口；生产上线前，请到官方文档重新核对 endpoint、CLI flags、SDK 语法、认证规则、价格和限制。
 
 ## 短答案
 
 不存在一页覆盖所有场景的“Claude Code API”。
 
-| 你的意思是 | 应该打开 | 原因 |
-| --- | --- | --- |
-| “我要在应用里调用 Claude。” | [Anthropic API docs](https://platform.claude.com/docs/en/home) 和 [API reference](https://platform.claude.com/docs/api) | Messages API、模型、streaming、tool use、rate limits 和 SDK 都在这里。 |
-| “我要从脚本里运行 Claude Code。” | [Claude Code CLI reference](https://code.claude.com/docs/en/cli-reference) | 覆盖 `claude`、`claude -p`、output formats、auth、update 和 CLI flags。 |
-| “我要用 Python 或 TypeScript 写 coding agent。” | [Claude Agent SDK](https://code.claude.com/docs/en/agent-sdk) | 提供 Claude Code-style tools、sessions、MCP、hooks、permissions 和 agent loop。 |
-| “我要让 Claude Code 接 GitHub、文档、浏览器、数据库或内部系统。” | [MCP docs](https://code.claude.com/docs/en/mcp) | MCP 是工具和数据源集成层。 |
-| “我要托管 agent 服务。” | [Claude Platform docs](https://platform.claude.com/docs/en/home) | Managed Agents 是托管平台能力，不是本地 CLI。 |
+| 你的意思是                                                       | 应该打开                                                                                                                | 原因                                                                            |
+| ---------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| “我要在应用里调用 Claude。”                                      | [Anthropic API docs](https://platform.claude.com/docs/en/home) 和 [API reference](https://platform.claude.com/docs/api) | Messages API、模型、streaming、tool use、rate limits 和 SDK 都在这里。          |
+| “我要从脚本里运行 Claude Code。”                                 | [Claude Code CLI reference](https://code.claude.com/docs/en/cli-reference)                                              | 覆盖 `claude`、`claude -p`、output formats、auth、update 和 CLI flags。         |
+| “我要用 Python 或 TypeScript 写 coding agent。”                  | [Claude Agent SDK](https://code.claude.com/docs/en/agent-sdk)                                                           | 提供 Claude Code-style tools、sessions、MCP、hooks、permissions 和 agent loop。 |
+| “我要让 Claude Code 接 GitHub、文档、浏览器、数据库或内部系统。” | [MCP docs](https://code.claude.com/docs/en/mcp)                                                                         | MCP 是工具和数据源集成层。                                                      |
+| “我要托管 agent 服务。”                                          | [Claude Platform docs](https://platform.claude.com/docs/en/home)                                                        | Managed Agents 是托管平台能力，不是本地 CLI。                                   |
 
 最稳的理解方式是：**Claude API 管模型调用，Claude Code CLI 管终端工作流，Agent SDK 管可编程 agent，MCP 管外部工具。**
 
 ## CLI、Agent SDK、Claude API 区别
 
-| Surface | 适合什么 | 你需要管理 |
-| --- | --- | --- |
-| Claude Code CLI | 本地交互开发、仓库任务、代码编辑、终端工作流。 | 仓库状态、审批、本地凭据、工具权限。 |
-| `claude -p` | 一次性脚本、CI 摘要、非交互式检查。 | prompt 范围、输出解析、认证、allowed tools、失败行为。 |
-| Claude Agent SDK | 产品化 agent、自定义自动化、长 session、程序化审批。 | 托管、sandbox、key、可观测性、工具策略、session 生命周期。 |
-| Anthropic API / client SDKs | 自己产品里的直接模型调用。 | prompt、会话状态、tool loop、重试、rate limits、计费、UI。 |
-| Managed Agents | Anthropic 托管基础设施上的 autonomous agents。 | agent 定义、事件、产品集成、治理。 |
+| Surface                     | 适合什么                                             | 你需要管理                                                 |
+| --------------------------- | ---------------------------------------------------- | ---------------------------------------------------------- |
+| Claude Code CLI             | 本地交互开发、仓库任务、代码编辑、终端工作流。       | 仓库状态、审批、本地凭据、工具权限。                       |
+| `claude -p`                 | 一次性脚本、CI 摘要、非交互式检查。                  | prompt 范围、输出解析、认证、allowed tools、失败行为。     |
+| Claude Agent SDK            | 产品化 agent、自定义自动化、长 session、程序化审批。 | 托管、sandbox、key、可观测性、工具策略、session 生命周期。 |
+| Anthropic API / client SDKs | 自己产品里的直接模型调用。                           | prompt、会话状态、tool loop、重试、rate limits、计费、UI。 |
+| Managed Agents              | Anthropic 托管基础设施上的 autonomous agents。       | agent 定义、事件、产品集成、治理。                         |
 
 不要把这些文档混在一起用。Claude Code CLI 的 flag 不是 HTTP endpoint；Messages API 的请求体不是 Agent SDK 的 session config；MCP server 也不是 Claude 模型 API。
 
@@ -74,43 +74,46 @@ claude -p "Review this diff and return the top risks" \
 
 ## 文档地图
 
-| 任务 | 最适合入口 |
-| --- | --- |
-| 安装 Claude Code | [如何安装 Claude Code](/zh/faqs/how-to-install-claude-code) |
-| 查看 CLI flags | [Claude Code CLI reference](https://code.claude.com/docs/en/cli-reference) |
-| 运行非交互式 prompt | [Headless Mode 教程](/zh/tutorial/advanced/headless-mode) |
-| 用 SDK 构建 agent | [Claude Agent SDK](https://code.claude.com/docs/en/agent-sdk) |
-| 在应用里调用 Claude 模型 | [Anthropic API docs](https://platform.claude.com/docs/en/home) |
-| 查精确 HTTP endpoint | [Anthropic API reference](https://platform.claude.com/docs/api) |
-| 添加工具集成 | [Claude Code MCP docs](https://code.claude.com/docs/en/mcp) |
-| 配置权限 | [Tools allowlist](/zh/tutorial/configuration/tools-allowlist) |
-| 控制项目行为 | [CLAUDE.md 配置](/zh/tutorial/configuration/claude-md) |
-| 估算成本和限制 | [Claude Code 价格和限制](/zh/pricing) |
+| 任务                     | 最适合入口                                                                   |
+| ------------------------ | ---------------------------------------------------------------------------- |
+| 安装 Claude Code         | [如何安装 Claude Code](/zh/faqs/how-to-install-claude-code)                  |
+| 更新 Claude Code         | [Claude update 和 npm install 怎么选](/zh/faqs/claude-update-vs-npm-install) |
+| 查看 CLI flags           | [Claude Code CLI reference](https://code.claude.com/docs/en/cli-reference)   |
+| 运行非交互式 prompt      | [Headless Mode 教程](/zh/tutorial/advanced/headless-mode)                    |
+| 用 SDK 构建 agent        | [Claude Agent SDK](https://code.claude.com/docs/en/agent-sdk)                |
+| 在应用里调用 Claude 模型 | [Anthropic API docs](https://platform.claude.com/docs/en/home)               |
+| 查精确 HTTP endpoint     | [Anthropic API reference](https://platform.claude.com/docs/api)              |
+| 添加工具集成             | [Claude Code MCP docs](https://code.claude.com/docs/en/mcp)                  |
+| 配置权限                 | [Tools allowlist](/zh/tutorial/configuration/tools-allowlist)                |
+| 控制项目行为             | [CLAUDE.md 配置](/zh/tutorial/configuration/claude-md)                       |
+| 选择 memory 文件         | [Claude Code memory 官方文档](/zh/faqs/claude-code-memory-official-docs)     |
+| 传自定义命令参数         | [自定义命令参数](/zh/faqs/claude-code-custom-command-arguments)              |
+| 估算成本和限制           | [Claude Code 价格和限制](/zh/pricing)                                        |
 
 ## 认证规则
 
 不同 surface 的认证不一样：
 
-| Surface | 常见认证方式 | 注意点 |
-| --- | --- | --- |
-| Anthropic API | Console 里的 `ANTHROPIC_API_KEY` | 适合生产应用和后端服务。 |
-| Claude Code CLI | 官方支持的 Claude Code 登录或 Console/API billing flow | 适合本地开发和终端工作流。 |
-| `claude -p` | 默认沿用 CLI 认证上下文，除非另行配置 | CI 里要显式处理凭据和权限边界。 |
-| Agent SDK | API key 或受支持 provider 凭据 | 不要围绕个人交互式登录构建客户产品。 |
-| MCP | 取决于每个外部 server | 连接前检查 scope、secret 和 prompt injection 风险。 |
+| Surface         | 常见认证方式                                           | 注意点                                              |
+| --------------- | ------------------------------------------------------ | --------------------------------------------------- |
+| Anthropic API   | Console 里的 `ANTHROPIC_API_KEY`                       | 适合生产应用和后端服务。                            |
+| Claude Code CLI | 官方支持的 Claude Code 登录或 Console/API billing flow | 适合本地开发和终端工作流。                          |
+| `claude -p`     | 默认沿用 CLI 认证上下文，除非另行配置                  | CI 里要显式处理凭据和权限边界。                     |
+| Agent SDK       | API key 或受支持 provider 凭据                         | 不要围绕个人交互式登录构建客户产品。                |
+| MCP             | 取决于每个外部 server                                  | 连接前检查 scope、secret 和 prompt injection 风险。 |
 
 生产自动化优先使用明确的 API key 或 provider 凭据，设置 spend limit，并确保 secret 不进入 prompt、日志、`CLAUDE.md` 和仓库文件。
 
 ## 常见错误
 
-| 错误 | 更好的做法 |
-| --- | --- |
-| 把 ClaudeCode101 当 endpoint reference。 | 本站只做分流和教程，字段以官方文档为准。 |
-| 找一个单独的 “Claude Code API endpoint”。 | 先判断你需要 API、CLI、SDK 还是 MCP。 |
-| 用 `claude -p` 承担复杂产品工作流。 | CLI 先原型验证，稳定后迁移到 Agent SDK。 |
-| 一行 PR 摘要也上 Agent SDK。 | 先用 `claude -p`。 |
-| 简单 API 调用也强行加 MCP。 | 只有外部上下文反复成为瓶颈时再加 MCP。 |
-| headless 自动化没有预算和权限限制。 | 设置窄权限、turn limit、日志和成本控制。 |
+| 错误                                      | 更好的做法                               |
+| ----------------------------------------- | ---------------------------------------- |
+| 把 ClaudeCode101 当 endpoint reference。  | 本站只做分流和教程，字段以官方文档为准。 |
+| 找一个单独的 “Claude Code API endpoint”。 | 先判断你需要 API、CLI、SDK 还是 MCP。    |
+| 用 `claude -p` 承担复杂产品工作流。       | CLI 先原型验证，稳定后迁移到 Agent SDK。 |
+| 一行 PR 摘要也上 Agent SDK。              | 先用 `claude -p`。                       |
+| 简单 API 调用也强行加 MCP。               | 只有外部上下文反复成为瓶颈时再加 MCP。   |
+| headless 自动化没有预算和权限限制。       | 设置窄权限、turn limit、日志和成本控制。 |
 
 ## 迷你决策树
 
@@ -135,6 +138,8 @@ claude -p "Review this diff and return the top risks" \
 - [Headless mode](/zh/faqs/claude-code-headless-mode)
 - [MCP servers](/zh/faqs/claude-code-mcp-servers)
 - [自定义命令](/zh/faqs/claude-code-custom-commands)
+- [自定义命令参数](/zh/faqs/claude-code-custom-command-arguments)
+- [Claude Code memory 官方文档](/zh/faqs/claude-code-memory-official-docs)
 - [Tools allowlist](/zh/tutorial/configuration/tools-allowlist)
 - [价格和限制](/zh/pricing)
 

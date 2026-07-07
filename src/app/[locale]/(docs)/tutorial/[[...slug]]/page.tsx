@@ -1,6 +1,8 @@
 import { notFound } from 'next/navigation';
-import { getMDXComponents } from '@/mdx-components';
-import { envConfigs } from '@/config';
+import {
+  createPageHeadingComponents,
+  getMDXComponents,
+} from '@/mdx-components';
 import { createRelativeLink } from 'fumadocs-ui/mdx';
 import {
   DocsBody,
@@ -10,6 +12,7 @@ import {
 } from 'fumadocs-ui/page';
 
 import { tutorialSource } from '@/core/docs/source';
+import { envConfigs } from '@/config';
 
 export const revalidate = 86400;
 export const dynamic = 'force-static';
@@ -38,6 +41,7 @@ export default async function TutorialContentPage(props: {
       <DocsBody>
         <MDXContent
           components={getMDXComponents({
+            ...createPageHeadingComponents(page.data.title),
             a: createRelativeLink(tutorialSource, page),
           })}
         />
@@ -60,6 +64,7 @@ export async function generateMetadata(props: {
   const locale = params.locale || 'en';
   const path = page.url.replace(new RegExp(`^/${locale}`), '');
   const canonical = `${envConfigs.app_url}/${locale}${path}`;
+  const imageUrl = `${envConfigs.app_url}${envConfigs.app_preview_image}`;
 
   return {
     title: page.data.title,
@@ -69,7 +74,23 @@ export async function generateMetadata(props: {
       languages: {
         zh: `${envConfigs.app_url}/zh${path}`,
         en: `${envConfigs.app_url}/en${path}`,
+        'x-default': `${envConfigs.app_url}/en${path}`,
       },
+    },
+    openGraph: {
+      title: page.data.title,
+      description: page.data.description,
+      url: canonical,
+      siteName: envConfigs.app_name,
+      images: [imageUrl],
+      locale,
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: page.data.title,
+      description: page.data.description,
+      images: [imageUrl],
     },
   };
 }

@@ -14,9 +14,12 @@ function getLocalizedAlternates(locale: string, slug: string) {
 
   return {
     canonical: `${envConfigs.app_url}/${locale}${path}`,
-    languages: Object.fromEntries(
-      locales.map((loc) => [loc, `${envConfigs.app_url}/${loc}${path}`])
-    ),
+    languages: {
+      ...Object.fromEntries(
+        locales.map((loc) => [loc, `${envConfigs.app_url}/${loc}${path}`])
+      ),
+      'x-default': `${envConfigs.app_url}/en${path}`,
+    },
   };
 }
 

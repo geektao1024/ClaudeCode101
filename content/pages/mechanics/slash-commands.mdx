@@ -1,6 +1,6 @@
 ---
 title: 'Claude Code Slash Commands'
-description: 'A practical Claude Code slash commands guide covering built-in commands, custom commands, skills, arguments, frontmatter, dynamic context, MCP prompts, and team workflow design.'
+description: 'Claude Code slash commands guide for built-in commands, custom commands, skills, arguments, frontmatter, MCP prompts, and team workflows.'
 ---
 
 Slash commands are the control surface you use inside a Claude Code session. They start with `/` and help you switch modes, manage memory, inspect context usage, run workflow shortcuts, call MCP prompts, and invoke custom commands or skills. The important shift in current Claude Code is that older custom command files still work, but reusable workflows are increasingly better packaged as skills.
@@ -37,21 +37,21 @@ Commands are useful because they give common actions a short, repeatable interfa
 
 The exact list depends on your Claude Code version, account, enabled features, plugins, and environment. Type `/` in Claude Code to see what is available.
 
-| Command | Use it for | Practical note |
-| --- | --- | --- |
-| `/help` or `/commands` | Discover available commands. | Start here when a command is missing. |
-| `/init` | Generate a starter `CLAUDE.md`. | Edit it immediately; generated memory should stay short. |
-| `/memory` | View or edit memory files. | Useful after repeated corrections. |
-| `/context` | Inspect context-window usage. | Run it before a long session gets messy. |
-| `/compact [instructions]` | Summarize a long conversation. | Add focus instructions instead of compacting blindly. |
-| `/clear [name]` | Start with empty context. | Use when switching tasks. |
-| `/resume` | Return to a saved session. | Good for continuation after clearing or closing. |
-| `/model` | Change the active model. | Use heavier models only when the task needs it. |
-| `/usage` | Inspect plan usage, cost, or activity stats. | Helpful for quota-aware workflows. |
-| `/mcp` | Manage MCP server connections. | Also reveals available MCP tools and prompts. |
-| `/agents` | Manage subagents. | Use for specialist roles or parallel research. |
-| `/permissions` | View or update tool permissions. | Do not hide dangerous operations inside a command. |
-| `/review` | Request a code review. | Useful after implementation, not a replacement for tests. |
+| Command                   | Use it for                                   | Practical note                                            |
+| ------------------------- | -------------------------------------------- | --------------------------------------------------------- |
+| `/help` or `/commands`    | Discover available commands.                 | Start here when a command is missing.                     |
+| `/init`                   | Generate a starter `CLAUDE.md`.              | Edit it immediately; generated memory should stay short.  |
+| `/memory`                 | View or edit memory files.                   | Useful after repeated corrections.                        |
+| `/context`                | Inspect context-window usage.                | Run it before a long session gets messy.                  |
+| `/compact [instructions]` | Summarize a long conversation.               | Add focus instructions instead of compacting blindly.     |
+| `/clear [name]`           | Start with empty context.                    | Use when switching tasks.                                 |
+| `/resume`                 | Return to a saved session.                   | Good for continuation after clearing or closing.          |
+| `/model`                  | Change the active model.                     | Use heavier models only when the task needs it.           |
+| `/usage`                  | Inspect plan usage, cost, or activity stats. | Helpful for quota-aware workflows.                        |
+| `/mcp`                    | Manage MCP server connections.               | Also reveals available MCP tools and prompts.             |
+| `/agents`                 | Manage subagents.                            | Use for specialist roles or parallel research.            |
+| `/permissions`            | View or update tool permissions.             | Do not hide dangerous operations inside a command.        |
+| `/review`                 | Request a code review.                       | Useful after implementation, not a replacement for tests. |
 
 Commands are workflow shortcuts. They do not replace understanding the repo, planning risky changes, or verifying behavior.
 
@@ -59,13 +59,13 @@ Commands are workflow shortcuts. They do not replace understanding the repo, pla
 
 Older Claude Code custom commands are Markdown files. They still work, and many teams already have them:
 
-| Format | Location | Scope | Current use |
-| --- | --- | --- | --- |
-| Project legacy command | `.claude/commands/<name>.md` | Current repository | Still supported; good for small shortcuts. |
-| Personal legacy command | `~/.claude/commands/<name>.md` | All your projects | Still supported; useful for personal habits. |
-| Project skill | `.claude/skills/<name>/SKILL.md` | Current repository | Preferred for reusable workflows. |
-| Personal skill | `~/.claude/skills/<name>/SKILL.md` | All your projects | Preferred for personal workflows with structure. |
-| Plugin skill | Plugin-provided skill path | Where plugin is enabled | Namespaced by plugin. |
+| Format                  | Location                           | Scope                   | Current use                                      |
+| ----------------------- | ---------------------------------- | ----------------------- | ------------------------------------------------ |
+| Project legacy command  | `.claude/commands/<name>.md`       | Current repository      | Still supported; good for small shortcuts.       |
+| Personal legacy command | `~/.claude/commands/<name>.md`     | All your projects       | Still supported; useful for personal habits.     |
+| Project skill           | `.claude/skills/<name>/SKILL.md`   | Current repository      | Preferred for reusable workflows.                |
+| Personal skill          | `~/.claude/skills/<name>/SKILL.md` | All your projects       | Preferred for personal workflows with structure. |
+| Plugin skill            | Plugin-provided skill path         | Where plugin is enabled | Namespaced by plugin.                            |
 
 Both a command file and a skill can create a `/name` invocation. If a skill and command share a name, current documentation says the skill takes precedence.
 
@@ -124,11 +124,11 @@ Commands and skills can receive arguments after the slash command.
 
 For legacy command files, common placeholders include:
 
-| Placeholder | Use |
-| --- | --- |
-| `$ARGUMENTS` | Capture all arguments as one string. |
-| `$1`, `$2`, `$3` | Capture positional arguments. |
-| `@file` references | Pull file contents into the prompt. |
+| Placeholder           | Use                                                |
+| --------------------- | -------------------------------------------------- |
+| `$ARGUMENTS`          | Capture all arguments as one string.               |
+| `$1`, `$2`, `$3`      | Capture positional arguments.                      |
+| `@file` references    | Pull file contents into the prompt.                |
 | `!` command injection | Run a shell command before Claude sees the prompt. |
 
 Example legacy command:
@@ -143,6 +143,7 @@ allowed-tools: Read, Grep, Glob
 Plan a fix for issue #$1 with priority $2.
 
 Before proposing changes:
+
 - inspect the relevant files;
 - identify risks;
 - list verification commands;
@@ -155,12 +156,12 @@ For skills, current docs support similar slash invocation and argument passing. 
 
 Frontmatter turns a command or skill from a hidden prompt into a visible, safer workflow.
 
-| Field | Why it matters |
-| --- | --- |
-| `description` | Helps users understand the command and helps Claude decide when to use a skill. |
-| `argument-hint` | Shows expected arguments during completion. |
-| `allowed-tools` | Restricts which tools the command or skill can use. |
-| `model` | Pins a model for a task when needed. Use sparingly. |
+| Field           | Why it matters                                                                  |
+| --------------- | ------------------------------------------------------------------------------- |
+| `description`   | Helps users understand the command and helps Claude decide when to use a skill. |
+| `argument-hint` | Shows expected arguments during completion.                                     |
+| `allowed-tools` | Restricts which tools the command or skill can use.                             |
+| `model`         | Pins a model for a task when needed. Use sparingly.                             |
 
 Prefer explicit descriptions:
 
@@ -257,15 +258,15 @@ Poor candidates:
 
 Choose the right mechanism:
 
-| Need | Best mechanism |
-| --- | --- |
-| Every session should know a stable project fact | `CLAUDE.md` |
-| A short reusable prompt shortcut | Legacy command or small skill |
-| A reusable workflow with examples or scripts | Skill |
-| A check that must run automatically at a lifecycle event | Hook |
-| A specialist role with separate context | Subagent |
-| External server prompt or tool workflow | MCP prompt or MCP tool |
-| A hard allow/deny policy | Permissions/settings/CI |
+| Need                                                     | Best mechanism                |
+| -------------------------------------------------------- | ----------------------------- |
+| Every session should know a stable project fact          | `CLAUDE.md`                   |
+| A short reusable prompt shortcut                         | Legacy command or small skill |
+| A reusable workflow with examples or scripts             | Skill                         |
+| A check that must run automatically at a lifecycle event | Hook                          |
+| A specialist role with separate context                  | Subagent                      |
+| External server prompt or tool workflow                  | MCP prompt or MCP tool        |
+| A hard allow/deny policy                                 | Permissions/settings/CI       |
 
 This separation keeps commands useful. If commands become long, always-on, or safety-critical, they are probably the wrong tool.
 
@@ -344,20 +345,21 @@ Keep internal refactors separate from public release notes.
 
 ## Common Mistakes
 
-| Mistake | Why it hurts | Better approach |
-| --- | --- | --- |
-| Turning every prompt into a command | Creates clutter. | Promote only repeated workflows. |
-| Keeping long workflows in legacy command files | Hard to maintain and hard to discover. | Convert to a skill. |
-| Allowing broad Bash access | Increases risk. | Restrict `allowed-tools`. |
-| Hiding writes inside a command | Surprises users. | Make write actions explicit and ask for confirmation. |
-| No argument hint | Users forget the input shape. | Add `argument-hint`. |
-| Duplicating `CLAUDE.md` | Wastes context and creates conflicts. | Link to durable rules instead. |
-| Using commands as policy | Commands are optional. | Use permissions, hooks, or CI. |
-| Not updating commands after repo changes | They become stale automation. | Review them after major changes. |
+| Mistake                                        | Why it hurts                           | Better approach                                       |
+| ---------------------------------------------- | -------------------------------------- | ----------------------------------------------------- |
+| Turning every prompt into a command            | Creates clutter.                       | Promote only repeated workflows.                      |
+| Keeping long workflows in legacy command files | Hard to maintain and hard to discover. | Convert to a skill.                                   |
+| Allowing broad Bash access                     | Increases risk.                        | Restrict `allowed-tools`.                             |
+| Hiding writes inside a command                 | Surprises users.                       | Make write actions explicit and ask for confirmation. |
+| No argument hint                               | Users forget the input shape.          | Add `argument-hint`.                                  |
+| Duplicating `CLAUDE.md`                        | Wastes context and creates conflicts.  | Link to durable rules instead.                        |
+| Using commands as policy                       | Commands are optional.                 | Use permissions, hooks, or CI.                        |
+| Not updating commands after repo changes       | They become stale automation.          | Review them after major changes.                      |
 
 ## Related Pages
 
 - [Custom commands FAQ](/en/faqs/claude-code-custom-commands)
+- [Custom command arguments](/en/faqs/claude-code-custom-command-arguments)
 - [Custom commands tutorial](/en/tutorial/tools-integration/custom-commands)
 - [CLAUDE.md guide](/en/mechanics/claude-md)
 - [Context management](/en/mechanics/context-management)
@@ -367,5 +369,5 @@ Keep internal refactors separate from public release notes.
 ## Official Sources
 
 - [Claude Code commands reference](https://code.claude.com/docs/en/commands)
-- [Extend Claude with skills](https://code.claude.com/docs/en/slash-commands)
+- [Claude Code skills](https://code.claude.com/docs/en/skills)
 - [Slash commands in the Claude Agent SDK](https://code.claude.com/docs/en/agent-sdk/slash-commands)

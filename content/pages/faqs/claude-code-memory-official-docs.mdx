@@ -1,0 +1,46 @@
+---
+title: 'Claude Code Memory Docs: CLAUDE.md, Rules, Auto Memory'
+description: 'Find the official Claude Code memory docs for CLAUDE.md, CLAUDE.local.md, rules, imports, and auto memory, with a practical setup map.'
+schema_question: 'Where are the official Claude Code memory docs for CLAUDE.md?'
+schema_answer: 'The official Claude Code memory docs are in the Claude Code documentation under memory. Use them as the source of truth for CLAUDE.md behavior, imports, scoped rules, and auto memory. ClaudeCode101 explains the practical setup choices: use CLAUDE.md for shared project memory, CLAUDE.local.md for private notes, and .claude/rules/ for scoped instructions.'
+---
+
+# Claude Code Memory Official Docs
+
+Use the official memory docs when you need source-of-truth behavior. Use this page when you need to decide which memory file to edit.
+
+> Last checked on July 7, 2026. Claude Code memory behavior can change, so verify official docs before standardizing team rules.
+
+## Quick Answer
+
+- Official docs: [Claude Code memory](https://code.claude.com/docs/en/memory)
+- Shared project memory: `CLAUDE.md`
+- Private local memory: `CLAUDE.local.md`
+- Scoped rules: `.claude/rules/`
+- Reusable workflows with metadata: skills
+- Temporary context: put it in the chat, not in memory
+
+## Memory Surfaces
+
+| Need                                                    | Use               |
+| ------------------------------------------------------- | ----------------- |
+| Team-wide project conventions                           | `CLAUDE.md`       |
+| Private local notes                                     | `CLAUDE.local.md` |
+| Directory or file scoped behavior                       | `.claude/rules/`  |
+| Repeatable workflow with arguments and supporting files | Skill             |
+| One-off instruction for one task                        | Prompt text       |
+
+## Common Mistakes
+
+- Putting secrets, API keys, or private credentials in `CLAUDE.md`.
+- Turning `CLAUDE.md` into a long README clone.
+- Mixing local personal preferences into team memory.
+- Using global memory for rules that should only apply to one repository.
+- Forgetting to update memory after changing build, test, or deploy commands.
+
+## Related Guides
+
+- [What Is CLAUDE.md?](/en/faqs/what-is-claude-md)
+- [Claude Code Memory Guide](/en/mechanics/claude-md)
+- [Claude Code Custom Commands](/en/faqs/claude-code-custom-commands)
+- [Official Claude Code memory docs](https://code.claude.com/docs/en/memory)

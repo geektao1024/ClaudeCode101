@@ -5,7 +5,7 @@ description: 'What Claude Code dynamic workflows are, how ultracode works, when 
 
 Claude Code dynamic workflows let Claude write and run a workflow script that coordinates many subagents in the background. They are for tasks that are too large or too cross-checked for one conversation turn: repository-wide audits, large migrations, security sweeps, broad research, or plans that need independent review before implementation.
 
-> Last checked on May 29, 2026. Dynamic workflows are a research preview. Current Claude Code docs say they require Claude Code `2.1.154` or later and are available on paid plans, Anthropic API access, Amazon Bedrock, Google Cloud Vertex AI, and Microsoft Foundry. Availability, cost, admin controls, and limits can change.
+> Last checked on July 7, 2026. Dynamic workflows are a research preview. Current Claude Code docs say they require Claude Code `2.1.154` or later and are available on paid plans, Anthropic API access, Amazon Bedrock, Google Cloud Vertex AI, and Microsoft Foundry. Availability, cost, admin controls, and limits can change.
 
 ## Quick Answer
 
@@ -75,7 +75,7 @@ Before relying on dynamic workflows, check four things:
 | Account or provider      | Claude subscription, API, Bedrock, Vertex, or Foundry | Availability depends on plan/provider and organization settings.                                          |
 | Admin settings           | `/config` or managed settings                         | Organizations can disable workflows. Pro users may need to enable the Dynamic workflows row in `/config`. |
 
-If you just updated for Opus 4.8 and see thinking-block API errors, update to at least `2.1.156`, then restart the affected session if needed.
+If you just updated for Opus 4.8 and see historical thinking-block API errors, update to the current latest or at least `2.1.156`, then restart the affected session if needed.
 
 ## How To Start A Workflow
 
@@ -177,6 +177,7 @@ If you are only trying to check or update the CLI version, use [Claude Code Late
 
 - [Claude Code Latest Version](/en/upgrade)
 - [Ultracode](/en/mechanics/ultracode)
+- [Ultrathink vs Ultracode](/en/faqs/claude-code-ultrathink-vs-ultracode)
 - [Opus 4.8 slow or expensive troubleshooting](/en/troubleshooting/claude-code-opus-4-8-slow-or-expensive)
 - [Subagents](/en/mechanics/subagents)
 - [Plan Mode](/en/mechanics/plan-mode)

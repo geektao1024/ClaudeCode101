@@ -1,6 +1,6 @@
 ---
 title: 'Claude Code Usage Limits'
-description: 'Claude Code usage limits explained: subscription vs API metering, session and weekly limits, context length, /usage, /cost, /clear, /compact, extra usage, and cost-control habits.'
+description: 'Claude Code usage limits explained: subscription vs API metering, session and weekly limits, context, /usage, /cost, /clear, /compact, and cost control.'
 schema_question: 'What are Claude Code usage limits?'
 schema_answer: 'Claude Code usage limits depend on how you authenticate, which plan or provider you use, the active model, conversation length, project context, tool output, and account state. Subscription users may see session or weekly reset windows, while API-key users are billed by token usage and provider rules.'
 ---
@@ -15,35 +15,35 @@ They are not simple message counts. A short prompt in a huge session can cost mo
 
 If you use Claude Code through a Claude subscription, usage is tied to your plan and can be shared with other Claude surfaces. If you use an API key or cloud provider, usage is metered by tokens and provider billing rules.
 
-| Question | Practical answer |
-| --- | --- |
-| Are limits message counts? | No. Context size, model, tools, files, and session length matter. |
+| Question                                  | Practical answer                                                                               |
+| ----------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| Are limits message counts?                | No. Context size, model, tools, files, and session length matter.                              |
 | Does Claude Code share Claude app limits? | For paid subscription plans, official support says Claude product surfaces share usage limits. |
-| What if I use an API key? | You are billed by token/provider usage rather than a subscription reset window. |
-| Is context full the same as usage limit? | No. Context length is about how much the model can hold in one session. |
-| Fastest way to save usage? | Use `/clear` between unrelated tasks and `/compact` during long tasks. |
+| What if I use an API key?                 | You are billed by token/provider usage rather than a subscription reset window.                |
+| Is context full the same as usage limit?  | No. Context length is about how much the model can hold in one session.                        |
+| Fastest way to save usage?                | Use `/clear` between unrelated tasks and `/compact` during long tasks.                         |
 
 ## The Four Different "Limits"
 
 Users often mix these up:
 
-| Limit type | What it means | What to do |
-| --- | --- | --- |
-| Usage limit | Your subscription, seat, or org allowance has been used for the current window. | Wait for reset, use `/usage`, switch model, enable extra usage if available, or upgrade. |
-| Context or length limit | The session is carrying too much conversation, file content, tool output, or MCP output. | Use `/compact`, `/clear`, trim logs, and split the task. |
-| Rate limit | Requests or tokens are arriving faster than your account/provider allows. | Reduce parallel runs, slow scripts, retry later, or request appropriate limits. |
-| Credit or spend limit | API credits, auto-reload, cloud quota, or workspace spend cap stops the run. | Check the Console or cloud billing dashboard before retrying. |
+| Limit type              | What it means                                                                            | What to do                                                                               |
+| ----------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| Usage limit             | Your subscription, seat, or org allowance has been used for the current window.          | Wait for reset, use `/usage`, switch model, enable extra usage if available, or upgrade. |
+| Context or length limit | The session is carrying too much conversation, file content, tool output, or MCP output. | Use `/compact`, `/clear`, trim logs, and split the task.                                 |
+| Rate limit              | Requests or tokens are arriving faster than your account/provider allows.                | Reduce parallel runs, slow scripts, retry later, or request appropriate limits.          |
+| Credit or spend limit   | API credits, auto-reload, cloud quota, or workspace spend cap stops the run.             | Check the Console or cloud billing dashboard before retrying.                            |
 
 When someone says "Claude Code limit", first identify which of the four it is. The fix is different.
 
 ## Subscription vs API Metering
 
-| Login path | How usage works | What "running out" looks like | Where to check |
-| --- | --- | --- | --- |
-| Pro / Max via `/login` | Included subscription usage, shared across Claude surfaces. | Session, weekly, or model-specific reset message. | Claude Code usage message, Claude account settings, `/usage`. |
-| Team / Enterprise via `/login` | Organization seat, pool, or policy rules. | Team/org limit message or admin-managed restriction. | Admin console, org analytics, policy settings, `/usage`. |
-| `ANTHROPIC_API_KEY` | Pay-as-you-go token billing through Console. | Usually no subscription-style reset; spend continues until credit/spend/rate limit. | Claude Console usage, billing, spend limits, `/cost`. |
-| Bedrock / Vertex / Microsoft Foundry | Provider-side token billing and quotas. | Provider quota, rate, or billing behavior. | Cloud console, quota page, provider billing. |
+| Login path                           | How usage works                                             | What "running out" looks like                                                       | Where to check                                                |
+| ------------------------------------ | ----------------------------------------------------------- | ----------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| Pro / Max via `/login`               | Included subscription usage, shared across Claude surfaces. | Session, weekly, or model-specific reset message.                                   | Claude Code usage message, Claude account settings, `/usage`. |
+| Team / Enterprise via `/login`       | Organization seat, pool, or policy rules.                   | Team/org limit message or admin-managed restriction.                                | Admin console, org analytics, policy settings, `/usage`.      |
+| `ANTHROPIC_API_KEY`                  | Pay-as-you-go token billing through Console.                | Usually no subscription-style reset; spend continues until credit/spend/rate limit. | Claude Console usage, billing, spend limits, `/cost`.         |
+| Bedrock / Vertex / Microsoft Foundry | Provider-side token billing and quotas.                     | Provider quota, rate, or billing behavior.                                          | Cloud console, quota page, provider billing.                  |
 
 Important: if an `ANTHROPIC_API_KEY` environment variable is active, a terminal session may use API billing instead of your subscription path. Check authentication before assuming which bucket you are spending.
 
@@ -62,28 +62,28 @@ The multiplier is accumulated context. A session that already explored twenty fi
 
 ## Commands That Help
 
-| Command | Use it for |
-| --- | --- |
-| `/usage` | See plan limits and reset information when available. |
-| `/cost` | See token and dollar usage for API-billed sessions. |
-| `/model` | Inspect available models and switch to a lighter model when appropriate. |
-| `/clear` | Start a fresh conversation; best when switching tasks. |
-| `/compact` | Summarize history and keep going on the same task. |
-| `/context` | Inspect what is loaded and find bloated context. |
-| `/status` | Confirm the active account, project, and authentication path when available. |
+| Command    | Use it for                                                                   |
+| ---------- | ---------------------------------------------------------------------------- |
+| `/usage`   | See plan limits and reset information when available.                        |
+| `/cost`    | See token and dollar usage for API-billed sessions.                          |
+| `/model`   | Inspect available models and switch to a lighter model when appropriate.     |
+| `/clear`   | Start a fresh conversation; best when switching tasks.                       |
+| `/compact` | Summarize history and keep going on the same task.                           |
+| `/context` | Inspect what is loaded and find bloated context.                             |
+| `/status`  | Confirm the active account, project, and authentication path when available. |
 
 If a command is not visible in your build or plan, use the UI message, account dashboard, or provider dashboard as the source of truth.
 
 ## What To Do When You Hit A Limit
 
-| Situation | Best next step |
-| --- | --- |
+| Situation                                         | Best next step                                                                                               |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
 | "Session limit" or "weekly limit" with reset time | Wait for the reset, switch model, enable extra usage if your plan supports it, or pause high-intensity work. |
-| "Opus limit" | Switch to Sonnet for execution, keep Opus for planning only, or wait for reset. |
-| Context window is full | Run `/compact` if continuing the same task; run `/clear` if starting a different task. |
-| API spend is rising quickly | Stop the script, check active credentials, inspect Console/provider usage, then add spend limits. |
-| Rate limit error | Reduce concurrency, pause automation, retry later, or use provider/admin limit controls. |
-| Wrong account or billing path | Use `/status`, `/login`, environment checks, and provider dashboards before continuing. |
+| "Opus limit"                                      | Switch to Sonnet for execution, keep Opus for planning only, or wait for reset.                              |
+| Context window is full                            | Run `/compact` if continuing the same task; run `/clear` if starting a different task.                       |
+| API spend is rising quickly                       | Stop the script, check active credentials, inspect Console/provider usage, then add spend limits.            |
+| Rate limit error                                  | Reduce concurrency, pause automation, retry later, or use provider/admin limit controls.                     |
+| Wrong account or billing path                     | Use `/status`, `/login`, environment checks, and provider dashboards before continuing.                      |
 
 Do not blindly retry after a limit. Repeated retries can waste more quota or create duplicate API spend.
 

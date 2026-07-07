@@ -5,19 +5,19 @@ description: 'Troubleshoot Claude Code after Opus 4.8 when sessions feel slower,
 
 If Claude Code feels slower or more expensive after the Opus 4.8 rollout, do not assume the model is broken. First separate four different causes: higher effort, larger context, dynamic workflow fan-out, and billing surface.
 
-> Last checked on May 29, 2026. Opus 4.8 defaults to high effort, dynamic workflows are a research preview, and Claude Code `2.1.156` fixes a same-week Opus 4.8 thinking-block API error. Run `claude --version` and check your active model, effort, and account before changing workflows.
+> Last checked on July 7, 2026. Opus 4.8 defaults to high effort, dynamic workflows are a research preview, and Claude Code `2.1.156` fixed a historical Opus 4.8 thinking-block API error. npm currently reports `@anthropic-ai/claude-code` `latest` and `next` as `2.1.202`, and `stable` as `2.1.195`. Run `claude --version` and check your active model, effort, and account before changing workflows.
 
 ## Quick Diagnosis
 
-| Symptom                                            | Most likely cause                                                | First fix                                                                     |
-| -------------------------------------------------- | ---------------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| Each turn feels slower after switching to Opus 4.8 | Higher effort or harder model behavior.                          | Check `/effort`; use `high` for normal tasks and reserve `xhigh`/`ultracode`. |
-| Usage rises during broad tasks                     | Dynamic workflows or subagents are doing more work.              | Narrow the prompt and watch `/workflows`.                                     |
-| `ultracode` burns through usage                    | Claude may be planning workflows for substantive tasks.          | Switch back to `/effort high` after the hard session.                         |
-| Fast mode cost surprises you                       | Fast mode trades money for speed.                                | Use it for latency-sensitive turns, not long unattended runs.                 |
-| 400 thinking-block API error                       | Known Opus 4.8 issue fixed in Claude Code `2.1.156`.             | Update Claude Code, then restart the affected session if needed.              |
-| One project is much slower than another            | Context, MCP output, files, logs, or repo size differ.           | Use `/clear`, `/compact`, and scoped file paths.                              |
-| Team members see different options                 | latest/stable channel, plan, provider, or admin settings differ. | Compare versions, `/config`, and organization settings.                       |
+| Symptom                                            | Most likely cause                                                | First fix                                                                                    |
+| -------------------------------------------------- | ---------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| Each turn feels slower after switching to Opus 4.8 | Higher effort or harder model behavior.                          | Check `/effort`; use `high` for normal tasks and reserve `xhigh`/`ultracode`.                |
+| Usage rises during broad tasks                     | Dynamic workflows or subagents are doing more work.              | Narrow the prompt and watch `/workflows`.                                                    |
+| `ultracode` burns through usage                    | Claude may be planning workflows for substantive tasks.          | Switch back to `/effort high` after the hard session.                                        |
+| Fast mode cost surprises you                       | Fast mode trades money for speed.                                | Use it for latency-sensitive turns, not long unattended runs.                                |
+| 400 thinking-block API error                       | Historical Opus 4.8 issue fixed in Claude Code `2.1.156`.        | Update to the current latest or stable channel, then restart the affected session if needed. |
+| One project is much slower than another            | Context, MCP output, files, logs, or repo size differ.           | Use `/clear`, `/compact`, and scoped file paths.                                             |
+| Team members see different options                 | latest/stable channel, plan, provider, or admin settings differ. | Compare versions, `/config`, and organization settings.                                      |
 
 ## Step 1: Confirm The Version And Channel
 
@@ -32,9 +32,9 @@ At the time this page was checked, npm reported:
 
 ```json
 {
-  "latest": "2.1.156",
-  "next": "2.1.156",
-  "stable": "2.1.145"
+  "latest": "2.1.202",
+  "next": "2.1.202",
+  "stable": "2.1.195"
 }
 ```
 
@@ -155,6 +155,7 @@ The important point: model quality and workflow automation are separate decision
 
 - [Claude Code latest version](/en/upgrade)
 - [Ultracode](/en/mechanics/ultracode)
+- [Ultrathink vs Ultracode](/en/faqs/claude-code-ultrathink-vs-ultracode)
 - [Dynamic workflows](/en/mechanics/dynamic-workflows)
 - [Pricing and limits](/en/pricing)
 - [Usage limits FAQ](/en/faqs/claude-code-usage-limits)

@@ -53,7 +53,6 @@ function entry({
 }): MetadataRoute.Sitemap[number] {
   return {
     url,
-    lastModified: new Date(),
     changeFrequency: 'weekly',
     priority,
   };

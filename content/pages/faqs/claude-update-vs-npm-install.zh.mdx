@@ -1,0 +1,69 @@
+---
+title: 'Claude update 和 npm install 怎么选'
+description: '解释 Claude Code 更新时 claude update、npm install -g、npm update、Homebrew、WinGet、apt、dnf、apk 应该怎么选。'
+schema_question: 'Claude Code 更新应该用 claude update 还是 npm install -g @anthropic-ai/claude-code@latest？'
+schema_answer: '如果你用原生 Claude Code 安装器安装，优先用 claude update。如果当前 claude 命令来自 npm 全局包，使用 npm install -g @anthropic-ai/claude-code@latest。不要只依赖 npm update -g，因为它可能受原来的版本范围限制。更新前先检查 claude --version、which claude 和 npm dist-tags。'
+---
+
+# Claude update 和 npm install 怎么选
+
+短答案：用最初安装 Claude Code 的同一个渠道更新。
+
+> 最后核查：2026 年 7 月 7 日。npm `latest` dist-tag 为 `2.1.202`，`stable` dist-tag 为 `2.1.195`。更新生产环境前，仍然要核对官方 changelog 和本机安装方式。
+
+## 快速答案
+
+| 当前 `claude` 来源     | 推荐更新方式                                      |
+| ---------------------- | ------------------------------------------------- |
+| Claude Code 原生安装器 | `claude update`                                   |
+| npm 全局包             | `npm install -g @anthropic-ai/claude-code@latest` |
+| Homebrew               | `brew upgrade claude-code`                        |
+| WinGet                 | `winget upgrade Anthropic.ClaudeCode`             |
+| apt                    | `sudo apt update && sudo apt install claude-code` |
+| dnf                    | `sudo dnf upgrade claude-code`                    |
+| apk                    | `sudo apk update && sudo apk add -u claude-code`  |
+
+## 为什么 `npm update -g` 可能不是最新版
+
+`npm update -g @anthropic-ai/claude-code` 会在 npm 已知的版本范围内更新。如果旧安装被版本范围限制，它不一定会跳到最新的 `latest` tag。
+
+如果你明确要 npm 最新版，用：
+
+```bash
+npm install -g @anthropic-ai/claude-code@latest
+```
+
+然后验证：
+
+```bash
+claude --version
+npm view @anthropic-ai/claude-code dist-tags --json
+```
+
+## 先判断安装方式
+
+更新前先跑：
+
+```bash
+which claude
+claude --version
+npm list -g @anthropic-ai/claude-code --depth=0
+```
+
+如果 `which claude` 指向 npm 全局目录，并且 `npm list -g` 能看到这个包，就用 npm 更新。否则优先按原生安装器或系统包管理器更新。
+
+## 安全更新清单
+
+1. 用 `claude --version` 看当前版本。
+2. 阅读 [Claude Code changelog](https://docs.anthropic.com/en/release-notes/claude-code)。
+3. 使用同一个安装渠道更新。
+4. 重启 shell、IDE、终端 agent 或 CI runner。
+5. 再跑 `claude --version` 和一个小测试提示词。
+
+## 相关页面
+
+- [Claude Code 更新指南](/zh/upgrade)
+- [Claude Code 怎么安装](/zh/faqs/how-to-install-claude-code)
+- [Claude Code 价格和用量](/zh/pricing)
+- [Claude Code 多少钱](/zh/faqs/how-much-is-claude-code)
+- [官方 Claude Code 安装文档](https://code.claude.com/docs/en/installation)

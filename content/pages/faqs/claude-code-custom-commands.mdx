@@ -7,7 +7,7 @@ schema_answer: 'Claude Code custom commands are reusable slash-command style pro
 
 Custom commands are reusable prompts you can invoke from Claude Code instead of typing the same workflow every time. In current Claude Code, the broader pattern is moving toward skills: Markdown-based workflow packages with clearer descriptions, optional resources, and better reuse.
 
-> Last checked on May 24, 2026. Older tutorials often say "custom slash commands"; current docs emphasize skills while still acknowledging command-style workflows.
+> Last checked on July 7, 2026. Current Claude Code docs say custom commands have been merged into skills: older `.claude/commands/` files still work, while skills are the recommended structure for richer reusable workflows.
 
 ## Short Answer
 
@@ -15,13 +15,13 @@ Use a small command for a simple repeated prompt. Use a skill when the workflow 
 
 ## Commands vs Skills
 
-| Need | Use | Why |
-| --- | --- | --- |
-| One short shortcut such as "review this diff" | Custom command | Low overhead and easy to read. |
-| Reusable workflow with a checklist | Skill | Better description, structure, and discoverability. |
-| Team process with examples or templates | Skill | Can include supporting files. |
-| External tool capability | MCP server or plugin | Commands alone do not create external tools. |
-| Project-wide behavior every session | `CLAUDE.md` | It should load as context, not be invoked manually. |
+| Need                                          | Use                  | Why                                                            |
+| --------------------------------------------- | -------------------- | -------------------------------------------------------------- |
+| One short shortcut such as "review this diff" | Custom command       | Low overhead and easy to read.                                 |
+| Reusable workflow with a checklist            | Skill                | Better description, arguments, structure, and discoverability. |
+| Team process with examples or templates       | Skill                | Can include supporting files.                                  |
+| External tool capability                      | MCP server or plugin | Commands alone do not create external tools.                   |
+| Project-wide behavior every session           | `CLAUDE.md`          | It should load as context, not be invoked manually.            |
 
 ## Practical Examples
 
@@ -55,22 +55,24 @@ Use the skill when the workflow needs a repeatable checklist, examples, or valid
 
 ## Common Mistakes
 
-| Mistake | Better approach |
-| --- | --- |
-| A 300-line command file | Convert it into a skill with supporting docs. |
-| Commands that assume one machine path | Use project-relative paths or `CLAUDE.md`. |
-| Commands that ask Claude to skip review | Keep review and permission gates explicit. |
-| Duplicating official docs | Link to official docs and keep only team-specific policy. |
+| Mistake                                 | Better approach                                           |
+| --------------------------------------- | --------------------------------------------------------- |
+| A 300-line command file                 | Convert it into a skill with supporting docs.             |
+| Commands that assume one machine path   | Use project-relative paths or `CLAUDE.md`.                |
+| Commands that ask Claude to skip review | Keep review and permission gates explicit.                |
+| Duplicating official docs               | Link to official docs and keep only team-specific policy. |
 
 ## Related Guides
 
 - [CLAUDE.md](/en/faqs/what-is-claude-md)
+- [Custom command arguments](/en/faqs/claude-code-custom-command-arguments)
 - [Plan Mode](/en/faqs/what-is-plan-mode)
 - [Agent SDK and API docs](/en/faqs/claude-code-api-documentation)
 - [Tools allowlist](/en/tutorial/configuration/tools-allowlist)
 
 ## Official Sources
 
-- [Claude Code skills and commands](https://code.claude.com/docs/en/slash-commands)
+- [Claude Code commands reference](https://code.claude.com/docs/en/commands)
+- [Claude Code skills](https://code.claude.com/docs/en/skills)
 - [Use Claude Code features in the Agent SDK](https://code.claude.com/docs/en/agent-sdk/claude-code-features)
 - [Agent Skills in the SDK](https://code.claude.com/docs/en/agent-sdk/skills)

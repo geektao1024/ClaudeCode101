@@ -1,11 +1,32 @@
 ---
-title: "Tools Allowlist Management"
-description: "Managing Claude Code's tool allowlist and permission settings"
+title: 'Claude Code Tool Permissions: Allowlist and Settings'
+description: 'Manage Claude Code tool permissions with allowedTools, /permissions, settings files, CLI flags, least privilege examples, and safe allowlist defaults.'
 ---
 
-# Tools Allowlist Management
+# Claude Code Tool Permissions
 
-Claude Code requests permission for any operations that might modify your system. Learn how to manage the tool permissions list to balance security and convenience.
+Claude Code requests permission for operations that can read, edit, run commands, or touch external tools. Manage the allowlist with `/permissions`, `allowedTools`, settings files, and CLI flags so automation stays useful without giving every session full access.
+
+## Quick Answer
+
+Start with read-only tools, then allow only the command families your workflow needs:
+
+```json
+{
+  "permissions": {
+    "allow": [
+      "Read",
+      "Glob",
+      "Grep",
+      "LS",
+      "Bash(git status)",
+      "Bash(git diff *)"
+    ]
+  }
+}
+```
+
+Use broader permissions only in disposable containers or trusted repositories. For CI and headless runs, prefer explicit `--allowedTools` flags over a permanent broad allowlist.
 
 ## Permission Management Methods
 
@@ -16,7 +37,7 @@ When Claude requests tool permissions, choose "Always allow":
 ```
 Claude requests to use Edit tool
 [ ] Allow once only
-[x] Always allow  
+[x] Always allow
 [ ] Deny
 ```
 
@@ -34,18 +55,14 @@ Use permission commands in Claude Code sessions:
 
 ### 3. Manual Configuration File Editing
 
-Edit `.claude/settings.json` or `~/.claude.json`:
+Edit `.claude/settings.json`, `~/.claude/settings.json`, or another Claude Code settings file:
 
 ```json
 {
-  "allowedTools": [
-    "Read",
-    "Write", 
-    "Edit",
-    "Bash(git:*)",
-    "Bash(npm:*)",
-    "Bash(pnpm:*)"
-  ]
+  "permissions": {
+    "allow": ["Read", "Edit", "Bash(git *)", "Bash(npm *)", "Bash(pnpm *)"],
+    "deny": ["Bash(rm -rf *)", "Bash(sudo *)"]
+  }
 }
 ```
 
@@ -54,7 +71,7 @@ Edit `.claude/settings.json` or `~/.claude.json`:
 Set permissions for specific sessions:
 
 ```bash
-claude --allowedTools "Read,Write,Edit,Bash(git:*)"
+claude --allowedTools "Read,Edit,Bash(git *)"
 ```
 
 ## Recommended Permission Configurations
@@ -63,12 +80,9 @@ claude --allowedTools "Read,Write,Edit,Bash(git:*)"
 
 ```json
 {
-  "allowedTools": [
-    "Read",
-    "Glob", 
-    "Grep",
-    "LS"
-  ]
+  "permissions": {
+    "allow": ["Read", "Glob", "Grep", "LS"]
+  }
 }
 ```
 
@@ -76,16 +90,17 @@ claude --allowedTools "Read,Write,Edit,Bash(git:*)"
 
 ```json
 {
-  "allowedTools": [
-    "Read",
-    "Write",
-    "Edit", 
-    "MultiEdit",
-    "Bash(git:*)",
-    "Bash(npm:*)",
-    "Bash(pnpm:*)",
-    "Bash(yarn:*)"
-  ]
+  "permissions": {
+    "allow": [
+      "Read",
+      "Edit",
+      "MultiEdit",
+      "Bash(git *)",
+      "Bash(npm *)",
+      "Bash(pnpm *)",
+      "Bash(yarn *)"
+    ]
+  }
 }
 ```
 
@@ -93,19 +108,19 @@ claude --allowedTools "Read,Write,Edit,Bash(git:*)"
 
 ```json
 {
-  "allowedTools": [
-    "Read",
-    "Write", 
-    "Edit",
-    "MultiEdit",
-    "Bash(git:*)",
-    "Bash(npm:*)",
-    "Bash(pnpm:*)",
-    "Bash(docker:*)",
-    "Bash(gh:*)",
-    "WebFetch",
-    "TodoWrite"
-  ]
+  "permissions": {
+    "allow": [
+      "Read",
+      "Edit",
+      "MultiEdit",
+      "Bash(git *)",
+      "Bash(npm *)",
+      "Bash(pnpm *)",
+      "Bash(docker *)",
+      "Bash(gh *)",
+      "WebFetch"
+    ]
+  }
 }
 ```
 
@@ -114,6 +129,7 @@ claude --allowedTools "Read,Write,Edit,Bash(git:*)"
 ### 🟢 Low Risk Tools
 
 **Recommended to always allow**:
+
 - `Read` - Read files
 - `Glob` - File pattern matching
 - `Grep` - Text search
@@ -123,6 +139,7 @@ claude --allowedTools "Read,Write,Edit,Bash(git:*)"
 ### 🟡 Medium Risk Tools
 
 **Use with caution**:
+
 - `Write` - Write files
 - `Edit` - Edit files
 - `MultiEdit` - Batch editing
@@ -132,6 +149,7 @@ claude --allowedTools "Read,Write,Edit,Bash(git:*)"
 ### 🔴 High Risk Tools
 
 **Requires confirmation**:
+
 - `Bash(rm:*)` - Delete operations
 - `Bash(sudo:*)` - Admin privileges
 - `Bash(curl:*)` - Network requests
@@ -145,13 +163,15 @@ Only grant necessary permissions:
 
 ```json
 {
-  "allowedTools": [
-    "Read",
-    "Edit",
-    "Bash(git status)",
-    "Bash(git diff)",
-    "Bash(npm test)"
-  ]
+  "permissions": {
+    "allow": [
+      "Read",
+      "Edit",
+      "Bash(git status)",
+      "Bash(git diff *)",
+      "Bash(npm test)"
+    ]
+  }
 }
 ```
 

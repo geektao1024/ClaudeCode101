@@ -1,0 +1,75 @@
+---
+title: 'Claude Code 自定义命令参数怎么用'
+description: '解释 Claude Code custom command arguments、自定义 slash commands 参数、skills 的 argument-hint、命名参数和辅助文件应该怎么设计。'
+schema_question: 'Claude Code 自定义命令参数怎么传？'
+schema_answer: 'slash command 名称后面的文本就是命令参数。复杂工作流建议用 skills，通过 argument-hint 和 arguments frontmatter 声明输入、自动补全提示和参数含义。.claude/commands/*.md 仍然适合简单提示词，但当命令需要结构、元数据或辅助文件时，skills 更合适。'
+---
+
+# Claude Code 自定义命令参数怎么用
+
+最简单的参数，就是你在 slash command 名称后面输入的文本。
+
+> 最后核查：2026 年 7 月 7 日。当前 Claude Code 文档把 skills 作为更完整的自定义工作流方式；已有 `.claude/commands/*.md` 仍适合简单 slash commands。
+
+## 快速答案
+
+```text
+/explain src/app/page.tsx
+```
+
+这个例子里，`src/app/page.tsx` 就是传给命令的参数文本。
+
+如果需要结构化参数，用 skill：
+
+```yaml
+---
+name: explain-file
+description: Explain a file and identify risky changes
+argument-hint: '<file path>'
+arguments:
+  - name: file
+    description: File to inspect
+    required: true
+---
+```
+
+## slash command 和 skill 参数区别
+
+| 需求                     | 推荐方式                |
+| ------------------------ | ----------------------- |
+| 命令名后面跟一段自由文本 | `.claude/commands/*.md` |
+| 命名参数或参数说明       | Skill                   |
+| 自动补全里提示参数格式   | Skill `argument-hint`   |
+| 需要辅助文件、脚本、示例 | Skill                   |
+| 团队可复用工作流         | Skill                   |
+
+## 实用模式
+
+简单改写可以用短命令：
+
+```text
+/rewrite-title Make this clearer for a docs homepage
+```
+
+需要可复用行为时，用 skill：
+
+```text
+/explain-file src/server/auth.ts
+```
+
+skill 可以说明文件参数含义、应该做哪些检查、输出什么格式。
+
+## 常见错误
+
+- 以为 `.claude/commands/*.md` 会自动校验参数类型。
+- 把必要输入藏在长段说明里，而不是明确声明。
+- 用一个很长 prompt 承载本该有辅助脚本的复杂流程。
+- 把只适用于单个仓库的命令放成全局命令。
+
+## 相关页面
+
+- [Claude Code 自定义命令指南](/zh/tutorial/tools-integration/custom-commands)
+- [Claude Code 自定义命令是什么](/zh/faqs/claude-code-custom-commands)
+- [Claude Code memory 官方文档](/zh/faqs/claude-code-memory-official-docs)
+- [官方 commands 文档](https://code.claude.com/docs/en/commands)
+- [官方 skills 文档](https://code.claude.com/docs/en/skills)

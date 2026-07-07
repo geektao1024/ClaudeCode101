@@ -1,6 +1,6 @@
 ---
 title: 'Claude Code MCP Servers'
-description: 'Claude Code MCP servers explained: what MCP does, when to use it, claude mcp add syntax, local/project/user scopes, OAuth, tool search, context limits, and security checks.'
+description: 'Claude Code MCP servers explained: what MCP does, when to use it, claude mcp add syntax, scopes, OAuth, tool search, context limits, and security.'
 schema_question: 'What are Claude Code MCP servers?'
 schema_answer: 'Claude Code MCP servers connect Claude Code to external tools and data sources through the Model Context Protocol. Use MCP when Claude needs a real tool such as GitHub, browser automation, docs search, databases, or internal APIs. Configure one server at a time, choose the right scope, keep credentials safe, and limit output.'
 ---
@@ -15,24 +15,24 @@ Think of MCP as a bridge. Instead of pasting issue text, database schemas, brows
 
 Use MCP when Claude Code needs a real external capability. Do not add servers just because they exist.
 
-| Question | Practical answer |
-| --- | --- |
-| What is an MCP server? | A process or remote endpoint exposing tools, prompts, or resources to Claude Code. |
-| When should I use it? | When repeated work needs GitHub, browser, docs, database, ticketing, or internal API access. |
-| Where is config stored? | Local/user scope in `~/.claude.json`; project scope in `.mcp.json`. |
-| Is it safe by default? | No. Review the server, credentials, permissions, and output size. |
-| Does MCP consume context? | Yes, especially large tool results. Tool search helps reduce upfront context. |
+| Question                  | Practical answer                                                                             |
+| ------------------------- | -------------------------------------------------------------------------------------------- |
+| What is an MCP server?    | A process or remote endpoint exposing tools, prompts, or resources to Claude Code.           |
+| When should I use it?     | When repeated work needs GitHub, browser, docs, database, ticketing, or internal API access. |
+| Where is config stored?   | Local/user scope in `~/.claude.json`; project scope in `.mcp.json`.                          |
+| Is it safe by default?    | No. Review the server, credentials, permissions, and output size.                            |
+| Does MCP consume context? | Yes, especially large tool results. Tool search helps reduce upfront context.                |
 
 ## When MCP Is Worth It
 
-| Need | MCP can help | Better alternative |
-| --- | --- | --- |
-| Read or update GitHub issues and PRs | GitHub MCP or curated integration. | Paste one issue link for a one-off task. |
-| Test a website in a real browser | Playwright or browser MCP. | Static code review if browser state is irrelevant. |
-| Query internal docs | Docs/search MCP. | Put stable rules in `CLAUDE.md`. |
-| Inspect database schemas | Read-only database MCP. | Export a schema file for a one-time review. |
-| Repeat team workflows | MCP prompts, tools, or plugin-bundled MCP. | Slash command or skill if no external system is needed. |
-| Pull monitoring or ticket context | Internal MCP server. | Manual summary for a rare incident. |
+| Need                                 | MCP can help                               | Better alternative                                      |
+| ------------------------------------ | ------------------------------------------ | ------------------------------------------------------- |
+| Read or update GitHub issues and PRs | GitHub MCP or curated integration.         | Paste one issue link for a one-off task.                |
+| Test a website in a real browser     | Playwright or browser MCP.                 | Static code review if browser state is irrelevant.      |
+| Query internal docs                  | Docs/search MCP.                           | Put stable rules in `CLAUDE.md`.                        |
+| Inspect database schemas             | Read-only database MCP.                    | Export a schema file for a one-time review.             |
+| Repeat team workflows                | MCP prompts, tools, or plugin-bundled MCP. | Slash command or skill if no external system is needed. |
+| Pull monitoring or ticket context    | Internal MCP server.                       | Manual summary for a rare incident.                     |
 
 The best first MCP server is the one attached to a workflow you already repeat every week.
 
@@ -71,12 +71,12 @@ If a command fails, check option order first. Many MCP install problems come fro
 
 Choose the scope before adding the server.
 
-| Scope | Loads in | Shared with team | Stored in | Use for |
-| --- | --- | --- | --- | --- |
-| Local | Current project only | No | `~/.claude.json` | Personal experiments, private credentials, one repo. |
-| Project | Current project only | Yes, via version control | `.mcp.json` | Team-shared, reviewed MCP configs. |
-| User | All your projects | No | `~/.claude.json` | Personal tools used across many repos. |
-| Managed | Organization controlled | Yes, by policy | Managed config | Enterprise-approved servers. |
+| Scope   | Loads in                | Shared with team         | Stored in        | Use for                                              |
+| ------- | ----------------------- | ------------------------ | ---------------- | ---------------------------------------------------- |
+| Local   | Current project only    | No                       | `~/.claude.json` | Personal experiments, private credentials, one repo. |
+| Project | Current project only    | Yes, via version control | `.mcp.json`      | Team-shared, reviewed MCP configs.                   |
+| User    | All your projects       | No                       | `~/.claude.json` | Personal tools used across many repos.               |
+| Managed | Organization controlled | Yes, by policy           | Managed config   | Enterprise-approved servers.                         |
 
 Project scope is powerful because it makes tools consistent across a team, but it deserves review. Do not commit secrets into `.mcp.json`.
 
@@ -103,25 +103,25 @@ Result shape:
 
 Useful commands:
 
-| Command | Purpose |
-| --- | --- |
-| `claude mcp list` | List configured servers. |
-| `claude mcp get <name>` | Show server details. |
-| `claude mcp remove <name>` | Remove a server. |
-| `/mcp` | Check status, authenticate remote servers, and inspect connection state inside Claude Code. |
-| `claude mcp reset-project-choices` | Reset approval choices for project-scoped `.mcp.json` servers. |
-| `claude mcp add-from-claude-desktop` | Import servers from Claude Desktop on supported platforms. |
-| `claude mcp serve` | Run Claude Code itself as an MCP server for other clients. |
+| Command                              | Purpose                                                                                     |
+| ------------------------------------ | ------------------------------------------------------------------------------------------- |
+| `claude mcp list`                    | List configured servers.                                                                    |
+| `claude mcp get <name>`              | Show server details.                                                                        |
+| `claude mcp remove <name>`           | Remove a server.                                                                            |
+| `/mcp`                               | Check status, authenticate remote servers, and inspect connection state inside Claude Code. |
+| `claude mcp reset-project-choices`   | Reset approval choices for project-scoped `.mcp.json` servers.                              |
+| `claude mcp add-from-claude-desktop` | Import servers from Claude Desktop on supported platforms.                                  |
+| `claude mcp serve`                   | Run Claude Code itself as an MCP server for other clients.                                  |
 
 Use `/mcp` first when a server looks connected but tools are not available.
 
 ## Transports and Authentication
 
-| Transport | Best for | Notes |
-| --- | --- | --- |
-| `stdio` | Local processes, local dev tools, simple private integrations. | Starts a local process. Credentials usually come from env vars. |
-| `http` | Remote services, hosted integrations, OAuth-capable servers. | Can use headers or OAuth depending on server support. |
-| `sse` | Older or streaming server setups. | Still appears in docs and integrations, but HTTP is the common remote pattern. |
+| Transport | Best for                                                       | Notes                                                                          |
+| --------- | -------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `stdio`   | Local processes, local dev tools, simple private integrations. | Starts a local process. Credentials usually come from env vars.                |
+| `http`    | Remote services, hosted integrations, OAuth-capable servers.   | Can use headers or OAuth depending on server support.                          |
+| `sse`     | Older or streaming server setups.                              | Still appears in docs and integrations, but HTTP is the common remote pattern. |
 
 For remote servers that need OAuth, use `/mcp` in Claude Code to complete the browser login flow. Store client secrets in secure credential storage or environment variables, not in committed config.
 
@@ -182,13 +182,13 @@ Read every issue, all tables, and the whole repo, then fix everything.
 
 ## MCP vs Plugins vs Skills
 
-| Need | Better tool |
-| --- | --- |
-| External system access | MCP server |
-| Reusable local workflow instructions | Skill |
-| Bundled extension that may include MCP, commands, hooks, and docs | Plugin |
-| Simple repeated prompt without external tools | Slash command |
-| Behavioral project rules | `CLAUDE.md` or `.claude/rules/` |
+| Need                                                              | Better tool                     |
+| ----------------------------------------------------------------- | ------------------------------- |
+| External system access                                            | MCP server                      |
+| Reusable local workflow instructions                              | Skill                           |
+| Bundled extension that may include MCP, commands, hooks, and docs | Plugin                          |
+| Simple repeated prompt without external tools                     | Slash command                   |
+| Behavioral project rules                                          | `CLAUDE.md` or `.claude/rules/` |
 
 MCP is strongest when the missing piece is external capability, not when the problem is merely repeated instructions.
 

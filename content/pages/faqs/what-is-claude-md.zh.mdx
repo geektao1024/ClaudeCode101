@@ -7,19 +7,19 @@ schema_answer: 'CLAUDE.md 是 Claude Code 读取项目长期规则的主要 memo
 
 `CLAUDE.md` 是 Claude Code 的项目长期上下文文件。它用来记录每次会话都需要知道的稳定规则，例如项目结构、常用命令、代码规范、测试要求、权限习惯和交付检查清单。
 
-> 最后核查：2026 年 5 月 24 日。Claude Code 的 memory 机制可能继续演进，特殊团队配置仍建议对照官方 memory 文档核查。
+> 最后核查：2026 年 7 月 7 日。Claude Code 的 memory 机制可能继续演进，特殊团队配置仍建议对照官方 [Claude Code memory 文档](https://code.claude.com/docs/en/memory)核查。
 
 ## 短答案
 
 当 Claude Code 需要稳定理解一个仓库时，就创建 `CLAUDE.md`。共享规则放在团队能看到的位置，私人信息放到本地文件，内容要短、准、可维护。
 
-| 问题 | 实用答案 |
-| --- | --- |
-| 它是什么？ | Claude Code 的 Markdown 项目记忆文件。 |
-| 放在哪里？ | 通常放仓库根目录，或放在最接近相关代码的目录。 |
-| 要提交到 git 吗？ | 共享项目规则可以提交；私人说明不要提交。 |
-| 能当权限控制吗？ | 不能。真正的限制要用 permissions、managed settings 和代码评审。 |
-| 多长合适？ | 能减少重复解释即可，不要长到影响阅读。 |
+| 问题              | 实用答案                                                        |
+| ----------------- | --------------------------------------------------------------- |
+| 它是什么？        | Claude Code 的 Markdown 项目记忆文件。                          |
+| 放在哪里？        | 通常放仓库根目录，或放在最接近相关代码的目录。                  |
+| 要提交到 git 吗？ | 共享项目规则可以提交；私人说明不要提交。                        |
+| 能当权限控制吗？  | 不能。真正的限制要用 permissions、managed settings 和代码评审。 |
+| 多长合适？        | 能减少重复解释即可，不要长到影响阅读。                          |
 
 ## CLAUDE.md 放在哪里
 
@@ -51,12 +51,12 @@ repo/
 
 ## Memory 层级
 
-| 记忆位置 | 常见路径 | 适合写什么 | Git 策略 |
-| --- | --- | --- | --- |
-| 用户 memory | `~/.claude/CLAUDE.md` | 所有项目通用的个人偏好。 | 不提交。 |
-| 项目 memory | `./CLAUDE.md` | 共享项目架构、命令、规范。 | 通常提交。 |
-| 本地 memory | `./CLAUDE.local.md` | 私人路径、本地端口、临时说明。 | 通常 gitignore。 |
-| 细粒度 rules | `.claude/rules/*.md` | 文件类型、目录或任务级规则。 | 共享规则可提交。 |
+| 记忆位置     | 常见路径              | 适合写什么                     | Git 策略         |
+| ------------ | --------------------- | ------------------------------ | ---------------- |
+| 用户 memory  | `~/.claude/CLAUDE.md` | 所有项目通用的个人偏好。       | 不提交。         |
+| 项目 memory  | `./CLAUDE.md`         | 共享项目架构、命令、规范。     | 通常提交。       |
+| 本地 memory  | `./CLAUDE.local.md`   | 私人路径、本地端口、临时说明。 | 通常 gitignore。 |
+| 细粒度 rules | `.claude/rules/*.md`  | 文件类型、目录或任务级规则。   | 共享规则可提交。 |
 
 把每一层的职责分清楚：用户 memory 写你的个人工作方式，项目 memory 写仓库事实，本地 memory 写你的机器环境，rules 写更窄的专项规则。
 
@@ -64,15 +64,15 @@ repo/
 
 好的 `CLAUDE.md` 应该回答开发者每次都会重复交代的问题：
 
-| 板块 | 可写内容 |
-| --- | --- |
-| 项目结构 | 主应用、包结构、路由系统、内容目录。 |
-| 常用命令 | 安装、开发、构建、测试、格式化、类型检查、预览部署。 |
-| 架构边界 | 哪些模块负责什么，哪些边界不要随便跨。 |
-| 代码规范 | 现有模式、命名规则、组件风格、数据访问方式。 |
-| 验证要求 | 完成前必须跑哪些检查。 |
-| SEO 或内容规则 | URL 保留、metadata、内链、语言版本要求。 |
-| 安全说明 | 权限边界、禁止破坏性命令、部署规则。 |
+| 板块           | 可写内容                                             |
+| -------------- | ---------------------------------------------------- |
+| 项目结构       | 主应用、包结构、路由系统、内容目录。                 |
+| 常用命令       | 安装、开发、构建、测试、格式化、类型检查、预览部署。 |
+| 架构边界       | 哪些模块负责什么，哪些边界不要随便跨。               |
+| 代码规范       | 现有模式、命名规则、组件风格、数据访问方式。         |
+| 验证要求       | 完成前必须跑哪些检查。                               |
+| SEO 或内容规则 | URL 保留、metadata、内链、语言版本要求。             |
+| 安全说明       | 权限边界、禁止破坏性命令、部署规则。                 |
 
 示例：
 
@@ -80,21 +80,25 @@ repo/
 # ClaudeCode101 project notes
 
 ## Commands
+
 - Install: `pnpm install`
 - Generate docs index: `pnpm exec fumadocs-mdx`
 - Build: `pnpm build`
 
 ## Content rules
+
 - Preserve existing SEO URLs unless a redirect is planned.
 - Keep FAQ pages concise but useful: answer first, then expand with examples.
 - Link FAQ pages to the deeper tutorial, mechanics, or troubleshooting page.
 
 ## Code rules
+
 - Prefer existing ShipAny template services and blocks.
 - Do not bypass existing auth, payment, or i18n services.
 - Use `apply_patch` for hand edits and run a build before handoff.
 
 ## Review checklist
+
 - Metadata matches the search intent.
 - Internal links point to the correct locale.
 - Dark mode and mobile layout still work.
@@ -104,14 +108,14 @@ repo/
 
 不要把 `CLAUDE.md` 变成垃圾桶。
 
-| 不建议写 | 原因 |
-| --- | --- |
+| 不建议写                 | 原因                               |
+| ------------------------ | ---------------------------------- |
 | API key、token、客户数据 | assistant 能读取，且容易被误提交。 |
-| 大段复制的官方文档 | 占用上下文，也容易过时。 |
-| 一次性偏好 | 会让文件越来越吵。 |
-| 互相冲突的规则 | Claude 会被迫猜哪条更重要。 |
-| 旧部署说明 | 过时运维信息容易导致真实错误。 |
-| “帮我做得更好” | 不可执行，也无法校验。 |
+| 大段复制的官方文档       | 占用上下文，也容易过时。           |
+| 一次性偏好               | 会让文件越来越吵。                 |
+| 互相冲突的规则           | Claude 会被迫猜哪条更重要。        |
+| 旧部署说明               | 过时运维信息容易导致真实错误。     |
+| “帮我做得更好”           | 不可执行，也无法校验。             |
 
 临时任务放在当前会话或本地草稿里。稳定且反复出现的规则，才沉淀进项目 memory。
 
@@ -139,13 +143,13 @@ repo/
 
 `CLAUDE.md` 是宽范围记忆，rules 应该更窄。
 
-| 需求 | 更适合的位置 |
-| --- | --- |
-| “这个仓库使用 Next.js、MDX 和 Cloudflare Workers” | `CLAUDE.md` |
-| “所有 MDX FAQ 文件都必须有 schema 字段” | `.claude/rules/mdx-faq.md` |
-| “Admin 页面必须使用 RBAC helper” | `.claude/rules/admin.md` |
-| “不要在功能线程里部署” | `CLAUDE.md` 或 managed settings |
-| “我个人希望最终总结用中文” | 用户 memory |
+| 需求                                              | 更适合的位置                    |
+| ------------------------------------------------- | ------------------------------- |
+| “这个仓库使用 Next.js、MDX 和 Cloudflare Workers” | `CLAUDE.md`                     |
+| “所有 MDX FAQ 文件都必须有 schema 字段”           | `.claude/rules/mdx-faq.md`      |
+| “Admin 页面必须使用 RBAC helper”                  | `.claude/rules/admin.md`        |
+| “不要在功能线程里部署”                            | `CLAUDE.md` 或 managed settings |
+| “我个人希望最终总结用中文”                        | 用户 memory                     |
 
 如果规则只影响一类文件，放进 scoped rules 会让主 memory 更干净。
 
@@ -167,16 +171,17 @@ imports 适合稳定参考资料，不适合把整个 docs 目录都塞进上下
 
 有些仓库已经有其他 coding agent 使用的 `AGENTS.md`。不要简单重复复制。
 
-| 当前情况 | 推荐做法 |
-| --- | --- |
-| 仓库只有 `AGENTS.md` | 新建 `CLAUDE.md`，用 `@AGENTS.md` 导入，再在下面补 Claude Code 专属说明。 |
-| `AGENTS.md` 通用且准确 | 在 `CLAUDE.md` 中使用 `@AGENTS.md`，让两套 agent workflow 共享基础规则。 |
-| `AGENTS.md` 已经过时 | 只把准确规则迁移进 `CLAUDE.md`，旧文件后续再清理。 |
+| 当前情况               | 推荐做法                                                                  |
+| ---------------------- | ------------------------------------------------------------------------- |
+| 仓库只有 `AGENTS.md`   | 新建 `CLAUDE.md`，用 `@AGENTS.md` 导入，再在下面补 Claude Code 专属说明。 |
+| `AGENTS.md` 通用且准确 | 在 `CLAUDE.md` 中使用 `@AGENTS.md`，让两套 agent workflow 共享基础规则。  |
+| `AGENTS.md` 已经过时   | 只把准确规则迁移进 `CLAUDE.md`，旧文件后续再清理。                        |
 
 ```md
 @AGENTS.md
 
 ## Claude Code
+
 - 大范围改 billing、auth、deploy 前先使用 plan mode。
 ```
 
@@ -222,6 +227,7 @@ imports 适合稳定参考资料，不适合把整个 docs 目录都塞进上下
 
 - [CLAUDE.md 教程](/zh/tutorial/configuration/claude-md)
 - [CLAUDE.md 机制页](/zh/mechanics/claude-md)
+- [Claude Code memory 官方文档](/zh/faqs/claude-code-memory-official-docs)
 - [Plan Mode](/zh/faqs/what-is-plan-mode)
 - [自定义命令](/zh/faqs/claude-code-custom-commands)
 - [用量限制](/zh/faqs/claude-code-usage-limits)

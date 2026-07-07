@@ -1,6 +1,15 @@
+---
+title: 'Claude Code Ultrathink: Deep Reasoning and Token Cost'
+description: 'Use Claude Code ultrathink for complex architecture, debugging, migrations, and Plan Mode decisions while controlling token cost and avoiding overuse.'
+---
+
 # Ultrathink Mode
 
-Add the `ultrathink` keyword to your prompts to enable Claude's deep thinking mode. Higher quality responses, but consumes more tokens.
+Add the `ultrathink` keyword to Claude Code prompts when you need deeper reasoning for architecture, debugging, migrations, or difficult implementation plans. It can improve answer quality, but it consumes more tokens and is not a default for routine edits.
+
+## Quick Answer
+
+Use ultrathink when the cost of a wrong plan is higher than the cost of extra reasoning. Good targets include multi-file refactors, payment or auth changes, data migrations, production debugging, and Plan Mode reviews. Skip it for simple copy edits, obvious bug fixes, formatting, and routine CRUD work.
 
 ## How to Use
 
@@ -15,12 +24,14 @@ Simply add the `ultrathink` keyword anywhere in your prompt:
 ## Use Cases
 
 **Good for**:
+
 - Complex architecture design
 - Technology stack decisions
 - Complex business logic
 - Algorithm optimization
 
 **Not suitable for**:
+
 - Simple CRUD operations
 - Style adjustments
 - Quick bug fixes
@@ -30,3 +41,9 @@ Simply add the `ultrathink` keyword anywhere in your prompt:
 For example, when asking Claude to design an e-commerce system architecture, with ultrathink it will deeply analyze business requirements, compare multiple technical solutions, consider scalability and maintainability, and provide very detailed implementation recommendations. Without ultrathink, you might only get a simple solution with many details overlooked.
 
 Best used with Plan Mode: first use ultrathink for deep solution thinking, then confirm and implement. This ensures solution quality while avoiding later rework.
+
+## Related Guides
+
+- [Ultrathink vs Ultracode](/en/faqs/claude-code-ultrathink-vs-ultracode)
+- [Plan Mode](/en/faqs/what-is-plan-mode)
+- [Claude Code Ultracode](/en/mechanics/ultracode)

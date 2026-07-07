@@ -153,12 +153,15 @@ async function getCanonicalUrl(canonicalUrl: string, locale: string) {
 function getAlternateLanguages(canonicalUrl: string) {
   const path = getCanonicalPath(canonicalUrl);
 
-  return Object.fromEntries(
-    locales.map((locale) => [
-      locale,
-      `${envConfigs.app_url}/${locale}${path}`,
-    ])
-  );
+  return {
+    ...Object.fromEntries(
+      locales.map((locale) => [
+        locale,
+        `${envConfigs.app_url}/${locale}${path}`,
+      ])
+    ),
+    'x-default': `${envConfigs.app_url}/en${path}`,
+  };
 }
 
 function getCanonicalPath(canonicalUrl: string) {

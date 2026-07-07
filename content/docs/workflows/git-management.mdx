@@ -1,3 +1,8 @@
+---
+title: 'Claude Code Git Workflow: Commits, Branches, and PRs'
+description: 'Use Git with Claude Code for safe commits, branches, diffs, PR preparation, rollback points, and reviewable coding sessions.'
+---
+
 # Git Version Control
 
 Claude Code integrates seamlessly with Git, enabling intelligent version control workflows that enhance your development process.
@@ -13,6 +18,7 @@ Analyze the current changes and create an appropriate commit message
 ```
 
 Claude will:
+
 - Review staged and unstaged changes
 - Understand the context of modifications
 - Generate descriptive commit messages following best practices
@@ -21,16 +27,19 @@ Claude will:
 ### Branch Management
 
 **Creating Feature Branches**:
+
 ```
 Create a new feature branch for implementing user authentication
 ```
 
 **Branch Switching**:
+
 ```
 Switch to the development branch and show me the recent changes
 ```
 
 **Merge Conflict Resolution**:
+
 ```
 Help me resolve the merge conflicts in src/components/Header.tsx
 ```
@@ -52,6 +61,7 @@ Review my changes and prepare them for a pull request:
 ### Release Management
 
 **Version Bumping**:
+
 ```
 Prepare for a new release:
 1. Update version numbers
@@ -61,6 +71,7 @@ Prepare for a new release:
 ```
 
 **Hotfix Workflow**:
+
 ```
 Create a hotfix branch for the critical bug in user authentication
 ```
@@ -94,6 +105,7 @@ Claude follows conventional commit standards:
 ### Branch Naming
 
 Claude suggests meaningful branch names:
+
 - `feature/user-authentication`
 - `bugfix/login-validation`
 - `hotfix/security-patch`
@@ -102,6 +114,7 @@ Claude suggests meaningful branch names:
 ### Code Review Guidelines
 
 **Before Requesting Review**:
+
 ```
 Prepare this code for review:
 1. Ensure all tests pass
@@ -111,6 +124,7 @@ Prepare this code for review:
 ```
 
 **Addressing Review Comments**:
+
 ```
 Address the review comments in the pull request and update the code accordingly
 ```
@@ -144,16 +158,19 @@ Set up quality gates that prevent merging if:
 ### Common Git Issues
 
 **Merge Conflicts**:
+
 ```
 I have merge conflicts in multiple files. Help me resolve them systematically.
 ```
 
 **Accidental Commits**:
+
 ```
 I accidentally committed sensitive information. Help me remove it from history.
 ```
 
 **Branch Synchronization**:
+
 ```
 My feature branch is behind main. Help me safely update it.
 ```
@@ -161,11 +178,13 @@ My feature branch is behind main. Help me safely update it.
 ### Recovery Operations
 
 **Lost Changes**:
+
 ```
 I lost some changes after a hard reset. Can you help me recover them?
 ```
 
 **Corrupted Repository**:
+
 ```
 My repository seems corrupted. Help me diagnose and fix the issues.
 ```

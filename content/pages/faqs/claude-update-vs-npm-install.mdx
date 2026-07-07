@@ -1,0 +1,69 @@
+---
+title: 'Claude Update vs npm install: How to Update Claude Code'
+description: 'Choose claude update, npm install -g @anthropic-ai/claude-code@latest, npm update -g, Homebrew, WinGet, apt, dnf, or apk for your install method.'
+schema_question: 'Should I use claude update or npm install -g @anthropic-ai/claude-code@latest?'
+schema_answer: 'Use claude update for the native Claude Code installer. Use npm install -g @anthropic-ai/claude-code@latest only if your active claude binary came from npm. Do not rely on npm update -g for latest because it may respect the original semver range. Check claude --version, which claude, and npm dist-tags first.'
+---
+
+# Claude Update vs npm install
+
+Short answer: update Claude Code with the same channel you used to install it.
+
+> Last checked on July 7, 2026. The npm `latest` dist-tag was `2.1.202`, and the `stable` dist-tag was `2.1.195`. Verify the official changelog and your local install before changing a production setup.
+
+## Quick Answer
+
+| If your active `claude` came from | Prefer this update command                        |
+| --------------------------------- | ------------------------------------------------- |
+| Native Claude Code installer      | `claude update`                                   |
+| npm global package                | `npm install -g @anthropic-ai/claude-code@latest` |
+| Homebrew                          | `brew upgrade claude-code`                        |
+| WinGet                            | `winget upgrade Anthropic.ClaudeCode`             |
+| apt                               | `sudo apt update && sudo apt install claude-code` |
+| dnf                               | `sudo dnf upgrade claude-code`                    |
+| apk                               | `sudo apk update && sudo apk add -u claude-code`  |
+
+## Why `npm update -g` Can Disappoint
+
+`npm update -g @anthropic-ai/claude-code` updates inside the version range npm already knows about. If you installed an older global package with a constrained range, it may not move to the newest `latest` tag.
+
+Use this when you intentionally want the newest npm release:
+
+```bash
+npm install -g @anthropic-ai/claude-code@latest
+```
+
+Then confirm:
+
+```bash
+claude --version
+npm view @anthropic-ai/claude-code dist-tags --json
+```
+
+## Find Your Install Method
+
+Run these checks before updating:
+
+```bash
+which claude
+claude --version
+npm list -g @anthropic-ai/claude-code --depth=0
+```
+
+If `which claude` points into an npm global directory and `npm list -g` shows the package, use npm. If it points to a native installer path, use `claude update`.
+
+## Safe Update Checklist
+
+1. Check the current version with `claude --version`.
+2. Read the [Claude Code changelog](https://docs.anthropic.com/en/release-notes/claude-code).
+3. Update with the same package manager that installed Claude Code.
+4. Restart any shell, IDE, terminal agent, or CI runner using the old binary.
+5. Re-run `claude --version` and a small test prompt.
+
+## Related Guides
+
+- [Claude Code Upgrade Guide](/en/upgrade)
+- [How to Install Claude Code](/en/faqs/how-to-install-claude-code)
+- [Claude Code pricing and usage](/en/pricing)
+- [How much is Claude Code?](/en/faqs/how-much-is-claude-code)
+- [Official Claude Code installation docs](https://code.claude.com/docs/en/installation)

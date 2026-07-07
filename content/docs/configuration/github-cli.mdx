@@ -1,11 +1,23 @@
 ---
-title: "GitHub CLI Integration"
-description: "Integrating gh command-line tool for seamless Claude Code and GitHub collaboration"
+title: 'Claude Code GitHub CLI: Issues, PRs, and Reviews'
+description: 'Use GitHub CLI with Claude Code for gh issue, gh pr, pull request reviews, comments, labels, safe permissions, and repeatable repository workflows.'
 ---
 
-# GitHub CLI Integration
+# Claude Code GitHub CLI Guide
 
-Claude Code can seamlessly integrate with GitHub CLI (`gh`) for creating issues, opening Pull Requests, reading comments, and more.
+Claude Code can use GitHub CLI (`gh`) to read issues, inspect pull requests, create PRs, respond to review comments, and run auditable GitHub workflows from your terminal.
+
+## Quick Answer
+
+Install and authenticate `gh`, then let Claude Code use narrow GitHub CLI commands for the task:
+
+```bash
+gh auth status
+gh issue list
+gh pr view --comments
+```
+
+GitHub CLI is often simpler than adding a GitHub MCP server when you only need visible, command-line operations such as issue triage, PR creation, release notes, or review follow-up.
 
 ## Installing GitHub CLI
 
@@ -39,6 +51,7 @@ gh auth login
 ```
 
 Choose authentication method:
+
 - Login through browser
 - Use Personal Access Token
 
@@ -60,6 +73,7 @@ Please use gh command to view current repository issues
 ```
 
 Claude will execute:
+
 ```bash
 gh issue list
 ```
@@ -71,6 +85,7 @@ Create a GitHub issue for the user login functionality bug
 ```
 
 Claude will execute:
+
 ```bash
 gh issue create \
   --title "User login functionality bug fix" \
@@ -85,6 +100,7 @@ Create a Pull Request for the current branch
 ```
 
 Claude will execute:
+
 ```bash
 gh pr create \
   --title "Implement user authentication feature" \
@@ -100,6 +116,7 @@ View issues labeled 'enhancement' and select one to start development
 ```
 
 Claude execution flow:
+
 1. `gh issue list --label enhancement`
 2. Analyze issue content
 3. Create feature branch
@@ -113,6 +130,7 @@ Check latest comments on my PR and handle feedback
 ```
 
 Claude execution flow:
+
 1. `gh pr list --author @me`
 2. `gh pr view <PR-ID> --comments`
 3. Analyze comment feedback

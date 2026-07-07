@@ -1,0 +1,75 @@
+---
+title: 'Claude Code Custom Command Arguments and Skills'
+description: 'Learn how Claude Code custom command arguments work in slash commands and when to use skills with argument-hint, named arguments, and supporting files.'
+schema_question: 'How do Claude Code custom command arguments work?'
+schema_answer: 'Text after the slash command name becomes the command arguments. For richer workflows, use skills with argument-hint and arguments frontmatter so Claude Code can expose expected inputs and autocomplete hints. .claude/commands/*.md still work for simple prompts, but skills are better when the command needs structure, metadata, or supporting files.'
+---
+
+# Claude Code Custom Command Arguments
+
+The simplest argument is just the text you type after the slash command.
+
+> Last checked on July 7, 2026. Current Claude Code docs position skills as the richer path for custom workflows, while existing `.claude/commands/*.md` prompts still work for simple slash commands.
+
+## Quick Answer
+
+```text
+/explain src/app/page.tsx
+```
+
+In that example, `src/app/page.tsx` is the argument text the custom command should use.
+
+For structured arguments, use a skill:
+
+```yaml
+---
+name: explain-file
+description: Explain a file and identify risky changes
+argument-hint: '<file path>'
+arguments:
+  - name: file
+    description: File to inspect
+    required: true
+---
+```
+
+## Slash Command vs Skill Arguments
+
+| Need                                             | Use                     |
+| ------------------------------------------------ | ----------------------- |
+| One prompt with free text after the command name | `.claude/commands/*.md` |
+| Named or documented arguments                    | Skill                   |
+| Autocomplete hint for expected input             | Skill `argument-hint`   |
+| Supporting files, scripts, or examples           | Skill                   |
+| Team workflow that should be portable            | Skill                   |
+
+## Practical Pattern
+
+Use a short command for simple transformations:
+
+```text
+/rewrite-title Make this clearer for a docs homepage
+```
+
+Use a skill when you need repeatable behavior:
+
+```text
+/explain-file src/server/auth.ts
+```
+
+The skill can document what the file argument means, what checks to run, and what output format to return.
+
+## Common Mistakes
+
+- Expecting `.claude/commands/*.md` to validate argument types automatically.
+- Hiding required inputs inside prose instead of documenting them.
+- Building a complex workflow as a single prompt when it needs supporting scripts.
+- Using a global command for a repository-specific workflow.
+
+## Related Guides
+
+- [Claude Code Custom Commands Guide](/en/tutorial/tools-integration/custom-commands)
+- [What Are Claude Code Custom Commands?](/en/faqs/claude-code-custom-commands)
+- [Claude Code Memory Official Docs](/en/faqs/claude-code-memory-official-docs)
+- [Official commands docs](https://code.claude.com/docs/en/commands)
+- [Official skills docs](https://code.claude.com/docs/en/skills)

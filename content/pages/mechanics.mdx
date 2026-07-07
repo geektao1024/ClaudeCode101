@@ -1,11 +1,11 @@
 ---
 title: 'Claude Code Mechanics'
-description: 'A practical map of Claude Code mechanics: CLAUDE.md, Plan Mode, context management, slash commands, hooks, subagents, ultracode, dynamic workflows, permissions, and workflow design.'
+description: 'Map Claude Code mechanics: CLAUDE.md, Plan Mode, context, slash commands, hooks, subagents, ultracode, dynamic workflows, permissions, and workflow design.'
 ---
 
 Claude Code mechanics are the features that decide how a session behaves after the basic install is done. This hub explains when to use `CLAUDE.md`, Plan Mode, context management, slash commands, hooks, subagents, ultracode, dynamic workflows, permissions, and related workflow patterns in real projects.
 
-> Last checked on May 29, 2026. Claude Code changes quickly, so this page is written as a decision map: start with the workflow problem, then open the deep guide for the mechanism that solves it. The May 2026 Opus 4.8 rollout added dynamic workflows and the `ultracode` effort setting as high-interest topics, so large background orchestration now has its own guides.
+> Last checked on July 7, 2026. Claude Code changes quickly, so this page is written as a decision map: start with the workflow problem, then open the deep guide for the mechanism that solves it. The May 2026 Opus 4.8 rollout added dynamic workflows and the `ultracode` effort setting as high-interest topics, so large background orchestration now has its own guides.
 
 ## Quick Answer
 
@@ -90,6 +90,8 @@ Use them for repository-wide audits, large migrations, and high-stakes research.
 
 Use it for a scoped hard session, not as a permanent default. If Opus 4.8 suddenly feels slow or expensive, check [Opus 4.8 slow or expensive troubleshooting](/en/troubleshooting/claude-code-opus-4-8-slow-or-expensive) before blaming the model.
 
+If the question is whether to use a prompt-level deep thinking request or a workflow effort setting, start with [Ultrathink vs Ultracode](/en/faqs/claude-code-ultrathink-vs-ultracode).
+
 ## A Practical Setup Path
 
 For a new or newly migrated project, configure mechanics in this order:
@@ -121,16 +123,17 @@ This order keeps the system understandable. The mistake is usually adding automa
 
 For this site, mechanics pages are not just documentation. They are search entrances for practical Claude Code questions:
 
-| Search intent                    | Page type                                                      |
-| -------------------------------- | -------------------------------------------------------------- |
-| "what is claude.md"              | Deep mechanics guide plus examples                             |
-| "claude code plan mode"          | Workflow decision guide                                        |
-| "claude code hooks"              | Automation and safety guide                                    |
-| "claude code subagents"          | Role, context, and delegation guide                            |
-| "claude code dynamic workflows"  | Background orchestration, ultracode, cost, and safety guide    |
-| "claude code ultracode"          | Effort setting, workflow trigger, cost, and availability guide |
-| "claude code slash commands"     | Command setup and workflow guide                               |
-| "claude code context management" | Cost, focus, and compaction guide                              |
+| Search intent                         | Page type                                                      |
+| ------------------------------------- | -------------------------------------------------------------- |
+| "what is claude.md"                   | Deep mechanics guide plus examples                             |
+| "claude code plan mode"               | Workflow decision guide                                        |
+| "claude code hooks"                   | Automation and safety guide                                    |
+| "claude code subagents"               | Role, context, and delegation guide                            |
+| "claude code dynamic workflows"       | Background orchestration, ultracode, cost, and safety guide    |
+| "claude code ultracode"               | Effort setting, workflow trigger, cost, and availability guide |
+| "claude code ultrathink vs ultracode" | FAQ comparison, then ultrathink or ultracode deep guide        |
+| "claude code slash commands"          | Command setup and workflow guide                               |
+| "claude code context management"      | Cost, focus, and compaction guide                              |
 
 Each mechanics page should answer the query quickly, explain when to use the feature, show a practical configuration or workflow, warn about common mistakes, and link to the relevant tutorial, FAQ, MCP, or troubleshooting page.
 
@@ -141,6 +144,7 @@ Use these paths when you are not sure where to start:
 - **New user path:** [Installation](/en/tutorial/getting-started/installation) -> [Basic usage](/en/tutorial/getting-started/basic-usage) -> [CLAUDE.md](/en/mechanics/claude-md) -> [Plan Mode](/en/mechanics/plan-mode)
 - **Team setup path:** [Tools allowlist](/en/tutorial/configuration/tools-allowlist) -> [CLAUDE.md](/en/mechanics/claude-md) -> [Slash commands](/en/mechanics/slash-commands) -> [Hooks](/en/mechanics/hooks)
 - **Advanced workflow path:** [Context management](/en/mechanics/context-management) -> [Subagents](/en/mechanics/subagents) -> [Dynamic workflows](/en/mechanics/dynamic-workflows) -> [Ultracode](/en/mechanics/ultracode) -> [MCP security checklist](/en/mcp/mcp-security-checklist)
+- **Deep reasoning path:** [Ultrathink vs Ultracode](/en/faqs/claude-code-ultrathink-vs-ultracode) -> [Ultrathink Mode](/en/tutorial/optimization/ultrathink-mode) -> [Ultracode](/en/mechanics/ultracode)
 - **Troubleshooting path:** [Troubleshooting hub](/en/troubleshooting) -> [Context management](/en/mechanics/context-management) -> [Hooks](/en/mechanics/hooks)
 
 ## Related Hubs

@@ -1,0 +1,54 @@
+---
+title: 'Claude Code Ultrathink vs Ultracode Guide'
+description: 'Compare Claude Code ultrathink, ultracode, Plan Mode, and deep reasoning prompts so you know when to use each for coding, debugging, and repository work.'
+schema_question: 'What is the difference between ultrathink and ultracode in Claude Code?'
+schema_answer: 'Ultrathink is best understood as a prompt-level request for deeper reasoning in one turn. Ultracode is a broader Claude Code workflow or effort setting for complex repository work. Use ultrathink for hard planning, debugging, or architecture questions. Use ultracode only for scoped multi-file audits, migrations, or implementation work where extra effort is worth the latency and token cost.'
+---
+
+# Claude Code Ultrathink vs Ultracode
+
+Use the smallest mode that can solve the job. More reasoning is not automatically better.
+
+> Last checked on July 7, 2026. Claude Code reasoning modes, workflow names, and UI labels can change. Treat this as a practical decision guide, then verify your current CLI behavior.
+
+## Quick Answer
+
+| Choice       | Best for                                                                     | Avoid when                                         |
+| ------------ | ---------------------------------------------------------------------------- | -------------------------------------------------- |
+| `ultrathink` | One hard reasoning step, architecture question, debugging hypothesis         | Simple edits or obvious commands                   |
+| Ultracode    | Larger scoped repository work, audits, migrations, multi-file implementation | Tiny changes, unclear goals, low-value exploration |
+| Plan Mode    | Reviewing an approach before edits                                           | You already know the exact change                  |
+
+## When to Use Ultrathink
+
+Use `ultrathink` when the problem is mostly reasoning:
+
+- choosing between two architectures
+- debugging a subtle failure
+- planning a risky migration
+- checking whether a proposed fix has hidden side effects
+
+It is not a replacement for tests, source inspection, or official docs.
+
+## When to Use Ultracode
+
+Use ultracode when the task is broad enough to justify more effort:
+
+- repository-wide audit
+- cross-page SEO cleanup
+- framework migration
+- multi-file refactor with verification
+- build or deployment failure that needs several checks
+
+Do not use it just to make a tiny copy edit. The extra latency and token use usually are not worth it.
+
+## How Plan Mode Fits
+
+Plan Mode answers a different question: should Claude inspect and plan before editing? It is useful when a bad edit would be costly, such as auth, payments, redirects, schema, or large content migrations.
+
+## Related Guides
+
+- [Claude Code Ultrathink Mode](/en/tutorial/optimization/ultrathink-mode)
+- [What Is Claude Code Plan Mode?](/en/faqs/what-is-plan-mode)
+- [What Is Claude Code Ultracode?](/en/mechanics/ultracode)
+- [Claude Code FAQ Hub](/en/faqs)

@@ -5,7 +5,7 @@ description: '解释 Claude Code ultracode 是什么、/effort ultracode 和 xhi
 
 Claude Code `ultracode` 是一个面向高难度编码会话的 effort 设置。它把 `xhigh` 推理强度和自动 dynamic workflow 编排结合起来，让 Claude 判断当前任务是否应该拆成后台 workflow，而不是一直停留在普通对话循环里。
 
-> 最后核查：2026 年 5 月 29 日。Claude Code 官方文档把 ultracode 放在 dynamic workflows 体系下；dynamic workflows 仍是 research preview，并要求 Claude Code `2.1.154` 或更高版本。npm 当前显示 `@anthropic-ai/claude-code` 的 `latest` 和 `next` 为 `2.1.156`，`stable` 为 `2.1.145`。
+> 最后核查：2026 年 7 月 7 日。Claude Code 官方文档把 ultracode 放在 dynamic workflows 体系下；dynamic workflows 仍是 research preview，并要求 Claude Code `2.1.154` 或更高版本。npm 当前显示 `@anthropic-ai/claude-code` 的 `latest` 和 `next` 为 `2.1.202`，`stable` 为 `2.1.195`。
 
 ## 快速结论
 
@@ -38,15 +38,15 @@ Audit the auth, billing, and admin routes for missing permission checks. Use a w
 
 Opus 4.8 发布后出现了几类新的搜索意图，需要直接回答：
 
-| 搜索表达                                | 背后的真实问题                         | 简短答案                                                         |
-| --------------------------------------- | -------------------------------------- | ---------------------------------------------------------------- |
-| `what is ultracode effort`              | 这是新模型、新套餐，还是新模式？       | 它是 Claude Code 的 effort 设置，不是单独模型或订阅。            |
-| `Claude Code ultracode vs xhigh`        | 到底该选哪个？                         | 要更深推理用 `xhigh`；需要可能的 workflow 编排才用 `ultracode`。 |
-| `Claude Code ultracode not showing`     | 为什么菜单里没有？                     | 查版本、套餐/provider、`/config` 和组织管理员设置。              |
-| `Opus 4.8 ultracode slow`               | 变慢是不是正常？                       | 很多情况下正常：更高 effort 和 workflow 编排都会增加耗时。       |
-| `Claude Code ultracode cost`            | 会不会烧更多用量？                     | 可能会。先缩小范围，再看 cost/usage 表面。                       |
-| `Claude Code workflow agents can code`  | workflow agents 只是审查，还是能编码？ | 可以支持大规模编码工作流，但编辑必须收窄范围并测试。             |
-| `Claude Code ultracode thinking blocks` | 和 Opus 4.8 API 报错有关吗？           | 如果遇到 thinking-block API 错误，先升级到至少 `2.1.156`。       |
+| 搜索表达                                | 背后的真实问题                         | 简短答案                                                                    |
+| --------------------------------------- | -------------------------------------- | --------------------------------------------------------------------------- |
+| `what is ultracode effort`              | 这是新模型、新套餐，还是新模式？       | 它是 Claude Code 的 effort 设置，不是单独模型或订阅。                       |
+| `Claude Code ultracode vs xhigh`        | 到底该选哪个？                         | 要更深推理用 `xhigh`；需要可能的 workflow 编排才用 `ultracode`。            |
+| `Claude Code ultracode not showing`     | 为什么菜单里没有？                     | 查版本、套餐/provider、`/config` 和组织管理员设置。                         |
+| `Opus 4.8 ultracode slow`               | 变慢是不是正常？                       | 很多情况下正常：更高 effort 和 workflow 编排都会增加耗时。                  |
+| `Claude Code ultracode cost`            | 会不会烧更多用量？                     | 可能会。先缩小范围，再看 cost/usage 表面。                                  |
+| `Claude Code workflow agents can code`  | workflow agents 只是审查，还是能编码？ | 可以支持大规模编码工作流，但编辑必须收窄范围并测试。                        |
+| `Claude Code ultracode thinking blocks` | 和 Opus 4.8 API 报错有关吗？           | 如果遇到历史 thinking-block API 错误，升级到当前 latest，或至少 `2.1.156`。 |
 
 这些不是官方搜索量数据，而是 Opus 4.8 发布窗口里社区和创作者讨论中出现的意图模式。
 
@@ -163,6 +163,7 @@ Ultracode 是开关；Dynamic workflows 是机制。
 ## 相关页面
 
 - [Dynamic Workflows](/zh/mechanics/dynamic-workflows)
+- [Ultrathink 和 Ultracode 区别](/zh/faqs/claude-code-ultrathink-vs-ultracode)
 - [Claude Code 最新版本](/zh/upgrade)
 - [Opus 4.8 变慢或变贵排查](/zh/troubleshooting/claude-code-opus-4-8-slow-or-expensive)
 - [Subagents](/zh/mechanics/subagents)

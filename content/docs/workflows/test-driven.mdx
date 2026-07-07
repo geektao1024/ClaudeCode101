@@ -1,3 +1,8 @@
+---
+title: 'Claude Code TDD Workflow: Tests, Red-Green-Refactor'
+description: 'Use Claude Code for test-driven development with failing tests, red-green-refactor loops, CI checks, and safer feature changes.'
+---
+
 # Test-Driven Development
 
 Implement Test-Driven Development (TDD) workflows with Claude Code to build robust, well-tested applications with confidence.
@@ -15,11 +20,12 @@ Claude Code enhances the traditional TDD cycle:
 ### Getting Started with TDD
 
 ```
-I want to implement a user authentication system using TDD. 
+I want to implement a user authentication system using TDD.
 Let's start by writing tests for the login functionality.
 ```
 
 Claude will:
+
 - Help design comprehensive test cases
 - Suggest edge cases to consider
 - Create test structure following best practices
@@ -30,6 +36,7 @@ Claude will:
 ### 1. Test Planning
 
 **Define Requirements**:
+
 ```
 I need to implement a shopping cart feature. Help me plan the tests:
 1. What functionality should be tested?
@@ -38,6 +45,7 @@ I need to implement a shopping cart feature. Help me plan the tests:
 ```
 
 **Test Case Design**:
+
 ```
 Create comprehensive test cases for a user registration system that includes:
 - Email validation
@@ -49,6 +57,7 @@ Create comprehensive test cases for a user registration system that includes:
 ### 2. Writing Tests First
 
 **Unit Tests**:
+
 ```
 Write unit tests for a calculateTotal function that:
 - Adds item prices
@@ -58,6 +67,7 @@ Write unit tests for a calculateTotal function that:
 ```
 
 **Integration Tests**:
+
 ```
 Create integration tests for the user authentication API that test:
 - Login endpoint
@@ -69,15 +79,17 @@ Create integration tests for the user authentication API that test:
 ### 3. Implementation Guidance
 
 **Minimal Implementation**:
+
 ```
-I have these failing tests for a user service. 
+I have these failing tests for a user service.
 Help me write the minimal code to make them pass:
 [paste test code]
 ```
 
 **Iterative Development**:
+
 ```
-My tests are passing but the code needs refactoring. 
+My tests are passing but the code needs refactoring.
 Help me improve it while keeping all tests green.
 ```
 
@@ -116,6 +128,7 @@ Implement property-based tests for my string utility functions:
 ### Frontend TDD
 
 **Component Testing**:
+
 ```
 Write tests for a React component that:
 1. Renders correctly with props
@@ -125,6 +138,7 @@ Write tests for a React component that:
 ```
 
 **E2E Testing**:
+
 ```
 Create end-to-end tests for the user registration flow:
 1. Navigate to registration page
@@ -136,6 +150,7 @@ Create end-to-end tests for the user registration flow:
 ### Backend TDD
 
 **API Testing**:
+
 ```
 Write comprehensive API tests for a REST endpoint:
 1. Valid request/response cycles
@@ -145,6 +160,7 @@ Write comprehensive API tests for a REST endpoint:
 ```
 
 **Database Testing**:
+
 ```
 Create database tests that:
 1. Test CRUD operations
@@ -249,18 +265,21 @@ Refactor tests to:
 ## Tools and Frameworks
 
 ### JavaScript/TypeScript
+
 - **Jest**: Unit and integration testing
 - **Cypress**: E2E testing
 - **Testing Library**: Component testing
 - **Supertest**: API testing
 
 ### Python
+
 - **pytest**: Comprehensive testing framework
 - **unittest**: Built-in testing
 - **Selenium**: Browser automation
 - **requests-mock**: HTTP mocking
 
 ### Java
+
 - **JUnit**: Unit testing
 - **Mockito**: Mocking framework
 - **TestContainers**: Integration testing

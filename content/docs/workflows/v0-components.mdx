@@ -1,3 +1,8 @@
+---
+title: 'Claude Code and v0: React Component Workflow'
+description: 'Combine v0 component drafts with Claude Code implementation to connect data, refine React UI, and ship usable interfaces faster.'
+---
+
 # v0 Component Design
 
 Integrate v0.dev with Claude Code to create beautiful, functional React components through AI-powered design and development workflows.
@@ -52,18 +57,16 @@ Enhance this v0 component by:
 ### Component Structure
 
 **Before Enhancement**:
+
 ```jsx
 // Basic v0 component
 export default function UserCard() {
-  return (
-    <div className="p-4 border rounded">
-      {/* v0 generated content */}
-    </div>
-  )
+  return <div className="rounded border p-4">{/* v0 generated content */}</div>;
 }
 ```
 
 **After Claude Code Enhancement**:
+
 ```tsx
 // Enhanced with TypeScript and proper structure
 interface UserCardProps {
@@ -77,10 +80,10 @@ export const UserCard: React.FC<UserCardProps> = ({
   user,
   onEdit,
   onDelete,
-  className
+  className,
 }) => {
   // Enhanced implementation
-}
+};
 ```
 
 ### Design System Integration
@@ -108,11 +111,13 @@ Make this v0 component fully accessible:
 ### Iterative Design
 
 **Step 1: Initial Creation**
+
 ```
 Create a dashboard card component in v0 with basic layout
 ```
 
 **Step 2: Import and Enhance**
+
 ```
 Import the v0 component and add:
 1. Data fetching logic
@@ -122,6 +127,7 @@ Import the v0 component and add:
 ```
 
 **Step 3: Refinement**
+
 ```
 Refine the component based on user feedback:
 1. Improve visual hierarchy
@@ -237,6 +243,7 @@ Enhance this v0 navigation with:
 ### Common Issues
 
 **Styling Conflicts**:
+
 ```
 Resolve styling conflicts between v0 components and our existing CSS:
 1. Identify conflicting styles
@@ -246,6 +253,7 @@ Resolve styling conflicts between v0 components and our existing CSS:
 ```
 
 **TypeScript Errors**:
+
 ```
 Fix TypeScript errors in this v0 component:
 1. Add proper type definitions
@@ -255,6 +263,7 @@ Fix TypeScript errors in this v0 component:
 ```
 
 **Performance Issues**:
+
 ```
 Optimize this slow v0 component:
 1. Identify performance bottlenecks

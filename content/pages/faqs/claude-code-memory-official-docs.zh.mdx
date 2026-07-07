@@ -1,0 +1,46 @@
+---
+title: 'Claude Code memory 官方文档和 CLAUDE.md'
+description: '查找 Claude Code memory、CLAUDE.md、CLAUDE.local.md、rules、imports、auto memory 的官方文档，并判断不同记忆文件怎么用。'
+schema_question: 'Claude Code memory 和 CLAUDE.md 的官方文档在哪里？'
+schema_answer: 'Claude Code memory 的官方文档在 Claude Code 文档的 memory 页面。它是 CLAUDE.md、imports、scoped rules 和 auto memory 行为的准确信息来源。实际使用时，CLAUDE.md 适合团队共享项目记忆，CLAUDE.local.md 适合私人本地备注，.claude/rules/ 适合限定范围的规则。'
+---
+
+# Claude Code memory 官方文档
+
+需要确认真实行为时，看官方 memory 文档。需要决定该改哪个文件时，看这页。
+
+> 最后核查：2026 年 7 月 7 日。Claude Code memory 行为可能变化，团队制定规则前要核对官方文档。
+
+## 快速答案
+
+- 官方文档：[Claude Code memory](https://code.claude.com/docs/en/memory)
+- 团队共享项目记忆：`CLAUDE.md`
+- 本地私人记忆：`CLAUDE.local.md`
+- 限定目录或文件范围的规则：`.claude/rules/`
+- 带参数和辅助文件的可复用工作流：skills
+- 一次性上下文：放在当前对话里，不要写进 memory
+
+## 记忆位置怎么选
+
+| 需求                             | 推荐位置          |
+| -------------------------------- | ----------------- |
+| 团队共享项目规范                 | `CLAUDE.md`       |
+| 本地私人备注                     | `CLAUDE.local.md` |
+| 目录或文件范围规则               | `.claude/rules/`  |
+| 带参数、元数据、辅助文件的工作流 | Skill             |
+| 只服务一次任务的说明             | 当前 prompt       |
+
+## 常见错误
+
+- 把密钥、API key、私密凭据写进 `CLAUDE.md`。
+- 把 `CLAUDE.md` 写成另一份很长的 README。
+- 把个人偏好混进团队记忆。
+- 用全局 memory 记录只适用于单个仓库的规则。
+- 构建、测试、部署命令变更后忘记更新 memory。
+
+## 相关页面
+
+- [CLAUDE.md 是什么](/zh/faqs/what-is-claude-md)
+- [Claude Code Memory 指南](/zh/mechanics/claude-md)
+- [Claude Code 自定义命令](/zh/faqs/claude-code-custom-commands)
+- [官方 Claude Code memory 文档](https://code.claude.com/docs/en/memory)
