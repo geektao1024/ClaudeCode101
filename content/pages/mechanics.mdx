@@ -1,9 +1,9 @@
 ---
 title: 'Claude Code Mechanics'
-description: 'Map Claude Code mechanics: CLAUDE.md, Plan Mode, context, slash commands, hooks, subagents, ultracode, dynamic workflows, permissions, and workflow design.'
+description: 'Map Claude Code mechanics: CLAUDE.md, Plan Mode, context, sessions, statusline, Remote Control, slash commands, hooks, subagents, ultracode, dynamic workflows, permissions, and workflow design.'
 ---
 
-Claude Code mechanics are the features that decide how a session behaves after the basic install is done. This hub explains when to use `CLAUDE.md`, Plan Mode, context management, slash commands, hooks, subagents, ultracode, dynamic workflows, permissions, and related workflow patterns in real projects.
+Claude Code mechanics are the features that decide how a session behaves after the basic install is done. This hub explains when to use `CLAUDE.md`, Plan Mode, context management, sessions, statusline, Remote Control, slash commands, hooks, subagents, ultracode, dynamic workflows, permissions, and related workflow patterns in real projects.
 
 > Last checked on July 7, 2026. Claude Code changes quickly, so this page is written as a decision map: start with the workflow problem, then open the deep guide for the mechanism that solves it. The May 2026 Opus 4.8 rollout added dynamic workflows and the `ultracode` effort setting as high-interest topics, so large background orchestration now has its own guides.
 
@@ -14,6 +14,9 @@ If Claude Code feels unreliable, expensive, noisy, or hard to repeat, the answer
 - Use `CLAUDE.md` when Claude needs durable project rules.
 - Use Plan Mode when the task is risky enough to deserve a plan before edits.
 - Use context management when the session is getting long or unfocused.
+- Use sessions when you need to resume, rename, branch, or hand off a coding conversation.
+- Use statusline when the terminal should show model, context, branch, or usage signals at a glance.
+- Use Remote Control when you need to steer a local session from another device.
 - Use slash commands when a prompt pattern repeats.
 - Use hooks when something should happen automatically around a Claude Code event.
 - Use subagents when a side task should run in its own context and return a summary.
@@ -25,18 +28,21 @@ The mechanics work best together. A stable project usually has a concise `CLAUDE
 
 ## Choose The Right Mechanic
 
-| Workflow problem                                    | Start with                                                    | Why it fits                                                                       |
-| --------------------------------------------------- | ------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| Claude forgets project conventions                  | [CLAUDE.md](/en/mechanics/claude-md)                          | Persistent instructions load into sessions and keep team rules visible.           |
-| The change is large or risky                        | [Plan Mode](/en/mechanics/plan-mode)                          | Read-only planning reduces surprise edits and clarifies implementation order.     |
-| The session is full of old logs and unrelated files | [Context management](/en/mechanics/context-management)        | Context budgeting keeps the model focused on the current decision.                |
-| You repeat the same prompt every week               | [Slash commands](/en/mechanics/slash-commands)                | Commands turn repeatable workflows into named entry points.                       |
-| A risky command should be blocked before it runs    | [Hooks](/en/mechanics/hooks)                                  | `PreToolUse` hooks and permissions can enforce safety at execution time.          |
-| Tests or research produce too much output           | [Subagents](/en/mechanics/subagents)                          | Subagents isolate noisy work and return only the useful summary.                  |
-| A broad task needs many agents and cross-checking   | [Dynamic workflows](/en/mechanics/dynamic-workflows)          | Workflow scripts can coordinate background subagents and return a checked result. |
-| You want Claude to choose workflow orchestration    | [Ultracode](/en/mechanics/ultracode)                          | `ultracode` combines `xhigh` effort with automatic workflow choice.               |
-| MCP tools can write to external systems             | [MCP security checklist](/en/mcp/mcp-security-checklist)      | External tool access needs explicit boundaries and verification.                  |
-| Teammates need the same operating model             | [Tools allowlist](/en/tutorial/configuration/tools-allowlist) | Shared permissions make behavior predictable across sessions.                     |
+| Workflow problem                                      | Start with                                                    | Why it fits                                                                       |
+| ----------------------------------------------------- | ------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| Claude forgets project conventions                    | [CLAUDE.md](/en/mechanics/claude-md)                          | Persistent instructions load into sessions and keep team rules visible.           |
+| The change is large or risky                          | [Plan Mode](/en/mechanics/plan-mode)                          | Read-only planning reduces surprise edits and clarifies implementation order.     |
+| The session is full of old logs and unrelated files   | [Context management](/en/mechanics/context-management)        | Context budgeting keeps the model focused on the current decision.                |
+| You need to continue or recover previous work         | [Sessions](/en/mechanics/sessions)                            | Resume, rename, compact, clear, or branch conversations deliberately.             |
+| You need visible model, branch, or usage signals      | [Statusline](/en/mechanics/statusline)                        | A small terminal footer reduces repeated status checks.                           |
+| You need to steer a local session from another device | [Remote Control](/en/mechanics/remote-control)                | Remote Control keeps execution local while allowing browser or mobile steering.   |
+| You repeat the same prompt every week                 | [Slash commands](/en/mechanics/slash-commands)                | Commands turn repeatable workflows into named entry points.                       |
+| A risky command should be blocked before it runs      | [Hooks](/en/mechanics/hooks)                                  | `PreToolUse` hooks and permissions can enforce safety at execution time.          |
+| Tests or research produce too much output             | [Subagents](/en/mechanics/subagents)                          | Subagents isolate noisy work and return only the useful summary.                  |
+| A broad task needs many agents and cross-checking     | [Dynamic workflows](/en/mechanics/dynamic-workflows)          | Workflow scripts can coordinate background subagents and return a checked result. |
+| You want Claude to choose workflow orchestration      | [Ultracode](/en/mechanics/ultracode)                          | `ultracode` combines `xhigh` effort with automatic workflow choice.               |
+| MCP tools can write to external systems               | [MCP security checklist](/en/mcp/mcp-security-checklist)      | External tool access needs explicit boundaries and verification.                  |
+| Teammates need the same operating model               | [Tools allowlist](/en/tutorial/configuration/tools-allowlist) | Shared permissions make behavior predictable across sessions.                     |
 
 Do not add every mechanism at once. Start with the smallest feature that solves the current failure mode.
 
@@ -59,6 +65,24 @@ The best Plan Mode flow is simple: explore the code, explain the intended change
 [Context management](/en/mechanics/context-management) is how you keep Claude focused when the conversation grows. The goal is not to maximize context usage; the goal is to keep only the information that affects the next decision.
 
 Good context habits include starting fresh for unrelated tasks, summarizing handoff notes before compaction, passing exact files and errors to subagents, and avoiding huge pasted logs unless the log is the task.
+
+### Sessions
+
+[Sessions](/en/mechanics/sessions) explain how to continue a saved Claude Code conversation, resume by name or ID, branch a session, and avoid carrying stale context into unrelated tasks.
+
+Use sessions for continuity. Use `/clear` and `/compact` for context hygiene. Do not treat a saved session as a permanent project brain.
+
+### Statusline
+
+[Statusline](/en/mechanics/statusline) is the terminal footer for operational signals: model, current project, branch, context percentage, estimated cost, and rate-limit pressure.
+
+Use it when you repeatedly check the same session state. Keep it short, local, and free of secrets.
+
+### Remote Control
+
+[Remote Control](/en/mechanics/remote-control) lets a local Claude Code session be steered from `claude.ai/code`, mobile, or another browser while execution stays on your machine.
+
+Use it for in-progress local work that needs remote steering. Do not confuse it with Claude Code on the web, which runs in Anthropic-managed cloud infrastructure.
 
 ### Slash Commands
 
@@ -101,10 +125,11 @@ For a new or newly migrated project, configure mechanics in this order:
 3. **Create one or two slash commands:** start with review, content audit, or release checklist.
 4. **Use Plan Mode on risky work:** migrations, redirects, pricing pages, auth, payment, deployment, or broad content changes.
 5. **Add context habits:** reset sessions by topic, compact with handoff notes, and avoid mixing unrelated tasks.
-6. **Add subagents only for repeated noisy tasks:** test triage, source checking, code review, or security review.
-7. **Use dynamic workflows only for large scoped work:** audits, migrations, or cross-checked research that would otherwise flood the main session.
-8. **Use ultracode only for serious sessions:** turn it on for hard scoped work, then return to `high` effort.
-9. **Add hooks only after the rule is proven:** block `.env` writes, warn on deploy, or log MCP write tools.
+6. **Name sessions and add a simple statusline:** make long work resumable and visible before adding heavier automation.
+7. **Add subagents only for repeated noisy tasks:** test triage, source checking, code review, or security review.
+8. **Use dynamic workflows only for large scoped work:** audits, migrations, or cross-checked research that would otherwise flood the main session.
+9. **Use ultracode only for serious sessions:** turn it on for hard scoped work, then return to `high` effort.
+10. **Add hooks only after the rule is proven:** block `.env` writes, warn on deploy, or log MCP write tools.
 
 This order keeps the system understandable. The mistake is usually adding automation before the workflow is clear.
 
@@ -127,6 +152,9 @@ For this site, mechanics pages are not just documentation. They are search entra
 | ------------------------------------- | -------------------------------------------------------------- |
 | "what is claude.md"                   | Deep mechanics guide plus examples                             |
 | "claude code plan mode"               | Workflow decision guide                                        |
+| "claude code sessions"                | Resume, compact, clear, branch, and naming guide               |
+| "statusline claude code"              | Terminal state, model, context, cost, and branch guide         |
+| "claude code remote control"          | Local execution plus remote steering guide                     |
 | "claude code hooks"                   | Automation and safety guide                                    |
 | "claude code subagents"               | Role, context, and delegation guide                            |
 | "claude code dynamic workflows"       | Background orchestration, ultracode, cost, and safety guide    |
@@ -144,6 +172,7 @@ Use these paths when you are not sure where to start:
 - **New user path:** [Installation](/en/tutorial/getting-started/installation) -> [Basic usage](/en/tutorial/getting-started/basic-usage) -> [CLAUDE.md](/en/mechanics/claude-md) -> [Plan Mode](/en/mechanics/plan-mode)
 - **Team setup path:** [Tools allowlist](/en/tutorial/configuration/tools-allowlist) -> [CLAUDE.md](/en/mechanics/claude-md) -> [Slash commands](/en/mechanics/slash-commands) -> [Hooks](/en/mechanics/hooks)
 - **Advanced workflow path:** [Context management](/en/mechanics/context-management) -> [Subagents](/en/mechanics/subagents) -> [Dynamic workflows](/en/mechanics/dynamic-workflows) -> [Ultracode](/en/mechanics/ultracode) -> [MCP security checklist](/en/mcp/mcp-security-checklist)
+- **Session control path:** [Sessions](/en/mechanics/sessions) -> [Statusline](/en/mechanics/statusline) -> [Remote Control](/en/mechanics/remote-control) -> [VS Code account check](/en/tutorial/configuration/ide-account-check)
 - **Deep reasoning path:** [Ultrathink vs Ultracode](/en/faqs/claude-code-ultrathink-vs-ultracode) -> [Ultrathink Mode](/en/tutorial/optimization/ultrathink-mode) -> [Ultracode](/en/mechanics/ultracode)
 - **Troubleshooting path:** [Troubleshooting hub](/en/troubleshooting) -> [Context management](/en/mechanics/context-management) -> [Hooks](/en/mechanics/hooks)
 
@@ -154,10 +183,13 @@ Use these paths when you are not sure where to start:
 - [MCP directory](/en/mcp)
 - [Troubleshooting](/en/troubleshooting)
 - [Resources and tools](/en/resources)
+- [VS Code and IDE account check](/en/tutorial/configuration/ide-account-check)
 
 ## Official Sources
 
 - [Commands](https://code.claude.com/docs/en/commands)
+- [Manage sessions](https://code.claude.com/docs/en/sessions)
+- [Remote Control](https://code.claude.com/docs/en/remote-control)
 - [Create custom subagents](https://code.claude.com/docs/en/sub-agents)
 - [Dynamic workflows](https://code.claude.com/docs/en/workflows)
 - [Hooks reference](https://code.claude.com/docs/en/hooks)

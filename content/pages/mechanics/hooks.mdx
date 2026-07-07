@@ -11,6 +11,8 @@ Hooks let Claude Code run your own automation at specific points in a session. T
 
 Use a hook when something should happen automatically because of a Claude Code event. Use `PreToolUse` to block or escalate risky tool calls before they execute. Use `PostToolUse` to inspect what just happened after a successful tool call. Use `UserPromptSubmit` to validate or enrich a prompt before Claude sees it. Use `Notification` for alerts, `SessionStart` for setup context, `PreCompact` or `PostCompact` for compaction workflows, and `SessionEnd` for cleanup or logging.
 
+If you are looking for Claude Code hooks documentation, start by deciding the event first: `PreToolUse` for preventing risky actions, `PostToolUse` for checks after edits, and `Notification` for human attention. Then narrow the matcher before writing any script.
+
 Do not use hooks as hidden magic. A hook should make a workflow safer, clearer, or more observable. If teammates cannot tell why Claude was blocked, why a command ran, or what data was injected into context, the hook is too opaque.
 
 ## Hooks vs Commands, Skills, Permissions, And CI

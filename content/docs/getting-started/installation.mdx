@@ -1,106 +1,131 @@
 ---
-title: "Installation & Setup"
-description: "Installation and initial configuration guide for Claude Code"
+title: 'Install Claude Code'
+description: 'Install Claude Code with the recommended native installer, authenticate with the right account type, and verify the CLI works.'
 ---
 
-# Installation & Setup
+# Install Claude Code
 
-This chapter will guide you through the installation and initial configuration process for Claude Code.
+Use the native installer unless your organization deliberately manages Claude Code through Homebrew, WinGet, Linux packages, or npm.
 
-## Installing Claude Code
+> Last checked on July 7, 2026. The commands below follow Anthropic's current setup docs. If an installer fails, use the official troubleshooting link at the end instead of guessing from old npm instructions.
 
-### Prerequisites
+## Fast Path
 
-- Node.js >= 18.x
-- Valid Anthropic API key
+| Your situation                            | Use this path                          | Verify it worked                       | Watch out                                                    |
+| ----------------------------------------- | -------------------------------------- | -------------------------------------- | ------------------------------------------------------------ |
+| macOS, Linux, or WSL user                 | Native installer                       | `claude --version` and `claude doctor` | Restart the terminal if `claude` is not on `PATH`.           |
+| Windows PowerShell user                   | Native PowerShell installer            | `claude --version`                     | PowerShell and CMD use different install commands.           |
+| Windows CMD user                          | Native CMD installer                   | `claude --version`                     | If PowerShell syntax errors appear, switch shells.           |
+| macOS team already using Homebrew         | `brew install --cask claude-code`      | `brew list --cask claude-code`         | Homebrew installs do not auto-update by default.             |
+| API, CI, Bedrock, Vertex, or Foundry work | Console or provider credentials        | `/status` plus billing dashboard       | API keys can bill separately from subscriptions.             |
+| Free Claude account                       | Upgrade or use Console/provider access | Account plan page                      | The free Claude.ai plan does not include Claude Code access. |
 
-### Installation Steps
+## Requirements
 
-1. **Get Claude Code**
-   
-   Visit the [Claude Code website](https://claude.ai/code) to get the latest version.
+Claude Code currently supports macOS 13+, Windows 10 1809+ or Windows Server 2019+, Ubuntu 20.04+, Debian 10+, and Alpine Linux 3.19+. It needs 4 GB+ RAM, an x64 or ARM64 processor, internet access, and a supported country or region.
 
-2. **Set up API Key**
-   
-   ```bash
-   export ANTHROPIC_API_KEY=your_api_key_here
-   ```
+`ripgrep` is usually included. If search inside Claude Code fails, troubleshoot search before assuming the install itself is broken.
 
-3. **Verify Installation**
-   
-   ```bash
-   claude --version
-   ```
+## Install
 
-## Initial Configuration
+### Native Install
 
-### Create CLAUDE.md File
+macOS, Linux, and WSL:
 
-Create a `CLAUDE.md` file in your project root:
+```bash
+curl -fsSL https://claude.ai/install.sh | bash
+```
+
+Windows PowerShell:
+
+```powershell
+irm https://claude.ai/install.ps1 | iex
+```
+
+Windows CMD:
+
+```batch
+curl -fsSL https://claude.ai/install.cmd -o install.cmd && install.cmd && del install.cmd
+```
+
+Native installs auto-update in the background.
+
+### Homebrew
+
+```bash
+brew install --cask claude-code
+```
+
+Homebrew installs require manual updates unless your environment opts into package-manager auto-updates.
+
+## Authenticate
+
+After installation, open a terminal in your project and run:
+
+```bash
+claude
+```
+
+Then follow the browser login prompts.
+
+Claude Code requires Pro, Max, Team, Enterprise, Console access, or a supported third-party provider. Do not set `ANTHROPIC_API_KEY` just because you have a Pro or Max subscription. An API key can make terminal sessions use API billing instead of subscription usage.
+
+## Verify
+
+```bash
+claude --version
+claude doctor
+```
+
+Inside Claude Code, check the active account and credential path:
+
+```text
+/status
+```
+
+Use this before long sessions, especially if you have API keys or cloud-provider credentials in your shell.
+
+## Common Issues
+
+| Symptom                                             | Likely cause                                                             | Fix                                                                    |
+| --------------------------------------------------- | ------------------------------------------------------------------------ | ---------------------------------------------------------------------- |
+| `claude: command not found`                         | Installer path was not loaded.                                           | Restart terminal, then check `claude --version`.                       |
+| Install command returns `403` or HTML syntax errors | Network, proxy, or shell mismatch.                                       | Match the exact error in official install troubleshooting.             |
+| Pro or Max user sees API charges                    | `ANTHROPIC_API_KEY` is set.                                              | Run `/status`, remove or scope the API key, and check Console billing. |
+| Search does not work in a project                   | `ripgrep` problem.                                                       | Follow search troubleshooting before reinstalling.                     |
+| Windows shell command fails                         | PowerShell command was run in CMD, or CMD command was run in PowerShell. | Switch to the shell that matches the command.                          |
+
+## First Project Setup
+
+After the CLI opens successfully, add a short `CLAUDE.md` to the project root:
 
 ```markdown
 # CLAUDE.md
 
-This is my project configuration file that Claude will automatically read.
-
 ## Common Commands
+
 - npm run build: Build the project
 - npm run test: Run tests
-- npm run lint: Code linting
+- npm run lint: Check code quality
 
-## Project Standards
+## Project Rules
+
 - Use TypeScript
-- Follow ESLint rules
-- Prefer functional components
+- Follow the existing component patterns
+- Do not edit generated files unless asked
 ```
 
-### Configure Tool Permissions
+Keep it short. A stale or oversized `CLAUDE.md` wastes context every session.
 
-On first run, Claude Code will request tool permissions. Recommended:
+## Related Guides
 
-1. **Always allow**:
-   - `Read` - File reading
-   - `Write` - File writing
-   - `Bash(git *)` - Git commands
+- [Basic Usage](/en/tutorial/getting-started/basic-usage)
+- [CLAUDE.md Setup](/en/tutorial/configuration/claude-md)
+- [Claude Code Pricing](/en/pricing)
+- [Claude Code invalid API key](/en/troubleshooting/claude-code-invalid-api-key)
 
-2. **Use with caution**:
-   - `Bash(rm *)` - Delete commands
-   - `Bash(sudo *)` - Admin privileges
+## Official Sources
 
-### Environment Variables
-
-Add to your `.bashrc` or `.zshrc`:
-
-```bash
-# Claude Code Configuration
-export CLAUDE_CONFIG_PATH="$HOME/.claude"
-export CLAUDE_DEFAULT_MODEL="claude-3-sonnet"
-```
-
-## Verify Configuration
-
-Run this command to verify your setup:
-
-```bash
-claude -p "Read the README.md file in current directory and summarize it"
-```
-
-If everything is working correctly, Claude Code will read and summarize your README file.
-
-## Common Issues
-
-### Q: API key not recognized
-
-**A:** Ensure environment variables are set correctly, restart terminal and try again.
-
-### Q: Permission denied
-
-**A:** Check file permissions, ensure Claude Code can access the target directory.
-
-### Q: Cannot connect to service
-
-**A:** Check network connection and API service status.
-
----
-
-**Next**: [Basic Usage](/en/tutorial/getting-started/basic-usage) - Learn basic Claude Code operations.
+- [Claude Code advanced setup](https://code.claude.com/docs/en/setup)
+- [Troubleshoot installation and login](https://code.claude.com/docs/en/troubleshoot-install)
+- [Claude plans and pricing](https://claude.com/pricing)

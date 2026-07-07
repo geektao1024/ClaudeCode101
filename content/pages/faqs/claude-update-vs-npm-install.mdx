@@ -58,7 +58,10 @@ If `which claude` points into an npm global directory and `npm list -g` shows th
 2. Read the [Claude Code changelog](https://docs.anthropic.com/en/release-notes/claude-code).
 3. Update with the same package manager that installed Claude Code.
 4. Restart any shell, IDE, terminal agent, or CI runner using the old binary.
-5. Re-run `claude --version` and a small test prompt.
+5. Run `claude doctor` if the native CLI or auto-updater behaves strangely after the update.
+6. Re-run `claude --version` and a small test prompt.
+
+If the search intent is `Claude Code release notes` or `claude doctor command`, do not answer only with an install command. Users need to know what changed, whether the active CLI came from npm, native installer, Homebrew, WinGet, apt, dnf, or apk, and whether the update affected MCP, hooks, permissions, or model behavior.
 
 ## Related Guides
 
@@ -66,4 +69,5 @@ If `which claude` points into an npm global directory and `npm list -g` shows th
 - [How to Install Claude Code](/en/faqs/how-to-install-claude-code)
 - [Claude Code pricing and usage](/en/pricing)
 - [How much is Claude Code?](/en/faqs/how-much-is-claude-code)
+- [Claude Code unable to connect to API](/en/troubleshooting/claude-code-unable-to-connect-to-api)
 - [Official Claude Code installation docs](https://code.claude.com/docs/en/installation)

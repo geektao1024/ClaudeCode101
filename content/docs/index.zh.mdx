@@ -1,9 +1,25 @@
 ---
-title: "Claude Code 最佳实践教程"
-description: "学习如何有效使用 Claude Code 进行智能体编程的完整指南"
+title: 'Claude Code 最佳实践教程'
+description: '学习如何有效使用 Claude Code 进行智能体编程的完整指南'
 ---
 
-import { HoverEffect } from '@/components/ui/card-hover-effect'
+import { HoverEffect } from '@/components/ui/card-hover-effect';
+
+# Claude Code 教程中心
+
+把这个页面当成决策地图。先找到你当前的问题，再进入对应教程。
+
+## 从这里开始
+
+| 你想解决的问题            | 先读哪篇                                                         | 完成标准                                                          | 什么情况可以跳过                             |
+| ------------------------- | ---------------------------------------------------------------- | ----------------------------------------------------------------- | -------------------------------------------- |
+| 安全安装 Claude Code      | [安装与配置](/zh/tutorial/getting-started/installation)          | `claude --version`、`claude doctor` 和 `/status` 都显示预期账号。 | Claude Code 已能打开，且你知道当前计费路径。 |
+| 完成第一次有效会话        | [基础使用](/zh/tutorial/getting-started/basic-usage)             | 能让 Claude Code 看文件、规划、修改并验证。                       | 你已经有稳定项目工作流。                     |
+| 让 Claude 记住项目规则    | [CLAUDE.md 配置](/zh/tutorial/configuration/claude-md)           | 项目命令、约定和边界短且准确。                                    | 你还没有真实项目。                           |
+| 控制 Claude Code 能做什么 | [工具权限管理](/zh/tutorial/configuration/tools-allowlist)       | 高风险命令和外部工具需要明确授权。                                | 你只是在临时仓库里读文件。                   |
+| 检查 VS Code 账号路径     | [VS Code 账号检查](/zh/tutorial/configuration/ide-account-check) | 知道当前到底是 IDE、CLI、订阅、API key 还是 provider 在生效。     | 你从不在 VS Code 或其他 IDE 里使用。         |
+| 处理更大的修改            | [探索-规划-编码](/zh/tutorial/workflows/explore-plan-code)       | Claude 先探索，再给计划，最后只改目标文件。                       | 任务只是单行修改。                           |
+| 接入 MCP 或外部工具       | [MCP 服务器](/zh/tutorial/tools-integration/mcp-servers)         | server 有明确 scope、认证方式，并且能随时禁用。                   | 内置文件、git、shell 工具已经够用。          |
 
 ## 🚀 快速开始
 
@@ -46,23 +62,30 @@ import { HoverEffect } from '@/components/ui/card-hover-effect'
 <HoverEffect
   items={[
     {
-      title: "CLAUDE.md 配置",
-      description: "创建和优化配置文件，定制您的开发环境和工作流程偏好。",
+      title: 'CLAUDE.md 配置',
+      description: '创建和优化配置文件，定制您的开发环境和工作流程偏好。',
       icon: <span className="icon-[lucide--settings]"></span>,
-      link: "/zh/tutorial/configuration/claude-md"
+      link: '/zh/tutorial/configuration/claude-md',
     },
     {
-      title: "工具权限管理",
-      description: "精确控制 Claude Code 可以访问的工具和资源，确保安全性。",
+      title: '工具权限管理',
+      description: '精确控制 Claude Code 可以访问的工具和资源，确保安全性。',
       icon: <span className="icon-[lucide--shield-check]"></span>,
-      link: "/zh/tutorial/configuration/tools-allowlist"
+      link: '/zh/tutorial/configuration/tools-allowlist',
     },
     {
-      title: "GitHub CLI 集成",
-      description: "无缝集成 gh 命令行工具，简化版本控制和协作流程。",
+      title: 'VS Code 账号检查',
+      description:
+        '长会话前确认 IDE 登录、CLI 状态、订阅用量、API key 和 provider 路径。',
+      icon: <span className="icon-[lucide--badge-check]"></span>,
+      link: '/zh/tutorial/configuration/ide-account-check',
+    },
+    {
+      title: 'GitHub CLI 集成',
+      description: '无缝集成 gh 命令行工具，简化版本控制和协作流程。',
       icon: <span className="icon-[mingcute--github-line]"></span>,
-      link: "/zh/tutorial/configuration/github-cli"
-    }
+      link: '/zh/tutorial/configuration/github-cli',
+    },
   ]}
   className="my-8"
 />
@@ -81,16 +104,23 @@ import { HoverEffect } from '@/components/ui/card-hover-effect'
     </a>
   </div>
 
-  <div className="group relative p-6 rounded-2xl bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20 border border-orange-200 dark:border-orange-800 hover:shadow-lg transition-all duration-300">
-    <div className="w-12 h-12 rounded-xl bg-orange-100 dark:bg-orange-900/50 flex items-center justify-center mb-4">
-      <span className="icon-[lucide--network] text-2xl text-orange-600 dark:text-orange-400"></span>
-    </div>
-    <h3 className="font-bold text-lg text-orange-900 dark:text-orange-100 mb-2">MCP 服务器</h3>
-    <p className="text-orange-700 dark:text-orange-300 text-sm mb-4">模型上下文协议集成，扩展 Claude 的能力。</p>
-    <a href="/zh/tutorial/tools-integration/mcp-servers" className="inline-flex items-center text-orange-600 dark:text-orange-400 font-medium text-sm">
-      了解更多 <span className="icon-[lucide--arrow-right] ml-1 w-4 h-4"></span>
-    </a>
+<div className="group relative rounded-2xl border border-orange-200 bg-gradient-to-br from-orange-50 to-amber-50 p-6 transition-all duration-300 hover:shadow-lg dark:border-orange-800 dark:from-orange-900/20 dark:to-amber-900/20">
+  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-orange-100 dark:bg-orange-900/50">
+    <span className="icon-[lucide--network] text-2xl text-orange-600 dark:text-orange-400"></span>
   </div>
+  <h3 className="mb-2 text-lg font-bold text-orange-900 dark:text-orange-100">
+    MCP 服务器
+  </h3>
+  <p className="mb-4 text-sm text-orange-700 dark:text-orange-300">
+    模型上下文协议集成，扩展 Claude 的能力。
+  </p>
+  <a
+    href="/zh/tutorial/tools-integration/mcp-servers"
+    className="inline-flex items-center text-sm font-medium text-orange-600 dark:text-orange-400"
+  >
+    了解更多 <span className="icon-[lucide--arrow-right] ml-1 h-4 w-4"></span>
+  </a>
+</div>
 
   <div className="group relative p-6 rounded-2xl bg-gradient-to-br from-rose-50 to-pink-50 dark:from-rose-900/20 dark:to-pink-900/20 border border-rose-200 dark:border-rose-800 hover:shadow-lg transition-all duration-300">
     <div className="w-12 h-12 rounded-xl bg-rose-100 dark:bg-rose-900/50 flex items-center justify-center mb-4">
@@ -123,53 +153,80 @@ import { HoverEffect } from '@/components/ui/card-hover-effect'
     </a>
   </div>
 
-  <div className="group relative p-6 rounded-2xl bg-gradient-to-br from-teal-50 to-cyan-50 dark:from-teal-900/20 dark:to-cyan-900/20 border border-teal-200 dark:border-teal-800 hover:shadow-lg transition-all duration-300">
-    <div className="flex items-start gap-4 mb-4">
-      <div className="w-12 h-12 rounded-xl bg-teal-100 dark:bg-teal-900/50 flex items-center justify-center">
-        <span className="icon-[lucide--test-tube] text-2xl text-teal-600 dark:text-teal-400"></span>
-      </div>
-      <div>
-        <h3 className="font-bold text-lg text-teal-900 dark:text-teal-100">测试驱动开发</h3>
-        <span className="text-xs bg-teal-200 dark:bg-teal-800 text-teal-800 dark:text-teal-200 px-2 py-1 rounded-full">高级</span>
-      </div>
+<div className="group relative rounded-2xl border border-teal-200 bg-gradient-to-br from-teal-50 to-cyan-50 p-6 transition-all duration-300 hover:shadow-lg dark:border-teal-800 dark:from-teal-900/20 dark:to-cyan-900/20">
+  <div className="mb-4 flex items-start gap-4">
+    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-teal-100 dark:bg-teal-900/50">
+      <span className="icon-[lucide--test-tube] text-2xl text-teal-600 dark:text-teal-400"></span>
     </div>
-    <p className="text-teal-700 dark:text-teal-300 mb-4">TDD 最佳实践，确保代码质量和可维护性。</p>
-    <a href="/zh/tutorial/workflows/test-driven" className="inline-flex items-center text-teal-600 dark:text-teal-400 font-medium">
-      查看详情 <span className="icon-[lucide--arrow-right] ml-1 w-4 h-4"></span>
-    </a>
+    <div>
+      <h3 className="text-lg font-bold text-teal-900 dark:text-teal-100">
+        测试驱动开发
+      </h3>
+      <span className="rounded-full bg-teal-200 px-2 py-1 text-xs text-teal-800 dark:bg-teal-800 dark:text-teal-200">
+        高级
+      </span>
+    </div>
   </div>
+  <p className="mb-4 text-teal-700 dark:text-teal-300">
+    TDD 最佳实践，确保代码质量和可维护性。
+  </p>
+  <a
+    href="/zh/tutorial/workflows/test-driven"
+    className="inline-flex items-center font-medium text-teal-600 dark:text-teal-400"
+  >
+    查看详情 <span className="icon-[lucide--arrow-right] ml-1 h-4 w-4"></span>
+  </a>
+</div>
 
-  <div className="group relative p-6 rounded-2xl bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-900/20 dark:to-green-900/20 border border-emerald-200 dark:border-emerald-800 hover:shadow-lg transition-all duration-300">
-    <div className="flex items-start gap-4 mb-4">
-      <div className="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center">
-        <span className="icon-[lucide--image] text-2xl text-emerald-600 dark:text-emerald-400"></span>
-      </div>
-      <div>
-        <h3 className="font-bold text-lg text-emerald-900 dark:text-emerald-100">视觉迭代开发</h3>
-        <span className="text-xs bg-emerald-200 dark:bg-emerald-800 text-emerald-800 dark:text-emerald-200 px-2 py-1 rounded-full">创新</span>
-      </div>
+<div className="group relative rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-green-50 p-6 transition-all duration-300 hover:shadow-lg dark:border-emerald-800 dark:from-emerald-900/20 dark:to-green-900/20">
+  <div className="mb-4 flex items-start gap-4">
+    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-100 dark:bg-emerald-900/50">
+      <span className="icon-[lucide--image] text-2xl text-emerald-600 dark:text-emerald-400"></span>
     </div>
-    <p className="text-emerald-700 dark:text-emerald-300 mb-4">基于截图的开发流程，直观的界面改进。</p>
-    <a href="/zh/tutorial/workflows/visual-iteration" className="inline-flex items-center text-emerald-600 dark:text-emerald-400 font-medium">
-      查看详情 <span className="icon-[lucide--arrow-right] ml-1 w-4 h-4"></span>
-    </a>
+    <div>
+      <h3 className="text-lg font-bold text-emerald-900 dark:text-emerald-100">
+        视觉迭代开发
+      </h3>
+      <span className="rounded-full bg-emerald-200 px-2 py-1 text-xs text-emerald-800 dark:bg-emerald-800 dark:text-emerald-200">
+        创新
+      </span>
+    </div>
   </div>
+  <p className="mb-4 text-emerald-700 dark:text-emerald-300">
+    基于截图的开发流程，直观的界面改进。
+  </p>
+  <a
+    href="/zh/tutorial/workflows/visual-iteration"
+    className="inline-flex items-center font-medium text-emerald-600 dark:text-emerald-400"
+  >
+    查看详情 <span className="icon-[lucide--arrow-right] ml-1 h-4 w-4"></span>
+  </a>
+</div>
 
-  <div className="group relative p-6 rounded-2xl bg-gradient-to-br from-slate-50 to-gray-50 dark:from-slate-900/20 dark:to-gray-900/20 border border-slate-200 dark:border-slate-800 hover:shadow-lg transition-all duration-300">
-    <div className="flex items-start gap-4 mb-4">
-      <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-900/50 flex items-center justify-center">
-        <span className="icon-[lucide--message-circle-question] text-2xl text-slate-600 dark:text-slate-400"></span>
-      </div>
-      <div>
-        <h3 className="font-bold text-lg text-slate-900 dark:text-slate-100">代码库问答</h3>
-        <span className="text-xs bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-200 px-2 py-1 rounded-full">学习</span>
-      </div>
+<div className="group relative rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 to-gray-50 p-6 transition-all duration-300 hover:shadow-lg dark:border-slate-800 dark:from-slate-900/20 dark:to-gray-900/20">
+  <div className="mb-4 flex items-start gap-4">
+    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-900/50">
+      <span className="icon-[lucide--message-circle-question] text-2xl text-slate-600 dark:text-slate-400"></span>
     </div>
-    <p className="text-slate-700 dark:text-slate-300 mb-4">学习和探索代码库，快速理解项目结构。</p>
-    <a href="/zh/tutorial/workflows/codebase-qa" className="inline-flex items-center text-slate-600 dark:text-slate-400 font-medium">
-      查看详情 <span className="icon-[lucide--arrow-right] ml-1 w-4 h-4"></span>
-    </a>
+    <div>
+      <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">
+        代码库问答
+      </h3>
+      <span className="rounded-full bg-slate-200 px-2 py-1 text-xs text-slate-800 dark:bg-slate-800 dark:text-slate-200">
+        学习
+      </span>
+    </div>
   </div>
+  <p className="mb-4 text-slate-700 dark:text-slate-300">
+    学习和探索代码库，快速理解项目结构。
+  </p>
+  <a
+    href="/zh/tutorial/workflows/codebase-qa"
+    className="inline-flex items-center font-medium text-slate-600 dark:text-slate-400"
+  >
+    查看详情 <span className="icon-[lucide--arrow-right] ml-1 h-4 w-4"></span>
+  </a>
+</div>
 
   <div className="group relative p-6 rounded-2xl bg-gradient-to-br from-fuchsia-50 to-pink-50 dark:from-fuchsia-900/20 dark:to-pink-900/20 border border-fuchsia-200 dark:border-fuchsia-800 hover:shadow-lg transition-all duration-300">
     <div className="flex items-start gap-4 mb-4">
@@ -280,38 +337,65 @@ import { HoverEffect } from '@/components/ui/card-hover-effect'
     </div>
   </a>
 
-  <a href="https://github.com/anthropics/claude-code" target="_blank" rel="noopener noreferrer" className="group block p-6 rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 hover:shadow-lg transition-all duration-300">
-    <div className="w-12 h-12 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-      <span className="icon-[mingcute--github-line] text-2xl text-neutral-600 dark:text-neutral-400"></span>
-    </div>
-    <h3 className="font-bold text-lg text-neutral-900 dark:text-white mb-2">GitHub 仓库</h3>
-    <p className="text-neutral-600 dark:text-neutral-400 text-sm mb-4">源码、Issues 和最新开发动态</p>
-    <div className="flex items-center text-blue-600 dark:text-blue-400 text-sm font-medium">
-      访问仓库 <span className="icon-[lucide--external-link] ml-1 w-4 h-4"></span>
-    </div>
-  </a>
+<a
+  href="https://github.com/anthropics/claude-code"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="group block rounded-2xl border border-neutral-200 bg-white p-6 transition-all duration-300 hover:shadow-lg dark:border-neutral-800 dark:bg-neutral-900"
+>
+  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-neutral-100 transition-transform duration-300 group-hover:scale-110 dark:bg-neutral-800">
+    <span className="icon-[mingcute--github-line] text-2xl text-neutral-600 dark:text-neutral-400"></span>
+  </div>
+  <h3 className="mb-2 text-lg font-bold text-neutral-900 dark:text-white">
+    GitHub 仓库
+  </h3>
+  <p className="mb-4 text-sm text-neutral-600 dark:text-neutral-400">
+    源码、Issues 和最新开发动态
+  </p>
+  <div className="flex items-center text-sm font-medium text-blue-600 dark:text-blue-400">
+    访问仓库 <span className="icon-[lucide--external-link] ml-1 h-4 w-4"></span>
+  </div>
+</a>
 
-  <a href="https://docs.anthropic.com/en/docs/claude-code" target="_blank" rel="noopener noreferrer" className="group block p-6 rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 hover:shadow-lg transition-all duration-300">
-    <div className="w-12 h-12 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-      <span className="icon-[lucide--book-open] text-2xl text-neutral-600 dark:text-neutral-400"></span>
-    </div>
-    <h3 className="font-bold text-lg text-neutral-900 dark:text-white mb-2">官方文档</h3>
-    <p className="text-neutral-600 dark:text-neutral-400 text-sm mb-4">完整的英文官方文档和API参考</p>
-    <div className="flex items-center text-blue-600 dark:text-blue-400 text-sm font-medium">
-      查看文档 <span className="icon-[lucide--external-link] ml-1 w-4 h-4"></span>
-    </div>
-  </a>
+<a
+  href="https://docs.anthropic.com/en/docs/claude-code"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="group block rounded-2xl border border-neutral-200 bg-white p-6 transition-all duration-300 hover:shadow-lg dark:border-neutral-800 dark:bg-neutral-900"
+>
+  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-neutral-100 transition-transform duration-300 group-hover:scale-110 dark:bg-neutral-800">
+    <span className="icon-[lucide--book-open] text-2xl text-neutral-600 dark:text-neutral-400"></span>
+  </div>
+  <h3 className="mb-2 text-lg font-bold text-neutral-900 dark:text-white">
+    官方文档
+  </h3>
+  <p className="mb-4 text-sm text-neutral-600 dark:text-neutral-400">
+    完整的英文官方文档和API参考
+  </p>
+  <div className="flex items-center text-sm font-medium text-blue-600 dark:text-blue-400">
+    查看文档 <span className="icon-[lucide--external-link] ml-1 h-4 w-4"></span>
+  </div>
+</a>
 
-  <a href="https://musikalis.com/" target="_blank" rel="noopener noreferrer" className="group block p-6 rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 hover:shadow-lg transition-all duration-300">
-    <div className="w-12 h-12 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-      <span className="icon-[lucide--music-4] text-2xl text-neutral-600 dark:text-neutral-400"></span>
-    </div>
-    <h3 className="font-bold text-lg text-neutral-900 dark:text-white mb-2">Musikalis 官网</h3>
-    <p className="text-neutral-600 dark:text-neutral-400 text-sm mb-4">为产品 demo、教程视频、播客片头和游戏原型快速生成免版税音乐</p>
-    <div className="flex items-center text-blue-600 dark:text-blue-400 text-sm font-medium">
-      访问官网 <span className="icon-[lucide--external-link] ml-1 w-4 h-4"></span>
-    </div>
-  </a>
+<a
+  href="https://musikalis.com/"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="group block rounded-2xl border border-neutral-200 bg-white p-6 transition-all duration-300 hover:shadow-lg dark:border-neutral-800 dark:bg-neutral-900"
+>
+  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-neutral-100 transition-transform duration-300 group-hover:scale-110 dark:bg-neutral-800">
+    <span className="icon-[lucide--music-4] text-2xl text-neutral-600 dark:text-neutral-400"></span>
+  </div>
+  <h3 className="mb-2 text-lg font-bold text-neutral-900 dark:text-white">
+    Musikalis 官网
+  </h3>
+  <p className="mb-4 text-sm text-neutral-600 dark:text-neutral-400">
+    为产品 demo、教程视频、播客片头和游戏原型快速生成免版税音乐
+  </p>
+  <div className="flex items-center text-sm font-medium text-blue-600 dark:text-blue-400">
+    访问官网 <span className="icon-[lucide--external-link] ml-1 h-4 w-4"></span>
+  </div>
+</a>
 
   <a href="https://sunoaimusical.com/" target="_blank" rel="noopener noreferrer" className="group block p-6 rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 hover:shadow-lg transition-all duration-300">
     <div className="w-12 h-12 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
@@ -327,15 +411,19 @@ import { HoverEffect } from '@/components/ui/card-hover-effect'
 
 ---
 
-<div className="mt-12 p-8 rounded-3xl bg-gradient-to-br from-neutral-50 to-white dark:from-neutral-900 dark:to-neutral-800 border border-neutral-200 dark:border-neutral-700">
+<div className="mt-12 rounded-3xl border border-neutral-200 bg-gradient-to-br from-neutral-50 to-white p-8 dark:border-neutral-700 dark:from-neutral-900 dark:to-neutral-800">
   <div className="flex items-start gap-4">
-    <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center">
+    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 dark:bg-blue-900/50">
       <span className="icon-[lucide--lightbulb] text-2xl text-blue-600 dark:text-blue-400"></span>
     </div>
     <div>
-      <h3 className="text-xl font-bold text-neutral-900 dark:text-white mb-2">💡 学习提示</h3>
-      <p className="text-neutral-600 dark:text-neutral-400 leading-relaxed">
-        本教程基于 Anthropic 官方最佳实践，结合社区经验编写。建议按顺序学习，但您也可以根据需要跳转到特定章节。每个章节都包含实践示例和最佳实践建议，帮助您快速掌握 Claude Code 的强大功能。
+      <h3 className="mb-2 text-xl font-bold text-neutral-900 dark:text-white">
+        💡 学习提示
+      </h3>
+      <p className="leading-relaxed text-neutral-600 dark:text-neutral-400">
+        本教程基于 Anthropic
+        官方最佳实践，结合社区经验编写。建议按顺序学习，但您也可以根据需要跳转到特定章节。每个章节都包含实践示例和最佳实践建议，帮助您快速掌握
+        Claude Code 的强大功能。
       </p>
     </div>
   </div>

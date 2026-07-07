@@ -1,0 +1,83 @@
+---
+title: 'Claude Code Sessions: Resume, Continue, and Fork'
+description: 'Understand Claude Code sessions, including --continue, --resume, /resume, session names, local transcripts, branching, and context management.'
+---
+
+# Claude Code Sessions
+
+A Claude Code session is a saved conversation tied to a project directory. Sessions matter because real coding work often spans restarts, branches, compaction, and multiple attempts at the same problem.
+
+> Last checked on July 8, 2026. This page focuses on Claude Code CLI sessions. Claude Code on the web, the desktop app, and the VS Code extension maintain their own session histories.
+
+## Quick Answer
+
+Use `claude --continue` to resume the most recent session in the current directory. Use `claude --resume` or `/resume` when you need to pick a specific saved session. Use session naming and branching when you are comparing approaches or need a handoff trail.
+
+Do not keep every task in one endless conversation. A saved session helps continuation; it does not make unrelated context cheaper or clearer.
+
+## Session Commands
+
+| Command                        | What it does                                                              | Use when                                               |
+| ------------------------------ | ------------------------------------------------------------------------- | ------------------------------------------------------ |
+| `claude --continue`            | Resumes the most recent session in the current project.                   | You just closed the terminal and want to continue.     |
+| `claude --resume`              | Opens the session picker.                                                 | You have multiple saved sessions.                      |
+| `claude --resume <name>`       | Resumes a named session directly.                                         | You named sessions by task or branch.                  |
+| `claude --resume <session-id>` | Resumes by ID when available.                                             | Automation or transcript lookup gives you the ID.      |
+| `/resume`                      | Switches from inside an active session.                                   | You realize the current conversation is the wrong one. |
+| `/rename`                      | Gives the session a useful title.                                         | The default title is vague.                            |
+| `/clear`                       | Starts fresh context while preserving the ability to resume old sessions. | You are switching tasks.                               |
+| `/compact`                     | Summarizes a long session to keep it usable.                              | Same task, too much history.                           |
+
+## Resume vs Compact vs Clear
+
+| Situation                                 | Best move                    | Why                                               |
+| ----------------------------------------- | ---------------------------- | ------------------------------------------------- |
+| Same task, same repo, terminal was closed | `claude --continue`          | Keeps the prior working context.                  |
+| Same task, but context is bloated         | `/compact` with instructions | Preserves decisions while dropping noise.         |
+| Different task in the same repo           | `/clear` or a new session    | Avoids dragging unrelated files and logs forward. |
+| Testing a second approach                 | Branch or fork the session   | Keeps the original trail intact.                  |
+| Need to find an older thread              | `claude --resume`            | Uses the picker instead of guessing.              |
+
+## Naming Convention
+
+Name sessions by outcome, not emotion:
+
+```text
+/rename pricing-page-seo-refresh
+/rename auth-timeout-debug
+/rename release-2026-07-08
+```
+
+Good names make `claude --resume` useful. Bad names like `test`, `new idea`, or `fix stuff` collapse into noise after a week.
+
+## Cost And Context Rules
+
+1. A saved session is not free context. Long history still affects focus and usage.
+2. Use `/clear` for unrelated tasks, even if they are in the same repository.
+3. Use `/compact` only with focus instructions, such as changed files, decisions, unresolved risks, and verification commands.
+4. Do not resume a stale session for production edits until you re-check `git status`, current branch, and changed files.
+5. For API-billed work, run `/status` and `/usage` before resuming a long or automated session.
+
+## Common Failure Modes
+
+| Symptom                                   | Likely cause                                                    | Fix                                                  |
+| ----------------------------------------- | --------------------------------------------------------------- | ---------------------------------------------------- |
+| `No conversation found` for a session ID  | Session lookup is scoped to the project directory or worktrees. | Run the command from the original project directory. |
+| The resumed session talks about old files | Context was carried forward from a stale task.                  | Use `/clear`, then restate the current file paths.   |
+| The session picker is crowded             | Sessions were never renamed or cleared.                         | Rename active work and close dead threads.           |
+| Claude repeats outdated assumptions       | Repo changed after the session was saved.                       | Ask it to re-read current files and `git status`.    |
+| Usage climbs after resuming               | Old context and logs are still present.                         | Compact or start fresh.                              |
+
+## Related Pages
+
+- [Context management](/en/mechanics/context-management)
+- [Statusline](/en/mechanics/statusline)
+- [Remote Control](/en/mechanics/remote-control)
+- [Basic usage](/en/tutorial/getting-started/basic-usage)
+- [Claude Code usage limits](/en/faqs/claude-code-usage-limits)
+
+## Official Sources
+
+- [Manage sessions](https://code.claude.com/docs/en/sessions)
+- [Claude Code CLI reference](https://code.claude.com/docs/en/cli-reference)
+- [Claude Code usage limits](https://support.claude.com/en/articles/11647753-how-do-usage-and-length-limits-work)

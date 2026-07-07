@@ -1,0 +1,82 @@
+---
+title: 'Claude Code VS Code 和 IDE 账号检查'
+description: '检查 Claude Code 在 VS Code 或 IDE 终端里的账号状态，确认登录路径和 API 计费，避免混淆 extension、CLI 和 provider 凭据。'
+---
+
+# VS Code 和 IDE 账号检查
+
+搜索 “check Claude Code VS Code account” 时，真正的问题通常不是 VS Code，而是账号路径：extension 登录、CLI 登录、API key、provider 设置和 workspace trust 可能让 Claude Code 走不同的计费和权限路径。
+
+> 最后核查：2026 年 7 月 8 日。官方 VS Code extension 和 CLI 行为会变化。团队文档化前，请核对当前 extension 要求。
+
+## 快速结论
+
+在 VS Code 里，想要原生 IDE 面板、inline diff 和文件选择，就用官方 Claude Code extension。想要和普通终端一致的 Claude Code 流程，就在 VS Code integrated terminal 里跑 standalone `claude` CLI。无论哪种方式，长任务前先检查当前账号：
+
+```bash
+claude --version
+claude
+/status
+/login
+env | grep ANTHROPIC
+```
+
+如果设置了 `ANTHROPIC_API_KEY`、`ANTHROPIC_AUTH_TOKEN`、`ANTHROPIC_BASE_URL` 或云厂商变量，不要默认认为这次会话会走 Pro / Max 订阅额度。
+
+## Extension 和 CLI 的区别
+
+| 入口                        | 最适合什么                                                        | 账号检查                                   |
+| --------------------------- | ----------------------------------------------------------------- | ------------------------------------------ |
+| VS Code extension           | 原生 IDE 面板、inline diff、文件选择、plan review、session tabs。 | 在 extension 里登录并确认显示账号。        |
+| VS Code integrated terminal | 在 VS Code 内使用终端版 Claude Code 工作流。                      | 运行 `claude`，再看 `/status`。            |
+| 独立终端                    | 不带 IDE 特定上下文的 CLI 行为。                                  | 运行 `claude`、`/status`，并检查环境变量。 |
+| 第三方 provider             | Bedrock、Vertex、Foundry 或 gateway 路径。                        | 确认 provider 变量和账单后台。             |
+
+官方 VS Code extension 的 chat panel 自带 CLI，但如果你要在 integrated terminal 里运行 `claude`，仍然需要 standalone CLI 安装。
+
+## 账号检查清单
+
+| 检查项                 | 命令或位置                                      | 看什么                                |
+| ---------------------- | ----------------------------------------------- | ------------------------------------- | ---------------------------------------------------- |
+| Claude Code 版本       | `claude --version`                              | 旧客户端可能缺少新的登录或 IDE 行为。 |
+| 当前账号               | `/status`                                       | 计划、组织、provider 和计费路径。     |
+| 登录路径               | `/login`                                        | 是否用目标 Claude 账号登录。          |
+| API 或 token 变量      | `env                                            | grep ANTHROPIC`                       | 可能覆盖订阅预期的 API key、auth token 或 base URL。 |
+| VS Code extension 账号 | Extension panel/account menu                    | extension 是否登录同一用户或组织。    |
+| Workspace trust        | VS Code trust prompt 和 Claude Code 项目 prompt | 工具是否能读取当前 workspace。        |
+
+## OpenSCAD 或其他 VS Code 工作流
+
+OpenSCAD 在 Claude Code 账号路径上没有特殊性，把它当普通项目工作流处理：
+
+1. 在 VS Code 打开 OpenSCAD 项目目录。
+2. 确认 extension 或终端登录的是目标 Claude 账号。
+3. 用 `@file` 或选中文件上下文引用 `.scad` 文件。
+4. 每次只请求小改动，并在接受前审查 diff。
+5. 如果渲染或截图重要，用单独验证工具，不要假设 Claude 已经看到了 3D 结果。
+
+不要承诺 Claude Code 只凭源码就能判断 CAD 视觉结果。它可以编辑和推理文件，但视觉正确性仍然需要渲染、截图或测试。
+
+## 计费坑位
+
+| 现象                              | 可能原因                                                              | 处理                                                |
+| --------------------------------- | --------------------------------------------------------------------- | --------------------------------------------------- |
+| 以为走 Pro/Max，结果出现 API 花费 | 设置了 `ANTHROPIC_API_KEY`、`ANTHROPIC_AUTH_TOKEN` 或 provider 变量。 | 订阅会话 unset，或明确接受 API 计费。               |
+| VS Code 和终端状态不同            | Extension 和 standalone CLI 是不同入口。                              | 分别检查账号菜单和 `/status`。                      |
+| Team 账号不出现                   | 登录了个人账号或客户端太旧。                                          | `/logout`，更新 Claude Code，再 `/login`。          |
+| Remote Control 不可用             | API key 路径、proxy、组织策略或版本过旧。                             | 看 [Remote Control](/zh/mechanics/remote-control)。 |
+| Claude 看不到选中文件             | Workspace trust、文件选择或 IDE 上下文问题。                          | 重新打开目录、信任 workspace，并点名文件。          |
+
+## 相关页面
+
+- [安装](/zh/tutorial/getting-started/installation)
+- [基础使用](/zh/tutorial/getting-started/basic-usage)
+- [Remote Control](/zh/mechanics/remote-control)
+- [工具权限管理](/zh/tutorial/configuration/tools-allowlist)
+- [Claude Code 价格和限制](/zh/pricing)
+
+## 官方来源
+
+- [Use Claude Code in VS Code](https://code.claude.com/docs/en/ide-integrations)
+- [Platforms and integrations](https://code.claude.com/docs/en/platforms)
+- [Use Claude Code with your Pro or Max plan](https://support.claude.com/en/articles/11145838-use-claude-code-with-your-pro-or-max-plan)

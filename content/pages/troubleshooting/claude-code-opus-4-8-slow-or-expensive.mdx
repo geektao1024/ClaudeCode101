@@ -129,16 +129,17 @@ Run a read-only workflow on src/app/api and src/shared/auth only. Find missing p
 
 Opus 4.8 is not automatically the cheapest or fastest choice for every Claude Code task.
 
-| Task type                      | Practical choice                                              |
-| ------------------------------ | ------------------------------------------------------------- |
-| Large agentic coding task      | Opus 4.8 can be worth it, especially if wrong code is costly. |
-| Routine documentation edits    | Sonnet or normal effort may be enough.                        |
-| Short one-file edits           | Use the fastest reliable model/settings you have.             |
-| Broad repository audit         | Opus 4.8 plus scoped workflow can be useful.                  |
-| Creative writing or style work | Test against your own benchmark; community reports are mixed. |
-| Production deployment work     | Use Plan Mode, version pinning, tests, and explicit rollback. |
+| Task type                      | Practical choice                                                              |
+| ------------------------------ | ----------------------------------------------------------------------------- |
+| Large agentic coding task      | Opus 4.8 can be worth it, especially if wrong code is costly.                 |
+| Routine documentation edits    | Sonnet or normal effort is usually enough.                                    |
+| Short one-file edits           | Use the fastest reliable model/settings you have.                             |
+| Broad repository audit         | Opus 4.8 plus scoped workflow can be useful.                                  |
+| `opus vs sonnet` decision      | Start with Sonnet for ordinary coding; move to Opus for hard multi-step work. |
+| Creative writing or style work | Test against your own benchmark; community reports are mixed.                 |
+| Production deployment work     | Use Plan Mode, version pinning, tests, and explicit rollback.                 |
 
-The important point: model quality and workflow automation are separate decisions. You can use Opus 4.8 without ultracode, and you can use dynamic workflows only when the task deserves it.
+The important point: model quality and workflow automation are separate decisions. You can use Opus 4.8 without ultracode, and you can use dynamic workflows only when the task deserves it. For most `Claude Opus vs Sonnet` searches, the useful answer is not "always choose the stronger model"; it is "choose the cheapest model that reliably finishes the task."
 
 ## Common Launch-Window Misreads
 

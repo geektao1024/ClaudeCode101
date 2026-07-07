@@ -1,9 +1,25 @@
 ---
-title: "Claude Code Best Practices Tutorial"
-description: "A comprehensive guide to effectively using Claude Code for agentic programming"
+title: 'Claude Code Best Practices Tutorial'
+description: 'A comprehensive guide to effectively using Claude Code for agentic programming'
 ---
 
-import { HoverEffect } from '@/components/ui/card-hover-effect'
+import { HoverEffect } from '@/components/ui/card-hover-effect';
+
+# Claude Code Tutorial Center
+
+Use this page as a decision map. Start with the row that matches your current problem, then follow the linked guide.
+
+## Start Here
+
+| If you want to                     | Read first                                                            | You are done when                                                             | Skip it if                                                         |
+| ---------------------------------- | --------------------------------------------------------------------- | ----------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| Install Claude Code safely         | [Installation & Setup](/en/tutorial/getting-started/installation)     | `claude --version`, `claude doctor`, and `/status` show the expected account. | Claude Code already opens and you know which billing path it uses. |
+| Learn the first productive session | [Basic Usage](/en/tutorial/getting-started/basic-usage)               | You can ask Claude Code to inspect files, plan a change, edit, and verify.    | You already have a repeatable project workflow.                    |
+| Make Claude remember project rules | [CLAUDE.md Setup](/en/tutorial/configuration/claude-md)               | Your project commands, conventions, and boundaries are short and current.     | You do not have a real project yet.                                |
+| Control what Claude Code can do    | [Tools Permission](/en/tutorial/configuration/tools-allowlist)        | Risky commands and external tools require explicit approval.                  | You are only reading files in a throwaway repo.                    |
+| Check VS Code account routing      | [VS Code account check](/en/tutorial/configuration/ide-account-check) | You know whether the IDE, CLI, subscription, API key, or provider is active.  | You never use Claude Code from VS Code or another IDE.             |
+| Handle larger changes              | [Explore-Plan-Code](/en/tutorial/workflows/explore-plan-code)         | Claude explores first, proposes a plan, then changes scoped files.            | The task is a one-line edit.                                       |
+| Add MCP or external tools          | [MCP Servers](/en/tutorial/tools-integration/mcp-servers)             | The server is scoped, authenticated, and easy to disable.                     | Built-in file, git, and shell tools are enough.                    |
 
 ## 🚀 Getting Started
 
@@ -46,23 +62,33 @@ import { HoverEffect } from '@/components/ui/card-hover-effect'
 <HoverEffect
   items={[
     {
-      title: "CLAUDE.md Setup",
-      description: "Create and optimize configuration files to customize your development environment and workflow preferences.",
+      title: 'CLAUDE.md Setup',
+      description:
+        'Create and optimize configuration files to customize your development environment and workflow preferences.',
       icon: <span className="icon-[lucide--settings]"></span>,
-      link: "/en/tutorial/configuration/claude-md"
+      link: '/en/tutorial/configuration/claude-md',
     },
     {
-      title: "Tools Permission",
-      description: "Precisely control which tools and resources Claude Code can access to ensure security.",
+      title: 'Tools Permission',
+      description:
+        'Precisely control which tools and resources Claude Code can access to ensure security.',
       icon: <span className="icon-[lucide--shield-check]"></span>,
-      link: "/en/tutorial/configuration/tools-allowlist"
+      link: '/en/tutorial/configuration/tools-allowlist',
     },
     {
-      title: "GitHub CLI Integration",
-      description: "Seamlessly integrate gh command-line tool to simplify version control and collaboration.",
+      title: 'VS Code Account Check',
+      description:
+        'Verify IDE login, CLI status, subscription usage, API keys, and provider routing before long sessions.',
+      icon: <span className="icon-[lucide--badge-check]"></span>,
+      link: '/en/tutorial/configuration/ide-account-check',
+    },
+    {
+      title: 'GitHub CLI Integration',
+      description:
+        'Seamlessly integrate gh command-line tool to simplify version control and collaboration.',
       icon: <span className="icon-[mingcute--github-line]"></span>,
-      link: "/en/tutorial/configuration/github-cli"
-    }
+      link: '/en/tutorial/configuration/github-cli',
+    },
   ]}
   className="my-8"
 />
@@ -81,16 +107,23 @@ import { HoverEffect } from '@/components/ui/card-hover-effect'
     </a>
   </div>
 
-  <div className="group relative p-6 rounded-2xl bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20 border border-orange-200 dark:border-orange-800 hover:shadow-lg transition-all duration-300">
-    <div className="w-12 h-12 rounded-xl bg-orange-100 dark:bg-orange-900/50 flex items-center justify-center mb-4">
-      <span className="icon-[lucide--network] text-2xl text-orange-600 dark:text-orange-400"></span>
-    </div>
-    <h3 className="font-bold text-lg text-orange-900 dark:text-orange-100 mb-2">MCP Servers</h3>
-    <p className="text-orange-700 dark:text-orange-300 text-sm mb-4">Model Context Protocol integration to extend Claude's capabilities.</p>
-    <a href="/en/tutorial/tools-integration/mcp-servers" className="inline-flex items-center text-orange-600 dark:text-orange-400 font-medium text-sm">
-      Learn More <span className="icon-[lucide--arrow-right] ml-1 w-4 h-4"></span>
-    </a>
+<div className="group relative rounded-2xl border border-orange-200 bg-gradient-to-br from-orange-50 to-amber-50 p-6 transition-all duration-300 hover:shadow-lg dark:border-orange-800 dark:from-orange-900/20 dark:to-amber-900/20">
+  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-orange-100 dark:bg-orange-900/50">
+    <span className="icon-[lucide--network] text-2xl text-orange-600 dark:text-orange-400"></span>
   </div>
+  <h3 className="mb-2 text-lg font-bold text-orange-900 dark:text-orange-100">
+    MCP Servers
+  </h3>
+  <p className="mb-4 text-sm text-orange-700 dark:text-orange-300">
+    Model Context Protocol integration to extend Claude's capabilities.
+  </p>
+  <a
+    href="/en/tutorial/tools-integration/mcp-servers"
+    className="inline-flex items-center text-sm font-medium text-orange-600 dark:text-orange-400"
+  >
+    Learn More <span className="icon-[lucide--arrow-right] ml-1 h-4 w-4"></span>
+  </a>
+</div>
 
   <div className="group relative p-6 rounded-2xl bg-gradient-to-br from-rose-50 to-pink-50 dark:from-rose-900/20 dark:to-pink-900/20 border border-rose-200 dark:border-rose-800 hover:shadow-lg transition-all duration-300">
     <div className="w-12 h-12 rounded-xl bg-rose-100 dark:bg-rose-900/50 flex items-center justify-center mb-4">
@@ -123,53 +156,83 @@ import { HoverEffect } from '@/components/ui/card-hover-effect'
     </a>
   </div>
 
-  <div className="group relative p-6 rounded-2xl bg-gradient-to-br from-teal-50 to-cyan-50 dark:from-teal-900/20 dark:to-cyan-900/20 border border-teal-200 dark:border-teal-800 hover:shadow-lg transition-all duration-300">
-    <div className="flex items-start gap-4 mb-4">
-      <div className="w-12 h-12 rounded-xl bg-teal-100 dark:bg-teal-900/50 flex items-center justify-center">
-        <span className="icon-[lucide--test-tube] text-2xl text-teal-600 dark:text-teal-400"></span>
-      </div>
-      <div>
-        <h3 className="font-bold text-lg text-teal-900 dark:text-teal-100">Test-Driven Development</h3>
-        <span className="text-xs bg-teal-200 dark:bg-teal-800 text-teal-800 dark:text-teal-200 px-2 py-1 rounded-full">Advanced</span>
-      </div>
+<div className="group relative rounded-2xl border border-teal-200 bg-gradient-to-br from-teal-50 to-cyan-50 p-6 transition-all duration-300 hover:shadow-lg dark:border-teal-800 dark:from-teal-900/20 dark:to-cyan-900/20">
+  <div className="mb-4 flex items-start gap-4">
+    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-teal-100 dark:bg-teal-900/50">
+      <span className="icon-[lucide--test-tube] text-2xl text-teal-600 dark:text-teal-400"></span>
     </div>
-    <p className="text-teal-700 dark:text-teal-300 mb-4">TDD best practices to ensure code quality and maintainability.</p>
-    <a href="/en/tutorial/workflows/test-driven" className="inline-flex items-center text-teal-600 dark:text-teal-400 font-medium">
-      View Details <span className="icon-[lucide--arrow-right] ml-1 w-4 h-4"></span>
-    </a>
+    <div>
+      <h3 className="text-lg font-bold text-teal-900 dark:text-teal-100">
+        Test-Driven Development
+      </h3>
+      <span className="rounded-full bg-teal-200 px-2 py-1 text-xs text-teal-800 dark:bg-teal-800 dark:text-teal-200">
+        Advanced
+      </span>
+    </div>
   </div>
+  <p className="mb-4 text-teal-700 dark:text-teal-300">
+    TDD best practices to ensure code quality and maintainability.
+  </p>
+  <a
+    href="/en/tutorial/workflows/test-driven"
+    className="inline-flex items-center font-medium text-teal-600 dark:text-teal-400"
+  >
+    View Details{' '}
+    <span className="icon-[lucide--arrow-right] ml-1 h-4 w-4"></span>
+  </a>
+</div>
 
-  <div className="group relative p-6 rounded-2xl bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-900/20 dark:to-green-900/20 border border-emerald-200 dark:border-emerald-800 hover:shadow-lg transition-all duration-300">
-    <div className="flex items-start gap-4 mb-4">
-      <div className="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center">
-        <span className="icon-[lucide--image] text-2xl text-emerald-600 dark:text-emerald-400"></span>
-      </div>
-      <div>
-        <h3 className="font-bold text-lg text-emerald-900 dark:text-emerald-100">Visual Iteration</h3>
-        <span className="text-xs bg-emerald-200 dark:bg-emerald-800 text-emerald-800 dark:text-emerald-200 px-2 py-1 rounded-full">Innovation</span>
-      </div>
+<div className="group relative rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-green-50 p-6 transition-all duration-300 hover:shadow-lg dark:border-emerald-800 dark:from-emerald-900/20 dark:to-green-900/20">
+  <div className="mb-4 flex items-start gap-4">
+    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-100 dark:bg-emerald-900/50">
+      <span className="icon-[lucide--image] text-2xl text-emerald-600 dark:text-emerald-400"></span>
     </div>
-    <p className="text-emerald-700 dark:text-emerald-300 mb-4">Screenshot-based development process for intuitive interface improvements.</p>
-    <a href="/en/tutorial/workflows/visual-iteration" className="inline-flex items-center text-emerald-600 dark:text-emerald-400 font-medium">
-      View Details <span className="icon-[lucide--arrow-right] ml-1 w-4 h-4"></span>
-    </a>
+    <div>
+      <h3 className="text-lg font-bold text-emerald-900 dark:text-emerald-100">
+        Visual Iteration
+      </h3>
+      <span className="rounded-full bg-emerald-200 px-2 py-1 text-xs text-emerald-800 dark:bg-emerald-800 dark:text-emerald-200">
+        Innovation
+      </span>
+    </div>
   </div>
+  <p className="mb-4 text-emerald-700 dark:text-emerald-300">
+    Screenshot-based development process for intuitive interface improvements.
+  </p>
+  <a
+    href="/en/tutorial/workflows/visual-iteration"
+    className="inline-flex items-center font-medium text-emerald-600 dark:text-emerald-400"
+  >
+    View Details{' '}
+    <span className="icon-[lucide--arrow-right] ml-1 h-4 w-4"></span>
+  </a>
+</div>
 
-  <div className="group relative p-6 rounded-2xl bg-gradient-to-br from-slate-50 to-gray-50 dark:from-slate-900/20 dark:to-gray-900/20 border border-slate-200 dark:border-slate-800 hover:shadow-lg transition-all duration-300">
-    <div className="flex items-start gap-4 mb-4">
-      <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-900/50 flex items-center justify-center">
-        <span className="icon-[lucide--message-circle-question] text-2xl text-slate-600 dark:text-slate-400"></span>
-      </div>
-      <div>
-        <h3 className="font-bold text-lg text-slate-900 dark:text-slate-100">Codebase Q&A</h3>
-        <span className="text-xs bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-200 px-2 py-1 rounded-full">Learning</span>
-      </div>
+<div className="group relative rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 to-gray-50 p-6 transition-all duration-300 hover:shadow-lg dark:border-slate-800 dark:from-slate-900/20 dark:to-gray-900/20">
+  <div className="mb-4 flex items-start gap-4">
+    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-900/50">
+      <span className="icon-[lucide--message-circle-question] text-2xl text-slate-600 dark:text-slate-400"></span>
     </div>
-    <p className="text-slate-700 dark:text-slate-300 mb-4">Learn and explore codebases to quickly understand project structure.</p>
-    <a href="/en/tutorial/workflows/codebase-qa" className="inline-flex items-center text-slate-600 dark:text-slate-400 font-medium">
-      View Details <span className="icon-[lucide--arrow-right] ml-1 w-4 h-4"></span>
-    </a>
+    <div>
+      <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">
+        Codebase Q&A
+      </h3>
+      <span className="rounded-full bg-slate-200 px-2 py-1 text-xs text-slate-800 dark:bg-slate-800 dark:text-slate-200">
+        Learning
+      </span>
+    </div>
   </div>
+  <p className="mb-4 text-slate-700 dark:text-slate-300">
+    Learn and explore codebases to quickly understand project structure.
+  </p>
+  <a
+    href="/en/tutorial/workflows/codebase-qa"
+    className="inline-flex items-center font-medium text-slate-600 dark:text-slate-400"
+  >
+    View Details{' '}
+    <span className="icon-[lucide--arrow-right] ml-1 h-4 w-4"></span>
+  </a>
+</div>
 
   <div className="group relative p-6 rounded-2xl bg-gradient-to-br from-fuchsia-50 to-pink-50 dark:from-fuchsia-900/20 dark:to-pink-900/20 border border-fuchsia-200 dark:border-fuchsia-800 hover:shadow-lg transition-all duration-300">
     <div className="flex items-start gap-4 mb-4">
@@ -280,38 +343,69 @@ If you want to view tool recommendations, the launch-assets guide, and external 
     </div>
   </a>
 
-  <a href="https://github.com/anthropics/claude-code" target="_blank" rel="noopener noreferrer" className="group block p-6 rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 hover:shadow-lg transition-all duration-300">
-    <div className="w-12 h-12 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-      <span className="icon-[mingcute--github-line] text-2xl text-neutral-600 dark:text-neutral-400"></span>
-    </div>
-    <h3 className="font-bold text-lg text-neutral-900 dark:text-white mb-2">GitHub Repository</h3>
-    <p className="text-neutral-600 dark:text-neutral-400 text-sm mb-4">Source code, Issues, and latest development updates</p>
-    <div className="flex items-center text-blue-600 dark:text-blue-400 text-sm font-medium">
-      Visit Repository <span className="icon-[lucide--external-link] ml-1 w-4 h-4"></span>
-    </div>
-  </a>
+<a
+  href="https://github.com/anthropics/claude-code"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="group block rounded-2xl border border-neutral-200 bg-white p-6 transition-all duration-300 hover:shadow-lg dark:border-neutral-800 dark:bg-neutral-900"
+>
+  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-neutral-100 transition-transform duration-300 group-hover:scale-110 dark:bg-neutral-800">
+    <span className="icon-[mingcute--github-line] text-2xl text-neutral-600 dark:text-neutral-400"></span>
+  </div>
+  <h3 className="mb-2 text-lg font-bold text-neutral-900 dark:text-white">
+    GitHub Repository
+  </h3>
+  <p className="mb-4 text-sm text-neutral-600 dark:text-neutral-400">
+    Source code, Issues, and latest development updates
+  </p>
+  <div className="flex items-center text-sm font-medium text-blue-600 dark:text-blue-400">
+    Visit Repository{' '}
+    <span className="icon-[lucide--external-link] ml-1 h-4 w-4"></span>
+  </div>
+</a>
 
-  <a href="https://docs.anthropic.com/en/docs/claude-code" target="_blank" rel="noopener noreferrer" className="group block p-6 rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 hover:shadow-lg transition-all duration-300">
-    <div className="w-12 h-12 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-      <span className="icon-[lucide--book-open] text-2xl text-neutral-600 dark:text-neutral-400"></span>
-    </div>
-    <h3 className="font-bold text-lg text-neutral-900 dark:text-white mb-2">Official Documentation</h3>
-    <p className="text-neutral-600 dark:text-neutral-400 text-sm mb-4">Complete official documentation and API reference</p>
-    <div className="flex items-center text-blue-600 dark:text-blue-400 text-sm font-medium">
-      View Documentation <span className="icon-[lucide--external-link] ml-1 w-4 h-4"></span>
-    </div>
-  </a>
+<a
+  href="https://docs.anthropic.com/en/docs/claude-code"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="group block rounded-2xl border border-neutral-200 bg-white p-6 transition-all duration-300 hover:shadow-lg dark:border-neutral-800 dark:bg-neutral-900"
+>
+  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-neutral-100 transition-transform duration-300 group-hover:scale-110 dark:bg-neutral-800">
+    <span className="icon-[lucide--book-open] text-2xl text-neutral-600 dark:text-neutral-400"></span>
+  </div>
+  <h3 className="mb-2 text-lg font-bold text-neutral-900 dark:text-white">
+    Official Documentation
+  </h3>
+  <p className="mb-4 text-sm text-neutral-600 dark:text-neutral-400">
+    Complete official documentation and API reference
+  </p>
+  <div className="flex items-center text-sm font-medium text-blue-600 dark:text-blue-400">
+    View Documentation{' '}
+    <span className="icon-[lucide--external-link] ml-1 h-4 w-4"></span>
+  </div>
+</a>
 
-  <a href="https://musikalis.com/" target="_blank" rel="noopener noreferrer" className="group block p-6 rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 hover:shadow-lg transition-all duration-300">
-    <div className="w-12 h-12 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-      <span className="icon-[lucide--music-4] text-2xl text-neutral-600 dark:text-neutral-400"></span>
-    </div>
-    <h3 className="font-bold text-lg text-neutral-900 dark:text-white mb-2">Musikalis</h3>
-    <p className="text-neutral-600 dark:text-neutral-400 text-sm mb-4">Generate royalty-free music for product demos, tutorial videos, podcast intros, and game prototypes</p>
-    <div className="flex items-center text-blue-600 dark:text-blue-400 text-sm font-medium">
-      Visit Website <span className="icon-[lucide--external-link] ml-1 w-4 h-4"></span>
-    </div>
-  </a>
+<a
+  href="https://musikalis.com/"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="group block rounded-2xl border border-neutral-200 bg-white p-6 transition-all duration-300 hover:shadow-lg dark:border-neutral-800 dark:bg-neutral-900"
+>
+  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-neutral-100 transition-transform duration-300 group-hover:scale-110 dark:bg-neutral-800">
+    <span className="icon-[lucide--music-4] text-2xl text-neutral-600 dark:text-neutral-400"></span>
+  </div>
+  <h3 className="mb-2 text-lg font-bold text-neutral-900 dark:text-white">
+    Musikalis
+  </h3>
+  <p className="mb-4 text-sm text-neutral-600 dark:text-neutral-400">
+    Generate royalty-free music for product demos, tutorial videos, podcast
+    intros, and game prototypes
+  </p>
+  <div className="flex items-center text-sm font-medium text-blue-600 dark:text-blue-400">
+    Visit Website{' '}
+    <span className="icon-[lucide--external-link] ml-1 h-4 w-4"></span>
+  </div>
+</a>
 
   <a href="https://sunoaimusical.com/" target="_blank" rel="noopener noreferrer" className="group block p-6 rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 hover:shadow-lg transition-all duration-300">
     <div className="w-12 h-12 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
@@ -327,15 +421,21 @@ If you want to view tool recommendations, the launch-assets guide, and external 
 
 ---
 
-<div className="mt-12 p-8 rounded-3xl bg-gradient-to-br from-neutral-50 to-white dark:from-neutral-900 dark:to-neutral-800 border border-neutral-200 dark:border-neutral-700">
+<div className="mt-12 rounded-3xl border border-neutral-200 bg-gradient-to-br from-neutral-50 to-white p-8 dark:border-neutral-700 dark:from-neutral-900 dark:to-neutral-800">
   <div className="flex items-start gap-4">
-    <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center">
+    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 dark:bg-blue-900/50">
       <span className="icon-[lucide--lightbulb] text-2xl text-blue-600 dark:text-blue-400"></span>
     </div>
     <div>
-      <h3 className="text-xl font-bold text-neutral-900 dark:text-white mb-2">💡 Learning Tips</h3>
-      <p className="text-neutral-600 dark:text-neutral-400 leading-relaxed">
-        This tutorial is based on Anthropic's official best practices, combined with community experience. We recommend learning in order, but you can also jump to specific sections as needed. Each chapter includes practical examples and best practice recommendations to help you quickly master Claude Code's powerful features.
+      <h3 className="mb-2 text-xl font-bold text-neutral-900 dark:text-white">
+        💡 Learning Tips
+      </h3>
+      <p className="leading-relaxed text-neutral-600 dark:text-neutral-400">
+        This tutorial is based on Anthropic's official best practices, combined
+        with community experience. We recommend learning in order, but you can
+        also jump to specific sections as needed. Each chapter includes
+        practical examples and best practice recommendations to help you quickly
+        master Claude Code's powerful features.
       </p>
     </div>
   </div>

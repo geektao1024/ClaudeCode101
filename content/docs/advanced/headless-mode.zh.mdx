@@ -1,11 +1,20 @@
 ---
-title: "无头模式自动化"
-description: "使用 Claude Code 无头模式实现基础设施自动化"
+title: '无头模式自动化'
+description: '使用 Claude Code 无头模式实现基础设施自动化'
 ---
 
 # 无头模式自动化
 
 Claude Code 包含无头模式，可用于 CI、预提交钩子、构建脚本和自动化等非交互式上下文。
+
+## 快速结论
+
+用 `claude -p` 做一次性分析、CI 摘要、Issue triage 或只读 code review。自动化里不要默认给写权限；先让 Claude 输出证据，再由交互式会话或人工决定是否修改。
+
+```bash
+claude -p "Review the current git diff for bugs, regressions, and missing tests. Return findings with file paths and line references. Do not edit files." \
+  --allowedTools "Read,Bash(git diff:*)"
+```
 
 ## 什么是无头模式
 
@@ -39,9 +48,17 @@ claude -p "分析这个GitHub Issue并添加适当的标签" \
 超出传统工具检测范围的主观代码审查：
 
 ```bash
-claude -p "检查代码中的拼写错误、过时注释和误导性函数名" \
-  --allowedTools "Read,Write"
+claude -p "Review the current git diff for bugs, regressions, and missing tests. Return findings with file paths and line references. Do not edit files." \
+  --allowedTools "Read,Bash(git diff:*)"
 ```
+
+如果搜索意图是 `Claude Code review`，第一轮应该只读。让 Claude 给出文件、行号、证据和风险；是否修复，放到下一轮交互式会话决定。
+
+| Review 目标       | 更好的 prompt 形态                                          | 工具边界                |
+| ----------------- | ----------------------------------------------------------- | ----------------------- |
+| PR 风险扫描       | Review diff for bugs and regressions.                       | `Read,Bash(git diff:*)` |
+| Release note 检查 | Summarize user-visible changes and missing migration notes. | `Read,Bash(git log:*)`  |
+| 安全敏感 review   | 只列有证据的问题，不直接 patch。                            | 第一轮只读。            |
 
 ### 3. 批量处理
 

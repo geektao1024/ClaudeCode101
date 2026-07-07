@@ -57,9 +57,17 @@ claude -p "Analyze this GitHub Issue and add appropriate labels" \
 Subjective code review beyond traditional tool detection:
 
 ```bash
-claude -p "Check code for typos, outdated comments, and misleading function names" \
-  --allowedTools "Read,Write"
+claude -p "Review the current git diff for bugs, regressions, and missing tests. Return findings with file paths and line references. Do not edit files." \
+  --allowedTools "Read,Bash(git diff:*)"
 ```
+
+For `Claude Code review` automation, keep the first pass read-only. Let Claude report evidence; apply fixes in a separate interactive session after you decide which findings are real.
+
+| Review goal               | Better prompt shape                                         | Tool boundary           |
+| ------------------------- | ----------------------------------------------------------- | ----------------------- |
+| PR risk scan              | Review the diff for bugs and regressions.                   | `Read,Bash(git diff:*)` |
+| Release note check        | Summarize user-visible changes and missing migration notes. | `Read,Bash(git log:*)`  |
+| Security-sensitive review | List suspected issues with evidence only; do not patch.     | Read-only first pass.   |
 
 ### 3. Batch Processing
 

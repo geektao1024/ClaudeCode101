@@ -1,9 +1,24 @@
 ---
 title: 'Claude Code Unable to Connect to API'
-description: 'How to troubleshoot Claude Code unable to connect to API, request timeout, SSL certificate, proxy, VPN, and network errors.'
+description: "How to troubleshoot Claude Code unable to connect to Anthropic services, can't reach Claude error, API error 500, authorization failed internal server error, proxy, VPN, and SSL certificate issues."
 ---
 
-If Claude Code cannot connect to the API, times out, or reports SSL certificate problems, treat it as a network path issue first. The cause may be local connectivity, corporate proxy inspection, VPN routing, certificate trust, provider status, or an incorrect base URL.
+# Claude Code Unable to Connect to API
+
+If Claude Code says it is `unable to connect to Anthropic services`, shows a `can't reach Claude` error, times out, or reports SSL certificate problems, treat it as a connection path issue first. The cause may be local connectivity, corporate proxy inspection, VPN routing, certificate trust, provider status, authentication state, or an incorrect base URL.
+
+> Last checked on July 8, 2026. Error wording changes across Claude Code releases and providers. Use the full error text, active provider, and current network path before reinstalling.
+
+## Match The Error To The Layer
+
+| Error text or search term                           | Most likely layer                                           | Check first                                   | Better first action                                                |
+| --------------------------------------------------- | ----------------------------------------------------------- | --------------------------------------------- | ------------------------------------------------------------------ |
+| `unable to connect to Anthropic services`           | Network, proxy, VPN, DNS, or service status.                | Status page and same-terminal network access. | Test another network before changing credentials.                  |
+| `can't reach Claude error`                          | Browser or terminal cannot reach the Claude endpoint.       | VPN split routing and proxy variables.        | Compare browser access with terminal access.                       |
+| `Claude Code API error: 500`                        | Provider or gateway returned an internal error.             | Provider status and request path.             | Retry later with a small prompt; do not reinstall first.           |
+| `Claude authorization failed internal server error` | Auth service, account session, or provider-side auth path.  | `/status`, `/doctor`, login state.            | Re-authenticate only after confirming it is not a status incident. |
+| `Claude internal server error`                      | Remote service error, sometimes account or gateway related. | Status page and provider console.             | Capture exact timestamp and request path.                          |
+| `Claude Cowork API error: connection error`         | Product-specific connector, gateway, or network path.       | Active base URL and connector settings.       | Validate the configured endpoint and credentials.                  |
 
 ## Quick Checks
 
@@ -11,20 +26,32 @@ If Claude Code cannot connect to the API, times out, or reports SSL certificate 
 2. Try a simple network request from the same terminal environment.
 3. If you use a proxy, confirm `HTTP_PROXY`, `HTTPS_PROXY`, and certificate settings.
 4. If you use a custom gateway or provider, verify `ANTHROPIC_BASE_URL` and related credentials.
-5. Retry from a different network before reinstalling Claude Code.
+5. Run `/doctor` if Claude Code opens. Use `claude doctor` only for CLI or auto-updater health after install/update issues; it is not a full API status test.
+6. Retry from a different network before reinstalling Claude Code.
+
+Useful shell checks:
+
+```bash
+claude --version
+env | grep -E 'ANTHROPIC|HTTP_PROXY|HTTPS_PROXY|SSL_CERT_FILE|NODE_EXTRA_CA_CERTS'
+```
 
 ## Common Causes
 
 Corporate networks may intercept TLS, block download or API hosts, or require a custom CA certificate. VPNs can also route browser traffic differently from terminal traffic. In cloud-provider setups, the error may come from Bedrock, Vertex, Foundry, or a custom gateway rather than Anthropic directly.
 
+If `ANTHROPIC_BASE_URL` is set, you are no longer testing the default Anthropic endpoint. A broken gateway can make Claude Code look down even when Anthropic itself is healthy. If the same prompt works after unsetting the custom base URL, fix the gateway path instead of reinstalling the CLI.
+
 ## When To Escalate
 
-Record the exact error text, operating system, shell, proxy or VPN state, active credential path, and whether the same request works from another network. If Claude Code starts, run `/doctor`; if it cannot start, run `claude doctor` from the shell.
+Record the exact error text, operating system, shell, proxy or VPN state, active credential path, and whether the same request works from another network. If Claude Code starts, run `/doctor`; if this began immediately after an install or update, also check the shell command `claude doctor`.
 
 ## Related Pages
 
 - [Login or authentication error](/en/troubleshooting/claude-code-login-or-authentication-error)
 - [Claude command not found](/en/troubleshooting/claude-command-not-found)
+- [Claude Code rate limit error](/en/troubleshooting/claude-code-rate-limit-error)
+- [Claude Code update vs npm install](/en/faqs/claude-update-vs-npm-install)
 - [Claude Code troubleshooting hub](/en/troubleshooting)
 - [Claude Code API reference hub](/en/api-reference)
 

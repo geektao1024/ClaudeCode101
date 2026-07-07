@@ -1,0 +1,81 @@
+---
+title: 'Claude Code Remote Control'
+description: 'Use Claude Code Remote Control to continue a local CLI or VS Code session from claude.ai/code, mobile, or another browser while keeping execution local.'
+---
+
+# Claude Code Remote Control
+
+Claude Code Remote Control lets you continue a local Claude Code session from `claude.ai/code`, the Claude mobile app, or another browser. The important detail is execution location: the session keeps running on your machine and still uses your local filesystem, tools, MCP servers, and project configuration.
+
+> Last checked on July 8, 2026. Remote Control is a research-preview feature. Availability, org policy, version requirements, and provider restrictions can change.
+
+## Quick Answer
+
+Use Remote Control when you already have local work running and need to steer it from another device. Start it from the CLI with `claude remote-control`, start an interactive terminal session with `claude --remote-control`, or enable it inside a running session with `/remote-control`.
+
+Do not confuse Remote Control with Claude Code on the web. Remote Control drives your local machine. Claude Code on the web runs in Anthropic-managed cloud infrastructure.
+
+## Which Command Should I Use?
+
+| Command                                | What it does                                                        | Use when                                                |
+| -------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------- |
+| `claude remote-control`                | Starts server mode and waits for remote connections.                | You want a local process dedicated to remote sessions.  |
+| `claude --remote-control`              | Starts a normal interactive CLI session with remote access enabled. | You want to type locally and also control it remotely.  |
+| `claude --remote-control "My Project"` | Starts interactive remote control with a visible name.              | You manage multiple sessions.                           |
+| `/remote-control` or `/rc`             | Enables Remote Control for the current session.                     | You are already working and need to continue elsewhere. |
+| `/config` option                       | Enables Remote Control by default for interactive sessions.         | You understand the org and device policy implications.  |
+
+## Requirements To Check First
+
+| Requirement               | What to verify                                                                                     |
+| ------------------------- | -------------------------------------------------------------------------------------------------- |
+| Plan and account          | Remote Control requires Claude subscription login; API-key or token-only shells are not supported. |
+| Version                   | Check `claude --version` against the current official minimum.                                     |
+| Login route               | Run `claude` and `/login` with the account you intend to use.                                      |
+| Provider                  | Official docs restrict Remote Control to first-party Anthropic endpoint behavior.                  |
+| Workspace trust           | Open the project locally once and accept trust prompts.                                            |
+| Team or Enterprise policy | An Owner may need to enable Remote Control in admin settings.                                      |
+| Device trust              | Some orgs require trusted-device verification before steering sessions remotely.                   |
+
+## Remote Control vs Web vs Mobile
+
+| Surface                               | Where code runs                        | Best for                                                | Main risk                                            |
+| ------------------------------------- | -------------------------------------- | ------------------------------------------------------- | ---------------------------------------------------- |
+| Remote Control                        | Your local machine                     | Steering an in-progress local task from another device. | You are exposing a local session to remote steering. |
+| Claude Code on the web                | Anthropic-managed cloud infrastructure | Long-running cloud tasks that do not need local files.  | Local tools and private filesystem are not the same. |
+| Mobile app with Remote Control        | Your local machine                     | Monitoring or steering a local task away from the desk. | Small-screen approval mistakes.                      |
+| VS Code extension with Remote Control | Your local machine                     | IDE-based work with remote continuation.                | Confusing extension history with CLI history.        |
+
+## Safe Usage Rules
+
+1. Name the session before leaving your desk.
+2. Keep the machine awake for long work.
+3. Do not enable Remote Control by default on shared or unmanaged machines.
+4. Avoid approving destructive tool calls from a small mobile screen.
+5. Do not use Remote Control to bypass org policy, network policy, or provider restrictions.
+6. Review `/status`, current directory, branch, and pending diff before approving edits remotely.
+
+## Common Errors
+
+| Error theme                       | Likely cause                                                                                   | Fix                                                        |
+| --------------------------------- | ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| Remote Control not enabled        | Account, plan, or org policy does not allow it.                                                | Check `/login`, plan, and admin settings.                  |
+| API or token auth error           | `ANTHROPIC_API_KEY`, `ANTHROPIC_AUTH_TOKEN`, provider credentials, or API-only auth is active. | Use subscription login in a shell without those overrides. |
+| API endpoint error                | The session is using a gateway, proxy, Bedrock, Vertex, or another unsupported route.          | Use the supported Anthropic endpoint route.                |
+| Trusted-device error              | The org requires a verified device.                                                            | Complete the trusted-device prompt or ask an admin.        |
+| Reconnect failure                 | Laptop slept, network dropped, or the old remote session expired.                              | Restart Remote Control and resume locally if needed.       |
+| Confusing web and remote sessions | Session history differs across surfaces.                                                       | Confirm where the session runs before editing files.       |
+
+## Related Pages
+
+- [Claude Code sessions](/en/mechanics/sessions)
+- [VS Code and IDE account check](/en/tutorial/configuration/ide-account-check)
+- [Tools allowlist](/en/tutorial/configuration/tools-allowlist)
+- [Claude Code pricing and limits](/en/pricing)
+- [Context management](/en/mechanics/context-management)
+
+## Official Sources
+
+- [Remote Control](https://code.claude.com/docs/en/remote-control)
+- [Platforms and integrations](https://code.claude.com/docs/en/platforms)
+- [Manage sessions](https://code.claude.com/docs/en/sessions)

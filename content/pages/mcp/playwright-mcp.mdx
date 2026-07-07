@@ -30,6 +30,20 @@ claude mcp add --transport stdio playwright -- npx @playwright/mcp@latest
 
 Some environments may need browser installation, custom executable paths, or project-specific launch flags. Keep those details in team setup notes rather than scattering them across prompts.
 
+## Can Claude Code Take Pictures?
+
+For web UI work, yes: Claude Code can capture browser screenshots when it has a browser automation path such as Playwright MCP. That is the accurate answer behind searches like "does Claude Code take pictures." The screenshot is evidence from a real browser, not a guess from reading JSX or CSS.
+
+Be precise about the boundary:
+
+| Need                                          | Best route                                     | Boundary                                                         |
+| --------------------------------------------- | ---------------------------------------------- | ---------------------------------------------------------------- |
+| Screenshot a local web page                   | Playwright MCP                                 | The app must be running and reachable.                           |
+| Inspect a modal, menu, or mobile layout       | Playwright MCP with viewport changes           | Still verify console errors and interactions.                    |
+| Compare a rendered screenshot to expectations | Playwright MCP plus a written checklist        | Claude may miss subtle visual defects without explicit criteria. |
+| Analyze an arbitrary image file               | Use a client surface that supports image input | This is not the same as browser screenshot automation.           |
+| Verify 3D, CAD, or canvas output              | Render it, then capture a screenshot           | Source code alone is not visual proof.                           |
+
 ## A Good Visual Verification Flow
 
 1. Build or run the local app.
@@ -44,14 +58,14 @@ This is especially important for Claude Code UI work because code can compile wh
 
 ## What to Check
 
-| Check | Why it matters |
-| --- | --- |
-| Page status | Confirms the route and assets load |
-| Console errors | Catches hydration, runtime, and asset problems |
-| Text wrapping | Prevents mobile overflow and clipped labels |
+| Check               | Why it matters                                 |
+| ------------------- | ---------------------------------------------- |
+| Page status         | Confirms the route and assets load             |
+| Console errors      | Catches hydration, runtime, and asset problems |
+| Text wrapping       | Prevents mobile overflow and clipped labels    |
 | Primary interaction | Confirms buttons, menus, forms, and links work |
-| Responsive layout | Ensures desktop polish did not break mobile |
-| Screenshot evidence | Gives the user something concrete to review |
+| Responsive layout   | Ensures desktop polish did not break mobile    |
+| Screenshot evidence | Gives the user something concrete to review    |
 
 ## Safe Usage Rules
 
@@ -64,22 +78,22 @@ This is especially important for Claude Code UI work because code can compile wh
 
 ## Prompt Patterns
 
-| Need | Prompt pattern |
-| --- | --- |
-| UI check | "Open `/en/faqs`, check console errors, and capture desktop plus mobile screenshots." |
-| Interaction | "Click the menu, search box, and primary CTA, then report any broken state." |
-| Regression | "Compare the current page against the expected layout: left nav, article body, right TOC." |
-| Mobile polish | "Use a 390px viewport and check text overflow, tap targets, and sticky headers." |
+| Need          | Prompt pattern                                                                             |
+| ------------- | ------------------------------------------------------------------------------------------ |
+| UI check      | "Open `/en/faqs`, check console errors, and capture desktop plus mobile screenshots."      |
+| Interaction   | "Click the menu, search box, and primary CTA, then report any broken state."               |
+| Regression    | "Compare the current page against the expected layout: left nav, article body, right TOC." |
+| Mobile polish | "Use a 390px viewport and check text overflow, tap targets, and sticky headers."           |
 
 ## Common Failure Modes
 
-| Symptom | Likely cause | Fix |
-| --- | --- | --- |
-| Browser does not launch | Missing browser dependency or wrong executable path | Install browsers or configure the executable path |
-| Page is blank | App server not running, wrong port, or asset copy mismatch | Restart the app and verify the route with curl |
-| Hydration error | Server and client render different markup | Reproduce in dev mode and remove dynamic first-render differences |
-| Screenshot differs by run | Animations, loading states, or unstable data | Wait for network idle and stable selectors |
-| Test mutates production | Wrong base URL or authenticated state | Use staging/local and separate test credentials |
+| Symptom                   | Likely cause                                               | Fix                                                               |
+| ------------------------- | ---------------------------------------------------------- | ----------------------------------------------------------------- |
+| Browser does not launch   | Missing browser dependency or wrong executable path        | Install browsers or configure the executable path                 |
+| Page is blank             | App server not running, wrong port, or asset copy mismatch | Restart the app and verify the route with curl                    |
+| Hydration error           | Server and client render different markup                  | Reproduce in dev mode and remove dynamic first-render differences |
+| Screenshot differs by run | Animations, loading states, or unstable data               | Wait for network idle and stable selectors                        |
+| Test mutates production   | Wrong base URL or authenticated state                      | Use staging/local and separate test credentials                   |
 
 ## Related Pages
 

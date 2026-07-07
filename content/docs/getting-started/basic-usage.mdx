@@ -7,6 +7,27 @@ description: 'Learn fundamental Claude Code usage patterns and workflows'
 
 After installing Claude Code, learn the essential usage patterns that will make you productive with this AI-powered development assistant.
 
+## Quick Answer
+
+Claude Code is most useful when you give it a concrete project goal, point it at the relevant files, ask it to inspect before editing, and verify the result with the project's real commands.
+
+| Your task             | Prompt pattern                                                                       | What to verify                                    | Common mistake                                           |
+| --------------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------- | -------------------------------------------------------- |
+| Understand a codebase | `Explain how <feature> works. Read the relevant files first.`                        | Claude names real files and data flow.            | Asking for architecture without giving a target feature. |
+| Fix a bug             | `Reproduce or inspect <symptom>, identify the cause, then patch it.`                 | Test, build, or manual check passes.              | Asking "fix this" without the error text or file path.   |
+| Add a feature         | `Plan the change first, then implement the smallest working version.`                | The new path works and old behavior still passes. | Letting Claude rewrite unrelated code.                   |
+| Refactor              | `Find the current pattern, propose a scoped refactor, then change only those files.` | Diff is small and tests still pass.               | Refactoring before understanding local conventions.      |
+| Review code           | `Review for bugs and regressions. Prioritize findings with file references.`         | Findings are tied to line-level evidence.         | Asking for generic best practices.                       |
+| Write docs            | `Update docs to match the current code and commands.`                                | Commands, paths, and links are real.              | Writing docs from memory instead of checking files.      |
+
+## First Session Checklist
+
+1. Open Claude Code from the project root.
+2. Run `/status` if billing, account, or API key behavior matters.
+3. Ask Claude to inspect before editing.
+4. Name the files, command, symptom, or feature you care about.
+5. Ask it to run the project's verification command after changes.
+
 ## Starting a Conversation
 
 ### Simple Commands

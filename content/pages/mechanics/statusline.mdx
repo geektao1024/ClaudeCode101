@@ -1,0 +1,96 @@
+---
+title: 'Claude Code Statusline'
+description: 'Set up a Claude Code statusline to show model, context usage, cost, branch, rate-limit signals, and session data without adding prompt noise.'
+---
+
+# Claude Code Statusline
+
+The Claude Code statusline is a customizable row at the bottom of the terminal interface. Use it when you want persistent visibility into model, context usage, estimated cost, branch, session name, or rate-limit signals while you work.
+
+> Last checked on July 8, 2026. Statusline fields and Claude Code versions change quickly, so treat scripts and JSON fields as implementation details you should verify against the official docs before standardizing them for a team.
+
+## Quick Answer
+
+Use `/statusline` when you want Claude Code to generate a statusline script from a natural-language request. Configure `statusLine` manually in `~/.claude/settings.json` or project settings when you need a reviewed script, stable team behavior, or custom formatting.
+
+Do not use the statusline as a second prompt, a policy engine, or a place to print secrets. It should answer one operational question at a glance: "What session am I in, how much context or usage am I burning, and is this the right project?"
+
+## What To Show First
+
+| Need                                            | Good statusline field                                                | Why it helps                                       |
+| ----------------------------------------------- | -------------------------------------------------------------------- | -------------------------------------------------- |
+| Avoid running expensive work in the wrong model | `model.display_name`                                                 | Shows model drift immediately.                     |
+| Watch context before auto-compact               | `context_window.used_percentage`                                     | Gives a visible context budget signal.             |
+| Distinguish similar repos or worktrees          | `workspace.current_dir`, `workspace.git_worktree`, branch from `git` | Prevents editing the wrong checkout.               |
+| Control subscription or API spend               | `cost.total_cost_usd`                                                | Useful for API-billed sessions; still an estimate. |
+| Track quota pressure                            | `rate_limits.five_hour.used_percentage`                              | Helps plan breaks and avoid surprise limit stops.  |
+| Resume or debug a session                       | `session_name`, `session_id`, `transcript_path`                      | Makes support and handoff easier.                  |
+
+Keep the first version boring: model, repo folder, branch, context percentage. Add cost or rate-limit fields only if your workflow actually needs them.
+
+## Setup Options
+
+| Option                                               | Use when                                               | Tradeoff                                                          |
+| ---------------------------------------------------- | ------------------------------------------------------ | ----------------------------------------------------------------- |
+| `/statusline show model name and context percentage` | You want the fastest setup.                            | Convenient, but still review the generated script.                |
+| User settings                                        | You want the same statusline everywhere.               | Personal defaults can be wrong for some repos.                    |
+| Project settings                                     | A team wants consistent local signals.                 | Needs review because every contributor will inherit the behavior. |
+| Inline command                                       | The output is very simple.                             | Harder to audit once formatting grows.                            |
+| Script file                                          | You need git, cost, context, or rate-limit formatting. | Must be executable and maintained.                                |
+
+Example manual settings shape:
+
+```json
+{
+  "statusLine": {
+    "type": "command",
+    "command": "~/.claude/statusline.sh",
+    "padding": 2
+  }
+}
+```
+
+## Safe Script Rules
+
+1. Read JSON from stdin and print only the statusline text.
+2. Keep the script local and fast.
+3. Do not call external APIs from the statusline.
+4. Do not print tokens, file contents, environment variables, or customer data.
+5. Treat `cost.total_cost_usd` as an estimate, not a billing ledger.
+6. Use `refreshInterval` only when a time-based display truly needs it.
+7. Review project-level statusline scripts like any other executable code.
+
+## Common Mistakes
+
+| Mistake                                            | Why it hurts                                                             | Better approach                                                                                     |
+| -------------------------------------------------- | ------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------- |
+| Showing too many fields                            | The footer becomes noise and hides the useful signal.                    | Limit it to 3-5 values.                                                                             |
+| Depending on undocumented JSON fields              | A Claude Code update can break the script.                               | Use fields listed in the official statusline docs.                                                  |
+| Running slow commands every update                 | Claude Code cancels in-flight statusline runs and the UI feels unstable. | Cache expensive work or remove it.                                                                  |
+| Printing secrets or paths that should stay private | Screenshots and screen shares can leak data.                             | Redact or omit sensitive fields.                                                                    |
+| Using statusline instead of permissions            | A footer cannot block unsafe tools.                                      | Use [tools allowlist](/en/tutorial/configuration/tools-allowlist) and [hooks](/en/mechanics/hooks). |
+
+## Statusline vs Other Mechanics
+
+| If you need...           | Use                                                           |
+| ------------------------ | ------------------------------------------------------------- |
+| A visible session signal | Statusline                                                    |
+| A reusable instruction   | [Slash commands](/en/mechanics/slash-commands)                |
+| A durable project rule   | [CLAUDE.md](/en/mechanics/claude-md)                          |
+| Automatic enforcement    | [Hooks](/en/mechanics/hooks)                                  |
+| Lower context waste      | [Context management](/en/mechanics/context-management)        |
+| Shared permission policy | [Tools allowlist](/en/tutorial/configuration/tools-allowlist) |
+
+## Related Pages
+
+- [Claude Code mechanics](/en/mechanics)
+- [Context management](/en/mechanics/context-management)
+- [Claude Code sessions](/en/mechanics/sessions)
+- [Tools allowlist](/en/tutorial/configuration/tools-allowlist)
+- [Claude Code pricing and limits](/en/pricing)
+
+## Official Sources
+
+- [Customize your status line](https://code.claude.com/docs/en/statusline)
+- [Claude Code settings](https://code.claude.com/docs/en/configuration)
+- [Manage sessions](https://code.claude.com/docs/en/sessions)

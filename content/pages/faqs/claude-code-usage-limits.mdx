@@ -123,9 +123,11 @@ For a large task, use this pattern:
 
 This preserves quality while avoiding the most common usage drain: one long session doing several unrelated jobs.
 
-## Upcoming Billing Note
+## Billing Boundary Note
 
-Official Claude Code legal materials currently note that starting **June 15, 2026**, Agent SDK and `claude -p` usage on subscription plans will draw from a monthly Agent SDK credit separate from interactive usage limits. Because that date is after this page's May 24, 2026 check, treat it as an upcoming policy detail and re-check official docs before planning automation-heavy usage.
+Official Claude Code legal materials separate ordinary subscription use from developer/product use. OAuth login is intended for Free, Pro, Max, Team, and Enterprise subscription access, while developers building products or services with Claude capabilities should use API key authentication through Console or a supported cloud provider.
+
+For automation-heavy, headless, SDK, or productized workflows, do not assume subscription limits are the right boundary. Re-check the current legal, pricing, and billing docs before planning usage.
 
 ## FAQ
 

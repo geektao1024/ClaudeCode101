@@ -1,0 +1,96 @@
+---
+title: 'Claude Code Statusline 设置'
+description: '设置 Claude Code statusline，用来显示模型、上下文、成本、分支、用量信号和会话信息，减少长会话中的盲区。'
+---
+
+# Claude Code Statusline 设置
+
+Claude Code statusline 是终端界面底部的一行可自定义状态栏。它适合显示当前模型、上下文占用、预估成本、Git 分支、会话名称或限额信号，让你不用反复输入命令也能判断当前会话状态。
+
+> 最后核查：2026 年 7 月 8 日。Statusline 字段和 Claude Code 版本变化很快。团队标准化脚本前，必须对照官方文档核对字段和版本要求。
+
+## 快速结论
+
+想快速配置，用 `/statusline` 让 Claude Code 根据自然语言生成脚本。需要团队可审查、格式稳定、行为可控时，在 `~/.claude/settings.json` 或项目 settings 里手动配置 `statusLine`。
+
+不要把 statusline 当第二个 prompt、策略引擎或 secrets 输出区。它应该只回答一个操作问题：我在哪个会话、哪个项目、正在消耗多少上下文或用量？
+
+## 优先显示什么
+
+| 需求                      | 适合显示的字段                                              | 为什么有用                        |
+| ------------------------- | ----------------------------------------------------------- | --------------------------------- |
+| 避免在错误模型上跑重任务  | `model.display_name`                                        | 模型切错能马上看到。              |
+| 自动 compact 前控制上下文 | `context_window.used_percentage`                            | 给上下文预算一个可见信号。        |
+| 区分相似仓库或 worktree   | `workspace.current_dir`、`workspace.git_worktree`、Git 分支 | 降低改错目录的概率。              |
+| 控制订阅或 API 花费       | `cost.total_cost_usd`                                       | 对 API 计费会话有用，但只是估算。 |
+| 观察限额压力              | `rate_limits.five_hour.used_percentage`                     | 便于安排长会话和休息窗口。        |
+| 恢复或排查会话            | `session_name`、`session_id`、`transcript_path`             | 方便交接和定位。                  |
+
+第一版保持简单：模型、项目目录、分支、上下文百分比。只有工作流确实需要时，再加成本或限额字段。
+
+## 配置方式
+
+| 方式                                                 | 适用场景                             | 取舍                           |
+| ---------------------------------------------------- | ------------------------------------ | ------------------------------ |
+| `/statusline show model name and context percentage` | 想最快开始。                         | 方便，但生成脚本仍要审查。     |
+| User settings                                        | 想所有项目共用一套显示。             | 个人默认可能不适合每个仓库。   |
+| Project settings                                     | 团队想统一本地状态信号。             | 需要审查，因为贡献者都会继承。 |
+| Inline command                                       | 输出非常简单。                       | 格式复杂后不好维护。           |
+| Script file                                          | 需要 Git、成本、上下文或限额格式化。 | 脚本要可执行，也要维护。       |
+
+手动配置示例：
+
+```json
+{
+  "statusLine": {
+    "type": "command",
+    "command": "~/.claude/statusline.sh",
+    "padding": 2
+  }
+}
+```
+
+## 安全脚本规则
+
+1. 从 stdin 读取 JSON，只输出状态栏文本。
+2. 脚本必须本地、快速。
+3. 不要在 statusline 里调用外部 API。
+4. 不要输出 token、文件内容、环境变量或客户数据。
+5. 把 `cost.total_cost_usd` 当估算，不要当正式账单。
+6. 只有时间类显示确实需要时才设置 `refreshInterval`。
+7. 项目级 statusline 脚本要像普通可执行代码一样审查。
+
+## 常见错误
+
+| 错误                   | 问题                                          | 更好的做法                                                                                      |
+| ---------------------- | --------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| 显示太多字段           | 状态栏变成噪音，真正信号被淹没。              | 限制在 3-5 个值。                                                                               |
+| 依赖未文档化字段       | Claude Code 更新后容易坏。                    | 只用官方 statusline 文档列出的字段。                                                            |
+| 每次更新都跑慢命令     | UI 会不稳定，运行中的状态栏命令还可能被取消。 | 缓存昂贵操作，或移除它。                                                                        |
+| 输出敏感路径或 secrets | 截图、录屏、直播时可能泄露。                  | 省略或脱敏敏感字段。                                                                            |
+| 用 statusline 替代权限 | 状态栏不能拦截危险工具。                      | 用 [工具权限管理](/zh/tutorial/configuration/tools-allowlist) 和 [Hooks](/zh/mechanics/hooks)。 |
+
+## Statusline 和其他机制怎么选
+
+| 你需要的是...  | 使用                                                       |
+| -------------- | ---------------------------------------------------------- |
+| 可见的会话状态 | Statusline                                                 |
+| 可复用指令     | [Slash Commands](/zh/mechanics/slash-commands)             |
+| 长期项目规则   | [CLAUDE.md](/zh/mechanics/claude-md)                       |
+| 自动执行或拦截 | [Hooks](/zh/mechanics/hooks)                               |
+| 降低上下文浪费 | [上下文管理](/zh/mechanics/context-management)             |
+| 共享权限策略   | [工具权限管理](/zh/tutorial/configuration/tools-allowlist) |
+
+## 相关页面
+
+- [Claude Code 机制专题](/zh/mechanics)
+- [上下文管理](/zh/mechanics/context-management)
+- [Claude Code sessions](/zh/mechanics/sessions)
+- [工具权限管理](/zh/tutorial/configuration/tools-allowlist)
+- [Claude Code 价格和限制](/zh/pricing)
+
+## 官方来源
+
+- [Customize your status line](https://code.claude.com/docs/en/statusline)
+- [Claude Code settings](https://code.claude.com/docs/en/configuration)
+- [Manage sessions](https://code.claude.com/docs/en/sessions)

@@ -5,11 +5,13 @@ description: 'A practical Claude Code Plan Mode guide covering safe analysis, pe
 
 Plan Mode is Claude Code's safe analysis workflow. It tells Claude to inspect the codebase and create a plan before editing files. Use it when a wrong change would be expensive: migrations, refactors, auth, payment, database, MCP permissions, SEO-sensitive pages, production configuration, and multi-file features.
 
-> Last checked on May 24, 2026. Official Claude Code documentation describes Plan Mode as a permission mode for read-only analysis. It can analyze and plan, but it should not modify files or execute commands while in plan mode. UI labels and shortcuts may change, so verify the current behavior in your installed version.
+> Last checked on July 8, 2026. Official Claude Code documentation describes Plan Mode as a permission mode for read-only analysis. It can read files, search, and run read-only exploration commands, but it should not edit your source files before you approve the plan. UI labels and shortcuts may change, so verify the current behavior in your installed version.
 
 ## Quick Answer
 
 Use Plan Mode before work that needs judgment. Claude should first understand the repository, identify affected files, compare implementation options, explain risks, and propose verification steps. You approve or revise the plan before switching back to implementation.
+
+If you are searching for `Claude planner`, `Claude Code plan mode`, `auto mode`, or `Claude automode`, keep the distinction clear: Plan Mode is for read-only planning before edits, while auto mode changes how permission decisions are handled. They solve different problems and should not be treated as interchangeable.
 
 The shortest useful pattern is:
 
@@ -25,12 +27,12 @@ For a tiny typo, Plan Mode is overhead. For anything touching shared logic, publ
 
 Claude Code supports several official ways to use Plan Mode:
 
-| Situation | Recommended entry |
-| --- | --- |
-| You are already in an interactive Claude Code session | Press `Shift+Tab` to cycle permission modes until the status shows plan mode. |
-| You want a new interactive session to start in Plan Mode | Run `claude --permission-mode plan`. |
-| You want a one-shot analysis without editing | Run `claude --permission-mode plan -p "Analyze this project and propose a migration plan"`. |
-| You want a project to default to Plan Mode | Set `"defaultMode": "plan"` under `permissions` in `.claude/settings.json`. |
+| Situation                                                | Recommended entry                                                                           |
+| -------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| You are already in an interactive Claude Code session    | Press `Shift+Tab` to cycle permission modes until the status shows plan mode.               |
+| You want a new interactive session to start in Plan Mode | Run `claude --permission-mode plan`.                                                        |
+| You want a one-shot analysis without editing             | Run `claude --permission-mode plan -p "Analyze this project and propose a migration plan"`. |
+| You want a project to default to Plan Mode               | Set `"defaultMode": "plan"` under `permissions` in `.claude/settings.json`.                 |
 
 Official common-workflow guidance notes that `Shift+Tab` cycles through permission modes. From normal mode, it may pass through auto-accept edits before reaching plan mode. Watch the status line instead of assuming one keypress is enough.
 
@@ -38,14 +40,14 @@ Some teams also create custom slash commands or prompts named around planning. T
 
 ## What Plan Mode Can And Cannot Do
 
-| Action | Plan Mode behavior | Practical implication |
-| --- | --- | --- |
-| Read files, list directories, search code | Allowed as read-only analysis. | Good for architecture discovery and risk mapping. |
-| Modify files | Not allowed in plan mode. | You must approve and switch modes before implementation. |
-| Execute commands | Official IAM docs describe plan mode as unable to execute commands. | Ask for command recommendations; run them later in implementation or normal mode. |
-| Propose a sequence of edits | Allowed. | This is the main output you want. |
-| Compare approaches | Allowed. | Use it for migrations, refactors, and unclear bugs. |
-| Guarantee no future mistake | Not a guarantee. | Keep permissions, hooks, CI, and review in place. |
+| Action                                    | Plan Mode behavior             | Practical implication                                    |
+| ----------------------------------------- | ------------------------------ | -------------------------------------------------------- |
+| Read files, list directories, search code | Allowed as read-only analysis. | Good for architecture discovery and risk mapping.        |
+| Modify files                              | Not allowed in plan mode.      | You must approve and switch modes before implementation. |
+| Run read-only shell commands              | Allowed for exploration.       | Use them to inspect state, not to mutate the project.    |
+| Propose a sequence of edits               | Allowed.                       | This is the main output you want.                        |
+| Compare approaches                        | Allowed.                       | Use it for migrations, refactors, and unclear bugs.      |
+| Guarantee no future mistake               | Not a guarantee.               | Keep permissions, hooks, CI, and review in place.        |
 
 The value is not that Claude becomes perfect. The value is that the risky part of the work becomes visible before files change.
 
@@ -98,17 +100,17 @@ Do not jump to a fix. First identify the reproduction path, the likely failing l
 
 A useful Plan Mode response should be concrete enough that a reviewer can approve or reject it. Look for:
 
-| Plan element | What it should say |
-| --- | --- |
-| Goal restatement | The task in one or two sentences, with scope clarified. |
-| Files and routes | The files, directories, routes, or config surfaces likely affected. |
-| Current behavior | What Claude found in the repository before proposing changes. |
-| Proposed sequence | Step-by-step implementation order. |
-| Alternatives | Major trade-offs if more than one path is plausible. |
-| Risk zones | What could break: auth, billing, SEO, data, permissions, performance, layout. |
-| User decisions | Any choice that needs human confirmation. |
-| Verification | Build, tests, browser checks, curl checks, screenshot checks, or manual review. |
-| Rollback thinking | How to revert or limit blast radius if the change fails. |
+| Plan element      | What it should say                                                              |
+| ----------------- | ------------------------------------------------------------------------------- |
+| Goal restatement  | The task in one or two sentences, with scope clarified.                         |
+| Files and routes  | The files, directories, routes, or config surfaces likely affected.             |
+| Current behavior  | What Claude found in the repository before proposing changes.                   |
+| Proposed sequence | Step-by-step implementation order.                                              |
+| Alternatives      | Major trade-offs if more than one path is plausible.                            |
+| Risk zones        | What could break: auth, billing, SEO, data, permissions, performance, layout.   |
+| User decisions    | Any choice that needs human confirmation.                                       |
+| Verification      | Build, tests, browser checks, curl checks, screenshot checks, or manual review. |
+| Rollback thinking | How to revert or limit blast radius if the change fails.                        |
 
 If the plan only says "update the page" or "refactor the code", it is not a plan. Ask it to name files, assumptions, and verification.
 
@@ -207,14 +209,14 @@ The best Plan Mode session is not the longest one. It is the one that finds the 
 
 ## Common Mistakes
 
-| Mistake | Why it hurts | Better approach |
-| --- | --- | --- |
-| Asking for a plan after Claude already edited files | The risky diff already exists. | Start in Plan Mode before implementation. |
-| Approving a vague plan | The implementation can still wander. | Ask for files, sequence, risks, and verification. |
-| Planning without constraints | Claude may optimize for the wrong goal. | State what must not change. |
-| Using Plan Mode for every tiny change | Slows down simple work. | Reserve it for uncertain or risky changes. |
-| Treating Plan Mode as security enforcement | It is a permission mode, not a full policy system. | Use permissions, hooks, and CI for hard guarantees. |
-| Forgetting to verify after implementation | A good plan does not prove the code works. | Run the verification steps from the plan. |
+| Mistake                                             | Why it hurts                                       | Better approach                                     |
+| --------------------------------------------------- | -------------------------------------------------- | --------------------------------------------------- |
+| Asking for a plan after Claude already edited files | The risky diff already exists.                     | Start in Plan Mode before implementation.           |
+| Approving a vague plan                              | The implementation can still wander.               | Ask for files, sequence, risks, and verification.   |
+| Planning without constraints                        | Claude may optimize for the wrong goal.            | State what must not change.                         |
+| Using Plan Mode for every tiny change               | Slows down simple work.                            | Reserve it for uncertain or risky changes.          |
+| Treating Plan Mode as security enforcement          | It is a permission mode, not a full policy system. | Use permissions, hooks, and CI for hard guarantees. |
+| Forgetting to verify after implementation           | A good plan does not prove the code works.         | Run the verification steps from the plan.           |
 
 ## Practical Workflow
 
@@ -241,6 +243,6 @@ This is the same habit behind the "Explore, Plan, Code" workflow: understand fir
 ## Official Sources
 
 - [Claude Code common workflows](https://code.claude.com/docs/en/common-workflows)
-- [Claude Code IAM and permission modes](https://code.claude.com/docs/en/iam)
+- [Claude Code permissions](https://code.claude.com/docs/en/permissions)
 - [Claude Code settings](https://code.claude.com/docs/en/settings)
 - [Claude Code CLI reference](https://code.claude.com/docs/en/cli-usage)

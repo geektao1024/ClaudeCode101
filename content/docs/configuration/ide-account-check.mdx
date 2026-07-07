@@ -1,0 +1,82 @@
+---
+title: 'Claude Code VS Code and IDE Account Check'
+description: 'Check Claude Code account state in VS Code or IDE terminals, verify login vs API billing, and avoid mixing extension, CLI, and provider credentials.'
+---
+
+# VS Code and IDE Account Check
+
+If you search for "check Claude Code VS Code account," the real issue is usually not VS Code itself. It is account routing: extension login, CLI login, API keys, provider settings, and workspace trust can point Claude Code at different billing and permission paths.
+
+> Last checked on July 8, 2026. The official VS Code extension and CLI behavior can change. Verify current extension requirements before documenting this for a team.
+
+## Quick Answer
+
+In VS Code, use the official Claude Code extension when you want the native IDE interface. Use the integrated terminal with the standalone `claude` CLI when you want the same terminal workflow you use outside VS Code. In both cases, check the active account before a long task:
+
+```bash
+claude --version
+claude
+/status
+/login
+env | grep ANTHROPIC
+```
+
+If `ANTHROPIC_API_KEY`, `ANTHROPIC_AUTH_TOKEN`, `ANTHROPIC_BASE_URL`, or cloud-provider variables are set, do not assume your Pro or Max subscription is paying for the session.
+
+## Extension vs CLI
+
+| Surface                     | What it is best for                                                         | Account check                                                |
+| --------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| VS Code extension           | Native IDE panel, inline diffs, file selections, plan review, session tabs. | Sign in through the extension and confirm the shown account. |
+| VS Code integrated terminal | Terminal-first Claude Code workflow inside VS Code.                         | Run `claude`, then `/status`.                                |
+| Standalone terminal         | Same CLI behavior without IDE-specific context.                             | Run `claude`, `/status`, and inspect environment variables.  |
+| Third-party provider setup  | Bedrock, Vertex, Foundry, or gateway-style routes.                          | Confirm provider variables and billing dashboard.            |
+
+The extension bundles its own CLI for the chat panel, but running `claude` in the integrated terminal also requires the standalone CLI install.
+
+## Account Checklist
+
+| Check                     | Command or place                                    | What you are looking for                                    |
+| ------------------------- | --------------------------------------------------- | ----------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| Claude Code version       | `claude --version`                                  | Old clients can miss newer login or IDE behavior.           |
+| Active account            | `/status`                                           | Plan, org, provider, and billing route.                     |
+| Login route               | `/login`                                            | Whether you authenticated with the intended Claude account. |
+| API or token variables    | `env                                                | grep ANTHROPIC`                                             | API key, auth token, or base URL that may override subscription expectations. |
+| VS Code extension account | Extension panel/account menu                        | Whether the extension is signed into the same user or org.  |
+| Workspace trust           | VS Code trust prompt and Claude Code project prompt | Whether tools can read the current workspace.               |
+
+## For OpenSCAD Or Other VS Code Workflows
+
+There is nothing special about OpenSCAD in Claude Code account routing. Treat it as a project workflow:
+
+1. Open the OpenSCAD project folder in VS Code.
+2. Confirm the extension or terminal is signed into the intended Claude account.
+3. Use `@file` or selected code context for `.scad` files.
+4. Ask for small changes and review diffs before accepting them.
+5. If rendering or screenshots matter, use a separate verification tool rather than assuming Claude can see the rendered object.
+
+Do not promise that Claude Code can understand a CAD result from source alone. It can edit and reason about files, but visual correctness still needs rendering, screenshots, or tests.
+
+## Billing Pitfalls
+
+| Symptom                                   | Likely cause                                                                | Fix                                                                    |
+| ----------------------------------------- | --------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| You expected Pro/Max but see API spend    | `ANTHROPIC_API_KEY`, `ANTHROPIC_AUTH_TOKEN`, or provider variables are set. | Unset them for subscription sessions or intentionally use API billing. |
+| VS Code and terminal show different state | Extension and standalone CLI are separate surfaces.                         | Check both account menus and `/status`.                                |
+| Team account is missing                   | You are signed into a personal account or old client.                       | `/logout`, update Claude Code, then `/login` again.                    |
+| Remote Control is unavailable             | API-key route, proxy, org policy, or old version.                           | Check [Remote Control](/en/mechanics/remote-control).                  |
+| Claude cannot see selected files          | Workspace trust, file selection, or IDE context issue.                      | Reopen the folder, trust workspace, and mention exact files.           |
+
+## Related Pages
+
+- [Installation](/en/tutorial/getting-started/installation)
+- [Basic usage](/en/tutorial/getting-started/basic-usage)
+- [Remote Control](/en/mechanics/remote-control)
+- [Tools allowlist](/en/tutorial/configuration/tools-allowlist)
+- [Claude Code pricing and limits](/en/pricing)
+
+## Official Sources
+
+- [Use Claude Code in VS Code](https://code.claude.com/docs/en/ide-integrations)
+- [Platforms and integrations](https://code.claude.com/docs/en/platforms)
+- [Use Claude Code with your Pro or Max plan](https://support.claude.com/en/articles/11145838-use-claude-code-with-your-pro-or-max-plan)

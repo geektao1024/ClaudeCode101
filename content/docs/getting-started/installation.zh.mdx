@@ -1,106 +1,131 @@
 ---
-title: "安装与配置"
-description: "Claude Code 的安装和初始配置指南"
+title: '安装 Claude Code'
+description: '使用官方推荐的 native installer 安装 Claude Code，选择正确认证方式，并验证 CLI 是否可用。'
 ---
 
-# 安装与配置
+# 安装 Claude Code
 
-本章将指导您完成 Claude Code 的安装和初始配置过程。
+除非你的团队明确要求用 Homebrew、WinGet、Linux package manager 或 npm 管理版本，否则优先使用官方 native installer。
 
-## 安装 Claude Code
+> 最后核查：2026 年 7 月 7 日。下面命令按 Anthropic 当前 setup 文档整理。安装失败时，先看文末官方排障链接，不要沿用旧 npm 教程猜。
 
-### 前置要求
+## 快速路径
 
-- Node.js >= 18.x
-- 有效的 Anthropic API 密钥
+| 你的情况                                 | 推荐路径                            | 如何验证                              | 注意点                                     |
+| ---------------------------------------- | ----------------------------------- | ------------------------------------- | ------------------------------------------ |
+| macOS、Linux 或 WSL 用户                 | Native installer                    | `claude --version` 和 `claude doctor` | 如果找不到 `claude`，先重启终端。          |
+| Windows PowerShell 用户                  | PowerShell native installer         | `claude --version`                    | PowerShell 和 CMD 命令不同。               |
+| Windows CMD 用户                         | CMD native installer                | `claude --version`                    | 出现 PowerShell 语法错误时，先确认 shell。 |
+| 团队统一用 Homebrew 管理 macOS 软件      | `brew install --cask claude-code`   | `brew list --cask claude-code`        | Homebrew 默认不会自动更新。                |
+| API、CI、Bedrock、Vertex 或 Foundry 场景 | Console 或云厂商凭据                | `/status` 加账单后台                  | API key 可能和订阅用量分开计费。           |
+| 免费 Claude 账号                         | 升级订阅或使用 Console / 云厂商访问 | 账号计划页                            | 免费 Claude.ai 计划不包含 Claude Code。    |
 
-### 安装步骤
+## 系统要求
 
-1. **获取 Claude Code**
-   
-   访问 [Claude Code 官网](https://claude.ai/code) 获取最新版本的安装包。
+Claude Code 当前支持 macOS 13+、Windows 10 1809+ 或 Windows Server 2019+、Ubuntu 20.04+、Debian 10+、Alpine Linux 3.19+。需要 4 GB 以上内存、x64 或 ARM64 处理器、网络连接，以及 Anthropic 支持的国家或地区。
 
-2. **设置 API 密钥**
-   
-   ```bash
-   export ANTHROPIC_API_KEY=your_api_key_here
-   ```
+`ripgrep` 通常随 Claude Code 包含。如果项目内搜索失效，先查 search troubleshooting，不要直接重装。
 
-3. **验证安装**
-   
-   ```bash
-   claude --version
-   ```
+## 安装
 
-## 初始配置
+### Native Install
 
-### 创建 CLAUDE.md 文件
+macOS、Linux、WSL：
 
-在您的项目根目录创建 `CLAUDE.md` 文件：
+```bash
+curl -fsSL https://claude.ai/install.sh | bash
+```
+
+Windows PowerShell：
+
+```powershell
+irm https://claude.ai/install.ps1 | iex
+```
+
+Windows CMD：
+
+```batch
+curl -fsSL https://claude.ai/install.cmd -o install.cmd && install.cmd && del install.cmd
+```
+
+Native install 会在后台自动更新。
+
+### Homebrew
+
+```bash
+brew install --cask claude-code
+```
+
+Homebrew 安装默认需要手动更新，除非你的环境明确开启 package-manager auto-update。
+
+## 认证
+
+安装后，在你的项目目录打开终端并运行：
+
+```bash
+claude
+```
+
+然后按浏览器登录提示完成认证。
+
+Claude Code 需要 Pro、Max、Team、Enterprise、Console 账号，或受支持的第三方 API provider。不要因为你有 Pro 或 Max 订阅，就默认设置 `ANTHROPIC_API_KEY`。API key 可能让终端会话走 API 计费，而不是订阅内用量。
+
+## 验证
+
+```bash
+claude --version
+claude doctor
+```
+
+进入 Claude Code 后，检查当前账号和凭据路径：
+
+```text
+/status
+```
+
+长任务前必须看这个，尤其是 shell 里可能存在 API key 或云厂商凭据时。
+
+## 常见问题
+
+| 现象                                | 可能原因                                              | 处理方式                                                   |
+| ----------------------------------- | ----------------------------------------------------- | ---------------------------------------------------------- |
+| `claude: command not found`         | 安装路径没有加载进 shell。                            | 重启终端，再跑 `claude --version`。                        |
+| 安装命令返回 `403` 或 HTML 语法错误 | 网络、代理或 shell 不匹配。                           | 按官方安装排障页匹配具体错误。                             |
+| Pro 或 Max 用户看到 API 账单        | 设置了 `ANTHROPIC_API_KEY`。                          | 跑 `/status`，移除或限定 API key，并检查 Console billing。 |
+| 项目内搜索不可用                    | `ripgrep` 问题。                                      | 先看 search troubleshooting，不要直接重装。                |
+| Windows 命令失败                    | PowerShell 命令跑在 CMD，或 CMD 命令跑在 PowerShell。 | 切换到命令对应的 shell。                                   |
+
+## 第一个项目配置
+
+CLI 能正常打开后，在项目根目录放一个短的 `CLAUDE.md`：
 
 ```markdown
 # CLAUDE.md
 
-这是我的项目配置文件，Claude 会自动读取此文件。
-
 ## 常用命令
-- npm run build: 构建项目  
+
+- npm run build: 构建项目
 - npm run test: 运行测试
 - npm run lint: 代码检查
 
-## 项目规范
+## 项目规则
+
 - 使用 TypeScript
-- 遵循 ESLint 规则
-- 优先使用函数式组件
+- 遵循现有组件模式
+- 不主动编辑生成文件
 ```
 
-### 配置工具权限
+保持短、准、常更新。过长或过时的 `CLAUDE.md` 会在每次会话里浪费上下文。
 
-首次运行时，Claude Code 会请求工具权限。建议：
+## 相关页面
 
-1. **始终允许的工具**：
-   - `Read` - 读取文件
-   - `Write` - 写入文件  
-   - `Bash(git *)` - Git 命令
+- [基础使用](/zh/tutorial/getting-started/basic-usage)
+- [CLAUDE.md 配置](/zh/tutorial/configuration/claude-md)
+- [Claude Code 价格](/zh/pricing)
+- [Claude Code invalid API key](/zh/troubleshooting/claude-code-invalid-api-key)
 
-2. **谨慎允许的工具**：
-   - `Bash(rm *)` - 删除命令
-   - `Bash(sudo *)` - 管理员权限
+## 官方来源
 
-### 环境变量配置
-
-在 `.bashrc` 或 `.zshrc` 中添加：
-
-```bash
-# Claude Code 配置
-export CLAUDE_CONFIG_PATH="$HOME/.claude"
-export CLAUDE_DEFAULT_MODEL="claude-3-sonnet"
-```
-
-## 验证配置
-
-运行以下命令验证配置：
-
-```bash
-claude -p "读取当前目录的 README.md 文件并总结内容"
-```
-
-如果一切正常，Claude Code 将读取并总结您的 README 文件。
-
-## 常见问题
-
-### Q: API 密钥无法识别
-
-**A:** 确保环境变量设置正确，重启终端后再试。
-
-### Q: 权限被拒绝
-
-**A:** 检查文件权限，确保 Claude Code 可以访问目标目录。
-
-### Q: 无法连接到服务
-
-**A:** 检查网络连接，确认 API 服务状态正常。
-
----
-
-**下一步**: [基础使用](/zh/tutorial/getting-started/basic-usage) - 学习 Claude Code 的基本操作。
+- [Claude Code advanced setup](https://code.claude.com/docs/en/setup)
+- [Troubleshoot installation and login](https://code.claude.com/docs/en/troubleshoot-install)
+- [Claude plans and pricing](https://claude.com/pricing)

@@ -1,31 +1,49 @@
 ---
 title: 'Claude Code Rate Limit Error'
-description: 'How to troubleshoot Claude Code 429, server temporarily limiting requests, session limit, weekly limit, and low credit balance messages.'
+description: 'How to troubleshoot Claude Code 429, approaching 5-hour limit, session limit, weekly limit, ccusage differences, context auto-compact, and low credit balance messages.'
 ---
 
+# Claude Code Rate Limit Error
+
 If Claude Code shows `Request rejected (429)`, `Server is temporarily limiting requests`, `session limit`, `weekly limit`, or `Credit balance is too low`, first identify whether the issue is temporary throttling, subscription usage, API billing, or provider-specific limits.
+
+> Last checked on July 8, 2026. Limit labels and reset windows can change by plan and provider. Treat the exact error text, `/usage`, `/status`, and the billing console as higher priority than third-party estimates.
+
+## First Identify The Limit Type
+
+| Message or search term            | Usually means                                        | Check first                           | Best next step                                                                            |
+| --------------------------------- | ---------------------------------------------------- | ------------------------------------- | ----------------------------------------------------------------------------------------- |
+| `Request rejected (429)`          | Short-term provider throttling.                      | `/status` and provider status.        | Pause, reduce parallel calls, then retry a smaller task.                                  |
+| `approaching 5-hour limit`        | A subscription usage window is almost exhausted.     | `/usage` and the active plan/account. | Finish the smallest critical task, then wait for reset or adjust plan.                    |
+| `session limit` or `weekly limit` | Account or plan allowance, not a local install bug.  | `/usage` and plan details.            | Wait for reset, reduce workload, or move heavy work to an API setup with budget controls. |
+| `Credit balance is too low`       | API billing, prepaid credit, or workspace spend cap. | Provider billing console.             | Add funds or raise the cap before retrying.                                               |
+| `ccusage` differs from Claude     | Local or third-party usage tracking is an estimate.  | Official usage and billing surfaces.  | Use `ccusage` for trends, not final billing decisions.                                    |
+| `context left until auto-compact` | Context window pressure, not an account limit.       | `/context`.                           | Compact, clear, or reduce loaded files before continuing.                                 |
 
 ## Quick Checks
 
 1. Run `/usage` to check current usage when Claude Code can start.
 2. Run `/status` to confirm whether you are using subscription login, API key, Bedrock, Vertex, Foundry, or another provider.
-3. Read the exact message before changing plans. A temporary 429 is different from a weekly usage limit.
+3. Read the exact message before changing plans. A temporary 429, an approaching 5-hour limit, and a weekly usage limit are different problems.
 4. Reduce parallel sessions, subagents, and MCP work if the task is generating many calls.
 5. For API setups, check credit balance, workspace rate limits, and spend caps in the relevant console.
 
 ## What The Message Usually Means
 
-`Request rejected (429)` often means the provider is limiting requests for a short period. `You've hit your session limit` or `weekly limit` usually means you need to wait for reset or change plan/account strategy. `Credit balance is too low` points to billing or workspace credit state rather than a code issue.
+`Request rejected (429)` often means the provider is limiting requests for a short period. `You've hit your session limit`, `approaching 5-hour limit`, or `weekly limit` usually means the active account is near or past a plan allowance. `Credit balance is too low` points to billing or workspace credit state rather than a code issue.
+
+Do not confuse account limits with context limits. `context left until auto-compact` and `Claude Code context window size` questions belong to context management: the session has too much loaded history, file content, or command output. That may increase cost and slow work, but it is not the same thing as a subscription reset window.
 
 ## How To Keep Working
 
-Split the task into smaller checkpoints, switch to a lighter model if suitable, reduce unnecessary context, and stop broad repository scans before retrying. For long team sessions, document the active credential and expected usage path before starting.
+Split the task into smaller checkpoints, switch to a lighter model if suitable, reduce unnecessary context, and stop broad repository scans before retrying. For long team sessions, document the active credential, expected usage path, and whether the session should rely on subscription login or API billing before starting.
 
 ## Related Pages
 
 - [Claude Code pricing and usage guide](/en/pricing)
 - [Claude Code usage limits FAQ](/en/faqs/claude-code-usage-limits)
 - [Context management](/en/mechanics/context-management)
+- [Claude Code unable to connect to API](/en/troubleshooting/claude-code-unable-to-connect-to-api)
 - [Claude Code troubleshooting hub](/en/troubleshooting)
 
 ## Official Sources

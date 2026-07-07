@@ -58,7 +58,10 @@ npm list -g @anthropic-ai/claude-code --depth=0
 2. 阅读 [Claude Code changelog](https://docs.anthropic.com/en/release-notes/claude-code)。
 3. 使用同一个安装渠道更新。
 4. 重启 shell、IDE、终端 agent 或 CI runner。
-5. 再跑 `claude --version` 和一个小测试提示词。
+5. 原生 CLI 或 auto-updater 在更新后异常时，运行 `claude doctor`。
+6. 再跑 `claude --version` 和一个小测试提示词。
+
+如果搜索意图是 `Claude Code release notes` 或 `claude doctor command`，不要只回答一个安装命令。用户真正需要知道的是：版本变了什么、当前 CLI 来自 npm、原生安装器、Homebrew、WinGet、apt、dnf 还是 apk，以及这次更新有没有影响 MCP、hooks、permissions 或模型行为。
 
 ## 相关页面
 
@@ -66,4 +69,5 @@ npm list -g @anthropic-ai/claude-code --depth=0
 - [Claude Code 怎么安装](/zh/faqs/how-to-install-claude-code)
 - [Claude Code 价格和用量](/zh/pricing)
 - [Claude Code 多少钱](/zh/faqs/how-much-is-claude-code)
+- [Claude Code API 连接失败排查](/zh/troubleshooting/claude-code-unable-to-connect-to-api)
 - [官方 Claude Code 安装文档](https://code.claude.com/docs/en/installation)

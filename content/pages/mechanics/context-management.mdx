@@ -24,20 +24,33 @@ The practical rule is simple:
 
 Claude Code's context window is more than the visible chat. Some content appears in your terminal, and some loads silently.
 
-| Context source | When it enters | Why it matters |
-| --- | --- | --- |
-| Conversation history | As you chat | Long back-and-forth can crowd out the current task. |
-| Files Claude reads | When opened by tools | Large files and broad searches consume space quickly. |
-| Command output | When commands run | Logs, build output, and test failures can be very large. |
-| `CLAUDE.md` | At session start | Useful rules consume context on every request. Keep them concise. |
-| Auto memory | At session start | Helpful, but stale saved notes can add noise. |
-| `.claude/rules/` | At startup or when matching paths load | Path-scoped rules help reduce always-on context. |
-| Skills | Descriptions load early; full content loads when used | Good for repeatable procedures without putting everything in chat. |
-| MCP servers | Tool names load early; schemas can load on demand | Too many servers can still increase the tool surface. |
-| Subagents | Separate context window | Useful for research because their large reads do not directly fill the main session. |
-| Hooks | Run as code outside the prompt | Hook results can matter, but hook code itself is not normal conversation context. |
+| Context source       | When it enters                                        | Why it matters                                                                       |
+| -------------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| Conversation history | As you chat                                           | Long back-and-forth can crowd out the current task.                                  |
+| Files Claude reads   | When opened by tools                                  | Large files and broad searches consume space quickly.                                |
+| Command output       | When commands run                                     | Logs, build output, and test failures can be very large.                             |
+| `CLAUDE.md`          | At session start                                      | Useful rules consume context on every request. Keep them concise.                    |
+| Auto memory          | At session start                                      | Helpful, but stale saved notes can add noise.                                        |
+| `.claude/rules/`     | At startup or when matching paths load                | Path-scoped rules help reduce always-on context.                                     |
+| Skills               | Descriptions load early; full content loads when used | Good for repeatable procedures without putting everything in chat.                   |
+| MCP servers          | Tool names load early; schemas can load on demand     | Too many servers can still increase the tool surface.                                |
+| Subagents            | Separate context window                               | Useful for research because their large reads do not directly fill the main session. |
+| Hooks                | Run as code outside the prompt                        | Hook results can matter, but hook code itself is not normal conversation context.    |
 
 Good context management starts before the first prompt. A repository with an oversized `CLAUDE.md`, too many always-on rules, many MCP servers, and vague task prompts can feel expensive before any useful work begins.
+
+## Context Window Size And Auto-Compact
+
+People often search for "Claude Code context window size" or "context left until auto-compact" expecting one fixed number. In practice, the useful answer is operational: check the current session, model, provider, and configuration instead of relying on a memorized token count.
+
+Use `/context` when you need to know what is filling the active window. If Claude Code warns that the session is near auto-compact, treat it as a session-health signal, not an account limit. You can keep working, but you should decide whether to compact intentionally, clear the session, or reduce loaded files before the next large step.
+
+| Signal                             | What it means                                         | What to do                                                                        |
+| ---------------------------------- | ----------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `context left until auto-compact`  | The session is approaching its context boundary.      | Run `/context`, then `/compact` with focused instructions if the task continues.  |
+| "Claude Code context window size"  | A model, provider, and client configuration question. | Verify current docs and inspect the active session rather than using old numbers. |
+| Repeated tool outputs or long logs | Output is crowding the window.                        | Re-run focused commands or inspect saved log ranges.                              |
+| A stale plan keeps resurfacing     | Old conversation state still dominates.               | Use `/clear` for a new task or compact around current facts only.                 |
 
 ## Use /context As A Diagnostic
 
@@ -58,12 +71,12 @@ Do not wait until the session is failing. A quick `/context` midway through a co
 
 These commands solve different problems:
 
-| Command | Use when | What happens |
-| --- | --- | --- |
-| `/compact [instructions]` | You want to keep working on the same task, but the history is too large. | Claude summarizes the conversation so far, optionally focusing on your instructions. |
-| `/clear [name]` | You are switching to a new task and want empty context. | The previous conversation stays saved and resumable. |
-| `/resume` or `claude --resume` | You want to return to an earlier saved session. | The saved conversation is reopened. |
-| `/branch` | You want to try a different path without losing the current one. | A copy of the conversation becomes a new branch session. |
+| Command                        | Use when                                                                 | What happens                                                                         |
+| ------------------------------ | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ |
+| `/compact [instructions]`      | You want to keep working on the same task, but the history is too large. | Claude summarizes the conversation so far, optionally focusing on your instructions. |
+| `/clear [name]`                | You are switching to a new task and want empty context.                  | The previous conversation stays saved and resumable.                                 |
+| `/resume` or `claude --resume` | You want to return to an earlier saved session.                          | The saved conversation is reopened.                                                  |
+| `/branch`                      | You want to try a different path without losing the current one.         | A copy of the conversation becomes a new branch session.                             |
 
 Use `/compact` for continuity. Use `/clear` for separation. Use `/resume` for recovery. Use `/branch` when you want to explore an alternative plan without contaminating the main thread.
 
@@ -101,16 +114,16 @@ The more focused the compaction instruction, the less likely Claude is to preser
 
 Official context-window guidance explains that different mechanisms survive compaction differently.
 
-| Mechanism | After compaction | Practical advice |
-| --- | --- | --- |
-| System prompt and output style | Remain unchanged. | Do not worry about them during normal compaction. |
-| Project-root `CLAUDE.md` | Re-injected from disk. | Put durable rules here if they must survive. |
-| Unscoped rules | Re-injected from disk. | Use for rules that should always apply. |
-| Auto memory | Re-injected from disk. | Audit if stale memory causes drift. |
-| Path-scoped rules | Lost until a matching file is read again. | Re-open relevant files after compaction if needed. |
-| Nested `CLAUDE.md` | Lost until a file in that subtree is read again. | Do not rely on nested rules for global behavior. |
-| Invoked skills | Re-injected with token caps. | Put the most important skill instructions near the top. |
-| Hooks | Not conversation context. | Hook logic runs separately; outputs may still affect the session. |
+| Mechanism                      | After compaction                                 | Practical advice                                                  |
+| ------------------------------ | ------------------------------------------------ | ----------------------------------------------------------------- |
+| System prompt and output style | Remain unchanged.                                | Do not worry about them during normal compaction.                 |
+| Project-root `CLAUDE.md`       | Re-injected from disk.                           | Put durable rules here if they must survive.                      |
+| Unscoped rules                 | Re-injected from disk.                           | Use for rules that should always apply.                           |
+| Auto memory                    | Re-injected from disk.                           | Audit if stale memory causes drift.                               |
+| Path-scoped rules              | Lost until a matching file is read again.        | Re-open relevant files after compaction if needed.                |
+| Nested `CLAUDE.md`             | Lost until a file in that subtree is read again. | Do not rely on nested rules for global behavior.                  |
+| Invoked skills                 | Re-injected with token caps.                     | Put the most important skill instructions near the top.           |
+| Hooks                          | Not conversation context.                        | Hook logic runs separately; outputs may still affect the session. |
 
 This is why durable instructions belong in `CLAUDE.md`, not only in chat. A long instruction typed at the start of a session can be summarized away.
 
@@ -171,14 +184,14 @@ Most context waste comes from broad exploration:
 
 Better habits:
 
-| Problem | Better pattern |
-| --- | --- |
-| Claude wants to read too many files | Ask it to name the smallest file set first. |
-| Test output is huge | Re-run a focused test or ask for the first failing block only. |
-| Logs are long | Save logs to a file and ask Claude to inspect the relevant range. |
-| Search is too broad | Start with route, component, service, and test names. |
-| Session is drifting | Stop and ask for current facts, assumptions, and next action. |
-| Context keeps filling after compaction | Identify the large file or output that keeps re-entering. |
+| Problem                                | Better pattern                                                    |
+| -------------------------------------- | ----------------------------------------------------------------- |
+| Claude wants to read too many files    | Ask it to name the smallest file set first.                       |
+| Test output is huge                    | Re-run a focused test or ask for the first failing block only.    |
+| Logs are long                          | Save logs to a file and ask Claude to inspect the relevant range. |
+| Search is too broad                    | Start with route, component, service, and test names.             |
+| Session is drifting                    | Stop and ask for current facts, assumptions, and next action.     |
+| Context keeps filling after compaction | Identify the large file or output that keeps re-entering.         |
 
 For large repositories, file discipline matters as much as prompt quality.
 
@@ -231,15 +244,15 @@ This makes Claude Code sessions easier to resume, review, and hand off.
 
 ## Common Mistakes
 
-| Mistake | Why it hurts | Better approach |
-| --- | --- | --- |
-| Treating conversation history as durable memory | It can be summarized away or forgotten. | Put stable rules in `CLAUDE.md`. |
-| Compacting without instructions | The summary may preserve the wrong details. | Tell `/compact` what to keep and what to drop. |
-| Continuing after the task changes | Old assumptions leak into new work. | Use `/clear` or start a new session. |
-| Reading the whole repo before planning | Context fills before decisions are made. | Ask for a minimal inspection plan. |
-| Keeping outdated memory | Claude follows stale facts. | Audit `/memory` and project rules. |
-| Loading every MCP server and skill | Tool surface and descriptions add noise. | Enable only what the task needs. |
-| Ignoring command output size | Logs can dominate the window. | Capture focused output or inspect a range. |
+| Mistake                                         | Why it hurts                                | Better approach                                |
+| ----------------------------------------------- | ------------------------------------------- | ---------------------------------------------- |
+| Treating conversation history as durable memory | It can be summarized away or forgotten.     | Put stable rules in `CLAUDE.md`.               |
+| Compacting without instructions                 | The summary may preserve the wrong details. | Tell `/compact` what to keep and what to drop. |
+| Continuing after the task changes               | Old assumptions leak into new work.         | Use `/clear` or start a new session.           |
+| Reading the whole repo before planning          | Context fills before decisions are made.    | Ask for a minimal inspection plan.             |
+| Keeping outdated memory                         | Claude follows stale facts.                 | Audit `/memory` and project rules.             |
+| Loading every MCP server and skill              | Tool surface and descriptions add noise.    | Enable only what the task needs.               |
+| Ignoring command output size                    | Logs can dominate the window.               | Capture focused output or inspect a range.     |
 
 ## Practical Checklist
 

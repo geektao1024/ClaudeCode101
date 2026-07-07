@@ -1,0 +1,81 @@
+---
+title: 'Claude Code Remote Control'
+description: '使用 Claude Code Remote Control 从 claude.ai/code、手机或其他浏览器继续本地 CLI / VS Code 会话，同时保持代码执行在本机。'
+---
+
+# Claude Code Remote Control
+
+Claude Code Remote Control 让你从 `claude.ai/code`、Claude 手机 app 或其他浏览器继续一个本地 Claude Code 会话。关键点是执行位置：会话仍然跑在你的机器上，继续使用本地文件系统、工具、MCP servers 和项目配置。
+
+> 最后核查：2026 年 7 月 8 日。Remote Control 是 research preview 功能。可用性、组织策略、版本要求和 provider 限制都可能变化。
+
+## 快速结论
+
+当你已经在本地跑 Claude Code，并想从另一台设备继续控制它时，用 Remote Control。CLI server mode 用 `claude remote-control`；正常交互会话加远程控制用 `claude --remote-control`；已经在会话里时用 `/remote-control`。
+
+不要把 Remote Control 和 Claude Code on the web 混为一谈。Remote Control 控制的是你的本地机器；Claude Code on the web 运行在 Anthropic 管理的云环境里。
+
+## 应该用哪个命令？
+
+| 命令                                   | 作用                                      | 适用场景                           |
+| -------------------------------------- | ----------------------------------------- | ---------------------------------- |
+| `claude remote-control`                | 启动 server mode，等待远程连接。          | 想让一个本地进程专门承接远程会话。 |
+| `claude --remote-control`              | 启动普通 CLI 交互会话，同时开启远程访问。 | 想本地输入，也想远程控制。         |
+| `claude --remote-control "My Project"` | 带可见名称启动远程会话。                  | 你管理多个 session。               |
+| `/remote-control` 或 `/rc`             | 给当前会话开启 Remote Control。           | 已经在工作，临时需要换设备继续。   |
+| `/config` 选项                         | 给交互会话默认开启 Remote Control。       | 你理解组织和设备策略影响。         |
+
+## 先检查这些条件
+
+| 条件                   | 要核对什么                                                                |
+| ---------------------- | ------------------------------------------------------------------------- |
+| 计划和账号             | Remote Control 需要 Claude 订阅登录；API-key 或 token-only shell 不支持。 |
+| 版本                   | 用 `claude --version` 对照官方当前最低版本。                              |
+| 登录路径               | 运行 `claude` 和 `/login`，确认用的是目标账号。                           |
+| Provider               | 官方文档对一方 Anthropic endpoint 有限制要求。                            |
+| Workspace trust        | 本地打开项目一次，并接受 trust prompt。                                   |
+| Team / Enterprise 策略 | Owner 可能需要先在 admin settings 开启 Remote Control。                   |
+| Trusted device         | 有些组织要求可信设备验证后才能远程控制。                                  |
+
+## Remote Control、Web、Mobile 区别
+
+| 入口                               | 代码在哪里跑           | 适合什么                     | 主要风险                                    |
+| ---------------------------------- | ---------------------- | ---------------------------- | ------------------------------------------- |
+| Remote Control                     | 你的本地机器           | 从其他设备继续控制本地任务。 | 远程控制的是本地会话。                      |
+| Claude Code on the web             | Anthropic 管理的云环境 | 不强依赖本地文件的长任务。   | 本地工具和私有文件系统不同。                |
+| Mobile app + Remote Control        | 你的本地机器           | 离开桌面后监控或轻量控制。   | 小屏幕上容易误批危险操作。                  |
+| VS Code extension + Remote Control | 你的本地机器           | IDE 工作流里的远程继续。     | 容易混淆 extension history 和 CLI history。 |
+
+## 安全使用规则
+
+1. 离开电脑前先给 session 命名。
+2. 长任务保持机器唤醒。
+3. 不要在共享或未受管机器上默认开启 Remote Control。
+4. 不要在手机小屏幕上随手批准破坏性工具调用。
+5. 不要用 Remote Control 绕过组织策略、网络策略或 provider 限制。
+6. 远程批准编辑前，先确认 `/status`、当前目录、分支和未提交 diff。
+
+## 常见错误
+
+| 错误类型                   | 可能原因                                                                              | 处理                                      |
+| -------------------------- | ------------------------------------------------------------------------------------- | ----------------------------------------- |
+| Remote Control 没开启      | 账号、计划或组织策略不允许。                                                          | 检查 `/login`、计划和 admin settings。    |
+| API 或 token auth 错误     | `ANTHROPIC_API_KEY`、`ANTHROPIC_AUTH_TOKEN`、provider 凭据或 API-only auth 正在生效。 | 在没有这些覆盖变量的 shell 里用订阅登录。 |
+| API endpoint 错误          | 会话走了 gateway、proxy、Bedrock、Vertex 或其他不支持路径。                           | 使用受支持的 Anthropic endpoint 路径。    |
+| Trusted-device 错误        | 组织要求可信设备。                                                                    | 完成设备验证，或找管理员。                |
+| 重连失败                   | 电脑睡眠、网络断开或旧远程 session 过期。                                             | 重启 Remote Control，必要时本地恢复。     |
+| 混淆 web 和 remote session | 不同入口维护的历史不同。                                                              | 编辑文件前确认 session 到底在哪里运行。   |
+
+## 相关页面
+
+- [Claude Code sessions](/zh/mechanics/sessions)
+- [VS Code 和 IDE 账号检查](/zh/tutorial/configuration/ide-account-check)
+- [工具权限管理](/zh/tutorial/configuration/tools-allowlist)
+- [Claude Code 价格和限制](/zh/pricing)
+- [上下文管理](/zh/mechanics/context-management)
+
+## 官方来源
+
+- [Remote Control](https://code.claude.com/docs/en/remote-control)
+- [Platforms and integrations](https://code.claude.com/docs/en/platforms)
+- [Manage sessions](https://code.claude.com/docs/en/sessions)

@@ -1,0 +1,83 @@
+---
+title: 'Claude Code Sessions：恢复、继续和分支'
+description: '理解 Claude Code sessions：--continue、--resume、/resume、会话命名、本地 transcript、分支和上下文管理。'
+---
+
+# Claude Code Sessions
+
+Claude Code session 是绑定到项目目录的已保存对话。它重要，是因为真实 coding 任务经常跨重启、分支、compact 和多次尝试。
+
+> 最后核查：2026 年 7 月 8 日。本文聚焦 Claude Code CLI sessions。Claude Code on the web、Desktop app 和 VS Code extension 各自维护自己的 session history。
+
+## 快速结论
+
+想继续当前目录最近一次会话，用 `claude --continue`。需要选择某个历史会话，用 `claude --resume` 或 `/resume`。需要比较不同方案或留下交接线索时，给 session 命名，并按任务分支。
+
+不要把所有任务都塞进一个无限长会话。保存 session 能帮助继续工作，但不会让无关上下文变便宜或更清楚。
+
+## 常用 Session 命令
+
+| 命令                           | 作用                                   | 适用场景                        |
+| ------------------------------ | -------------------------------------- | ------------------------------- |
+| `claude --continue`            | 恢复当前项目最近一次 session。         | 刚关掉终端，想接着干。          |
+| `claude --resume`              | 打开 session picker。                  | 有多个历史会话。                |
+| `claude --resume <name>`       | 直接恢复命名 session。                 | 你按任务或分支命名过。          |
+| `claude --resume <session-id>` | 用 ID 恢复可用 session。               | 自动化或 transcript 查到了 ID。 |
+| `/resume`                      | 在当前活跃 session 里切换。            | 发现当前对话不是要继续的那个。  |
+| `/rename`                      | 给 session 起清楚标题。                | 默认标题太含糊。                |
+| `/clear`                       | 清空当前上下文，但仍可恢复旧 session。 | 切换任务。                      |
+| `/compact`                     | 总结长会话，继续同一任务。             | 同一任务历史太多。              |
+
+## Resume、Compact、Clear 怎么选
+
+| 情况                             | 最好动作              | 原因                     |
+| -------------------------------- | --------------------- | ------------------------ |
+| 同一任务、同一仓库，只是终端关了 | `claude --continue`   | 保留之前工作上下文。     |
+| 同一任务，但上下文膨胀           | 带指令运行 `/compact` | 保留决策，去掉噪音。     |
+| 同一仓库里的另一个任务           | `/clear` 或新 session | 避免带入无关文件和日志。 |
+| 想测试第二种方案                 | 分支或 fork session   | 保留原始线索。           |
+| 需要找旧对话                     | `claude --resume`     | 用 picker，不靠猜。      |
+
+## 命名习惯
+
+Session 名按结果命名，不按情绪命名：
+
+```text
+/rename pricing-page-seo-refresh
+/rename auth-timeout-debug
+/rename release-2026-07-08
+```
+
+好名字让 `claude --resume` 变得有用。`test`、`new idea`、`fix stuff` 这种名字一周后就是噪音。
+
+## 成本和上下文规则
+
+1. 保存 session 不等于免费上下文；长历史仍会影响注意力和用量。
+2. 无关任务用 `/clear`，即使都在同一个仓库里。
+3. `/compact` 要带聚焦指令，例如已改文件、已做决策、剩余风险、验证命令。
+4. 生产修改前，不要直接恢复过旧 session；先重新看 `git status`、当前分支和变更文件。
+5. API 计费路径下，恢复长会话或自动化会话前先看 `/status` 和 `/usage`。
+
+## 常见故障
+
+| 现象                                    | 可能原因                                     | 处理                                  |
+| --------------------------------------- | -------------------------------------------- | ------------------------------------- |
+| session ID 显示 `No conversation found` | session 查找受项目目录或 worktree 范围影响。 | 回到原始项目目录运行。                |
+| 恢复后一直讨论旧文件                    | 上下文来自过期任务。                         | `/clear` 后重新说明当前文件路径。     |
+| session picker 很乱                     | 从不命名，也不关闭无效会话。                 | 给活跃任务命名，停止不用的线。        |
+| Claude 重复过期假设                     | 保存 session 后仓库已变化。                  | 让它重新读取当前文件和 `git status`。 |
+| 恢复后用量升高                          | 旧上下文和日志还在。                         | Compact 或开新会话。                  |
+
+## 相关页面
+
+- [上下文管理](/zh/mechanics/context-management)
+- [Statusline](/zh/mechanics/statusline)
+- [Remote Control](/zh/mechanics/remote-control)
+- [基础使用](/zh/tutorial/getting-started/basic-usage)
+- [Claude Code 用量限制](/zh/faqs/claude-code-usage-limits)
+
+## 官方来源
+
+- [Manage sessions](https://code.claude.com/docs/en/sessions)
+- [Claude Code CLI reference](https://code.claude.com/docs/en/cli-reference)
+- [Claude Code usage limits](https://support.claude.com/en/articles/11647753-how-do-usage-and-length-limits-work)

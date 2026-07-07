@@ -28,6 +28,19 @@ Start with read-only tools, then allow only the command families your workflow n
 
 Use broader permissions only in disposable containers or trusted repositories. For CI and headless runs, prefer explicit `--allowedTools` flags over a permanent broad allowlist.
 
+## When Not To Skip Permissions
+
+If you are searching for `claude --dangerously-skip-permissions`, use it only as a last resort in a disposable or tightly isolated environment.
+
+| Situation                                               | Use `--dangerously-skip-permissions`? | Safer default                                                        |
+| ------------------------------------------------------- | ------------------------------------- | -------------------------------------------------------------------- |
+| Normal project work                                     | No.                                   | Add the smallest `allowedTools` entries you need.                    |
+| Production repo with secrets                            | No.                                   | Keep prompts interactive and deny destructive commands.              |
+| CI or scripted review                                   | Usually no.                           | Pass explicit `--allowedTools` for that job.                         |
+| Throwaway container with no secrets and no network risk | Sometimes.                            | Mount only the target workspace and discard the container after use. |
+
+This flag bypasses permission checks. It is not a productivity setting for everyday development.
+
 ## Permission Management Methods
 
 ### 1. Session Selection
@@ -184,6 +197,8 @@ Use loose permissions in containers or VMs:
 docker run -it --rm -v $(pwd):/workspace node:18
 claude --dangerously-skip-permissions
 ```
+
+Do not run that command from your normal repository checkout if the shell has production credentials, cloud tokens, SSH keys, or access to unrelated projects.
 
 ---
 

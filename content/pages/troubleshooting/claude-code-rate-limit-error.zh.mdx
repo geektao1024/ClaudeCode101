@@ -1,31 +1,49 @@
 ---
 title: 'Claude Code rate limit 错误'
-description: '排查 Claude Code 429、server temporarily limiting requests、session limit、weekly limit 和 credit balance 不足。'
+description: '排查 Claude Code 429、approaching 5-hour limit、session limit、weekly limit、ccusage 差异、context auto-compact 和 credit balance 不足。'
 ---
 
+# Claude Code rate limit 错误
+
 如果 Claude Code 提示 `Request rejected (429)`、`Server is temporarily limiting requests`、`session limit`、`weekly limit` 或 `Credit balance is too low`，先判断这是临时限流、订阅用量、API 账单，还是云服务商限制。
+
+> 最后核查：2026 年 7 月 8 日。不同 plan 和 provider 的限制名称、重置窗口可能变化。判断时以完整错误、`/usage`、`/status` 和账单后台为准，不要只看第三方估算。
+
+## 先判断是哪一类限制
+
+| 提示或搜索词                      | 通常含义                                  | 先检查                         | 下一步                                                      |
+| --------------------------------- | ----------------------------------------- | ------------------------------ | ----------------------------------------------------------- |
+| `Request rejected (429)`          | 短时间服务端限流。                        | `/status` 和 provider 状态。   | 暂停，降低并发，再用更小任务重试。                          |
+| `approaching 5-hour limit`        | 订阅用量窗口接近耗尽。                    | `/usage` 和当前 plan/account。 | 先完成最关键的小任务，然后等重置或调整 plan。               |
+| `session limit` 或 `weekly limit` | 账号或套餐额度，不是本地安装坏了。        | `/usage` 和套餐说明。          | 等待重置、减少工作量，或用带预算控制的 API 配置承接重任务。 |
+| `Credit balance is too low`       | API 账单、预付余额或 workspace 花费上限。 | 对应 provider 的账单后台。     | 补余额或提高 cap 后再重试。                                 |
+| `ccusage` 和 Claude 不一致        | 本地或第三方用量统计只是估算。            | 官方用量和账单入口。           | 用 `ccusage` 看趋势，不要当最终账单依据。                   |
+| `context left until auto-compact` | 上下文窗口压力，不是账号额度。            | `/context`。                   | compact、clear，或减少已加载文件后继续。                    |
 
 ## 先检查这些
 
 1. Claude Code 能启动时，先运行 `/usage` 查看当前用量。
 2. 运行 `/status`，确认当前走的是订阅登录、API key、Bedrock、Vertex、Foundry，还是其他 provider。
-3. 不要只看“限流”两个字，要读完整错误。临时 429 和 weekly limit 不是同一类问题。
+3. 不要只看“限流”两个字，要读完整错误。临时 429、approaching 5-hour limit 和 weekly limit 不是同一类问题。
 4. 如果任务调用很多工具、subagents 或 MCP，先降低并发。
 5. API 配置下，去对应控制台检查余额、工作区限速和花费上限。
 
 ## 这类提示通常意味着什么
 
-`Request rejected (429)` 通常表示服务端短时间限制请求。`session limit` 或 `weekly limit` 更像订阅或账号额度问题，需要等待重置或调整计划/账号策略。`Credit balance is too low` 通常指向账单或工作区余额，而不是项目代码本身。
+`Request rejected (429)` 通常表示服务端短时间限制请求。`session limit`、`approaching 5-hour limit` 或 `weekly limit` 更像订阅或账号额度问题，需要等待重置或调整计划/账号策略。`Credit balance is too low` 通常指向账单或工作区余额，而不是项目代码本身。
+
+不要把账号额度和上下文额度混在一起。`context left until auto-compact` 和 `Claude Code context window size` 这类问题属于上下文管理：会话里历史、文件内容或命令输出太多。它会让任务更慢、更贵，但不是订阅重置窗口。
 
 ## 如何继续工作
 
-把任务拆成更小的检查点，适合时切换到更轻的模型，减少无关上下文，并在重试前停止大范围仓库扫描。团队长会话开始前，最好先记录当前凭证和预期用量口径。
+把任务拆成更小的检查点，适合时切换到更轻的模型，减少无关上下文，并在重试前停止大范围仓库扫描。团队长会话开始前，最好先记录当前凭证、预期用量口径，以及本次工作到底走订阅登录还是 API 账单。
 
 ## 相关页面
 
 - [Claude Code 价格和用量说明](/zh/pricing)
 - [Claude Code 用量限制 FAQ](/zh/faqs/claude-code-usage-limits)
 - [上下文管理](/zh/mechanics/context-management)
+- [Claude Code API 连接失败排查](/zh/troubleshooting/claude-code-unable-to-connect-to-api)
 - [Claude Code 故障排查](/zh/troubleshooting)
 
 ## 官方来源
