@@ -258,14 +258,14 @@ Use the test-triage subagent to run the auth test suite. Return only failing tes
 
 对 Claude Code 知识库项目，先考虑这几个小而明确的角色：
 
-| Agent                    | 用途                                                  | 工具                                  |
-| ------------------------ | ----------------------------------------------------- | ------------------------------------- |
-| `content-reviewer`       | 检查页面是否薄、口径是否空泛、是否缺内部链接和来源。  | `Read, Grep, Glob`                    |
-| `source-checker`         | 核查 Claude Code 说法是否仍匹配官方文档。             | `Read, Grep, Glob, WebFetch` 如果可用 |
-| `frontend-qa`            | 检查页面渲染、布局回归、暗黑模式和移动端溢出。        | `Read, Bash`                          |
-| `seo-structure-reviewer` | 检查 title、description、H2、FAQ 意图和相关页面链接。 | `Read, Grep, Glob`                    |
+| Agent                        | 用途                                                    | 工具                                  |
+| ---------------------------- | ------------------------------------------------------- | ------------------------------------- |
+| `content-reviewer`           | 检查页面是否薄、口径是否空泛、是否缺内部链接和来源。    | `Read, Grep, Glob`                    |
+| `source-checker`             | 核查 Claude Code 说法是否仍匹配官方文档。               | `Read, Grep, Glob, WebFetch` 如果可用 |
+| `frontend-qa`                | 检查页面渲染、布局回归、暗黑模式和移动端溢出。          | `Read, Bash`                          |
+| `content-structure-reviewer` | 检查 title、description、H2、FAQ 清晰度和相关页面链接。 | `Read, Grep, Glob`                    |
 
-不要一次性启用所有。先从 `content-reviewer` 或 `source-checker` 开始，因为它们最直接服务于搜索流量质量。
+不要一次性启用所有。先从 `content-reviewer` 或 `source-checker` 开始，因为它们最直接提升页面质量和来源可靠性。
 
 ## 相关页面
 

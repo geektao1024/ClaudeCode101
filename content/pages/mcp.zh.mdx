@@ -19,11 +19,11 @@ MCP 可以让 Claude Code 连接外部工具、文档、浏览器、代码仓库
 
 如果 Shell 命令、复制 URL 或静态 `CLAUDE.md` 说明已经能解决问题，就暂时不要加 MCP。
 
-## 高频 MCP 搜索词怎么承接
+## 常见 MCP 需求怎么判断
 
-这些 Claude Code MCP 搜索词应该当成路由信号，而不是“看到什么就装什么”的理由：
+下面这些问题经常看起来像“我要装某个 server”，但真正要判断的是工作流、权限和验证方式：
 
-| 搜索词                       | 最适合页面                                      | 用户通常真正需要                                             |
+| 名称或问题                   | 建议先看                                        | 真正要解决的事                                               |
 | ---------------------------- | ----------------------------------------------- | ------------------------------------------------------------ |
 | `context7` 或 `Context7 MCP` | [Context7 MCP](/zh/mcp/context7-mcp)            | 修改代码前获取当前库文档。                                   |
 | `claude mcp list command`    | 当前 MCP 目录，然后在 Claude Code 里看 `/mcp`。 | 确认 server 已配置、待批准，还是连接失败。                   |
@@ -31,7 +31,7 @@ MCP 可以让 Claude Code 连接外部工具、文档、浏览器、代码仓库
 | `posthog mcp claude code`    | 安装前先看 MCP 安全清单。                       | 接入 analytics，必须控制 token、scope 和数据访问边界。       |
 | `claude_desktop_config.json` | MCP 教程或 provider 文档。                      | 旧版或桌面配置方式，可能和 Claude Code project config 不同。 |
 
-搜索词里带具体 server 名称时，先回答工作流：它要读什么、能不能写、需要什么凭据，以及怎么用 `claude mcp list`、`claude mcp get <server-name>` 和 `/mcp` 验证。
+问题里带具体 server 名称时，先回答工作流：它要读什么、能不能写、需要什么凭据，以及怎么用 `claude mcp list`、`claude mcp get <server-name>` 和 `/mcp` 验证。
 
 ## 按工作流选择 MCP
 

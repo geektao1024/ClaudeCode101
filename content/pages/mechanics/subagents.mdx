@@ -258,14 +258,14 @@ This keeps subagents useful instead of turning them into a confusing automation 
 
 For a Claude Code knowledge-base project, a small useful set is:
 
-| Agent                    | Purpose                                                                                     | Tools                                     |
-| ------------------------ | ------------------------------------------------------------------------------------------- | ----------------------------------------- |
-| `content-reviewer`       | Check pages for thin content, unclear claims, missing internal links, and outdated sources. | `Read, Grep, Glob`                        |
-| `source-checker`         | Verify whether Claude Code claims still match official docs.                                | `Read, Grep, Glob, WebFetch` if available |
-| `frontend-qa`            | Inspect rendered pages, layout regressions, dark mode, and mobile overflow.                 | `Read, Bash`                              |
-| `seo-structure-reviewer` | Check title, description, H2 flow, FAQ intent, and related-page links.                      | `Read, Grep, Glob`                        |
+| Agent                        | Purpose                                                                                     | Tools                                     |
+| ---------------------------- | ------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| `content-reviewer`           | Check pages for thin content, unclear claims, missing internal links, and outdated sources. | `Read, Grep, Glob`                        |
+| `source-checker`             | Verify whether Claude Code claims still match official docs.                                | `Read, Grep, Glob, WebFetch` if available |
+| `frontend-qa`                | Inspect rendered pages, layout regressions, dark mode, and mobile overflow.                 | `Read, Bash`                              |
+| `content-structure-reviewer` | Check title, description, H2 flow, FAQ clarity, and related-page links.                     | `Read, Grep, Glob`                        |
 
-Do not enable all of them at once. Start with `content-reviewer` or `source-checker`, because those directly support search traffic quality.
+Do not enable all of them at once. Start with `content-reviewer` or `source-checker`, because they most directly improve page quality and source reliability.
 
 ## Related Pages
 

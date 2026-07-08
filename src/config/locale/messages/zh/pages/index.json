@@ -1,21 +1,21 @@
 {
   "metadata": {
     "title": "Claude Code 101 中文知识库 - 教程、FAQ、MCP、价格和用量限制",
-    "description": "ClaudeCode101 是 Claude Code 中文搜索入口，覆盖安装、Windows、价格、用量限制、CLAUDE.md、Plan Mode、MCP、API 文档和实战工作流。"
+    "description": "ClaudeCode101 提供 Claude Code 安装、Windows、价格、用量限制、CLAUDE.md、Plan Mode、MCP、API 文档和实战工作流的清晰答案。"
   },
   "page": {
-    "title": "Claude Code 101 中文搜索入口和教程中心",
+    "title": "Claude Code 101 中文实用指南",
     "show_sections": ["home", "faq"],
     "sections": {
       "home": {
         "id": "home",
         "block": "home-hub",
         "label": "Claude Code 101 中文知识库 · FAQ、MCP、CLAUDE.md、Plan Mode、价格、限制",
-        "title": "Claude Code 101 中文搜索入口和教程中心",
-        "description": "快速找到 Claude Code 的关键答案：安装、Windows 配置、价格、用量限制、CLAUDE.md、Plan Mode、MCP 服务器、Headless 自动化和实战教程。",
-        "map_title": "搜索路线图",
-        "map_meta": "答案路径",
-        "command_text": "$ claude-code101 --map --focus=questions",
+        "title": "更快找到 Claude Code 的正确答案",
+        "description": "按你正在遇到的问题进入：安装、价格和用量、CLAUDE.md、Plan Mode、MCP、故障排查和常用工作流。",
+        "map_title": "指南地图",
+        "map_meta": "从这里开始",
+        "command_text": "$ claude --status",
         "buttons": [
           {
             "title": "查看常见问题",
@@ -84,13 +84,13 @@
         ],
         "path": [
           {
-            "title": "问题",
-            "description": "覆盖安装、价格、限制、API 文档、Plan Mode、MCP 和 Windows 配置。",
+            "title": "快速问答",
+            "description": "安装、价格、限制、API、Plan Mode、MCP 和 Windows 配置的短答案。",
             "icon": "Search"
           },
           {
-            "title": "教程",
-            "description": "安装、配置、工具、工作流和优化的系统实战指南。",
+            "title": "分步教程",
+            "description": "从安装、配置到工具、工作流和优化的系统实战指南。",
             "icon": "BookOpenText"
           },
           {
@@ -99,18 +99,18 @@
             "icon": "Workflow"
           },
           {
-            "title": "资源",
-            "description": "官方文档、API 参考、更新记录和精选工具入口。",
+            "title": "官方参考",
+            "description": "官方文档、API 参考、更新记录和精选工具链接。",
             "icon": "Boxes"
           }
         ],
-        "topic_label": "搜索入口",
-        "topic_title": "从开发者真正会搜索的问题开始",
-        "topic_description": "每条路径都从一个真实 Claude Code 问题开始，再连接短答案、机制专题、工具选择和完整教程。",
+        "topic_label": "从这里开始",
+        "topic_title": "按你现在的问题选择入口",
+        "topic_description": "先选当前问题，再进入短答案、详细教程、机制解释或工具指南。",
         "topics": [
           {
             "title": "安装 Claude Code",
-            "description": "新用户和安装搜索的最高意图入口。",
+            "description": "完成安装、认证、CLI 检查和第一次项目会话。",
             "icon": "Download",
             "url": "/faqs/how-to-install-claude-code"
           },
@@ -146,32 +146,32 @@
           },
           {
             "title": "故障排查",
-            "description": "承接 command not found、认证错误、权限问题和 MCP 连接失败。",
+            "description": "处理 command not found、认证错误、权限问题和 MCP 连接失败。",
             "icon": "Wrench",
             "url": "/troubleshooting"
           }
         ],
-        "signal_title": "更快找到合适的 Claude Code 路径",
-        "signal_description": "用 FAQ 快速拿答案，用 Mechanics 理解机制，用 MCP 页面选择工具，用教程完成完整工作流。",
+        "signal_title": "少走弯路地使用 Claude Code",
+        "signal_description": "先用 FAQ 拿结论，再按需要进入机制专题、MCP 工具、故障排查或完整教程。",
         "signals": [
           {
-            "title": "保留现有 SEO 路径",
-            "description": "继续保留 /en、/zh 和 /tutorial 路由，新 FAQ 页面只做增量扩展。",
+            "title": "从当前问题开始",
+            "description": "按安装、价格、错误信息、MCP 或工作流直接进入对应页面。",
             "icon": "Route"
           },
           {
-            "title": "先回答问题",
-            "description": "FAQ 页面先给直接答案，再导向深度教程和官方来源。",
+            "title": "先给结论",
+            "description": "FAQ 页面先给直接答案，再导向详细教程和官方来源。",
             "icon": "MessageSquareText"
           },
           {
-            "title": "保持来源可信",
-            "description": "价格、限制、API 行为和版本信息都指向官方来源，避免过时口径。",
+            "title": "核查易变信息",
+            "description": "价格、限制、API 行为和版本信息会指向官方来源，避免过时口径。",
             "icon": "ShieldCheck"
           }
         ],
         "expansion_title": "继续深入",
-        "expansion_tip": "从短答案继续进入机制专题、MCP 工具指南、版本检查和精选资源。",
+        "expansion_tip": "从快速答案进入安装配置、机制专题、MCP 工具、故障排查和官方参考。",
         "expansion": [
           {
             "title": "FAQ 问答库",
@@ -204,11 +204,11 @@
         "block": "faq",
         "label": "FAQ",
         "title": "开始使用 Claude Code 前，最值得先弄清楚的问题",
-        "description": "保留旧站首页 FAQ 的入口价值，同时结合当前知识库结构，把安装、价格、CLAUDE.md、MCP 和排障问题先用短答案讲清楚。",
+        "description": "先把安装、价格、CLAUDE.md、MCP 和排障问题用短答案讲清楚；需要细节时再进入完整指南。",
         "items": [
           {
             "question": "Claude Code 101 是什么？",
-            "answer": "Claude Code 101 是面向开发者的 Claude Code 搜索入口和实战知识库。它先回答安装、价格、用量限制、MCP 配置等高频问题，再把用户引导到 CLAUDE.md、Plan Mode、工作流和故障排查等深度页面。",
+            "answer": "Claude Code 101 是面向开发者的 Claude Code 实用知识库。它先回答安装、价格、用量限制、MCP 配置等高频问题，再把你带到 CLAUDE.md、Plan Mode、工作流和故障排查等深度页面。",
             "url": "/faqs",
             "link_title": "进入 FAQ 总入口"
           },

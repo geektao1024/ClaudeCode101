@@ -1,21 +1,21 @@
 {
   "metadata": {
     "title": "Claude Code 101 - Tutorials, FAQ, MCP Tools, Pricing and Usage Guides",
-    "description": "ClaudeCode101 is a Claude Code search hub for tutorials, FAQ answers, MCP servers, CLAUDE.md, Plan Mode, pricing, usage limits, API references, and practical AI coding workflows."
+    "description": "ClaudeCode101 gives clear Claude Code answers for installation, Windows setup, pricing, usage limits, CLAUDE.md, Plan Mode, MCP, API docs, and practical AI coding workflows."
   },
   "page": {
-    "title": "Claude Code 101 Search Hub and Tutorial Center",
+    "title": "Claude Code 101 Practical Guide",
     "show_sections": ["home", "faq"],
     "sections": {
       "home": {
         "id": "home",
         "block": "home-hub",
         "label": "Claude Code 101 · FAQ, MCP, CLAUDE.md, Plan Mode, pricing, usage limits",
-        "title": "Claude Code 101 Search Hub and Tutorial Center",
-        "description": "Find the right Claude Code answer fast: install guides, Windows setup, pricing notes, usage limits, CLAUDE.md, Plan Mode, MCP servers, headless automation, and practical workflow tutorials.",
-        "map_title": "Search Map",
-        "map_meta": "answer paths",
-        "command_text": "$ claude-code101 --map --focus=questions",
+        "title": "Find The Right Claude Code Answer Faster",
+        "description": "Start with the problem you have now: installation, pricing and usage, CLAUDE.md, Plan Mode, MCP, troubleshooting, and everyday coding workflows.",
+        "map_title": "Guide Map",
+        "map_meta": "start here",
+        "command_text": "$ claude --status",
         "buttons": [
           {
             "title": "Browse FAQ",
@@ -84,8 +84,8 @@
         ],
         "path": [
           {
-            "title": "Questions",
-            "description": "FAQ pages for install, Windows setup, pricing, limits, API docs, Plan Mode, and MCP.",
+            "title": "Quick Answers",
+            "description": "Short answers for install, Windows setup, pricing, limits, API, Plan Mode, and MCP.",
             "icon": "Search"
           },
           {
@@ -99,18 +99,18 @@
             "icon": "Workflow"
           },
           {
-            "title": "Resources",
+            "title": "Official References",
             "description": "Official docs, API references, changelog notes, and curated tool links.",
             "icon": "Boxes"
           }
         ],
-        "topic_label": "Search Entrances",
-        "topic_title": "Start from the question developers actually search",
-        "topic_description": "Each path starts from a practical Claude Code question, then connects short answers, deeper mechanics, tool choices, and step-by-step tutorials.",
+        "topic_label": "Start Here",
+        "topic_title": "Choose the problem you have now",
+        "topic_description": "Pick the current problem first, then move into a short answer, detailed tutorial, mechanics guide, or tool page.",
         "topics": [
           {
             "title": "Install Claude Code",
-            "description": "The fastest path for new users and high-intent setup searches.",
+            "description": "Finish installation, authentication, CLI checks, and your first project session.",
             "icon": "Download",
             "url": "/faqs/how-to-install-claude-code"
           },
@@ -146,32 +146,32 @@
           },
           {
             "title": "Troubleshooting",
-            "description": "Capture command not found, auth errors, permission problems, and MCP connection failures.",
+            "description": "Fix command not found, auth errors, permission problems, and MCP connection failures.",
             "icon": "Wrench",
             "url": "/troubleshooting"
           }
         ],
-        "signal_title": "Find the right Claude Code path faster",
-        "signal_description": "Use FAQ pages for quick answers, Mechanics for deeper understanding, MCP pages for tool decisions, and tutorials when you need the full workflow.",
+        "signal_title": "Use Claude Code With Fewer Detours",
+        "signal_description": "Start with the FAQ answer, then move into mechanics, MCP tools, troubleshooting, or the full tutorial when you need depth.",
         "signals": [
           {
-            "title": "Preserve current SEO paths",
-            "description": "Existing /en, /zh, and /tutorial URLs remain the base while new FAQ pages expand coverage.",
+            "title": "Start with the current problem",
+            "description": "Jump directly by setup question, pricing question, error message, MCP need, or workflow goal.",
             "icon": "Route"
           },
           {
-            "title": "Answer first",
+            "title": "Get the answer first",
             "description": "FAQ pages lead with a direct answer, then guide readers into tutorials and official sources.",
             "icon": "MessageSquareText"
           },
           {
-            "title": "Keep sources clean",
+            "title": "Verify fast-changing facts",
             "description": "Pricing, limits, API behavior, and versions point back to official references instead of copied stale facts.",
             "icon": "ShieldCheck"
           }
         ],
-        "expansion_title": "Explore More",
-        "expansion_tip": "Move from short answers into mechanics, MCP tool guides, changelog checks, and curated resource links.",
+        "expansion_title": "Keep Going",
+        "expansion_tip": "Move from quick answers into setup, mechanics, MCP tools, troubleshooting, and official references.",
         "expansion": [
           {
             "title": "FAQ Library",
@@ -208,7 +208,7 @@
         "items": [
           {
             "question": "What is Claude Code 101?",
-            "answer": "Claude Code 101 is a practical search hub and tutorial knowledge base for Claude Code. It helps developers move from quick questions like installation, pricing, usage limits, and MCP setup into deeper guides on CLAUDE.md, Plan Mode, workflows, and troubleshooting.",
+            "answer": "Claude Code 101 is a practical guide and tutorial knowledge base for Claude Code. It helps developers move from quick questions like installation, pricing, usage limits, and MCP setup into deeper guides on CLAUDE.md, Plan Mode, workflows, and troubleshooting.",
             "url": "/faqs",
             "link_title": "Open FAQ hub"
           },

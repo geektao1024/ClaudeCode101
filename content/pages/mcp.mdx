@@ -19,11 +19,11 @@ Start with one MCP server only when the workflow repeatedly needs context outsid
 
 If a shell command, copied URL, or static `CLAUDE.md` note solves the problem, do not add MCP yet.
 
-## High-Intent MCP Searches
+## Common MCP Questions
 
-Use these common Claude Code MCP searches as routing signals, not as reasons to install every server:
+These common MCP questions often look like "install this server," but the real decision is workflow, permissions, and verification:
 
-| Search term                  | Best destination                                    | What the user usually needs                                                                  |
+| Name or question             | Best destination                                    | What you usually need                                                                        |
 | ---------------------------- | --------------------------------------------------- | -------------------------------------------------------------------------------------------- |
 | `context7` or `Context7 MCP` | [Context7 MCP](/en/mcp/context7-mcp)                | Current library documentation before editing code.                                           |
 | `claude mcp list command`    | This MCP directory, then `/mcp` inside Claude Code. | Confirm which servers are configured, pending approval, or failing.                          |
@@ -31,7 +31,7 @@ Use these common Claude Code MCP searches as routing signals, not as reasons to 
 | `posthog mcp claude code`    | MCP security checklist before any install.          | Analytics access with careful token, scope, and data-review boundaries.                      |
 | `claude_desktop_config.json` | MCP tutorial or provider docs.                      | Legacy or desktop-style MCP configuration, which may differ from Claude Code project config. |
 
-When the query includes a specific server name, answer the workflow first: what it should read, whether it can write, which credentials it needs, and how to verify with `claude mcp list`, `claude mcp get <server-name>`, and `/mcp`.
+When the question includes a specific server name, answer the workflow first: what it should read, whether it can write, which credentials it needs, and how to verify with `claude mcp list`, `claude mcp get <server-name>`, and `/mcp`.
 
 ## Choose An MCP Server By Workflow
 
